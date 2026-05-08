@@ -11,7 +11,7 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun ChatEase(modifier: Modifier = Modifier) {
     ChatEaseTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
             val navController = rememberNavController()
             AppNavHost(
                 paddingValues = innerPadding,
