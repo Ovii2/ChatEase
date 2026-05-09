@@ -13,16 +13,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -97,7 +93,6 @@ fun LoginScreen(
                     onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
                     paddingValues = paddingValues
                 )
-
             }
         }
     }
@@ -135,6 +130,7 @@ fun LoginScreenCompactLayout(
             ),
         contentAlignment = Alignment.Center
     ) {
+
         LoginScreenContent(
             modifier = Modifier.widthIn(max = 600.dp),
             emailValue = email,
@@ -144,19 +140,12 @@ fun LoginScreenCompactLayout(
             showEmailError = false,
             emailKeyboardType = KeyboardType.Email,
             emailImeAction = ImeAction.Next,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
-                    contentDescription = null
-                )
-            },
             passwordValue = password,
             passWordVisible = passwordVisible,
             onPasswordValueChange = onPasswordValueChange,
             passwordFieldPlaceHolder = { Text(text = stringResource(R.string.password)) },
             passWordError = 1,
             showPassWordError = false,
-            passwordKeyboardType = KeyboardType.Password,
             passwordImeAction = ImeAction.Done,
             onTogglePasswordVisibility = onTogglePasswordVisibility,
             paddingValues = paddingValues,
@@ -237,19 +226,12 @@ fun LoginScreenExpandedLayout(
                             showEmailError = false,
                             emailKeyboardType = KeyboardType.Email,
                             emailImeAction = ImeAction.Next,
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Person,
-                                    contentDescription = null
-                                )
-                            },
                             passwordValue = password,
                             passWordVisible = passwordVisible,
                             onPasswordValueChange = onPasswordValueChange,
                             passwordFieldPlaceHolder = { Text(text = stringResource(R.string.password)) },
                             passWordError = 1,
                             showPassWordError = false,
-                            passwordKeyboardType = KeyboardType.Password,
                             passwordImeAction = ImeAction.Done,
                             onTogglePasswordVisibility = onTogglePasswordVisibility,
                             paddingValues = PaddingValues(),

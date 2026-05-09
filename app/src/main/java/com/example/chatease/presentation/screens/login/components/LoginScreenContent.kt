@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,14 +30,12 @@ fun LoginScreenContent(
     showEmailError: Boolean,
     emailKeyboardType: KeyboardType,
     emailImeAction: ImeAction,
-    leadingIcon: @Composable () -> Unit,
     passwordValue: String,
     passWordVisible: Boolean,
     onPasswordValueChange: (String) -> Unit,
     passwordFieldPlaceHolder: @Composable () -> Unit,
     passWordError: Int?,
     showPassWordError: Boolean,
-    passwordKeyboardType: KeyboardType,
     passwordImeAction: ImeAction,
     onTogglePasswordVisibility: () -> Unit,
     headerLogoSize: Dp = 80.dp,
@@ -69,14 +64,12 @@ fun LoginScreenContent(
             showEmailError = showEmailError,
             emailKeyboardType = emailKeyboardType,
             emailImeAction = emailImeAction,
-            leadingIcon = leadingIcon,
             passwordValue = passwordValue,
             passWordVisible = passWordVisible,
             onPasswordValueChange = onPasswordValueChange,
             passwordFieldPlaceHolder = passwordFieldPlaceHolder,
             passWordError = passWordError,
             showPassWordError = showPassWordError,
-            passwordKeyboardType = passwordKeyboardType,
             passwordImeAction = passwordImeAction,
             onTogglePasswordVisibility = onTogglePasswordVisibility,
             rememberMeChecked = false,
@@ -99,14 +92,12 @@ private fun LoginScreenContentPreview() {
             showEmailError = false,
             emailKeyboardType = KeyboardType.Email,
             emailImeAction = ImeAction.Next,
-            leadingIcon = { Icon(imageVector = Icons.Outlined.Person, contentDescription = "") },
             passwordValue = "",
             passWordVisible = false,
             onPasswordValueChange = {},
             passwordFieldPlaceHolder = { Text(text = "Password") },
             passWordError = 1,
             showPassWordError = false,
-            passwordKeyboardType = KeyboardType.Password,
             passwordImeAction = ImeAction.Done,
             onTogglePasswordVisibility = {},
             paddingValues = PaddingValues(),

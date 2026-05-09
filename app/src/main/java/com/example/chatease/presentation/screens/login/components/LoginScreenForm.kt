@@ -16,7 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +36,6 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun LoginScreenForm(
-    modifier: Modifier = Modifier,
     emailValue: String,
     onEmailValueChange: (String) -> Unit,
     emailFieldPlaceholder: @Composable () -> Unit,
@@ -45,14 +43,12 @@ fun LoginScreenForm(
     showEmailError: Boolean,
     emailKeyboardType: KeyboardType,
     emailImeAction: ImeAction,
-    leadingIcon: @Composable () -> Unit,
     passwordValue: String,
     passWordVisible: Boolean,
     onPasswordValueChange: (String) -> Unit,
     passwordFieldPlaceHolder: @Composable () -> Unit,
     passWordError: Int?,
     showPassWordError: Boolean,
-    passwordKeyboardType: KeyboardType,
     passwordImeAction: ImeAction,
     onTogglePasswordVisibility: () -> Unit,
     rememberMeChecked: Boolean,
@@ -68,7 +64,7 @@ fun LoginScreenForm(
             showError = showEmailError,
             keyboardType = emailKeyboardType,
             imeAction = emailImeAction,
-            leadingIcon = leadingIcon
+            leadingIcon = Icons.Outlined.Person
         )
         AuthPasswordInput(
             value = passwordValue,
@@ -77,7 +73,6 @@ fun LoginScreenForm(
             placeholder = passwordFieldPlaceHolder,
             error = passWordError,
             showError = showPassWordError,
-            keyboardType = passwordKeyboardType,
             imeAction = passwordImeAction,
             onTogglePasswordVisibility = onTogglePasswordVisibility
         )
@@ -150,19 +145,12 @@ private fun LoginScreenFormPreview() {
                 showEmailError = false,
                 emailKeyboardType = KeyboardType.Email,
                 emailImeAction = ImeAction.Next,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = ""
-                    )
-                },
                 passwordValue = "",
                 passWordVisible = false,
                 onPasswordValueChange = {},
                 passwordFieldPlaceHolder = { Text(text = "Password") },
                 passWordError = 1,
                 showPassWordError = false,
-                passwordKeyboardType = KeyboardType.Password,
                 passwordImeAction = ImeAction.Done,
                 onTogglePasswordVisibility = {},
                 rememberMeChecked = true,

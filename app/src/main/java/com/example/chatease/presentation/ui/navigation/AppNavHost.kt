@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.chatease.presentation.screens.login.LoginScreen
+import com.example.chatease.presentation.screens.sign_up.SignUpScreen
 
 @Composable
 fun AppNavHost(
@@ -14,8 +15,11 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Screens.Login.route
+        startDestination = Screens.SignUp.route
     ) {
+        composable(route = Screens.SignUp.route) {
+            SignUpScreen()
+        }
         composable(route = Screens.Login.route) {
             LoginScreen(paddingValues = paddingValues)
         }

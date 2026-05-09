@@ -1,0 +1,257 @@
+package com.example.chatease.presentation.screens.sign_up.components
+
+import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.chatease.R
+import com.example.chatease.presentation.screens.components.auth.AuthPasswordInput
+import com.example.chatease.presentation.screens.components.auth.AuthTextInput
+import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+
+@Composable
+fun SignUpScreenContent(
+    modifier: Modifier = Modifier,
+    fullNameValue: String,
+    onFullNameValueChange: (String) -> Unit,
+    fullNameError: Int?,
+    showFullNameError: Boolean,
+    @StringRes fullNamePlaceholder: Int,
+    emailValue: String,
+    onEmailFieldChange: (String) -> Unit,
+    emailError: Int?,
+    showEmailError: Boolean,
+    @StringRes emailPlaceholder: Int,
+    passwordValue: String,
+    onPasswordValueChange: (String) -> Unit,
+    passwordError: Int?,
+    showPasswordError: Boolean,
+    isPasswordVisible: Boolean,
+    @StringRes passwordPlaceholder: Int,
+    onTogglePasswordVisibility: () -> Unit,
+    confirmPasswordValue: String,
+    onConfirmPasswordValueChange: (String) -> Unit,
+    confirmPasswordError: Int?,
+    @StringRes confirmPasswordPlaceholder: Int,
+    showConfirmPasswordError: Boolean,
+    onSignUpClick: () -> Unit
+) {
+    val appleLogo =
+        if (isSystemInDarkTheme()) R.drawable.ic_apple_white else R.drawable.ic_apple_black
+
+    Card(
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 32.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(30.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.create_account),
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.SemiBold)
+                )
+                Text(
+                    text = stringResource(R.string.join_chatease),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
+            Column() {
+                AuthTextInput(
+                    value = fullNameValue,
+                    onValueChange = onFullNameValueChange,
+                    placeholder = { Text(text = stringResource(fullNamePlaceholder)) },
+                    error = fullNameError,
+                    showError = showFullNameError,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                    leadingIcon = Icons.Outlined.Person
+                )
+                AuthTextInput(
+                    value = emailValue,
+                    onValueChange = onEmailFieldChange,
+                    placeholder = { Text(text = stringResource(emailPlaceholder)) },
+                    error = emailError,
+                    showError = showEmailError,
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                    leadingIcon = Icons.Outlined.Email
+                )
+                AuthPasswordInput(
+                    value = passwordValue,
+                    isPasswordVisible = isPasswordVisible,
+                    onValueChange = onPasswordValueChange,
+                    placeholder = { Text(text = stringResource(passwordPlaceholder)) },
+                    error = passwordError,
+                    showError = showPasswordError,
+                    imeAction = ImeAction.Next,
+                    onTogglePasswordVisibility = onTogglePasswordVisibility
+                )
+                AuthPasswordInput(
+                    value = confirmPasswordValue,
+                    isPasswordVisible = isPasswordVisible,
+                    onValueChange = onConfirmPasswordValueChange,
+                    placeholder = { Text(text = stringResource(confirmPasswordPlaceholder)) },
+                    error = confirmPasswordError,
+                    showError = showConfirmPasswordError,
+                    imeAction = ImeAction.Done,
+                    onTogglePasswordVisibility = onTogglePasswordVisibility
+                )
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.secondary,
+                                    MaterialTheme.colorScheme.tertiary,
+                                )
+                            ),
+                            shape = RoundedCornerShape(16.dp)
+                        ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent
+                    ),
+                    onClick = onSignUpClick
+                ) {
+                    Text(text = stringResource(R.string.sign_up))
+                }
+            }
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        thickness = 1.dp
+                    )
+                    Text(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        text = stringResource(R.string.or_sign_up_with),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        thickness = 1.dp
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    FooterButton(
+                        onClick = {},
+                        icon = R.drawable.ic_google,
+                        label = R.string.google
+                    )
+                    FooterButton(
+                        onClick = {},
+                        icon = appleLogo,
+                        label = R.string.apple
+                    )
+                    FooterButton(
+                        onClick = {},
+                        icon = R.drawable.ic_facebook,
+                        label = R.string.facebook
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        Alignment.CenterHorizontally
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.already_have_account),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+                    Text(
+                        text = stringResource(R.string.login),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun SignUpScreenContentPreview() {
+    ChatEaseTheme() {
+        Column(modifier = Modifier.padding(16.dp)) {
+            SignUpScreenContent(
+                fullNameValue = "Full name",
+                onFullNameValueChange = {},
+                fullNameError = 1,
+                showFullNameError = false,
+                emailValue = "Email",
+                onEmailFieldChange = {},
+                emailError = 1,
+                showEmailError = false,
+                passwordValue = "Password",
+                onPasswordValueChange = {},
+                passwordError = 1,
+                showPasswordError = false,
+                isPasswordVisible = false,
+                onTogglePasswordVisibility = {},
+                confirmPasswordValue = "Password",
+                onConfirmPasswordValueChange = {},
+                confirmPasswordError = 1,
+                showConfirmPasswordError = false,
+                onSignUpClick = {},
+                fullNamePlaceholder = R.string.full_name,
+                emailPlaceholder = R.string.email,
+                passwordPlaceholder = R.string.password,
+                confirmPasswordPlaceholder = R.string.confirm_password,
+            )
+        }
+    }
+}
