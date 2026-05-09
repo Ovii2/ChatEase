@@ -31,7 +31,6 @@ fun AuthPasswordInput(
     placeholder: @Composable () -> Unit,
     error: Int?,
     showError: Boolean,
-    keyboardType: KeyboardType,
     imeAction: ImeAction,
     onTogglePasswordVisibility: () -> Unit
 ) {
@@ -53,13 +52,22 @@ fun AuthPasswordInput(
                 )
             }
         },
-        leadingIcon = { Icon(imageVector = Icons.Outlined.Lock, contentDescription = null) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Lock,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
         onValueChange = onValueChange,
         textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurfaceVariant),
         placeholder = placeholder,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
             unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.35f),
+
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
 
             errorContainerColor = MaterialTheme.colorScheme.errorContainer.copy(
                 alpha = 0.3f
@@ -69,7 +77,7 @@ fun AuthPasswordInput(
             errorSupportingTextColor = MaterialTheme.colorScheme.error
         ),
         keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType,
+            keyboardType = KeyboardType.Password,
             imeAction = imeAction
         ),
         isError = showError && error != null,
