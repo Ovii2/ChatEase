@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.screens.login.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,14 +8,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -37,7 +42,11 @@ fun LoginScreenContent(
     showPassWordError: Boolean,
     passwordKeyboardType: KeyboardType,
     passwordImeAction: ImeAction,
-    onTogglePasswordVisibility: () -> Unit
+    onTogglePasswordVisibility: () -> Unit,
+    headerLogoSize: Dp = 80.dp,
+    headerTitleStyle: TextStyle = MaterialTheme.typography.displaySmall,
+    @StringRes titleText: Int,
+    @StringRes labelText: Int
 ) {
     Column(
         modifier = modifier
@@ -46,7 +55,12 @@ fun LoginScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        LoginScreenHeader()
+        LoginScreenHeader(
+            logoSize = headerLogoSize,
+            titleStyle = headerTitleStyle,
+            titleText = titleText,
+            labelText = labelText,
+        )
         LoginScreenForm(
             emailValue = emailValue,
             onEmailValueChange = onEmailValueChange,
@@ -95,7 +109,9 @@ private fun LoginScreenContentPreview() {
             passwordKeyboardType = KeyboardType.Password,
             passwordImeAction = ImeAction.Done,
             onTogglePasswordVisibility = {},
-            paddingValues = PaddingValues()
+            paddingValues = PaddingValues(),
+            titleText = R.string.app_name,
+            labelText = R.string.app_moto,
         )
     }
 }
