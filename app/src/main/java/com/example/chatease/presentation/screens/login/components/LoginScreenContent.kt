@@ -51,7 +51,7 @@ fun LoginScreenContent(
     Column(
         modifier = modifier
             .padding(paddingValues)
-            .padding(horizontal = 16.dp, vertical = 48.dp),
+            .padding(horizontal = 24.dp, vertical = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {

@@ -1,16 +1,19 @@
 package com.example.chatease.presentation.screens.login
 
 import androidx.activity.compose.LocalActivity
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -61,6 +64,9 @@ fun LoginScreen(
 
     val focusManager = LocalFocusManager.current
     val activity = LocalActivity.current
+    val background =
+        if (isSystemInDarkTheme()) R.drawable.background_login_dark else R.drawable.login_screen_background
+
 
     activity?.let { activity ->
         val windowSizeClass = calculateWindowSizeClass(activity)
@@ -75,7 +81,8 @@ fun LoginScreen(
                     passwordVisible = passwordVisible,
                     onPasswordValueChange = { password = it },
                     onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
-                    focusManager = focusManager
+                    focusManager = focusManager,
+                    background = background,
                 )
             }
 
@@ -168,7 +175,8 @@ fun LoginScreenExpandedLayout(
     passwordVisible: Boolean,
     onPasswordValueChange: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
-    focusManager: FocusManager
+    focusManager: FocusManager,
+    @DrawableRes background: Int
 ) {
     Box(
         modifier = modifier
@@ -187,7 +195,7 @@ fun LoginScreenExpandedLayout(
             ) {
                 Image(
                     modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(R.drawable.login_screen_background),
+                    painter = painterResource(background),
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
@@ -217,7 +225,7 @@ fun LoginScreenExpandedLayout(
                         .fillMaxHeight(0.85f),
                     elevation = CardDefaults.cardElevation(8.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                     )
                 ) {
                     Box(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -280,6 +288,9 @@ private fun LoginScreenCompactPreview() {
 )
 @Composable
 private fun LoginScreenExpandedPreview() {
+    val background =
+        if (isSystemInDarkTheme()) R.drawable.background_login_dark else R.drawable.login_screen_background
+
     ChatEaseTheme() {
         LoginScreenExpandedLayout(
             email = "",
@@ -288,7 +299,8 @@ private fun LoginScreenExpandedPreview() {
             passwordVisible = false,
             onPasswordValueChange = {},
             onTogglePasswordVisibility = {},
-            focusManager = LocalFocusManager.current
+            focusManager = LocalFocusManager.current,
+            background = background,
         )
     }
 }
