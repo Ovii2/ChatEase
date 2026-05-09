@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ChatEase</string>
     <string name="app_moto">Simple. Secure. Connected.</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="login_to_continue">Login to continue to ChatEase</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="remember_me">Remember me</string>
