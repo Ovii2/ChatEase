@@ -68,7 +68,7 @@ fun LoginScreen(
         when {
             windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
                     windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact -> {
-                LoginScreenMediumLayout(
+                LoginScreenExpandedLayout(
                     email = email,
                     onEmailValueChange = { email = it },
                     password = password,
@@ -160,7 +160,7 @@ fun LoginScreenCompactLayout(
 }
 
 @Composable
-fun LoginScreenMediumLayout(
+fun LoginScreenExpandedLayout(
     modifier: Modifier = Modifier,
     email: String,
     onEmailValueChange: (String) -> Unit,
@@ -279,9 +279,9 @@ private fun LoginScreenCompactPreview() {
     device = "spec:width=1280dp,height=800dp,dpi=240", name = "Medium"
 )
 @Composable
-private fun LoginScreenMediumPreview() {
+private fun LoginScreenExpandedPreview() {
     ChatEaseTheme() {
-        LoginScreenMediumLayout(
+        LoginScreenExpandedLayout(
             email = "",
             onEmailValueChange = {},
             password = "",
