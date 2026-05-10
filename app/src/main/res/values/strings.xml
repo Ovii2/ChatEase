@@ -22,4 +22,11 @@
     <string name="apple">Apple</string>
     <string name="facebook">Facebook</string>
     <string name="already_have_account">Already have an account?</string>
+    <string name="join_chatease_alt">Join ChatEase and start connecting with the world</string>
+    <string name="secure_private">Secure &amp; Private</string>
+    <string name="your_data_is_protected">Your data is protected with enterprise-grade security</string>
+    <string name="connect_instantly">Connect instantly</string>
+    <string name="message_call_collaborate">Message, call, and collaborate in real time</string>
+    <string name="built_for_everyone">Built for Everyone</string>
+    <string name="simple_fast">Simple, fast, and designed to keep you productive</string>
 </resources>
