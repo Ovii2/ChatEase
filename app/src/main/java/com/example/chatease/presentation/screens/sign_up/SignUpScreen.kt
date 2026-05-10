@@ -34,6 +34,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.presentation.screens.sign_up.components.SignUpScreenContent
@@ -58,6 +59,8 @@ fun SignUpScreen(
 
     activity?.let { activity ->
         val windowSizeClass = calculateWindowSizeClass(activity)
+        val maxWidth =
+            if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) 370.dp else 600.dp
 
         when {
             windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
@@ -89,6 +92,7 @@ fun SignUpScreen(
                     focusManager = focusManager,
                     background = background,
                     onNavigateToLoginScreen = onNavigateToLoginScreen,
+                    maxWidth = maxWidth,
                 )
             }
         }
@@ -124,7 +128,8 @@ fun SignUpScreenCompactLayout(
     onSignUpClick: () -> Unit,
     focusManager: FocusManager,
     @DrawableRes background: Int,
-    onNavigateToLoginScreen: () -> Unit
+    onNavigateToLoginScreen: () -> Unit,
+    maxWidth: Dp
 ) {
     Box(
         modifier = modifier
@@ -158,7 +163,7 @@ fun SignUpScreenCompactLayout(
 
             SignUpScreenContent(
                 modifier = Modifier
-                    .widthIn(max = 350.dp)
+                    .widthIn(max = maxWidth)
                     .heightIn(max = 700.dp),
                 fullNameValue = fullNameValue,
                 onFullNameValueChange = onFullNameValueChange,

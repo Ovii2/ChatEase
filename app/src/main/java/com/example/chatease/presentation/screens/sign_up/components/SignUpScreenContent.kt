@@ -176,7 +176,7 @@ fun SignUpScreenContent(
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     FooterButton(
                         onClick = {},
@@ -223,6 +223,39 @@ fun SignUpScreenContent(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun SignUpScreenContentPreview() {
+    ChatEaseTheme() {
+        Column(modifier = Modifier.padding(16.dp)) {
+            SignUpScreenContent(
+                fullNameValue = "Full name",
+                onFullNameValueChange = {},
+                fullNameError = 1,
+                showFullNameError = false,
+                emailValue = "Email",
+                onEmailFieldChange = {},
+                emailError = 1,
+                showEmailError = false,
+                passwordValue = "Password",
+                onPasswordValueChange = {},
+                passwordError = 1,
+                showPasswordError = false,
+                isPasswordVisible = false,
+                onTogglePasswordVisibility = {},
+                confirmPasswordValue = "Password",
+                onConfirmPasswordValueChange = {},
+                confirmPasswordError = 1,
+                showConfirmPasswordError = false,
+                onSignUpClick = {},
+                onNavigateToLoginScreen = {},
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true, name = "Tablet",
+         device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun SignUpScreenContentTabletPreview() {
     ChatEaseTheme() {
         Column(modifier = Modifier.padding(16.dp)) {
             SignUpScreenContent(
