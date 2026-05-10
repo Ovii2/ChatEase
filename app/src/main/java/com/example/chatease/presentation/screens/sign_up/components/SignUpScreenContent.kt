@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.screens.sign_up.components
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -46,23 +45,19 @@ fun SignUpScreenContent(
     onFullNameValueChange: (String) -> Unit,
     fullNameError: Int?,
     showFullNameError: Boolean,
-    @StringRes fullNamePlaceholder: Int,
     emailValue: String,
     onEmailFieldChange: (String) -> Unit,
     emailError: Int?,
     showEmailError: Boolean,
-    @StringRes emailPlaceholder: Int,
     passwordValue: String,
     onPasswordValueChange: (String) -> Unit,
     passwordError: Int?,
     showPasswordError: Boolean,
     isPasswordVisible: Boolean,
-    @StringRes passwordPlaceholder: Int,
     onTogglePasswordVisibility: () -> Unit,
     confirmPasswordValue: String,
     onConfirmPasswordValueChange: (String) -> Unit,
     confirmPasswordError: Int?,
-    @StringRes confirmPasswordPlaceholder: Int,
     showConfirmPasswordError: Boolean,
     onSignUpClick: () -> Unit
 ) {
@@ -101,7 +96,7 @@ fun SignUpScreenContent(
                 AuthTextInput(
                     value = fullNameValue,
                     onValueChange = onFullNameValueChange,
-                    placeholder = { Text(text = stringResource(fullNamePlaceholder)) },
+                    placeholder = { Text(text = stringResource(R.string.full_name)) },
                     error = fullNameError,
                     showError = showFullNameError,
                     keyboardType = KeyboardType.Text,
@@ -111,7 +106,7 @@ fun SignUpScreenContent(
                 AuthTextInput(
                     value = emailValue,
                     onValueChange = onEmailFieldChange,
-                    placeholder = { Text(text = stringResource(emailPlaceholder)) },
+                    placeholder = { Text(text = stringResource(R.string.email)) },
                     error = emailError,
                     showError = showEmailError,
                     keyboardType = KeyboardType.Email,
@@ -122,7 +117,7 @@ fun SignUpScreenContent(
                     value = passwordValue,
                     isPasswordVisible = isPasswordVisible,
                     onValueChange = onPasswordValueChange,
-                    placeholder = { Text(text = stringResource(passwordPlaceholder)) },
+                    placeholder = { Text(text = stringResource(R.string.password)) },
                     error = passwordError,
                     showError = showPasswordError,
                     imeAction = ImeAction.Next,
@@ -132,7 +127,7 @@ fun SignUpScreenContent(
                     value = confirmPasswordValue,
                     isPasswordVisible = isPasswordVisible,
                     onValueChange = onConfirmPasswordValueChange,
-                    placeholder = { Text(text = stringResource(confirmPasswordPlaceholder)) },
+                    placeholder = { Text(text = stringResource(R.string.confirm_password)) },
                     error = confirmPasswordError,
                     showError = showConfirmPasswordError,
                     imeAction = ImeAction.Done,
@@ -246,11 +241,7 @@ private fun SignUpScreenContentPreview() {
                 onConfirmPasswordValueChange = {},
                 confirmPasswordError = 1,
                 showConfirmPasswordError = false,
-                onSignUpClick = {},
-                fullNamePlaceholder = R.string.full_name,
-                emailPlaceholder = R.string.email,
-                passwordPlaceholder = R.string.password,
-                confirmPasswordPlaceholder = R.string.confirm_password,
+                onSignUpClick = {}
             )
         }
     }

@@ -173,11 +173,7 @@ fun SignUpScreenCompactLayout(
                 onConfirmPasswordValueChange = onConfirmPasswordValueChange,
                 confirmPasswordError = confirmPasswordError,
                 showConfirmPasswordError = showConfirmPasswordError,
-                onSignUpClick = onSignUpClick,
-                fullNamePlaceholder = R.string.full_name,
-                emailPlaceholder = R.string.email,
-                passwordPlaceholder = R.string.password,
-                confirmPasswordPlaceholder = R.string.confirm_password,
+                onSignUpClick = onSignUpClick
             )
         }
     }
