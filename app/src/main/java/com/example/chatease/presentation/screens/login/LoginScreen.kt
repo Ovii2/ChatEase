@@ -20,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -38,7 +37,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -135,7 +133,6 @@ fun LoginScreenCompactLayout(
             modifier = Modifier.widthIn(max = 600.dp),
             emailValue = email,
             onEmailValueChange = onEmailValueChange,
-            emailFieldPlaceholder = { Text(text = stringResource(R.string.email)) },
             emailError = 1,
             showEmailError = false,
             emailKeyboardType = KeyboardType.Email,
@@ -143,7 +140,6 @@ fun LoginScreenCompactLayout(
             passwordValue = password,
             passWordVisible = passwordVisible,
             onPasswordValueChange = onPasswordValueChange,
-            passwordFieldPlaceHolder = { Text(text = stringResource(R.string.password)) },
             passWordError = 1,
             showPassWordError = false,
             passwordImeAction = ImeAction.Done,
@@ -221,7 +217,6 @@ fun LoginScreenExpandedLayout(
                         LoginScreenContent(
                             emailValue = email,
                             onEmailValueChange = onEmailValueChange,
-                            emailFieldPlaceholder = { Text(text = stringResource(R.string.email)) },
                             emailError = 1,
                             showEmailError = false,
                             emailKeyboardType = KeyboardType.Email,
@@ -229,7 +224,6 @@ fun LoginScreenExpandedLayout(
                             passwordValue = password,
                             passWordVisible = passwordVisible,
                             onPasswordValueChange = onPasswordValueChange,
-                            passwordFieldPlaceHolder = { Text(text = stringResource(R.string.password)) },
                             passWordError = 1,
                             showPassWordError = false,
                             passwordImeAction = ImeAction.Done,

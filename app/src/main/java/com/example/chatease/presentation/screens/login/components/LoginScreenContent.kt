@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +24,6 @@ fun LoginScreenContent(
     paddingValues: PaddingValues,
     emailValue: String,
     onEmailValueChange: (String) -> Unit,
-    emailFieldPlaceholder: @Composable () -> Unit,
     emailError: Int?,
     showEmailError: Boolean,
     emailKeyboardType: KeyboardType,
@@ -33,7 +31,6 @@ fun LoginScreenContent(
     passwordValue: String,
     passWordVisible: Boolean,
     onPasswordValueChange: (String) -> Unit,
-    passwordFieldPlaceHolder: @Composable () -> Unit,
     passWordError: Int?,
     showPassWordError: Boolean,
     passwordImeAction: ImeAction,
@@ -59,7 +56,6 @@ fun LoginScreenContent(
         LoginScreenForm(
             emailValue = emailValue,
             onEmailValueChange = onEmailValueChange,
-            emailFieldPlaceholder = emailFieldPlaceholder,
             emailError = emailError,
             showEmailError = showEmailError,
             emailKeyboardType = emailKeyboardType,
@@ -67,7 +63,6 @@ fun LoginScreenContent(
             passwordValue = passwordValue,
             passWordVisible = passWordVisible,
             onPasswordValueChange = onPasswordValueChange,
-            passwordFieldPlaceHolder = passwordFieldPlaceHolder,
             passWordError = passWordError,
             showPassWordError = showPassWordError,
             passwordImeAction = passwordImeAction,
@@ -87,7 +82,6 @@ private fun LoginScreenContentPreview() {
         LoginScreenContent(
             emailValue = "email@email.com",
             onEmailValueChange = {},
-            emailFieldPlaceholder = { Text(text = "Email") },
             emailError = 1,
             showEmailError = false,
             emailKeyboardType = KeyboardType.Email,
@@ -95,7 +89,6 @@ private fun LoginScreenContentPreview() {
             passwordValue = "",
             passWordVisible = false,
             onPasswordValueChange = {},
-            passwordFieldPlaceHolder = { Text(text = "Password") },
             passWordError = 1,
             showPassWordError = false,
             passwordImeAction = ImeAction.Done,
