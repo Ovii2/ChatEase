@@ -38,7 +38,8 @@ fun LoginScreenContent(
     headerLogoSize: Dp = 80.dp,
     headerTitleStyle: TextStyle = MaterialTheme.typography.displaySmall,
     @StringRes titleText: Int,
-    @StringRes labelText: Int
+    @StringRes labelText: Int,
+    onNavigateToSignUpScreen: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -71,7 +72,9 @@ fun LoginScreenContent(
             onRememberMeChecked = {},
             onLoginClick = {},
         )
-        LoginScreenFooter()
+        LoginScreenFooter(
+            onNavigateToSignUpScreen = onNavigateToSignUpScreen
+        )
     }
 }
 
@@ -96,6 +99,7 @@ private fun LoginScreenContentPreview() {
             paddingValues = PaddingValues(),
             titleText = R.string.app_name,
             labelText = R.string.app_moto,
+            onNavigateToSignUpScreen = {},
         )
     }
 }

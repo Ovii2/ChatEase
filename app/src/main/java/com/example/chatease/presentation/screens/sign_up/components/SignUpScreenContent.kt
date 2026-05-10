@@ -1,6 +1,7 @@
 package com.example.chatease.presentation.screens.sign_up.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,7 +60,8 @@ fun SignUpScreenContent(
     onConfirmPasswordValueChange: (String) -> Unit,
     confirmPasswordError: Int?,
     showConfirmPasswordError: Boolean,
-    onSignUpClick: () -> Unit
+    onSignUpClick: () -> Unit,
+    onNavigateToLoginScreen: () -> Unit
 ) {
     val appleLogo =
         if (isSystemInDarkTheme()) R.drawable.ic_apple_white else R.drawable.ic_apple_black
@@ -207,6 +209,7 @@ fun SignUpScreenContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
                     Text(
+                        modifier = Modifier.clickable { onNavigateToLoginScreen() },
                         text = stringResource(R.string.login),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
@@ -241,7 +244,8 @@ private fun SignUpScreenContentPreview() {
                 onConfirmPasswordValueChange = {},
                 confirmPasswordError = 1,
                 showConfirmPasswordError = false,
-                onSignUpClick = {}
+                onSignUpClick = {},
+                onNavigateToLoginScreen = {},
             )
         }
     }

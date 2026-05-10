@@ -50,7 +50,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onNavigateToSignUpScreen: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -77,6 +78,7 @@ fun LoginScreen(
                     onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
                     focusManager = focusManager,
                     background = background,
+                    onNavigateToSignUpScreen = onNavigateToSignUpScreen,
                 )
             }
 
@@ -89,7 +91,8 @@ fun LoginScreen(
                     passwordVisible = passwordVisible,
                     onPasswordValueChange = { password = it },
                     onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
-                    paddingValues = paddingValues
+                    paddingValues = paddingValues,
+                    onNavigateToSignUpScreen = onNavigateToSignUpScreen,
                 )
             }
         }
@@ -106,7 +109,8 @@ fun LoginScreenCompactLayout(
     passwordVisible: Boolean,
     onPasswordValueChange: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onNavigateToSignUpScreen: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -147,6 +151,7 @@ fun LoginScreenCompactLayout(
             paddingValues = paddingValues,
             titleText = R.string.app_name,
             labelText = R.string.app_moto,
+            onNavigateToSignUpScreen = onNavigateToSignUpScreen,
         )
     }
 }
@@ -161,7 +166,8 @@ fun LoginScreenExpandedLayout(
     onPasswordValueChange: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
     focusManager: FocusManager,
-    @DrawableRes background: Int
+    @DrawableRes background: Int,
+    onNavigateToSignUpScreen: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -233,6 +239,7 @@ fun LoginScreenExpandedLayout(
                             headerTitleStyle = MaterialTheme.typography.bodyLarge,
                             titleText = R.string.welcome_back,
                             labelText = R.string.login_to_continue,
+                            onNavigateToSignUpScreen = onNavigateToSignUpScreen,
                         )
                     }
                 }
@@ -253,7 +260,8 @@ private fun LoginScreenCompactPreview() {
             passwordVisible = false,
             onPasswordValueChange = {},
             onTogglePasswordVisibility = {},
-            paddingValues = PaddingValues()
+            paddingValues = PaddingValues(),
+            onNavigateToSignUpScreen = {},
         )
     }
 }
@@ -277,6 +285,7 @@ private fun LoginScreenExpandedPreview() {
             onTogglePasswordVisibility = {},
             focusManager = LocalFocusManager.current,
             background = background,
+            onNavigateToSignUpScreen = {},
         )
     }
 }

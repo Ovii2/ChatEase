@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.screens.login.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,10 @@ import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun LoginScreenFooter(modifier: Modifier = Modifier) {
+fun LoginScreenFooter(
+    modifier: Modifier = Modifier,
+    onNavigateToSignUpScreen: () -> Unit
+) {
     val appleImage =
         if (isSystemInDarkTheme()) R.drawable.ic_apple_white else R.drawable.ic_apple_black
 
@@ -60,7 +64,7 @@ fun LoginScreenFooter(modifier: Modifier = Modifier) {
                 onClick = {},
                 icon = appleImage
             )
-
+        }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -73,6 +77,7 @@ fun LoginScreenFooter(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
+                    modifier = Modifier.clickable { onNavigateToSignUpScreen() },
                     text = stringResource(R.string.sign_up),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
@@ -80,7 +85,7 @@ fun LoginScreenFooter(modifier: Modifier = Modifier) {
             }
         }
     }
-}
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -91,7 +96,9 @@ private fun LoginScreenFooterPreview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LoginScreenFooter()
+            LoginScreenFooter(
+                onNavigateToSignUpScreen = {}
+            )
         }
     }
 }

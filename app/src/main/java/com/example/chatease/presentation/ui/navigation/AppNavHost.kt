@@ -11,17 +11,27 @@ import com.example.chatease.presentation.screens.sign_up.SignUpScreen
 @Composable
 fun AppNavHost(
     paddingValues: PaddingValues,
-    navHostController: NavHostController
+    navController: NavHostController
 ) {
     NavHost(
-        navController = navHostController,
-        startDestination = Screens.SignUp.route
+        navController = navController,
+        startDestination = Screens.Login.route
     ) {
         composable(route = Screens.SignUp.route) {
-            SignUpScreen()
+            SignUpScreen(
+                onNavigateToLoginScreen = {
+                    navController.navigate(Screens.Login.route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
         composable(route = Screens.Login.route) {
-            LoginScreen(paddingValues = paddingValues)
+            LoginScreen(paddingValues = paddingValues, onNavigateToSignUpScreen = {
+                navController.navigate(Screens.SignUp.route) {
+                    launchSingleTop = true
+                }
+            })
         }
     }
 }

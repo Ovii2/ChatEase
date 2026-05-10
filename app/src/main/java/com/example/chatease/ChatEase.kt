@@ -15,7 +15,7 @@ fun ChatEase(modifier: Modifier = Modifier) {
             val navController = rememberNavController()
             AppNavHost(
                 paddingValues = innerPadding,
-                navHostController = navController
+                navController = navController
             )
         }
     }

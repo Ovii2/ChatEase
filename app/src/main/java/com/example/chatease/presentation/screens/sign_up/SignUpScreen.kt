@@ -40,7 +40,10 @@ import com.example.chatease.presentation.screens.sign_up.components.SignUpScreen
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
-fun SignUpScreen(modifier: Modifier = Modifier) {
+fun SignUpScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToLoginScreen: () -> Unit
+) {
     var fullName by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -84,7 +87,8 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                     showConfirmPasswordError = false,
                     onSignUpClick = {},
                     focusManager = focusManager,
-                    background = background
+                    background = background,
+                    onNavigateToLoginScreen = onNavigateToLoginScreen,
                 )
             }
         }
@@ -119,7 +123,8 @@ fun SignUpScreenCompactLayout(
     showConfirmPasswordError: Boolean,
     onSignUpClick: () -> Unit,
     focusManager: FocusManager,
-    @DrawableRes background: Int
+    @DrawableRes background: Int,
+    onNavigateToLoginScreen: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -173,7 +178,8 @@ fun SignUpScreenCompactLayout(
                 onConfirmPasswordValueChange = onConfirmPasswordValueChange,
                 confirmPasswordError = confirmPasswordError,
                 showConfirmPasswordError = showConfirmPasswordError,
-                onSignUpClick = onSignUpClick
+                onSignUpClick = onSignUpClick,
+                onNavigateToLoginScreen = onNavigateToLoginScreen,
             )
         }
     }
