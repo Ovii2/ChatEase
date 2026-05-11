@@ -29,4 +29,21 @@
     <string name="message_call_collaborate">Message, call, and collaborate in real time</string>
     <string name="built_for_everyone">Built for Everyone</string>
     <string name="simple_fast">Simple, fast, and designed to keep you productive</string>
+
+    <string name="error_email_empty">Email cannot be empty</string>
+    <string name="error_email_format">Invalid email format</string>
+    <string name="error_password_empty">Password cannot be empty</string>
+    <string name="error_password_length">Password must be at least 6 characters</string>
+    <string name="error_confirm_password_empty">Confirm password cannot be empty</string>
+    <string name="error_confirm_password_length">Confirm password must be at least 6 characters</string>
+    <string name="error_confirm_password_match">Passwords must match</string>
+    <string name="error_full_name_empty">Full name cannot be empty</string>
+    <string name="error_full_name_length">Full name must be at least 2 characters</string>
+    <string name="error_full_name_invalid">Only letters and spaces are allowed</string>
+
+    <string name="signup_failed">Failed to sign up</string>
+    <string name="fail_sing_up">Sign up failed</string>
+    <string name="fail_save_user">Failed to save user</string>
+    <string name="fail_update_profile_image">Failed to update profile image</string>
+    <string name="email_in_use">This email is already in use</string>
 </resources>
