@@ -1,6 +1,7 @@
 package com.example.chatease.presentation.screens.sign_up
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -33,6 +34,8 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,25 +55,42 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.presentation.screens.sign_up.components.SignUpScreenBenefitItem
 import com.example.chatease.presentation.screens.sign_up.components.SignUpScreenContent
+import com.example.chatease.presentation.ui.state.SignUpUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.SignUpViewModel
+import com.example.chatease.presentation.validation.AuthValidator
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun SignUpScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToLoginScreen: () -> Unit
+    onNavigateToLoginScreen: () -> Unit,
+    signUpViewModel: SignUpViewModel = hiltViewModel()
 ) {
     var fullName by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
-    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+
+    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    val signUpUiState by signUpViewModel.uiState.collectAsState()
+    var hasTriedSignUp by rememberSaveable { mutableStateOf(false) }
+    val failedSignUpMessage = stringResource(R.string.signup_failed)
 
     val focusManager = LocalFocusManager.current
     val activity = LocalActivity.current
+    val context = LocalContext.current
+
+    val emailError = AuthValidator.validateEmail(email)
+    var firebaseEmailError by remember { mutableStateOf<Int?>(null) }
+    val passwordError = AuthValidator.validateSignUpPassword(password)
+    val fullNameError = AuthValidator.validateFullName(fullName)
+    val confirmPasswordMatchError =
+        AuthValidator.validateSignUpConfirmPassword(password, confirmPassword)
 
     val background =
         if (isSystemInDarkTheme()) R.drawable.background_sign_up_dark else R.drawable.background_sign_up
@@ -79,6 +100,33 @@ fun SignUpScreen(
         val maxWidth =
             if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) 370.dp else 600.dp
 
+        LaunchedEffect(signUpUiState) {
+            when (signUpUiState) {
+                is SignUpUiState.Success -> {
+                    delay(1000)
+                    signUpViewModel.resetState()
+                    onNavigateToLoginScreen()
+                }
+
+                is SignUpUiState.Error -> {
+                    val error = signUpUiState as SignUpUiState.Error
+
+                    if (error.messageRes == R.string.email_in_use) {
+                        firebaseEmailError = error.messageRes
+                    } else {
+                        Toast.makeText(
+                            context,
+                            failedSignUpMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    signUpViewModel.resetState()
+                }
+
+                else -> Unit
+            }
+        }
+
         when {
             windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
                     windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact -> {
@@ -86,25 +134,39 @@ fun SignUpScreen(
                     background = background,
                     fullNameValue = fullName,
                     onFullNameValueChange = { fullName = it },
-                    fullNameError = 1,
-                    showFullNameError = false,
+                    fullNameError = fullNameError,
+                    showFullNameError = hasTriedSignUp,
                     emailValue = email,
-                    onEmailFieldChange = { email = it },
-                    emailError = 1,
-                    showEmailError = false,
+                    onEmailFieldChange = {
+                        email = it
+                        firebaseEmailError = null
+                    },
+                    emailError = firebaseEmailError ?: emailError,
+                    showEmailError = hasTriedSignUp,
                     passwordValue = password,
                     onPasswordValueChange = { password = it },
-                    passwordError = 1,
-                    showPasswordError = false,
-                    isPasswordVisible = passwordVisible,
-                    onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
+                    passwordError = passwordError,
+                    showPasswordError = hasTriedSignUp,
+                    isPasswordVisible = isPasswordVisible,
+                    onTogglePasswordVisibility = { isPasswordVisible = !isPasswordVisible },
                     confirmPasswordValue = confirmPassword,
                     onConfirmPasswordValueChange = { confirmPassword = it },
-                    confirmPasswordError = 1,
-                    showConfirmPasswordError = false,
-                    onSignUpClick = {},
+                    confirmPasswordError = confirmPasswordMatchError,
+                    showConfirmPasswordError = hasTriedSignUp,
+                    onSignUpClick = {
+                        hasTriedSignUp = true
+
+                        if (fullNameError == null &&
+                            emailError == null &&
+                            passwordError == null &&
+                            confirmPasswordMatchError == null
+                        ) {
+                            signUpViewModel.signUp(fullName, email, password)
+                        }
+                    },
                     focusManager = focusManager,
                     onNavigateToLoginScreen = onNavigateToLoginScreen,
+                    signUpUiState = signUpUiState
                 )
             }
 
@@ -112,27 +174,41 @@ fun SignUpScreen(
                 SignUpScreenCompactLayout(
                     fullNameValue = fullName,
                     onFullNameValueChange = { fullName = it },
-                    fullNameError = 1,
-                    showFullNameError = false,
+                    fullNameError = fullNameError,
+                    showFullNameError = hasTriedSignUp,
                     emailValue = email,
-                    onEmailFieldChange = { email = it },
-                    emailError = 1,
-                    showEmailError = false,
+                    onEmailFieldChange = {
+                        email = it
+                        firebaseEmailError = null
+                    },
+                    emailError = firebaseEmailError ?: emailError,
+                    showEmailError = hasTriedSignUp,
                     passwordValue = password,
                     onPasswordValueChange = { password = it },
-                    passwordError = 1,
-                    showPasswordError = false,
-                    isPasswordVisible = passwordVisible,
-                    onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
+                    passwordError = passwordError,
+                    showPasswordError = hasTriedSignUp,
+                    isPasswordVisible = isPasswordVisible,
+                    onTogglePasswordVisibility = { isPasswordVisible = !isPasswordVisible },
                     confirmPasswordValue = confirmPassword,
                     onConfirmPasswordValueChange = { confirmPassword = it },
-                    confirmPasswordError = 1,
-                    showConfirmPasswordError = false,
-                    onSignUpClick = {},
+                    confirmPasswordError = confirmPasswordMatchError,
+                    showConfirmPasswordError = hasTriedSignUp,
+                    onSignUpClick = {
+                        hasTriedSignUp = true
+
+                        if (fullNameError == null &&
+                            emailError == null &&
+                            passwordError == null &&
+                            confirmPasswordMatchError == null
+                        ) {
+                            signUpViewModel.signUp(fullName, email, password)
+                        }
+                    },
                     focusManager = focusManager,
                     background = background,
                     onNavigateToLoginScreen = onNavigateToLoginScreen,
                     maxWidth = maxWidth,
+                    signUpUiState = signUpUiState,
                 )
             }
         }
@@ -164,6 +240,7 @@ fun SignUpScreenExpandedLayout(
     onSignUpClick: () -> Unit,
     focusManager: FocusManager,
     onNavigateToLoginScreen: () -> Unit,
+    signUpUiState: SignUpUiState
 ) {
     Box(
         modifier = modifier
@@ -271,6 +348,7 @@ fun SignUpScreenExpandedLayout(
                     showConfirmPasswordError = showConfirmPasswordError,
                     onSignUpClick = onSignUpClick,
                     onNavigateToLoginScreen = onNavigateToLoginScreen,
+                    signUpUiState = signUpUiState,
                 )
             }
         }
@@ -302,7 +380,8 @@ fun SignUpScreenCompactLayout(
     focusManager: FocusManager,
     @DrawableRes background: Int,
     onNavigateToLoginScreen: () -> Unit,
-    maxWidth: Dp
+    maxWidth: Dp,
+    signUpUiState: SignUpUiState
 ) {
     Box(
         modifier = modifier
@@ -358,6 +437,7 @@ fun SignUpScreenCompactLayout(
                 showConfirmPasswordError = showConfirmPasswordError,
                 onSignUpClick = onSignUpClick,
                 onNavigateToLoginScreen = onNavigateToLoginScreen,
+                signUpUiState = signUpUiState,
             )
         }
     }
@@ -393,7 +473,8 @@ private fun SignUpScreenCompactPreview() {
             focusManager = LocalFocusManager.current,
             background = background,
             onNavigateToLoginScreen = {},
-            maxWidth = 370.dp
+            maxWidth = 370.dp,
+            signUpUiState = SignUpUiState.Loading
         )
     }
 }
@@ -431,7 +512,8 @@ private fun SignUpScreenCompactNightPreview() {
             focusManager = LocalFocusManager.current,
             background = background,
             onNavigateToLoginScreen = {},
-            maxWidth = 370.dp
+            maxWidth = 370.dp,
+            signUpUiState = SignUpUiState.Loading
         )
     }
 }
@@ -470,6 +552,7 @@ private fun SignUpScreenExpandedPreview() {
             onSignUpClick = {},
             focusManager = LocalFocusManager.current,
             onNavigateToLoginScreen = {},
+            signUpUiState = SignUpUiState.Loading
         )
     }
 }
@@ -508,6 +591,7 @@ private fun SignUpScreenExpandedNightPreview() {
             onSignUpClick = {},
             focusManager = LocalFocusManager.current,
             onNavigateToLoginScreen = {},
+            signUpUiState = SignUpUiState.Loading,
         )
     }
 }

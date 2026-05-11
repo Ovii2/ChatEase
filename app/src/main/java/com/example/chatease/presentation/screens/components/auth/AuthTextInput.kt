@@ -1,6 +1,7 @@
 package com.example.chatease.presentation.screens.components.auth
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.theme.successGreenDark
+import com.example.chatease.presentation.ui.theme.successGreenLight
 
 @Composable
 fun AuthTextInput(
@@ -40,6 +43,7 @@ fun AuthTextInput(
     imeAction: ImeAction,
     leadingIcon: ImageVector
 ) {
+    val checkColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth(),
@@ -81,8 +85,9 @@ fun AuthTextInput(
         trailingIcon = {
             AnimatedVisibility(visible = error == null && value.isNotBlank()) {
                 Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = stringResource(R.string.check_icon)
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = stringResource(R.string.check_icon),
+                    tint = checkColor
                 )
             }
         }
