@@ -2,7 +2,8 @@ package com.example.chatease.presentation.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.chatease.R
-import com.example.chatease.data.remote.UserDto
+import com.example.chatease.data.remote.dto.UserDto
+import com.example.chatease.domain.model.UserStatus
 import com.example.chatease.presentation.ui.state.SignUpUiState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -37,7 +38,7 @@ class SignUpViewModel @Inject constructor(
                     fullName = fullName.trim(),
                     email = email.trim(),
                     imageUrl = null,
-                    isOnline = false,
+                    status = UserStatus.OFFLINE.name
                 )
 
                 firestore.collection(USERS)
