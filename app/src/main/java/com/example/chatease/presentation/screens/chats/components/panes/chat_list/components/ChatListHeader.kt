@@ -134,7 +134,8 @@ private fun ChatListHeaderPreview() {
     val categories = listOf(
         Category(id = "all", name = "All"),
         Category(id = "work", name = "Work"),
-        Category(id = "friends", name = "Friends")
+        Category(id = "friends", name = "Friends"),
+        Category(id = "other", name = "Other")
     )
 
     ChatEaseTheme() {
