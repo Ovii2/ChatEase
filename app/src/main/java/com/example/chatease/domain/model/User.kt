@@ -5,5 +5,5 @@ data class User(
     val fullName: String = "",
     val email: String = "",
     val imageUrl: String? = null,
-    val isOnline: Boolean = false
+    val status: UserStatus = UserStatus.OFFLINE
 )

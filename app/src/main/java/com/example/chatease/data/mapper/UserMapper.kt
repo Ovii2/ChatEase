@@ -1,7 +1,8 @@
 package com.example.chatease.data.mapper
 
-import com.example.chatease.data.remote.UserDto
+import com.example.chatease.data.remote.dto.UserDto
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.UserStatus
 
 fun UserDto.toDomain(): User {
     return User(
@@ -9,7 +10,7 @@ fun UserDto.toDomain(): User {
         fullName = fullName,
         email = email,
         imageUrl = imageUrl,
-        isOnline = isOnline
+        status = UserStatus.valueOf(status)
     )
 }
 
@@ -19,7 +20,7 @@ fun User.toDto(): UserDto {
         fullName = fullName,
         email = email,
         imageUrl = imageUrl,
-        isOnline = isOnline
+        status = status.name
     )
 }
 
