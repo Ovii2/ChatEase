@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.screens.login
 
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -25,6 +26,8 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,32 +38,83 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.presentation.screens.login.components.LoginScreenContent
 import com.example.chatease.presentation.screens.login.components.LoginScreenHeader
+import com.example.chatease.presentation.ui.state.LoginUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.LoginViewModel
+import com.example.chatease.presentation.validation.AuthValidator
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
-    onNavigateToSignUpScreen: () -> Unit
+    onNavigateToSignUpScreen: () -> Unit,
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    onNavigateToHomeScreen: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
+    val loginUiState by loginViewModel.uiState.collectAsState()
+
+    var rememberMe by rememberSaveable { mutableStateOf(false) }
+    val rememberEmail by loginViewModel.rememberEmail.collectAsState(initial = false)
+    val savedEmail by loginViewModel.savedEmail.collectAsState(initial = "")
+
+    val failedLoginMessage = stringResource(R.string.fail_login)
+
+    var hasTriedLogin by rememberSaveable { mutableStateOf(false) }
+
+    val emailError = AuthValidator.validateEmail(email)
+    val passwordError = AuthValidator.validatePassword(password)
+
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val activity = LocalActivity.current
     val background =
         if (isSystemInDarkTheme()) R.drawable.background_login_dark else R.drawable.login_screen_background
+
+    LaunchedEffect(loginUiState) {
+        when (loginUiState) {
+            is LoginUiState.Success -> {
+                delay(1000)
+                focusManager.clearFocus()
+                loginViewModel.resetState()
+                onNavigateToHomeScreen()
+            }
+
+            is LoginUiState.Error -> {
+                Toast.makeText(
+                    context,
+                    failedLoginMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+                loginViewModel.resetState()
+            }
+
+            else -> Unit
+        }
+    }
+
+    LaunchedEffect(savedEmail, rememberEmail) {
+        if (email.isBlank()) {
+            email = savedEmail
+        }
+        rememberMe = rememberEmail
+    }
 
 
     activity?.let { activity ->
@@ -79,6 +133,24 @@ fun LoginScreen(
                     focusManager = focusManager,
                     background = background,
                     onNavigateToSignUpScreen = onNavigateToSignUpScreen,
+                    emailError = emailError,
+                    showEmailError = hasTriedLogin,
+                    passwordError = passwordError,
+                    showPasswordError = hasTriedLogin,
+                    onLoginClick = {
+                        hasTriedLogin = true
+
+                        if (emailError == null && passwordError == null) {
+                            loginViewModel.login(email, password, rememberMe)
+                            focusManager.clearFocus()
+                        }
+                    },
+                    rememberMeChecked = rememberMe,
+                    onRememberMeCheckChange = {
+                        rememberMe = it
+                        loginViewModel.onRememberMeChanged(email, it)
+                    },
+                    loginUiState = loginUiState
                 )
             }
 
@@ -93,6 +165,24 @@ fun LoginScreen(
                     onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
                     paddingValues = paddingValues,
                     onNavigateToSignUpScreen = onNavigateToSignUpScreen,
+                    emailError = emailError,
+                    showEmailError = hasTriedLogin,
+                    passwordError = passwordError,
+                    showPasswordError = hasTriedLogin,
+                    onLoginClick = {
+                        hasTriedLogin = true
+
+                        if (emailError == null && passwordError == null) {
+                            loginViewModel.login(email, password, rememberMe)
+                            focusManager.clearFocus()
+                        }
+                    },
+                    rememberMeChecked = rememberMe,
+                    onRememberMeCheckChange = {
+                        rememberMe = it
+                        loginViewModel.onRememberMeChanged(email, it)
+                    },
+                    loginUiState = loginUiState,
                 )
             }
         }
@@ -110,7 +200,15 @@ fun LoginScreenCompactLayout(
     onPasswordValueChange: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
     paddingValues: PaddingValues,
-    onNavigateToSignUpScreen: () -> Unit
+    onNavigateToSignUpScreen: () -> Unit,
+    emailError: Int?,
+    showEmailError: Boolean,
+    passwordError: Int?,
+    showPasswordError: Boolean,
+    onLoginClick: () -> Unit,
+    onRememberMeCheckChange: (Boolean) -> Unit,
+    rememberMeChecked: Boolean,
+    loginUiState: LoginUiState
 ) {
     Box(
         modifier = modifier
@@ -137,21 +235,25 @@ fun LoginScreenCompactLayout(
             modifier = Modifier.widthIn(max = 600.dp),
             emailValue = email,
             onEmailValueChange = onEmailValueChange,
-            emailError = 1,
-            showEmailError = false,
+            emailError = emailError,
+            showEmailError = showEmailError,
             emailKeyboardType = KeyboardType.Email,
             emailImeAction = ImeAction.Next,
             passwordValue = password,
             passWordVisible = passwordVisible,
             onPasswordValueChange = onPasswordValueChange,
-            passWordError = 1,
-            showPassWordError = false,
+            passWordError = passwordError,
+            showPassWordError = showPasswordError,
             passwordImeAction = ImeAction.Done,
             onTogglePasswordVisibility = onTogglePasswordVisibility,
             paddingValues = paddingValues,
             titleText = R.string.app_name,
             labelText = R.string.app_moto,
             onNavigateToSignUpScreen = onNavigateToSignUpScreen,
+            onLoginClick = onLoginClick,
+            onRememberMeCheckChange = onRememberMeCheckChange,
+            rememberMeChecked = rememberMeChecked,
+            loginUiState = loginUiState,
         )
     }
 }
@@ -167,7 +269,15 @@ fun LoginScreenExpandedLayout(
     onTogglePasswordVisibility: () -> Unit,
     focusManager: FocusManager,
     @DrawableRes background: Int,
-    onNavigateToSignUpScreen: () -> Unit
+    onNavigateToSignUpScreen: () -> Unit,
+    emailError: Int?,
+    showEmailError: Boolean,
+    passwordError: Int?,
+    showPasswordError: Boolean,
+    onLoginClick: () -> Unit,
+    onRememberMeCheckChange: (Boolean) -> Unit,
+    rememberMeChecked: Boolean,
+    loginUiState: LoginUiState
 ) {
     Box(
         modifier = modifier
@@ -223,15 +333,15 @@ fun LoginScreenExpandedLayout(
                         LoginScreenContent(
                             emailValue = email,
                             onEmailValueChange = onEmailValueChange,
-                            emailError = 1,
-                            showEmailError = false,
+                            emailError = emailError,
+                            showEmailError = showEmailError,
                             emailKeyboardType = KeyboardType.Email,
                             emailImeAction = ImeAction.Next,
                             passwordValue = password,
                             passWordVisible = passwordVisible,
                             onPasswordValueChange = onPasswordValueChange,
-                            passWordError = 1,
-                            showPassWordError = false,
+                            passWordError = passwordError,
+                            showPassWordError = showPasswordError,
                             passwordImeAction = ImeAction.Done,
                             onTogglePasswordVisibility = onTogglePasswordVisibility,
                             paddingValues = PaddingValues(),
@@ -240,6 +350,10 @@ fun LoginScreenExpandedLayout(
                             titleText = R.string.welcome_back,
                             labelText = R.string.login_to_continue,
                             onNavigateToSignUpScreen = onNavigateToSignUpScreen,
+                            onLoginClick = onLoginClick,
+                            onRememberMeCheckChange = onRememberMeCheckChange,
+                            rememberMeChecked = rememberMeChecked,
+                            loginUiState = loginUiState,
                         )
                     }
                 }
@@ -262,6 +376,14 @@ private fun LoginScreenCompactPreview() {
             onTogglePasswordVisibility = {},
             paddingValues = PaddingValues(),
             onNavigateToSignUpScreen = {},
+            emailError = 1,
+            showEmailError = false,
+            passwordError = 1,
+            showPasswordError = false,
+            onLoginClick = {},
+            onRememberMeCheckChange = {},
+            rememberMeChecked = false,
+            loginUiState = LoginUiState.Idle,
         )
     }
 }
@@ -286,6 +408,14 @@ private fun LoginScreenExpandedPreview() {
             focusManager = LocalFocusManager.current,
             background = background,
             onNavigateToSignUpScreen = {},
+            onLoginClick = {},
+            onRememberMeCheckChange = {},
+            rememberMeChecked = false,
+            emailError = 1,
+            showEmailError = false,
+            passwordError = 1,
+            showPasswordError = false,
+            loginUiState = LoginUiState.Idle,
         )
     }
 }

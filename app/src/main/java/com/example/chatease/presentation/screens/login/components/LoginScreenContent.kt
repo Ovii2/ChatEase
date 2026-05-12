@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
+import com.example.chatease.presentation.ui.state.LoginUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -39,7 +40,11 @@ fun LoginScreenContent(
     headerTitleStyle: TextStyle = MaterialTheme.typography.displaySmall,
     @StringRes titleText: Int,
     @StringRes labelText: Int,
-    onNavigateToSignUpScreen: () -> Unit
+    onNavigateToSignUpScreen: () -> Unit,
+    onLoginClick: () -> Unit,
+    onRememberMeCheckChange: (Boolean) -> Unit,
+    rememberMeChecked: Boolean,
+    loginUiState: LoginUiState
 ) {
     Column(
         modifier = modifier
@@ -68,9 +73,10 @@ fun LoginScreenContent(
             showPassWordError = showPassWordError,
             passwordImeAction = passwordImeAction,
             onTogglePasswordVisibility = onTogglePasswordVisibility,
-            rememberMeChecked = false,
-            onRememberMeChecked = {},
-            onLoginClick = {},
+            rememberMeChecked = rememberMeChecked,
+            onRememberMeChecked = onRememberMeCheckChange,
+            onLoginClick = onLoginClick,
+            loginUiState = loginUiState,
         )
         LoginScreenFooter(
             onNavigateToSignUpScreen = onNavigateToSignUpScreen
@@ -100,6 +106,10 @@ private fun LoginScreenContentPreview() {
             titleText = R.string.app_name,
             labelText = R.string.app_moto,
             onNavigateToSignUpScreen = {},
+            onLoginClick = {},
+            onRememberMeCheckChange = {},
+            rememberMeChecked = false,
+            loginUiState = LoginUiState.Idle,
         )
     }
 }
