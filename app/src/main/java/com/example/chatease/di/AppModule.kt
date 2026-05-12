@@ -1,5 +1,8 @@
 package com.example.chatease.di
 
+import com.example.chatease.data.remote.CategoryRemoteDataSource
+import com.example.chatease.data.repository.CategoryRepositoryImpl
+import com.example.chatease.domain.repository.CategoryRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -19,5 +22,15 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideCategoryRemoteDataSource(firestore: FirebaseFirestore): CategoryRemoteDataSource =
+        CategoryRemoteDataSource(firestore)
+
+    @Provides
+    @Singleton
+    fun provideCategoryRepository(remoteDataSource: CategoryRemoteDataSource): CategoryRepository =
+        CategoryRepositoryImpl(remoteDataSource)
 
 }
