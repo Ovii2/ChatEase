@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.chatease.presentation.screens.home.HomeScreen
 import com.example.chatease.presentation.screens.login.LoginScreen
 import com.example.chatease.presentation.screens.sign_up.SignUpScreen
 
@@ -27,11 +28,24 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.Login.route) {
-            LoginScreen(paddingValues = paddingValues, onNavigateToSignUpScreen = {
-                navController.navigate(Screens.SignUp.route) {
-                    launchSingleTop = true
+            LoginScreen(
+                paddingValues = paddingValues, onNavigateToSignUpScreen = {
+                    navController.navigate(Screens.SignUp.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToHomeScreen = {
+                    navController.navigate(Screens.Home.route) {
+                        popUpTo(Screens.Login.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
-            })
+            )
+        }
+        composable(route = Screens.Home.route) {
+            HomeScreen()
         }
     }
 }
