@@ -45,5 +45,6 @@
     <string name="fail_sing_up">Sign up failed</string>
     <string name="fail_save_user">Failed to save user</string>
     <string name="fail_update_profile_image">Failed to update profile image</string>
+    <string name="fail_login">Email or password is incorrect</string>
     <string name="email_in_use">This email is already in use</string>
 </resources>
