@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.home
+package com.example.chatease.presentation.screens.chats
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun ChatScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
