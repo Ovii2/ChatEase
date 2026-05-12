@@ -47,4 +47,6 @@
     <string name="fail_update_profile_image">Failed to update profile image</string>
     <string name="fail_login">Email or password is incorrect</string>
     <string name="email_in_use">This email is already in use</string>
+
+    <string name="search_conversations">Search conversations</string>
 </resources>
