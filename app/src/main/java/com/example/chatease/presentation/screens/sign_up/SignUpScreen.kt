@@ -104,6 +104,7 @@ fun SignUpScreen(
             when (signUpUiState) {
                 is SignUpUiState.Success -> {
                     delay(1000)
+                    focusManager.clearFocus()
                     signUpViewModel.resetState()
                     onNavigateToLoginScreen()
                 }
