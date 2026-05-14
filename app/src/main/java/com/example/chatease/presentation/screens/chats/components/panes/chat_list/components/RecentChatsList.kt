@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,9 +16,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,10 +34,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
@@ -46,21 +54,82 @@ import com.example.chatease.utils.toChatTimeStamp
 import kotlin.math.absoluteValue
 
 @Composable
-fun RecentChatsList(modifier: Modifier = Modifier) {
-
+fun RecentChatsList(
+    modifier: Modifier = Modifier,
+    conversations: List<Conversation>,
+    onNavigateToChatDetails: (String) -> Unit,
+    onClickToSeeAll: () -> Unit
+) {
+    Column() {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.recent_chats),
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
+            )
+            if (conversations.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.clickable { onClickToSeeAll() },
+                    text = stringResource(R.string.see_all),
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+        if (conversations.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.no_chats),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                Text(
+                    text = stringResource(R.string.start_chatting),
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surface)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
+                        shape = RoundedCornerShape(24.dp)
+                    ),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                itemsIndexed(conversations) { index, conversation ->
+                    RecentChatListItem(
+                        conversation = conversation,
+                        onNavigateToChatDetails = onNavigateToChatDetails,
+                        showDivider = index != conversations.lastIndex
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun RecentChatListItem(
     modifier: Modifier = Modifier,
-    user: User,
-    conversation: Conversation
+    conversation: Conversation,
+    onNavigateToChatDetails: (String) -> Unit,
+    showDivider: Boolean
 ) {
-    val fullName = user.fullName.uppercase()
-    val name = fullName.split(" ")[0]
-    val lastName = fullName.split(" ")[1]
-    val firstNameLetter = name.first()
-    val lastNameFirstLetter = lastName.first()
+    val user = conversation.participants.firstOrNull() ?: return
+    val name = user.fullName.split(" ")[0]
+    val lastName = user.fullName.split(" ")[1]
+    val firstNameLetter = name.first().uppercase()
+    val lastNameFirstLetter = lastName.first().uppercase()
     val gradients = avatarGradients()
     val avatarGradient = gradients[user.uid.hashCode().absoluteValue % gradients.size]
 
@@ -71,7 +140,10 @@ fun RecentChatListItem(
     }
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onNavigateToChatDetails(conversation.id) },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -93,7 +165,7 @@ fun RecentChatListItem(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "$firstNameLetter $lastNameFirstLetter",
+                            text = "$firstNameLetter$lastNameFirstLetter",
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
                             color = MaterialTheme.colorScheme.surface
                         )
@@ -123,7 +195,7 @@ fun RecentChatListItem(
                             .offset(x = (1).dp, y = (-1).dp)
                             .border(
                                 width = 2.dp,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.surface,
                                 shape = CircleShape
                             )
                             .clip(CircleShape)
@@ -134,10 +206,13 @@ fun RecentChatListItem(
             }
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column(modifier = Modifier.widthIn(max = 200.dp)) {
+            Column(
+                modifier = Modifier.widthIn(max = 200.dp)
+            ) {
                 Text(
                     text = user.fullName,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -153,11 +228,11 @@ fun RecentChatListItem(
         }
         Column(
             horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
         ) {
             Text(
                 text = conversation.timestamp.toChatTimeStamp(),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             if (conversation.unreadCount > 0) {
@@ -173,31 +248,32 @@ fun RecentChatListItem(
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
+            } else {
+                Box(modifier = Modifier.size(25.dp)) { }
             }
         }
     }
+    if (showDivider) {
+        HorizontalDivider(
+            modifier = Modifier.padding(start = 88.dp, end = 16.dp),
+            thickness = 0.75.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)
+        )
+    }
 }
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//private fun RecentChatsSectionPreview() {
-//    ChatEaseTheme() {
-//        RecentChatsList()
-//    }
-//}
 
 @Preview(
     showBackground = true, showSystemUi = true,
     uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
-fun RecentChatListItemPreview(modifier: Modifier = Modifier) {
+private fun RecentChatsListPreview() {
     val user = User(
         uid = "1",
-        fullName = "Jane Cooper",
+        fullName = "Test test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserStatus.ONLINE
+        status = UserStatus.AWAY
     )
 
     val conversation = Conversation(
@@ -205,18 +281,51 @@ fun RecentChatListItemPreview(modifier: Modifier = Modifier) {
         participants = listOf(user),
         lastMessage = "Hey! Are we still for lunch?",
         timestamp = System.currentTimeMillis(),
-        unreadCount = 9
+        unreadCount = 2
     )
     ChatEaseTheme() {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            RecentChatListItem(
-                user = user,
-                conversation = conversation,
+        Column(modifier = Modifier.systemBarsPadding()) {
+            RecentChatsList(
+                conversations = listOf(conversation, conversation),
+                onNavigateToChatDetails = {},
+                onClickToSeeAll = {},
             )
         }
     }
 }
+
+//@Preview(
+//    showBackground = true, showSystemUi = true,
+//    uiMode = Configuration.UI_MODE_TYPE_NORMAL
+//)
+//@Composable
+//fun RecentChatListItemPreview(modifier: Modifier = Modifier) {
+//    val user = User(
+//        uid = "1",
+//        fullName = "Test test",
+//        email = "test@email.com",
+//        imageUrl = null,
+//        status = UserStatus.ONLINE
+//    )
+//
+//    val conversation = Conversation(
+//        id = "1",
+//        participants = listOf(user),
+//        lastMessage = "Hey! Are we still for lunch?",
+//        timestamp = System.currentTimeMillis(),
+//        unreadCount = 9
+//    )
+//    ChatEaseTheme() {
+//        Column(
+//            modifier = Modifier.fillMaxSize(),
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            verticalArrangement = Arrangement.Center
+//        ) {
+//            RecentChatListItem(
+//                conversation = conversation,
+//                onNavigateToChatDetails = {},
+//                showDivider = true,
+//            )
+//        }
+//    }
+//}
