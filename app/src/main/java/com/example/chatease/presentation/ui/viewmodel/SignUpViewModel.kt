@@ -33,9 +33,18 @@ class SignUpViewModel @Inject constructor(
             .addOnSuccessListener {
                 val userId = auth.currentUser?.uid ?: return@addOnSuccessListener
 
+                val capitalizedFullName = fullName
+                    .trim()
+                    .split(" ")
+                    .joinToString(" ") { name ->
+                        name.lowercase().replaceFirstChar { character ->
+                            character.uppercase()
+                        }
+                    }
+
                 val user = UserDto(
                     uid = userId,
-                    fullName = fullName.trim(),
+                    fullName = capitalizedFullName,
                     email = email.trim(),
                     imageUrl = null,
                     status = UserStatus.OFFLINE.name
