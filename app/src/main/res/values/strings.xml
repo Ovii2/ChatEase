@@ -49,4 +49,8 @@
     <string name="email_in_use">This email is already in use</string>
 
     <string name="search_conversations">Search conversations</string>
+    <string name="recent_chats">Recent Chats</string>
+    <string name="see_all">See all</string>
+    <string name="no_chats">No chats yet!</string>
+    <string name="start_chatting">Start chatting with your friends</string>
 </resources>
