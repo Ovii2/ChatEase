@@ -1,5 +1,7 @@
 package com.example.chatease.presentation.screens.chats.components.panes.chat_list
 
+import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -8,9 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Category
+import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
 import com.example.chatease.presentation.screens.chats.components.panes.chat_list.components.ChatListHeader
+import com.example.chatease.presentation.screens.chats.components.panes.chat_list.components.RecentChatsList
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -19,33 +23,55 @@ fun ChatsListPane(
     user: User,
     categories: List<Category>,
     selectedCategory: String,
-    onSelectCategory: (String) -> Unit
+    onSelectCategory: (String) -> Unit,
+    onNavigateToChatDetails: (String) -> Unit,
+    onClickToSeeAll: () -> Unit,
+    conversations: List<Conversation>
 ) {
-    Column(modifier = modifier.padding(horizontal = 12.dp)) {
+    Column(
+        modifier = modifier.padding(horizontal = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         ChatListHeader(
             imageUrl = user.imageUrl,
             categories = categories,
             selectedCategory = selectedCategory,
             onSelectCategory = onSelectCategory,
         )
+        RecentChatsList(
+            conversations = conversations,
+            onNavigateToChatDetails = onNavigateToChatDetails,
+            onClickToSeeAll = onClickToSeeAll
+        )
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 private fun ChatsListPanePreview() {
     val user = User(
         uid = "123",
         fullName = "Test Testing",
         email = "test@email.com",
-        imageUrl = "https://image",
-        status = UserStatus.ONLINE
+        imageUrl = "",
+        status = UserStatus.AWAY
     )
 
     val categories = listOf(
         Category(id = "all", name = "All"),
         Category(id = "work", name = "Work"),
         Category(id = "friends", name = "Friends")
+    )
+
+    val conversation = Conversation(
+        id = "1",
+        participants = listOf(user),
+        lastMessage = "Hey! Are we still for lunch?",
+        timestamp = System.currentTimeMillis(),
+        unreadCount = 2
     )
     ChatEaseTheme() {
         Column(modifier = Modifier.systemBarsPadding()) {
@@ -54,6 +80,9 @@ private fun ChatsListPanePreview() {
                 categories = categories,
                 selectedCategory = "All",
                 onSelectCategory = {},
+                onNavigateToChatDetails = {},
+                onClickToSeeAll = {},
+                conversations = listOf(conversation, conversation, conversation, conversation),
             )
         }
     }
