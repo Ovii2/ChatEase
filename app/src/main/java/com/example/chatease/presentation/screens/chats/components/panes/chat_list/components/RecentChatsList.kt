@@ -76,7 +76,7 @@ fun RecentChatsList(
                 Text(
                     modifier = Modifier.clickable { onClickToSeeAll() },
                     text = stringResource(R.string.see_all),
-                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.primary
                 )
             }
