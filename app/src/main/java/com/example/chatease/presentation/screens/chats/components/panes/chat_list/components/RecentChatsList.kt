@@ -62,7 +62,9 @@ fun RecentChatsList(
 ) {
     Column() {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -98,13 +100,13 @@ fun RecentChatsList(
         } else {
             LazyColumn(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.3f))
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
                         shape = RoundedCornerShape(24.dp)
                     ),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(conversations) { index, conversation ->
                     RecentChatListItem(
@@ -255,7 +257,11 @@ fun RecentChatListItem(
     }
     if (showDivider) {
         HorizontalDivider(
-            modifier = Modifier.padding(start = 88.dp, end = 16.dp),
+            modifier = Modifier.padding(
+                start = 88.dp,
+                end = 16.dp,
+                top = 8.dp
+            ),
             thickness = 0.75.dp,
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)
         )
@@ -286,7 +292,7 @@ private fun RecentChatsListPreview() {
     ChatEaseTheme() {
         Column(modifier = Modifier.systemBarsPadding()) {
             RecentChatsList(
-                conversations = listOf(conversation, conversation),
+                conversations = listOf(conversation, conversation, conversation, conversation),
                 onNavigateToChatDetails = {},
                 onClickToSeeAll = {},
             )
