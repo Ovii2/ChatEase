@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person2
+import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -70,14 +71,14 @@ fun ChatListHeader(
                         modifier = Modifier
                             .size(40.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
                                 shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             modifier = Modifier.size(30.dp),
-                            imageVector = Icons.Outlined.Person2,
+                            imageVector = Icons.Outlined.PersonOutline,
                             contentDescription = null
                         )
                     }
@@ -141,7 +142,7 @@ private fun ChatListHeaderPreview() {
     ChatEaseTheme() {
         Column(modifier = Modifier.systemBarsPadding()) {
             ChatListHeader(
-                imageUrl = "",
+                imageUrl = null,
                 categories = categories,
                 selectedCategory = "All",
                 onSelectCategory = {},
