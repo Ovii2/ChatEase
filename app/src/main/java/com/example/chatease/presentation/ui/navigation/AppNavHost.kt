@@ -45,7 +45,13 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.Chat.route) {
-            ChatScreen()
+            ChatScreen(
+                onNavigateToChats = {},
+                onNavigateToContacts = {},
+                onNavigateToCalls = {},
+                onNavigateToProfile = {},
+                onNavigateToChatDetails = {}
+            )
         }
     }
 }
