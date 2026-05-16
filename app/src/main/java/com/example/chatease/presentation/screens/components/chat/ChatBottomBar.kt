@@ -5,6 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -63,6 +66,7 @@ fun ChatBottomBar(
             image = Icons.Outlined.People
         )
         CustomNavigationBarItem(
+            hasBorder = true,
             selected = false,
             onClick = onStartNewChat,
             label = R.string.new_chat,
@@ -89,7 +93,8 @@ fun RowScope.CustomNavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
     @StringRes label: Int,
-    image: ImageVector
+    image: ImageVector,
+    hasBorder: Boolean = false
 ) {
     NavigationBarItem(
         modifier = modifier,
@@ -97,6 +102,11 @@ fun RowScope.CustomNavigationBarItem(
         onClick = onClick,
         icon = {
             Icon(
+                modifier = if (hasBorder) Modifier.border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    shape = CircleShape
+                ).size(26.dp) else Modifier,
                 imageVector = image,
                 contentDescription = null
             )
