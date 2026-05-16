@@ -10,7 +10,7 @@ import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
-import com.example.chatease.presentation.screens.chats.components.panes.chat_list.ChatsListPane
+import com.example.chatease.presentation.screens.chats.components.panes.left_pane.LeftPane
 import com.example.chatease.presentation.screens.components.chat.ChatBottomBar
 import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -36,7 +36,7 @@ fun ChatScreen(
             )
         }
     ) { paddingValues ->
-        ChatsListPane(
+        LeftPane(
             modifier = modifier
                 .padding(paddingValues)
                 .systemBarsPadding(),

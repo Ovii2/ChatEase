@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.chats.components.panes.chat_list.components
+package com.example.chatease.presentation.screens.chats.components.panes.left_pane.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Person2
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
@@ -35,7 +34,7 @@ import com.example.chatease.domain.model.Category
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun ChatListHeader(
+fun LeftPaneHeader(
     modifier: Modifier = Modifier,
     imageUrl: String? = null,
     categories: List<Category>,
@@ -131,7 +130,7 @@ fun ChatListHeader(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun ChatListHeaderPreview() {
+private fun LeftPaneHeaderPreview() {
     val categories = listOf(
         Category(id = "all", name = "All"),
         Category(id = "work", name = "Work"),
@@ -141,7 +140,7 @@ private fun ChatListHeaderPreview() {
 
     ChatEaseTheme() {
         Column(modifier = Modifier.systemBarsPadding()) {
-            ChatListHeader(
+            LeftPaneHeader(
                 imageUrl = null,
                 categories = categories,
                 selectedCategory = "All",

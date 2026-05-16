@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.chats.components.panes.chat_list
+package com.example.chatease.presentation.screens.chats.components.panes.left_pane
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -15,12 +15,12 @@ import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
-import com.example.chatease.presentation.screens.chats.components.panes.chat_list.components.ChatListHeader
-import com.example.chatease.presentation.screens.chats.components.panes.chat_list.components.RecentChatsList
+import com.example.chatease.presentation.screens.chats.components.panes.left_pane.components.LeftPaneHeader
+import com.example.chatease.presentation.screens.chats.components.panes.left_pane.components.RecentChatsList
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun ChatsListPane(
+fun LeftPane(
     modifier: Modifier = Modifier,
     user: User,
     categories: List<Category>,
@@ -36,7 +36,7 @@ fun ChatsListPane(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ChatListHeader(
+        LeftPaneHeader(
             imageUrl = user.imageUrl,
             categories = categories,
             selectedCategory = selectedCategory,
@@ -55,7 +55,7 @@ fun ChatsListPane(
     uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
-private fun ChatsListPanePreview() {
+private fun LeftPanePreview() {
     val user = User(
         uid = "123",
         fullName = "Test Testing",
@@ -79,7 +79,7 @@ private fun ChatsListPanePreview() {
     )
     ChatEaseTheme() {
         Column(modifier = Modifier.systemBarsPadding()) {
-            ChatsListPane(
+            LeftPane(
                 user = user,
                 categories = categories,
                 selectedCategory = "All",
