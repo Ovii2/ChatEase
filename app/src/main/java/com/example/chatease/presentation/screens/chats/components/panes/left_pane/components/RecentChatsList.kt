@@ -1,11 +1,9 @@
 package com.example.chatease.presentation.screens.chats.components.panes.left_pane.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -29,11 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,14 +36,9 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.presentation.screens.components.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
-import com.example.chatease.presentation.ui.theme.avatarGradients
-import com.example.chatease.presentation.ui.theme.awayYellow
-import com.example.chatease.presentation.ui.theme.awayYellowDark
-import com.example.chatease.presentation.ui.theme.successGreenDark
-import com.example.chatease.presentation.ui.theme.successGreenLight
 import com.example.chatease.utils.toChatTimeStamp
-import kotlin.math.absoluteValue
 
 @Composable
 fun RecentChatsList(
@@ -62,7 +49,7 @@ fun RecentChatsList(
 ) {
     Column() {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -128,18 +115,6 @@ fun RecentChatListItem(
     showDivider: Boolean
 ) {
     val user = conversation.participants.firstOrNull() ?: return
-    val name = user.fullName.split(" ")[0]
-    val lastName = user.fullName.split(" ")[1]
-    val firstNameLetter = name.first().uppercase()
-    val lastNameFirstLetter = lastName.first().uppercase()
-    val gradients = avatarGradients()
-    val avatarGradient = gradients[user.uid.hashCode().absoluteValue % gradients.size]
-
-    val statusColor = when (user.status) {
-        UserStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
-        UserStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
-        UserStatus.OFFLINE -> Color.Transparent
-    }
 
     Row(
         modifier = modifier
@@ -153,59 +128,9 @@ fun RecentChatListItem(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box() {
-                if (user.imageUrl == null) {
-                    Box(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .background(
-                                brush = Brush.horizontalGradient(
-                                    colors = avatarGradient
-                                ),
-                                shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "$firstNameLetter$lastNameFirstLetter",
-                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
-                            color = MaterialTheme.colorScheme.surface
-                        )
-                    }
-                } else {
-//            AsyncImage(
-//                modifier = Modifier
-//                    .size(60.dp)
-//                    .clip(CircleShape),
-//                contentScale = ContentScale.Crop,
-//                model = user.imageUrl,
-//                contentDescription = null
-//            )
-                    Image(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop,
-                        painter = painterResource(R.drawable.person),
-                        contentDescription = null
-                    )
-                }
-                if (user.status != UserStatus.OFFLINE) {
-                    Box(
-                        modifier = Modifier
-                            .size(18.dp)
-                            .offset(x = (1).dp, y = (-1).dp)
-                            .border(
-                                width = 2.dp,
-                                color = MaterialTheme.colorScheme.surface,
-                                shape = CircleShape
-                            )
-                            .clip(CircleShape)
-                            .background(color = statusColor)
-                            .align(Alignment.BottomEnd)
-                    ) {}
-                }
-            }
+            UserAvatar(
+                user = user
+            )
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(
