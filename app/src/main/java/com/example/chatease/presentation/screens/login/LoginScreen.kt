@@ -62,7 +62,7 @@ fun LoginScreen(
     paddingValues: PaddingValues,
     onNavigateToSignUpScreen: () -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel(),
-    onNavigateToChatScreen: () -> Unit
+    onNavigateToHomeScreen: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -93,7 +93,7 @@ fun LoginScreen(
                 delay(1000)
                 focusManager.clearFocus()
                 loginViewModel.resetState()
-                onNavigateToChatScreen()
+                onNavigateToHomeScreen()
             }
 
             is LoginUiState.Error -> {

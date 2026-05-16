@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +15,6 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.People
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +39,7 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun ChatBottomBar(
     modifier: Modifier = Modifier,
     currentRoute: String,
-    onNavigateToChats: () -> Unit,
+    onNavigateToHome: () -> Unit,
     onNavigateToContacts: () -> Unit,
     onStartNewChat: () -> Unit,
     onNavigateToCalls: () -> Unit,
@@ -57,9 +55,9 @@ fun ChatBottomBar(
         windowInsets = NavigationBarDefaults.windowInsets
     ) {
         CustomNavigationBarItem(
-            selected = currentRoute == Screens.Chats.route,
-            onClick = onNavigateToChats,
-            label = R.string.chats,
+            selected = currentRoute == Screens.Home.route,
+            onClick = onNavigateToHome,
+            label = R.string.home,
             image = Icons.Outlined.Forum
         )
         CustomNavigationBarItem(
@@ -140,8 +138,8 @@ private fun ChatBottomBarPreview() {
             contentAlignment = Alignment.BottomStart
         ) {
             ChatBottomBar(
-                currentRoute = Screens.Chats.route,
-                onNavigateToChats = {},
+                currentRoute = Screens.Home.route,
+                onNavigateToHome = {},
                 onNavigateToContacts = {},
                 onStartNewChat = {},
                 onNavigateToCalls = {},

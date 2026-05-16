@@ -24,7 +24,7 @@ fun LeftPane(
     categories: List<Category>,
     selectedCategory: String,
     onSelectCategory: (String) -> Unit,
-    onNavigateToRightPane: (String) -> Unit,
+    onConversationClick: (String) -> Unit,
     onClickToSeeAll: () -> Unit,
     conversations: List<Conversation>
 ) {
@@ -41,7 +41,7 @@ fun LeftPane(
         )
         RecentChatsList(
             conversations = conversations,
-            onNavigateToRightPane = onNavigateToRightPane,
+            onConversationClick = onConversationClick,
             onClickToSeeAll = onClickToSeeAll
         )
     }
@@ -81,7 +81,7 @@ private fun LeftPanePreview() {
                 categories = categories,
                 selectedCategory = "All",
                 onSelectCategory = {},
-                onNavigateToRightPane = {},
+                onConversationClick = {},
                 onClickToSeeAll = {},
                 conversations = listOf(conversation, conversation, conversation, conversation),
             )
