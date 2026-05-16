@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -65,13 +67,18 @@ fun ChatBottomBar(
             label = R.string.contacts,
             image = Icons.Outlined.People
         )
-        CustomNavigationBarItem(
-            hasBorder = true,
-            selected = false,
+        FloatingActionButton(
+            modifier = Modifier
+                .offset(x = (5).dp, y = (-5).dp),
             onClick = onStartNewChat,
-            label = R.string.new_chat,
-            image = Icons.Outlined.Add
-        )
+            shape = CircleShape
+        ) {
+            Icon(
+                modifier = Modifier.size(35.dp),
+                imageVector = Icons.Outlined.Add,
+                contentDescription = null
+            )
+        }
         CustomNavigationBarItem(
             selected = currentRoute == Screens.Calls.route,
             onClick = onNavigateToCalls,
@@ -93,8 +100,7 @@ fun RowScope.CustomNavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
     @StringRes label: Int,
-    image: ImageVector,
-    hasBorder: Boolean = false
+    image: ImageVector
 ) {
     NavigationBarItem(
         modifier = modifier,
@@ -102,11 +108,6 @@ fun RowScope.CustomNavigationBarItem(
         onClick = onClick,
         icon = {
             Icon(
-                modifier = if (hasBorder) Modifier.border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    shape = CircleShape
-                ).size(26.dp) else Modifier,
                 imageVector = image,
                 contentDescription = null
             )
