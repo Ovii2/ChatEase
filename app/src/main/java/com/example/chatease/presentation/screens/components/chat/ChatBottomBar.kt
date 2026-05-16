@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Forum
@@ -89,7 +90,7 @@ fun ChatBottomBar(
             selected = currentRoute == Screens.Profile.route,
             onClick = onNavigateToProfile,
             label = R.string.profile,
-            image = Icons.Outlined.Person
+            image = Icons.Outlined.AccountCircle
         )
     }
 }

@@ -57,7 +57,7 @@ import kotlin.math.absoluteValue
 fun RecentChatsList(
     modifier: Modifier = Modifier,
     conversations: List<Conversation>,
-    onNavigateToChatDetails: (String) -> Unit,
+    onNavigateToRightPane: (String) -> Unit,
     onClickToSeeAll: () -> Unit
 ) {
     Column() {
@@ -111,7 +111,7 @@ fun RecentChatsList(
                 itemsIndexed(conversations) { index, conversation ->
                     RecentChatListItem(
                         conversation = conversation,
-                        onNavigateToChatDetails = onNavigateToChatDetails,
+                        onNavigateToChatDetails = onNavigateToRightPane,
                         showDivider = index != conversations.lastIndex
                     )
                 }
@@ -293,7 +293,7 @@ private fun RecentChatsListPreview() {
         Column(modifier = Modifier.systemBarsPadding()) {
             RecentChatsList(
                 conversations = listOf(conversation, conversation, conversation, conversation),
-                onNavigateToChatDetails = {},
+                onNavigateToRightPane = {},
                 onClickToSeeAll = {},
             )
         }

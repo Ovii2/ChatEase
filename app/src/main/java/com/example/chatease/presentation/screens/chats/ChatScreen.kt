@@ -44,7 +44,7 @@ fun ChatScreen(
             categories = listOf(),
             selectedCategory = "All",
             onSelectCategory = {},
-            onNavigateToChatDetails = onNavigateToChatDetails,
+            onNavigateToRightPane = onNavigateToChatDetails,
             onClickToSeeAll = {},
             conversations = listOf()
         )
@@ -53,7 +53,7 @@ fun ChatScreen(
 
 @Preview(
     showBackground = true, showSystemUi = true,
-    device = "spec:parent=pixel_5,orientation=landscape"
+    device = "spec:width=411dp,height=891dp,orientation=landscape"
 )
 @Composable
 private fun ChatScreenPreview() {

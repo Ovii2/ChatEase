@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,14 +24,13 @@ fun LeftPane(
     categories: List<Category>,
     selectedCategory: String,
     onSelectCategory: (String) -> Unit,
-    onNavigateToChatDetails: (String) -> Unit,
+    onNavigateToRightPane: (String) -> Unit,
     onClickToSeeAll: () -> Unit,
     conversations: List<Conversation>
 ) {
     Column(
         modifier = modifier
-            .padding(horizontal = 12.dp)
-            .verticalScroll(rememberScrollState()),
+            .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         LeftPaneHeader(
@@ -44,7 +41,7 @@ fun LeftPane(
         )
         RecentChatsList(
             conversations = conversations,
-            onNavigateToChatDetails = onNavigateToChatDetails,
+            onNavigateToRightPane = onNavigateToRightPane,
             onClickToSeeAll = onClickToSeeAll
         )
     }
@@ -84,7 +81,7 @@ private fun LeftPanePreview() {
                 categories = categories,
                 selectedCategory = "All",
                 onSelectCategory = {},
-                onNavigateToChatDetails = {},
+                onNavigateToRightPane = {},
                 onClickToSeeAll = {},
                 conversations = listOf(conversation, conversation, conversation, conversation),
             )
