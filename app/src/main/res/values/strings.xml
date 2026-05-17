@@ -59,4 +59,8 @@
     <string name="calls">Calls</string>
     <string name="profile">Profile</string>
     <string name="new_chat">New chat</string>
+
+    <string name="online">Online</string>
+    <string name="away">Away</string>
+    <string name="offline">Offline</string>
 </resources>

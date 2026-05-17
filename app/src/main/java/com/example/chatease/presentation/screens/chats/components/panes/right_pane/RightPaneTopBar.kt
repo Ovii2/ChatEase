@@ -23,11 +23,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
 import com.example.chatease.presentation.screens.components.chat.UserAvatar
@@ -44,9 +46,9 @@ fun RightPaneTopBar(
     user: User
 ) {
     val userStatus = when (user.status) {
-        UserStatus.ONLINE -> "Online"
-        UserStatus.AWAY -> "Away"
-        else -> "Offline"
+        UserStatus.ONLINE -> R.string.online
+        UserStatus.AWAY -> R.string.away
+        else -> R.string.offline
     }
 
     val statusColor = when (user.status) {
@@ -84,7 +86,7 @@ fun RightPaneTopBar(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = userStatus,
+                            text = stringResource(userStatus),
                             style = MaterialTheme.typography.labelMedium,
                             color = statusColor,
                             maxLines = 1,
