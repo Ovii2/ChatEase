@@ -63,4 +63,6 @@
     <string name="online">Online</string>
     <string name="away">Away</string>
     <string name="offline">Offline</string>
+
+    <string name="unread_messages">Unread messages</string>
 </resources>
