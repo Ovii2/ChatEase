@@ -5,7 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.chatease.presentation.screens.chats.HomeScreen
+import com.example.chatease.presentation.screens.chat.ChatScreen
+import com.example.chatease.presentation.screens.home.HomeScreen
 import com.example.chatease.presentation.screens.login.LoginScreen
 import com.example.chatease.presentation.screens.sign_up.SignUpScreen
 
@@ -50,8 +51,13 @@ fun AppNavHost(
                 onNavigateToContacts = {},
                 onNavigateToCalls = {},
                 onNavigateToProfile = {},
-                onConversationClick = {}
+                onConversationClick = { conversationId ->
+                    navController.navigate(Screens.Chat.createRoute(conversationId))
+                }
             )
+        }
+        composable(route = Screens.Chat.route) {
+            ChatScreen()
         }
     }
 }
