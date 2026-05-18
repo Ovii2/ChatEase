@@ -1,20 +1,26 @@
-package com.example.chatease.presentation.screens.chats.components.panes.left_pane
+package com.example.chatease.presentation.screens.components.panes.left_pane
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
-import com.example.chatease.presentation.screens.chats.components.panes.left_pane.components.LeftPaneHeader
-import com.example.chatease.presentation.screens.chats.components.panes.left_pane.components.RecentChatsList
+import com.example.chatease.presentation.screens.components.panes.left_pane.components.LeftPaneHeader
+import com.example.chatease.presentation.screens.components.panes.left_pane.components.RecentChatsList
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -26,24 +32,33 @@ fun LeftPane(
     onSelectCategory: (String) -> Unit,
     onConversationClick: (String) -> Unit,
     onClickToSeeAll: () -> Unit,
-    conversations: List<Conversation>
+    conversations: List<Conversation>,
+    focusManager: FocusManager
 ) {
-    Column(
-        modifier = modifier
-            .padding(horizontal = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        LeftPaneHeader(
-            imageUrl = user.imageUrl,
-            categories = categories,
-            selectedCategory = selectedCategory,
-            onSelectCategory = onSelectCategory,
-        )
-        RecentChatsList(
-            conversations = conversations,
-            onConversationClick = onConversationClick,
-            onClickToSeeAll = onClickToSeeAll
-        )
+    Box(
+        modifier = modifier.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        ) {
+            focusManager.clearFocus()
+        }) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            LeftPaneHeader(
+                imageUrl = user.imageUrl,
+                categories = categories,
+                selectedCategory = selectedCategory,
+                onSelectCategory = onSelectCategory,
+            )
+            RecentChatsList(
+                conversations = conversations,
+                onConversationClick = onConversationClick,
+                onClickToSeeAll = onClickToSeeAll
+            )
+        }
     }
 }
 
@@ -84,6 +99,7 @@ private fun LeftPanePreview() {
                 onConversationClick = {},
                 onClickToSeeAll = {},
                 conversations = listOf(conversation, conversation, conversation, conversation),
+                focusManager = LocalFocusManager.current,
             )
         }
     }
