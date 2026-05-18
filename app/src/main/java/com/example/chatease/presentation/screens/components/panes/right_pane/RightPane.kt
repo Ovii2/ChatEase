@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.chats.components.panes.right_pane
+package com.example.chatease.presentation.screens.components.panes.right_pane
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -12,9 +12,9 @@ import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
-import com.example.chatease.presentation.screens.chats.components.panes.right_pane.compnents.MessageInputBar
-import com.example.chatease.presentation.screens.chats.components.panes.right_pane.compnents.MessagesList
-import com.example.chatease.presentation.screens.chats.components.panes.right_pane.compnents.RightPaneTopBar
+import com.example.chatease.presentation.screens.components.panes.right_pane.compnents.MessageInputBar
+import com.example.chatease.presentation.screens.components.panes.right_pane.compnents.MessagesList
+import com.example.chatease.presentation.screens.components.panes.right_pane.compnents.RightPaneTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable

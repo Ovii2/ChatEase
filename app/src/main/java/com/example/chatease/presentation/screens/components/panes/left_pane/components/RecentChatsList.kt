@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.chats.components.panes.left_pane.components
+package com.example.chatease.presentation.screens.components.panes.left_pane.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

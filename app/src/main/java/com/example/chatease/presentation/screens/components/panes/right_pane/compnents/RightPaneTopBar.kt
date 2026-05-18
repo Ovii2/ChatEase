@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.chats.components.panes.right_pane.compnents
+package com.example.chatease.presentation.screens.components.panes.right_pane.compnents
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
