@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.chats
+package com.example.chatease.presentation.screens.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -53,7 +53,7 @@ fun HomeScreen(
 
 @Preview(
     showBackground = true, showSystemUi = true,
-    device = "spec:width=411dp,height=891dp,orientation=landscape"
+    device = "spec:width=411dp,height=891dp"
 )
 @Composable
 private fun HomeScreenPreview() {
