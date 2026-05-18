@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(
     private val _selectedCategory = MutableStateFlow("All")
     val selectedCategory = _selectedCategory.asStateFlow()
 
-    private val _uiState = MutableStateFlow(HomeUiState())
+    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -34,15 +34,14 @@ class HomeViewModel @Inject constructor(
 
     fun loadHomeData() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = HomeUiState.Loading
 
             try {
                 val currentUserId = auth.currentUser?.uid
 
                 if (currentUserId == null) {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = "User not logged in"
+                    _uiState.value = HomeUiState.Error(
+                        message = "User not logged in"
                     )
                     return@launch
                 }
@@ -50,19 +49,15 @@ class HomeViewModel @Inject constructor(
                     userId = currentUserId,
                     status = UserStatus.ONLINE
                 )
-                val currentUser = userRepository.getUserById(currentUserId)
-                val categories = categoryRepository.getCategories()
-                val conversations = conversationRepository.getUserConversations(currentUserId)
-                _uiState.value = HomeUiState(
-                    isLoading = false,
-                    user = currentUser,
-                    categories = categories,
-                    conversations = conversations
+
+                _uiState.value = HomeUiState.Success(
+                    user = userRepository.getUserById(currentUserId),
+                    categories = categoryRepository.getCategories(),
+                    conversations = conversationRepository.getUserConversations(currentUserId),
                 )
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = e.message
+                _uiState.value = HomeUiState.Error(
+                    message = e.message ?: ""
                 )
             }
         }
