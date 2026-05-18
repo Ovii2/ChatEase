@@ -3,16 +3,21 @@ package com.example.chatease.presentation.screens.home
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
-import com.example.chatease.presentation.screens.chats.components.panes.left_pane.LeftPane
 import com.example.chatease.presentation.screens.components.chat.ChatBottomBar
+import com.example.chatease.presentation.screens.components.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
@@ -21,8 +26,14 @@ fun HomeScreen(
     onNavigateToContacts: () -> Unit,
     onNavigateToCalls: () -> Unit,
     onNavigateToProfile: () -> Unit,
-    onConversationClick: (String) -> Unit
+    onConversationClick: (String) -> Unit,
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+    val uiState by homeViewModel.uiState.collectAsState()
+    val selectedCategory by homeViewModel.selectedCategory.collectAsState()
+
+    val focusManager = LocalFocusManager.current
+
     Scaffold(
         bottomBar = {
             ChatBottomBar(
@@ -38,13 +49,14 @@ fun HomeScreen(
         LeftPane(
             modifier = modifier
                 .padding(paddingValues),
-            user = User(),
-            categories = listOf(),
-            selectedCategory = "All",
-            onSelectCategory = {},
+            user = uiState.user,
+            categories = uiState.categories,
+            selectedCategory = selectedCategory,
+            onSelectCategory = homeViewModel::selectCategory,
             onConversationClick = onConversationClick,
             onClickToSeeAll = {},
-            conversations = listOf()
+            conversations = uiState.conversations,
+            focusManager = focusManager,
         )
     }
 }
