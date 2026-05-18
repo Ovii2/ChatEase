@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.chats.components.panes.right_pane
+package com.example.chatease.presentation.screens.chats.components.panes.right_pane.compnents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
