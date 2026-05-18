@@ -1,7 +1,6 @@
 package com.example.chatease.presentation.screens.home
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,8 +37,7 @@ fun HomeScreen(
     ) { paddingValues ->
         LeftPane(
             modifier = modifier
-                .padding(paddingValues)
-                .systemBarsPadding(),
+                .padding(paddingValues),
             user = User(),
             categories = listOf(),
             selectedCategory = "All",
