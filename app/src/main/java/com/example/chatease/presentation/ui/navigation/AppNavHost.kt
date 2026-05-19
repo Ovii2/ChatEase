@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.chatease.presentation.screens.chat.ChatScreen
 import com.example.chatease.presentation.screens.home.HomeScreen
 import com.example.chatease.presentation.screens.login.LoginScreen
+import com.example.chatease.presentation.screens.new_chat.NewChatScreen
 import com.example.chatease.presentation.screens.sign_up.SignUpScreen
 
 @Composable
@@ -61,11 +62,21 @@ fun AppNavHost(
                         }
                         launchSingleTop = true
                     }
+                },
+                onStartNewChat = {
+                    navController.navigate(Screens.NewChat.route) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
         composable(route = Screens.Chat.route) {
             ChatScreen()
+        }
+        composable(route = Screens.NewChat.route) {
+            NewChatScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }
