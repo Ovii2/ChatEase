@@ -2,7 +2,6 @@ package com.example.chatease.presentation.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatease.domain.model.UserStatus
 import com.example.chatease.domain.repository.CategoryRepository
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.UserRepository
@@ -45,10 +44,6 @@ class HomeViewModel @Inject constructor(
                     )
                     return@launch
                 }
-                userRepository.updateUserStatus(
-                    userId = currentUserId,
-                    status = UserStatus.ONLINE
-                )
 
                 _uiState.value = HomeUiState.Success(
                     user = userRepository.getUserById(currentUserId),
