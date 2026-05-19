@@ -53,6 +53,14 @@ fun AppNavHost(
                 onNavigateToProfile = {},
                 onConversationClick = { conversationId ->
                     navController.navigate(Screens.Chat.createRoute(conversationId))
+                },
+                onNavigateToLoginScreen = {
+                    navController.navigate(Screens.Login.route) {
+                        popUpTo(Screens.Home.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             )
         }

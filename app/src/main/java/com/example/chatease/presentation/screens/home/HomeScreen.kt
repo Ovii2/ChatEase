@@ -25,6 +25,7 @@ import com.example.chatease.presentation.screens.components.panes.left_pane.Left
 import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
 import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -36,7 +37,9 @@ fun HomeScreen(
     onNavigateToCalls: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onConversationClick: (String) -> Unit,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
+    onNavigateToLoginScreen: () -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -75,10 +78,13 @@ fun HomeScreen(
                         conversations = state.conversations,
                         onClickToSeeAll = {},
                         onConversationClick = onConversationClick,
-                        focusManager = focusManager
+                        focusManager = focusManager,
+                        onLogoutClick = {
+                            authViewModel.logout()
+                            onNavigateToLoginScreen()
+                        }
                     )
                 }
-
             }
 
             is HomeUiState.Error -> {
@@ -99,7 +105,8 @@ fun HomeScreenCompactLayout(
     conversations: List<Conversation>,
     onClickToSeeAll: () -> Unit,
     onConversationClick: (String) -> Unit,
-    focusManager: FocusManager
+    focusManager: FocusManager,
+    onLogoutClick: () -> Unit
 ) {
     LeftPane(
         modifier = modifier
@@ -112,7 +119,8 @@ fun HomeScreenCompactLayout(
         onConversationClick = onConversationClick,
         onClickToSeeAll = onClickToSeeAll,
         conversations = conversations,
-        focusManager = focusManager
+        focusManager = focusManager,
+        onLogoutClick = onLogoutClick
     )
 }
 
@@ -153,7 +161,8 @@ private fun HomeScreenCompactLayoutPreview() {
             conversations = listOf(conversation),
             onClickToSeeAll = {},
             onConversationClick = {},
-            focusManager = LocalFocusManager.current
+            focusManager = LocalFocusManager.current,
+            onLogoutClick = {}
         )
     }
 }
