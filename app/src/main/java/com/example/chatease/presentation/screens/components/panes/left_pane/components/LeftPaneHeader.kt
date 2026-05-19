@@ -2,7 +2,6 @@ package com.example.chatease.presentation.screens.components.panes.left_pane.com
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,10 +14,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PersonOutline
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +34,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.Category
+import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -121,24 +119,10 @@ fun LeftPaneHeader(
                 }
             }
         }
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    width = 0.5.dp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    shape = CircleShape
-                ),
+        ChatSearchBar(
             value = "",
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null
-                )
-            },
-            shape = CircleShape,
             onValueChange = {},
-            placeholder = { Text(text = stringResource(R.string.search_conversations)) }
+            placeholder = R.string.search_conversations
         )
         CategoriesRow(
             categories = categories,
