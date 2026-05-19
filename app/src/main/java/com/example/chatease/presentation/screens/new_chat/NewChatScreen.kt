@@ -3,6 +3,7 @@ package com.example.chatease.presentation.screens.new_chat
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
+import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.UserStatus
 import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
+import com.example.chatease.presentation.screens.new_chat.components.FrequentlyContactedSection
 import com.example.chatease.presentation.screens.new_chat.components.NewChatTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
@@ -24,6 +28,18 @@ fun NewChatScreen(
     onBackClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+
+    val users = listOf(
+        User(
+            uid = "",
+            fullName = "Test testing",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.ONLINE
+        )
+    )
+
+//    val users = emptyList<User>()
 
     Scaffold(
         topBar = {
@@ -42,12 +58,17 @@ fun NewChatScreen(
                     focusManager.clearFocus()
                 })
         {
-            Column() {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 ChatSearchBar(
                     value = "",
                     onValueChange = {},
                     placeholder = R.string.search_contacts
                 )
+                if (users.isNotEmpty()) {
+                    FrequentlyContactedSection(
+                        users = users
+                    )
+                }
             }
         }
     }
