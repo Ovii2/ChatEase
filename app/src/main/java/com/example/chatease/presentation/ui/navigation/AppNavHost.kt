@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.chatease.presentation.screens.chat.ChatScreen
+import com.example.chatease.presentation.screens.contacts.ContactsScreen
 import com.example.chatease.presentation.screens.home.HomeScreen
 import com.example.chatease.presentation.screens.login.LoginScreen
 import com.example.chatease.presentation.screens.new_chat.NewChatScreen
@@ -48,8 +49,16 @@ fun AppNavHost(
         }
         composable(route = Screens.Home.route) {
             HomeScreen(
-                onNavigateToHome = {},
-                onNavigateToContacts = {},
+                onNavigateToHome = {
+                    navController.navigate(Screens.Home.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToContacts = {
+                    navController.navigate(Screens.Contacts.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onNavigateToCalls = {},
                 onNavigateToProfile = {},
                 onConversationClick = { conversationId ->
@@ -76,6 +85,12 @@ fun AppNavHost(
         composable(route = Screens.NewChat.route) {
             NewChatScreen(
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+        composable(route = Screens.Contacts.route) {
+            ContactsScreen(
+                onNavigateToSentRequests = {},
+                onBackClick = { navController.popBackStack() },
             )
         }
     }
