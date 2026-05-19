@@ -52,7 +52,7 @@ import com.example.chatease.presentation.screens.login.components.LoginScreenCon
 import com.example.chatease.presentation.screens.login.components.LoginScreenHeader
 import com.example.chatease.presentation.ui.state.LoginUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
-import com.example.chatease.presentation.ui.viewmodel.LoginViewModel
+import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
 import com.example.chatease.presentation.validation.AuthValidator
 import kotlinx.coroutines.delay
 
@@ -61,18 +61,18 @@ import kotlinx.coroutines.delay
 fun LoginScreen(
     paddingValues: PaddingValues,
     onNavigateToSignUpScreen: () -> Unit,
-    loginViewModel: LoginViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
     onNavigateToHomeScreen: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-    val loginUiState by loginViewModel.uiState.collectAsState()
+    val loginUiState by authViewModel.uiState.collectAsState()
 
     var rememberMe by rememberSaveable { mutableStateOf(false) }
-    val rememberEmail by loginViewModel.rememberEmail.collectAsState(initial = false)
-    val savedEmail by loginViewModel.savedEmail.collectAsState(initial = "")
+    val rememberEmail by authViewModel.rememberEmail.collectAsState(initial = false)
+    val savedEmail by authViewModel.savedEmail.collectAsState(initial = "")
 
     val failedLoginMessage = stringResource(R.string.fail_login)
 
@@ -92,7 +92,7 @@ fun LoginScreen(
             is LoginUiState.Success -> {
                 delay(1000)
                 focusManager.clearFocus()
-                loginViewModel.resetState()
+                authViewModel.resetState()
                 onNavigateToHomeScreen()
             }
 
@@ -102,7 +102,7 @@ fun LoginScreen(
                     failedLoginMessage,
                     Toast.LENGTH_SHORT
                 ).show()
-                loginViewModel.resetState()
+                authViewModel.resetState()
             }
 
             else -> Unit
@@ -141,14 +141,14 @@ fun LoginScreen(
                         hasTriedLogin = true
 
                         if (emailError == null && passwordError == null) {
-                            loginViewModel.login(email, password, rememberMe)
+                            authViewModel.login(email, password, rememberMe)
                             focusManager.clearFocus()
                         }
                     },
                     rememberMeChecked = rememberMe,
                     onRememberMeCheckChange = {
                         rememberMe = it
-                        loginViewModel.onRememberMeChanged(email, it)
+                        authViewModel.onRememberMeChanged(email, it)
                     },
                     loginUiState = loginUiState
                 )
@@ -173,14 +173,14 @@ fun LoginScreen(
                         hasTriedLogin = true
 
                         if (emailError == null && passwordError == null) {
-                            loginViewModel.login(email, password, rememberMe)
+                            authViewModel.login(email, password, rememberMe)
                             focusManager.clearFocus()
                         }
                     },
                     rememberMeChecked = rememberMe,
                     onRememberMeCheckChange = {
                         rememberMe = it
-                        loginViewModel.onRememberMeChanged(email, it)
+                        authViewModel.onRememberMeChanged(email, it)
                     },
                     loginUiState = loginUiState,
                 )
