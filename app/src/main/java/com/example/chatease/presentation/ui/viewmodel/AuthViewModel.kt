@@ -3,6 +3,8 @@ package com.example.chatease.presentation.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.data.local.datastore.auth.AuthPreferencesRepository
+import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.state.LoginUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,9 +14,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class AuthViewModel @Inject constructor(
     private val auth: FirebaseAuth,
-    private val authPreferencesRepository: AuthPreferencesRepository
+    private val authPreferencesRepository: AuthPreferencesRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -25,12 +28,20 @@ class LoginViewModel @Inject constructor(
 
     fun login(email: String, password: String, remember: Boolean) {
         val trimmerEmail = email.trim()
+
         _uiState.value = LoginUiState.Loading
+
 
         auth.signInWithEmailAndPassword(trimmerEmail, password)
             .addOnSuccessListener {
                 viewModelScope.launch {
+                    val currentUserId = auth.currentUser?.uid ?: return@launch
                     authPreferencesRepository.saveEmail(trimmerEmail, remember)
+
+                    userRepository.updateUserStatus(
+                        userId = currentUserId,
+                        status = UserStatus.ONLINE
+                    )
                 }
                 _uiState.value = LoginUiState.Success
             }
@@ -42,7 +53,17 @@ class LoginViewModel @Inject constructor(
     }
 
     fun logout() {
-        auth.signOut()
+        viewModelScope.launch {
+            val currentUserId = auth.currentUser?.uid
+
+            currentUserId?.let {
+                userRepository.updateUserStatus(
+                    userId = currentUserId,
+                    status = UserStatus.OFFLINE
+                )
+            }
+            auth.signOut()
+        }
     }
 
     fun resetState() {
