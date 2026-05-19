@@ -49,6 +49,7 @@
     <string name="email_in_use">This email is already in use</string>
 
     <string name="search_conversations">Search conversations</string>
+    <string name="search_contacts">Search contacts</string>
     <string name="recent_chats">Recent Chats</string>
     <string name="see_all">See all</string>
     <string name="no_chats">No chats yet!</string>
