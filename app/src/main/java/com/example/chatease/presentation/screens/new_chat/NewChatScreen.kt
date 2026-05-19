@@ -52,6 +52,7 @@ fun NewChatScreen(
 //    val contacts = emptyList<String>()
 
     Scaffold(
+        modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
         topBar = {
             NewChatTopBar(
                 onBackClick = onBackClick
@@ -59,9 +60,8 @@ fun NewChatScreen(
         }
     ) { paddingValues ->
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .padding(paddingValues)
-                .padding(8.dp)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }) {
