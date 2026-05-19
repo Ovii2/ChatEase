@@ -11,6 +11,7 @@ sealed class Screens(val route: String) {
         }
     }
 
+    data object NewChat : Screens("new_chat")
     data object Contacts : Screens("contacts")
     data object Calls : Screens("calls")
     data object Profile : Screens("profile")
