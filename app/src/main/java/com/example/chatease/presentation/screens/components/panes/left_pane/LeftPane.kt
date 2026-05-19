@@ -33,7 +33,8 @@ fun LeftPane(
     onConversationClick: (String) -> Unit,
     onClickToSeeAll: () -> Unit,
     conversations: List<Conversation>,
-    focusManager: FocusManager
+    focusManager: FocusManager,
+    onLogoutClick: () -> Unit
 ) {
     Box(
         modifier = modifier.clickable(
@@ -52,6 +53,7 @@ fun LeftPane(
                 categories = categories,
                 selectedCategory = selectedCategory,
                 onSelectCategory = onSelectCategory,
+                onLogoutClick = onLogoutClick
             )
             RecentChatsList(
                 conversations = conversations,
@@ -100,6 +102,7 @@ private fun LeftPanePreview() {
                 onClickToSeeAll = {},
                 conversations = listOf(conversation, conversation, conversation, conversation),
                 focusManager = LocalFocusManager.current,
+                onLogoutClick = {}
             )
         }
     }

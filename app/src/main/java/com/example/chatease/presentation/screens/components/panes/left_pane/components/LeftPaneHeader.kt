@@ -3,6 +3,7 @@ package com.example.chatease.presentation.screens.components.panes.left_pane.com
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.Category
@@ -39,8 +45,11 @@ fun LeftPaneHeader(
     imageUrl: String? = null,
     categories: List<Category>,
     selectedCategory: String,
-    onSelectCategory: (String) -> Unit
+    onSelectCategory: (String) -> Unit,
+    onLogoutClick: () -> Unit
 ) {
+    var expanded by rememberSaveable() { mutableStateOf(false) }
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -65,23 +74,23 @@ fun LeftPaneHeader(
                     imageVector = Icons.Outlined.Notifications,
                     contentDescription = null
                 )
-                if (imageUrl == null) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
-                                shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
+                Box(
+                    modifier = Modifier
+                        .clickable { expanded = true }
+                        .size(40.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (imageUrl == null) {
                         Icon(
                             modifier = Modifier.size(30.dp),
                             imageVector = Icons.Outlined.PersonOutline,
                             contentDescription = null
                         )
-                    }
-                } else {
+                    } else {
 //                    AsyncImage(
 //                        modifier = Modifier
 //                            .size(40.dp)
@@ -90,13 +99,24 @@ fun LeftPaneHeader(
 //                        model = user.imageUrl,
 //                        contentDescription = null
 //                    )
-                    Image(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop,
-                        painter = painterResource(R.drawable.person),
-                        contentDescription = null
+                        Image(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop,
+                            painter = painterResource(R.drawable.person),
+                            contentDescription = null
+                        )
+                    }
+                    ProfileDropdown(
+                        expanded = expanded,
+                        onDismiss = { expanded = false },
+                        onProfileClick = {},
+                        onLogoutClick = { onLogoutClick() },
+                        offset = DpOffset(
+                            x = 0.dp,
+                            y = 8.dp
+                        )
                     )
                 }
             }
@@ -145,6 +165,7 @@ private fun LeftPaneHeaderPreview() {
                 categories = categories,
                 selectedCategory = "All",
                 onSelectCategory = {},
+                onLogoutClick = {}
             )
         }
     }
