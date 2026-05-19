@@ -18,6 +18,7 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
 import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
+import com.example.chatease.presentation.screens.new_chat.components.AllContactsSection
 import com.example.chatease.presentation.screens.new_chat.components.FrequentlyContactedSection
 import com.example.chatease.presentation.screens.new_chat.components.NewChatTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -36,10 +37,19 @@ fun NewChatScreen(
             email = "test@email.com",
             imageUrl = null,
             status = UserStatus.ONLINE
+        ),
+        User(
+            uid = "",
+            fullName = "Test testing",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.ONLINE
         )
     )
+    val contacts = listOf("1", "2")
 
 //    val users = emptyList<User>()
+//    val contacts = emptyList<String>()
 
     Scaffold(
         topBar = {
@@ -69,10 +79,21 @@ fun NewChatScreen(
                         users = users
                     )
                 }
+
+                if (contacts.isNotEmpty()) {
+                    AllContactsSection(
+                        users = users,
+                        count = 3,
+                        selected = true,
+                        onChecked = {},
+                        onStartChatClick = {},
+                    )
+                }
             }
         }
     }
 }
+
 
 @Preview(
     showBackground = true, showSystemUi = true,
