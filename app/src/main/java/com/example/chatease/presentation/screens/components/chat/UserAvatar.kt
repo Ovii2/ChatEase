@@ -21,9 +21,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.TextUnit
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
@@ -42,8 +42,9 @@ fun UserAvatar(
     avatarSize: Dp = 60.dp,
     statusBubbleSize: Dp = 18.dp,
     initialsFontSize: TextUnit = 24.sp,
-    statusBubbleOffsetX : Dp = 1.dp,
-    statusBubbleOffsetY : Dp = (-1).dp
+    statusBubbleOffsetX: Dp = 1.dp,
+    statusBubbleOffsetY: Dp = (-1).dp,
+    showStatus: Boolean = true
 ) {
     val name = user.fullName.split(" ")[0]
     val lastName = user.fullName.split(" ")[1]
@@ -96,7 +97,7 @@ fun UserAvatar(
                 contentDescription = null
             )
         }
-        if (user.status != UserStatus.OFFLINE) {
+        if (user.status != UserStatus.OFFLINE && showStatus) {
             Box(
                 modifier = Modifier
                     .size(statusBubbleSize)
