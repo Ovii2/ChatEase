@@ -70,4 +70,7 @@
 
     <string name="view_profile">View profile</string>
     <string name="logout">Logout</string>
+
+    <string name="frequently_contacted">Frequently contacted</string>
+    <string name="all_contacts">All contacts</string>
 </resources>
