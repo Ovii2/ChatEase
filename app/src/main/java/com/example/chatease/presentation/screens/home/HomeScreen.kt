@@ -39,7 +39,8 @@ fun HomeScreen(
     onConversationClick: (String) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToLoginScreen: () -> Unit
+    onNavigateToLoginScreen: () -> Unit,
+    onStartNewChat: () -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -55,7 +56,7 @@ fun HomeScreen(
                     currentRoute = Screens.Home.route,
                     onNavigateToHome = onNavigateToHome,
                     onNavigateToContacts = onNavigateToContacts,
-                    onStartNewChat = {},
+                    onStartNewChat = onStartNewChat,
                     onNavigateToCalls = onNavigateToCalls,
                     onNavigateToProfile = onNavigateToProfile
                 )
