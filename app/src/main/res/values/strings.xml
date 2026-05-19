@@ -74,4 +74,8 @@
     <string name="frequently_contacted">Frequently contacted</string>
     <string name="all_contacts">All contacts</string>
     <string name="next">Next</string>
+
+    <string name="sent_requests">Sent requests</string>
+    <string name="view_all">View All</string>
+    <string name="pending_requests">Pending requests</string>
 </resources>
