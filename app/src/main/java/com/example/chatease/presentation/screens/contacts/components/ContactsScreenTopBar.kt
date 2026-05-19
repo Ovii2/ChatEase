@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.screens.contacts.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -20,7 +21,9 @@ import com.example.chatease.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactsScreenTopBar(modifier: Modifier = Modifier) {
+fun ContactsScreenTopBar(
+    onBackClick: () -> Unit
+) {
     CenterAlignedTopAppBar(
         title = {
             Row(
@@ -36,6 +39,7 @@ fun ContactsScreenTopBar(modifier: Modifier = Modifier) {
         },
         navigationIcon = {
             Icon(
+                modifier = Modifier.clickable { onBackClick() },
                 imageVector = Icons.Outlined.ArrowBackIosNew,
                 contentDescription = null
             )
