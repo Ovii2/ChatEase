@@ -26,20 +26,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun ContactsSearchResultsRow(
     users: List<User>,
-    onUserClickAdd: (String) -> Unit,
-    currentUserId: String
+    onAddContactClick: (String) -> Unit,
+    currentUserId: String,
+    sentRequests: List<String>
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(users) { user ->
+            val isInvitationSent = user.uid in sentRequests
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -65,12 +67,19 @@ fun ContactsSearchResultsRow(
                 }
                 if (currentUserId != user.uid) {
                     Button(
-                        onClick = { onUserClickAdd(user.uid) },
+                        enabled = !isInvitationSent,
+                        onClick = { onAddContactClick(user.uid) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
                         ),
                         shape = RoundedCornerShape(10.dp)
-                    ) { Text(text = stringResource(R.string.add)) }
+                    ) {
+                        Text(
+                            text = if (isInvitationSent) stringResource(R.string.invite_sent) else stringResource(
+                                R.string.add
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -83,9 +92,23 @@ fun ContactsSearchResultsRow(
 private fun ContactsSearchResultsRowPreview() {
     val users = List(5) {
         User(
-            uid = "",
+            uid = it.toString(),
             fullName = "Test Testing",
             email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.ONLINE
+        )
+        User(
+            uid = it.toString(),
+            fullName = "Test Senior",
+            email = "test@senior.com",
+            imageUrl = null,
+            status = UserStatus.ONLINE
+        )
+        User(
+            uid = it.toString(),
+            fullName = "Test Tester",
+            email = "test@tester.com",
             imageUrl = null,
             status = UserStatus.ONLINE
         )
@@ -100,8 +123,9 @@ private fun ContactsSearchResultsRowPreview() {
             ) {
                 ContactsSearchResultsRow(
                     users = users,
-                    onUserClickAdd = {},
+                    onAddContactClick = {},
                     currentUserId = "1",
+                    sentRequests = listOf("1", "3", "4"),
                 )
             }
         }

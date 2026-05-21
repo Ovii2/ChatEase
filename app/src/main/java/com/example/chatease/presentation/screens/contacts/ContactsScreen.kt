@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -20,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
 import com.example.chatease.presentation.screens.contacts.components.ContactsScreenTopBar
 import com.example.chatease.presentation.screens.contacts.components.ContactsSearchResultsRow
@@ -40,85 +41,15 @@ fun ContactsScreen(
     val focusManager = LocalFocusManager.current
     val searchValue by contactsViewModel.searchValue.collectAsState()
     val searchedUsers by contactsViewModel.searchedUsers.collectAsState()
-    val sentRequestsCount = 123
+    val sentRequests by contactsViewModel.sentRequests.collectAsState()
     val currentUserId = contactsViewModel.currentUserId ?: ""
     val users = listOf(
         User(
-            uid = "",
-            fullName = "Test Testing",
-            email = "test@email.com",
+            uid = "10",
+            fullName = "Some User",
+            email = "some@user.com",
             imageUrl = null,
             status = UserStatus.OFFLINE
-        ),
-        User(
-            uid = "",
-            fullName = "Test Tester",
-            email = "test@goodmail.com",
-            imageUrl = null,
-            status = UserStatus.ONLINE
-        ),
-        User(
-            uid = "",
-            fullName = "Another User",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.ONLINE
-        ),
-        User(
-            uid = "",
-            fullName = "John Doe",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.AWAY
-        ),
-        User(
-            uid = "",
-            fullName = "New User",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.AWAY
-        ),
-        User(
-            uid = "",
-            fullName = "New User",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.AWAY
-        ),
-        User(
-            uid = "",
-            fullName = "New User",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.AWAY
-        ),
-        User(
-            uid = "",
-            fullName = "New User",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.AWAY
-        ),
-        User(
-            uid = "",
-            fullName = "New User",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.AWAY
-        ),
-        User(
-            uid = "",
-            fullName = "New User",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.AWAY
-        ),
-        User(
-            uid = "",
-            fullName = "New User",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.AWAY
         )
     )
     val pendingRequestsCount = 12
@@ -134,6 +65,7 @@ fun ContactsScreen(
         Box(
             modifier = Modifier
                 .padding(paddingValues)
+                .fillMaxSize()
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }) {
@@ -153,14 +85,15 @@ fun ContactsScreen(
                 if (searchValue.isNotBlank()) {
                     ContactsSearchResultsRow(
                         users = searchedUsers.take(5),
-                        onUserClickAdd = {},
-                        currentUserId = currentUserId
+                        onAddContactClick = contactsViewModel::sendContactRequest,
+                        currentUserId = currentUserId,
+                        sentRequests = sentRequests
                     )
                 }
-                if (sentRequestsCount > 0) {
+                if (sentRequests.isNotEmpty()) {
                     SentRequestsButton(
                         onNavigateToSentRequests = onNavigateToSentRequests,
-                        sentRequestsCount = sentRequestsCount
+                        sentRequestsCount = sentRequests.size
                     )
                 }
                 if (pendingRequestsCount > 0) {
