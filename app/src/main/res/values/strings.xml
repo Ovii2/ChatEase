@@ -80,4 +80,5 @@
     <string name="pending_requests">Pending requests</string>
     <string name="my_contacts">My contacts</string>
     <string name="add">Add</string>
+    <string name="invite_sent">Invite sent</string>
 </resources>
