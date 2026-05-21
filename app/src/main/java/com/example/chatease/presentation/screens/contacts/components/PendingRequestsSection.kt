@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
@@ -68,7 +70,10 @@ fun PendingRequestsSection(
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(color = MaterialTheme.colorScheme.primary)
-                        .size(25.dp),
+                        .defaultMinSize(
+                            minWidth = 26.dp,
+                            minHeight = 26.dp
+                        ).padding(horizontal = 6.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -174,7 +179,7 @@ private fun PendingRequestsSectionPreview() {
                     users = users,
                     onCloseRequestClick = {},
                     onAcceptRequestClick = {},
-                    pendingRequestsCount = 12,
+                    pendingRequestsCount = 323,
                 )
             }
         }

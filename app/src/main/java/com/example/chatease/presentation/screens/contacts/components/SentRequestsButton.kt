@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -68,7 +70,11 @@ fun SentRequestsButton(
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(color = MaterialTheme.colorScheme.primary)
-                        .size(25.dp),
+                        .defaultMinSize(
+                            minWidth = 26.dp,
+                            minHeight = 26.dp
+                        )
+                        .padding(horizontal = 6.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
