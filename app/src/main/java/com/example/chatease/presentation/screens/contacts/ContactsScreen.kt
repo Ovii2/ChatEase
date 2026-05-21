@@ -20,6 +20,7 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
 import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
 import com.example.chatease.presentation.screens.contacts.components.ContactsScreenTopBar
+import com.example.chatease.presentation.screens.contacts.components.MyContactsSection
 import com.example.chatease.presentation.screens.contacts.components.PendingRequestsSection
 import com.example.chatease.presentation.screens.contacts.components.SentRequestsButton
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -38,23 +39,80 @@ fun ContactsScreen(
             fullName = "Test Testing",
             email = "test@email.com",
             imageUrl = null,
+            status = UserStatus.OFFLINE
+        ),
+        User(
+            uid = "",
+            fullName = "Test Tester",
+            email = "test@goodmail.com",
+            imageUrl = null,
             status = UserStatus.ONLINE
         ),
         User(
             uid = "",
-            fullName = "Test Testing",
+            fullName = "Another User",
             email = "test@email.com",
             imageUrl = null,
             status = UserStatus.ONLINE
         ),
         User(
             uid = "",
-            fullName = "Test Testing",
+            fullName = "John Doe",
             email = "test@email.com",
             imageUrl = null,
-            status = UserStatus.ONLINE
+            status = UserStatus.AWAY
+        ),
+        User(
+            uid = "",
+            fullName = "New User",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.AWAY
+        ),
+        User(
+            uid = "",
+            fullName = "New User",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.AWAY
+        ),
+        User(
+            uid = "",
+            fullName = "New User",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.AWAY
+        ),
+        User(
+            uid = "",
+            fullName = "New User",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.AWAY
+        ),
+        User(
+            uid = "",
+            fullName = "New User",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.AWAY
+        ),
+        User(
+            uid = "",
+            fullName = "New User",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.AWAY
+        ),
+        User(
+            uid = "",
+            fullName = "New User",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserStatus.AWAY
         )
     )
+    val pendingRequestsCount = 3
 
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
@@ -74,7 +132,9 @@ fun ContactsScreen(
                 }
         )
         {
-            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
                 ChatSearchBar(
                     value = "",
                     onValueChange = {},
@@ -86,11 +146,18 @@ fun ContactsScreen(
                         count = count
                     )
                 }
-                PendingRequestsSection(
-                    onViewAllRequests = {},
+                if (pendingRequestsCount > 0) {
+                    PendingRequestsSection(
+                        onViewAllRequests = {},
+                        users = users.take(3),
+                        onCloseRequestClick = {},
+                        onAcceptRequestClick = {},
+                        pendingRequestsCount = pendingRequestsCount,
+                    )
+                }
+                MyContactsSection(
                     users = users,
-                    onCloseRequestClick = {},
-                    onAcceptRequestClick = {},
+                    onContactClick = {}
                 )
             }
         }
