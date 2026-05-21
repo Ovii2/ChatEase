@@ -68,12 +68,13 @@ fun PendingRequestsSection(
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(color = MaterialTheme.colorScheme.primary)
-                        .size(24.dp),
+                        .size(25.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "$pendingRequestsCount",
-                        color = MaterialTheme.colorScheme.onPrimary
+                        text = if (pendingRequestsCount > 99) "99+" else "$pendingRequestsCount",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }
@@ -173,7 +174,7 @@ private fun PendingRequestsSectionPreview() {
                     users = users,
                     onCloseRequestClick = {},
                     onAcceptRequestClick = {},
-                    pendingRequestsCount = 3,
+                    pendingRequestsCount = 12,
                 )
             }
         }

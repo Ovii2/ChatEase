@@ -32,7 +32,7 @@ fun ContactsScreen(
     onBackClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    val sentRequestsCount = 3
+    val sentRequestsCount = 323
     val users = listOf(
         User(
             uid = "",
@@ -112,7 +112,7 @@ fun ContactsScreen(
             status = UserStatus.AWAY
         )
     )
-    val pendingRequestsCount = 3
+    val pendingRequestsCount = 8
 
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
@@ -143,7 +143,7 @@ fun ContactsScreen(
                 if (sentRequestsCount > 0) {
                     SentRequestsButton(
                         onNavigateToSentRequests = onNavigateToSentRequests,
-                        count = sentRequestsCount
+                        sentRequestsCount = sentRequestsCount
                     )
                 }
                 if (pendingRequestsCount > 0) {

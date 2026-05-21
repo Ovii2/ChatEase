@@ -29,7 +29,7 @@ import com.example.chatease.R
 fun SentRequestsButton(
     modifier: Modifier = Modifier,
     onNavigateToSentRequests: () -> Unit,
-    count: Int
+    sentRequestsCount: Int
 ) {
     Button(
         modifier = modifier,
@@ -68,12 +68,13 @@ fun SentRequestsButton(
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(color = MaterialTheme.colorScheme.primary)
-                        .size(24.dp),
+                        .size(25.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "$count",
-                        color = MaterialTheme.colorScheme.onPrimary
+                        text = if (sentRequestsCount > 99) "99+" else "$sentRequestsCount",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }
