@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.example.chatease.presentation.ui.model.PendingRequestUiModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -35,7 +36,7 @@ class ContactsViewModel @Inject constructor(
     private val _sentRequests = MutableStateFlow<List<String>>(emptyList())
     val sentRequests = _sentRequests.asStateFlow()
 
-    private val _pendingRequests = MutableStateFlow<List<String>>(emptyList())
+    private val _pendingRequests = MutableStateFlow<List<PendingRequestUiModel>>(emptyList())
     val pendingRequests = _pendingRequests.asStateFlow()
 
     @OptIn(FlowPreview::class)
@@ -50,6 +51,7 @@ class ContactsViewModel @Inject constructor(
                 searchUsers(query)
             }
         }
+        getPendingRequests()
     }
 
     fun onSearchValueChange(value: String) {
@@ -95,6 +97,27 @@ class ContactsViewModel @Inject constructor(
                 Log.e(
                     "ContactsViewModel",
                     e.message ?: "Failed to send contact request"
+                )
+            }
+        }
+    }
+
+    fun getPendingRequests() {
+        viewModelScope.launch {
+            val currentUserId = auth.currentUser?.uid ?: return@launch
+            try {
+                val requests = contactRequestRepository.getPendingRequests(currentUserId)
+                val pendingRequestUiModels = requests.map { request ->
+                    PendingRequestUiModel(
+                        requestId = request.id,
+                        user = userRepository.getUserById(request.senderUserId)
+                    )
+                }
+                _pendingRequests.value = pendingRequestUiModels
+            } catch (e: Exception) {
+                Log.e(
+                    "ContactsViewModel",
+                    e.message ?: "Failed to get pending request"
                 )
             }
         }

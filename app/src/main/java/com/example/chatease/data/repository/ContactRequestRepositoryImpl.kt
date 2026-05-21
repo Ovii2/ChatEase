@@ -1,6 +1,9 @@
 package com.example.chatease.data.repository
 
+import com.example.chatease.data.mapper.toDomain
 import com.example.chatease.data.remote.dto.ContactRequestDto
+import com.example.chatease.domain.model.ContactRequest
+import com.example.chatease.domain.model.enums.ContactRequestStatus
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -11,6 +14,8 @@ class ContactRequestRepositoryImpl(
 
     companion object {
         const val CONTACT_REQUESTS = "contact_requests"
+        const val RECEIVER_USER_ID = "receiverUserId"
+        const val STATUS = "status"
     }
 
     override suspend fun sendContactRequest(
@@ -34,5 +39,18 @@ class ContactRequestRepositoryImpl(
             .document(requestId)
             .set(contactRequest)
             .await()
+    }
+
+    override suspend fun getPendingRequests(currentUserId: String): List<ContactRequest> {
+        val snapshot = firestore
+            .collection(CONTACT_REQUESTS)
+            .whereEqualTo(RECEIVER_USER_ID, currentUserId)
+            .whereEqualTo(STATUS, ContactRequestStatus.PENDING)
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull { document ->
+            document.toObject(ContactRequestDto::class.java)?.toDomain()
+        }
     }
 }

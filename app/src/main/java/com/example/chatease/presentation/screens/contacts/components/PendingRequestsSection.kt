@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -38,14 +38,15 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.chat.UserAvatar
+import com.example.chatease.presentation.ui.model.PendingRequestUiModel
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun PendingRequestsSection(
     modifier: Modifier = Modifier,
     onViewAllRequests: () -> Unit,
-    users: List<User>,
-    onCloseRequestClick: () -> Unit,
+    pendingRequests: List<PendingRequestUiModel>,
+    onDismissRequestClick: () -> Unit,
     onAcceptRequestClick: () -> Unit,
     pendingRequestsCount: Int
 ) {
@@ -92,10 +93,10 @@ fun PendingRequestsSection(
             )
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            itemsIndexed(users) { index, user ->
+            items(pendingRequests) { pendingRequest ->
                 PendingRequestItem(
-                    user = user,
-                    onCloseRequestClick = onCloseRequestClick,
+                    pendingRequest = pendingRequest,
+                    onDismissRequestClick = onDismissRequestClick,
                     onAcceptRequestClick = onAcceptRequestClick
                 )
             }
@@ -106,8 +107,8 @@ fun PendingRequestsSection(
 @Composable
 fun PendingRequestItem(
     modifier: Modifier = Modifier,
-    user: User,
-    onCloseRequestClick: () -> Unit,
+    pendingRequest: PendingRequestUiModel,
+    onDismissRequestClick: () -> Unit,
     onAcceptRequestClick: () -> Unit
 ) {
     Row(
@@ -120,7 +121,7 @@ fun PendingRequestItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             UserAvatar(
-                user = user,
+                user = pendingRequest.user,
                 avatarSize = 50.dp,
                 initialsFontSize = 20.sp,
                 showStatus = false
@@ -128,7 +129,7 @@ fun PendingRequestItem(
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = user.fullName,
+                text = pendingRequest.user.fullName,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
@@ -139,7 +140,7 @@ fun PendingRequestItem(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             PendingItemRequestButton(
-                onClick = onCloseRequestClick,
+                onClick = onDismissRequestClick,
                 icon = Icons.Default.Close,
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -158,13 +159,18 @@ fun PendingRequestItem(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun PendingRequestsSectionPreview() {
-    val users = List(8) {
-        User(
-            uid = "",
-            fullName = "Test Testing",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserStatus.ONLINE
+    val user = User(
+        uid = "",
+        fullName = "Test Testing",
+        email = "test@email.com",
+        imageUrl = null,
+        status = UserStatus.ONLINE
+    )
+
+    val pendingRequests = List(5) {
+        PendingRequestUiModel(
+            requestId = "1",
+            user = user
         )
     }
     ChatEaseTheme() {
@@ -177,8 +183,8 @@ private fun PendingRequestsSectionPreview() {
             ) {
                 PendingRequestsSection(
                     onViewAllRequests = {},
-                    users = users,
-                    onCloseRequestClick = {},
+                    pendingRequests = pendingRequests,
+                    onDismissRequestClick = {},
                     onAcceptRequestClick = {},
                     pendingRequestsCount = 323,
                 )

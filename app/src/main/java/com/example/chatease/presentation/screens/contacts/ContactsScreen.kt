@@ -42,6 +42,7 @@ fun ContactsScreen(
     val searchValue by contactsViewModel.searchValue.collectAsState()
     val searchedUsers by contactsViewModel.searchedUsers.collectAsState()
     val sentRequests by contactsViewModel.sentRequests.collectAsState()
+    val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
     val currentUserId = contactsViewModel.currentUserId ?: ""
     val users = listOf(
         User(
@@ -52,7 +53,6 @@ fun ContactsScreen(
             status = UserStatus.OFFLINE
         )
     )
-    val pendingRequestsCount = 12
 
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
@@ -96,13 +96,13 @@ fun ContactsScreen(
                         sentRequestsCount = sentRequests.size
                     )
                 }
-                if (pendingRequestsCount > 0) {
+                if (pendingRequests.isNotEmpty()) {
                     PendingRequestsSection(
                         onViewAllRequests = {},
-                        users = users.take(3),
-                        onCloseRequestClick = {},
+                        pendingRequests = pendingRequests,
+                        onDismissRequestClick = {},
                         onAcceptRequestClick = {},
-                        pendingRequestsCount = pendingRequestsCount,
+                        pendingRequestsCount = pendingRequests.size,
                     )
                 }
                 MyContactsSection(
