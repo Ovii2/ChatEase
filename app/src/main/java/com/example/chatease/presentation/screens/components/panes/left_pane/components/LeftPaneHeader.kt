@@ -122,6 +122,7 @@ fun LeftPaneHeader(
         ChatSearchBar(
             value = "",
             onValueChange = {},
+            onClearSearch = {},
             placeholder = R.string.search_conversations
         )
         CategoriesRow(

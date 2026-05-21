@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +36,7 @@ fun ContactsScreen(
     onBackClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    var searchValue by rememberSaveable { mutableStateOf("") }
     val sentRequestsCount = 123
     val users = listOf(
         User(
@@ -136,8 +141,9 @@ fun ContactsScreen(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 ChatSearchBar(
-                    value = "",
-                    onValueChange = {},
+                    value = searchValue,
+                    onValueChange = { searchValue = it },
+                    onClearSearch = { searchValue = "" },
                     placeholder = R.string.search_contacts
                 )
                 if (sentRequestsCount > 0) {

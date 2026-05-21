@@ -72,6 +72,7 @@ fun NewChatScreen(
                 ChatSearchBar(
                     value = "",
                     onValueChange = {},
+                    onClearSearch = {},
                     placeholder = R.string.search_contacts
                 )
                 if (users.isNotEmpty()) {

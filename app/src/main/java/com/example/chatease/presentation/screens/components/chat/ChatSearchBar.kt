@@ -1,12 +1,14 @@
 package com.example.chatease.presentation.screens.components.chat
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +29,7 @@ fun ChatSearchBar(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    onClearSearch: () -> Unit,
     @StringRes placeholder: Int
 ) {
     TextField(
@@ -41,6 +44,16 @@ fun ChatSearchBar(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         },
+        trailingIcon = {
+            if (value.length > 1) {
+                Icon(
+                    modifier = Modifier.clickable { onClearSearch() },
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                )
+            }
+        },
         shape = CircleShape,
         placeholder = { Text(text = stringResource(placeholder)) },
         colors = TextFieldDefaults.colors(
@@ -52,7 +65,8 @@ fun ChatSearchBar(
 
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
-        )
+        ),
+        maxLines = 2
     )
 }
 
@@ -68,7 +82,8 @@ private fun ChatSearchBarPreview() {
             ChatSearchBar(
                 value = "",
                 onValueChange = {},
-                placeholder = R.string.search_contacts
+                placeholder = R.string.search_contacts,
+                onClearSearch = {},
             )
         }
     }
