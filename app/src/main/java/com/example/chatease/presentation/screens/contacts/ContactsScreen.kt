@@ -32,7 +32,7 @@ fun ContactsScreen(
     onBackClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    val count = 3
+    val sentRequestsCount = 3
     val users = listOf(
         User(
             uid = "",
@@ -140,10 +140,10 @@ fun ContactsScreen(
                     onValueChange = {},
                     placeholder = R.string.search_contacts
                 )
-                if (count > 0) {
+                if (sentRequestsCount > 0) {
                     SentRequestsButton(
                         onNavigateToSentRequests = onNavigateToSentRequests,
-                        count = count
+                        count = sentRequestsCount
                     )
                 }
                 if (pendingRequestsCount > 0) {
