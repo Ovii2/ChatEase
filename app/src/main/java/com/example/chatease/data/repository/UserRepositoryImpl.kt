@@ -37,4 +37,20 @@ class UserRepositoryImpl(
         val userDto = document.toObject(UserDto::class.java)
         return userDto?.toDomain() ?: throw Exception("User not found")
     }
+
+    override suspend fun searchUsers(query: String): List<User> {
+        val snapshot = firestore
+            .collection(USERS)
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull { document ->
+            document.toObject(UserDto::class.java)?.toDomain()
+        }.filter { user ->
+            user.fullName.contains(
+                other = query,
+                ignoreCase = true
+            )
+        }
+    }
 }
