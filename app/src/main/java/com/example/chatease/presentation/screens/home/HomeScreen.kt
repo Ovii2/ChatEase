@@ -26,6 +26,7 @@ import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
+import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -39,6 +40,7 @@ fun HomeScreen(
     onConversationClick: (String) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
+    contactsViewModel: ContactsViewModel = hiltViewModel(),
     onNavigateToLoginScreen: () -> Unit,
     onStartNewChat: () -> Unit
 ) {
@@ -49,6 +51,9 @@ fun HomeScreen(
     val activity = LocalActivity.current ?: return
     val windowSizeClass = calculateWindowSizeClass(activity)
 
+    val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
+    val showContactsBadge = pendingRequests.isNotEmpty()
+
     Scaffold(
         bottomBar = {
             if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
@@ -58,7 +63,9 @@ fun HomeScreen(
                     onNavigateToContacts = onNavigateToContacts,
                     onStartNewChat = onStartNewChat,
                     onNavigateToCalls = onNavigateToCalls,
-                    onNavigateToProfile = onNavigateToProfile
+                    onNavigateToProfile = onNavigateToProfile,
+                    pendingRequests = pendingRequests.size,
+                    showContactsBadge = showContactsBadge,
                 )
             }
         }

@@ -15,6 +15,8 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.People
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,7 +45,9 @@ fun ChatBottomBar(
     onNavigateToContacts: () -> Unit,
     onStartNewChat: () -> Unit,
     onNavigateToCalls: () -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    pendingRequests: Int,
+    showContactsBadge: Boolean
 ) {
     NavigationBar(
         modifier = modifier.border(
@@ -64,7 +68,9 @@ fun ChatBottomBar(
             selected = currentRoute == Screens.Contacts.route,
             onClick = onNavigateToContacts,
             label = R.string.contacts,
-            image = Icons.Outlined.People
+            image = Icons.Outlined.People,
+            badgeCount = pendingRequests,
+            showBadge = showContactsBadge
         )
         FloatingActionButton(
             modifier = Modifier
@@ -99,17 +105,29 @@ fun RowScope.CustomNavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
     @StringRes label: Int,
-    image: ImageVector
+    image: ImageVector,
+    badgeCount: Int = 0,
+    showBadge: Boolean = badgeCount > 0
 ) {
     NavigationBarItem(
         modifier = modifier,
         selected = selected,
         onClick = onClick,
         icon = {
-            Icon(
-                imageVector = image,
-                contentDescription = null
-            )
+            BadgedBox(
+                badge = {
+                    if (showBadge) {
+                        Badge {
+                            Text(text = "$badgeCount")
+                        }
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = image,
+                    contentDescription = null
+                )
+            }
         },
         label = {
             Text(
@@ -143,7 +161,9 @@ private fun ChatBottomBarPreview() {
                 onNavigateToContacts = {},
                 onStartNewChat = {},
                 onNavigateToCalls = {},
-                onNavigateToProfile = {}
+                onNavigateToProfile = {},
+                pendingRequests = 1,
+                showContactsBadge = true,
             )
         }
     }
