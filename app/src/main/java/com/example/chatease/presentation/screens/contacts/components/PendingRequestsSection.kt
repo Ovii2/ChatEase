@@ -48,7 +48,8 @@ fun PendingRequestsSection(
     pendingRequests: List<PendingRequestUiModel>,
     onDismissRequestClick: () -> Unit,
     onAcceptRequestClick: () -> Unit,
-    pendingRequestsCount: Int
+    pendingRequestsCount: Int,
+    pendingRequestLimit: Int
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(
@@ -85,12 +86,14 @@ fun PendingRequestsSection(
                     )
                 }
             }
-            Text(
-                text = stringResource(R.string.view_all),
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            if (pendingRequests.size > pendingRequestLimit) {
+                Text(
+                    text = stringResource(R.string.view_all),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             items(pendingRequests) { pendingRequest ->
@@ -187,6 +190,7 @@ private fun PendingRequestsSectionPreview() {
                     onDismissRequestClick = {},
                     onAcceptRequestClick = {},
                     pendingRequestsCount = 323,
+                    pendingRequestLimit = 3,
                 )
             }
         }

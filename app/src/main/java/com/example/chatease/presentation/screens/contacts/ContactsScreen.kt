@@ -44,6 +44,7 @@ fun ContactsScreen(
     val sentRequests by contactsViewModel.sentRequests.collectAsState()
     val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
     val currentUserId = contactsViewModel.currentUserId ?: ""
+    val pendingRequestLimit = 3
     val users = listOf(
         User(
             uid = "10",
@@ -68,10 +69,10 @@ fun ContactsScreen(
                 .fillMaxSize()
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() }) {
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
                     focusManager.clearFocus()
-                }
-        )
+                })
         {
             Column(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -99,10 +100,11 @@ fun ContactsScreen(
                 if (pendingRequests.isNotEmpty()) {
                     PendingRequestsSection(
                         onViewAllRequests = {},
-                        pendingRequests = pendingRequests,
+                        pendingRequests = pendingRequests.take(pendingRequestLimit),
                         onDismissRequestClick = {},
                         onAcceptRequestClick = {},
                         pendingRequestsCount = pendingRequests.size,
+                        pendingRequestLimit = pendingRequestLimit
                     )
                 }
                 MyContactsSection(
