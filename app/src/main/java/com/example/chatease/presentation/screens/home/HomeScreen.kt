@@ -19,7 +19,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.chat.ChatBottomBar
 import com.example.chatease.presentation.screens.components.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.navigation.Screens

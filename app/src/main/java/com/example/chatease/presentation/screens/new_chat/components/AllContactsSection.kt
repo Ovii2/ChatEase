@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.screens.new_chat.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 

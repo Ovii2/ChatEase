@@ -1,5 +1,7 @@
 package com.example.chatease.domain.model
 
+import com.example.chatease.domain.model.enums.UserStatus
+
 data class User(
     val uid: String = "",
     val fullName: String = "",

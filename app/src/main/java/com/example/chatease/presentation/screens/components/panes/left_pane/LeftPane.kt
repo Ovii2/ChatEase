@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.panes.left_pane.components.LeftPaneHeader
 import com.example.chatease.presentation.screens.components.panes.left_pane.components.RecentChatsList
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -37,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
@@ -55,7 +54,8 @@ fun PendingRequestsSection(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable { onViewAllRequests() },
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -73,7 +73,8 @@ fun PendingRequestsSection(
                         .defaultMinSize(
                             minWidth = 26.dp,
                             minHeight = 26.dp
-                        ).padding(horizontal = 6.dp),
+                        )
+                        .padding(horizontal = 6.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

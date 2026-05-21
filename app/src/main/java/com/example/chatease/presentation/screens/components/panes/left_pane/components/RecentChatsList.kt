@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toChatTimeStamp

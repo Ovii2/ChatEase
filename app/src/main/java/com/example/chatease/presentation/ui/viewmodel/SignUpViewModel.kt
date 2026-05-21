@@ -3,7 +3,7 @@ package com.example.chatease.presentation.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.chatease.R
 import com.example.chatease.data.remote.dto.UserDto
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.ui.state.SignUpUiState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException

@@ -1,4 +1,4 @@
-package com.example.chatease.domain.model
+package com.example.chatease.domain.model.enums
 
 enum class MessageType {
     TEXT,

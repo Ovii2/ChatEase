@@ -1,7 +1,7 @@
 package com.example.chatease.domain.repository
 
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 
 interface UserRepository {
 

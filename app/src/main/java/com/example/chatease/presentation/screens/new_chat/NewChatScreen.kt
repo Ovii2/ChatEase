@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
 import com.example.chatease.presentation.screens.new_chat.components.AllContactsSection
 import com.example.chatease.presentation.screens.new_chat.components.FrequentlyContactedSection

@@ -3,7 +3,7 @@ package com.example.chatease.presentation.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.data.local.datastore.auth.AuthPreferencesRepository
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.state.LoginUiState
 import com.google.firebase.auth.FirebaseAuth

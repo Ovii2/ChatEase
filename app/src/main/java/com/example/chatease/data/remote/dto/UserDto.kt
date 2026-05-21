@@ -1,6 +1,6 @@
 package com.example.chatease.data.remote.dto
 
-import com.example.chatease.domain.model.UserStatus
+import com.example.chatease.domain.model.enums.UserStatus
 
 data class UserDto(
     val uid: String = "",
