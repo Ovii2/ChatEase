@@ -10,34 +10,38 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.UserStatus
 import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
 import com.example.chatease.presentation.screens.contacts.components.ContactsScreenTopBar
+import com.example.chatease.presentation.screens.contacts.components.ContactsSearchResultsRow
 import com.example.chatease.presentation.screens.contacts.components.MyContactsSection
 import com.example.chatease.presentation.screens.contacts.components.PendingRequestsSection
 import com.example.chatease.presentation.screens.contacts.components.SentRequestsButton
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 
 @Composable
 fun ContactsScreen(
     modifier: Modifier = Modifier,
     onNavigateToSentRequests: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    contactsViewModel: ContactsViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-    var searchValue by rememberSaveable { mutableStateOf("") }
+    val searchValue by contactsViewModel.searchValue.collectAsState()
+    val searchedUsers by contactsViewModel.searchedUsers.collectAsState()
     val sentRequestsCount = 123
+    val currentUserId = contactsViewModel.currentUserId ?: ""
     val users = listOf(
         User(
             uid = "",
@@ -142,10 +146,17 @@ fun ContactsScreen(
             ) {
                 ChatSearchBar(
                     value = searchValue,
-                    onValueChange = { searchValue = it },
-                    onClearSearch = { searchValue = "" },
+                    onValueChange = contactsViewModel::onSearchValueChange,
+                    onClearSearch = contactsViewModel::clearSearch,
                     placeholder = R.string.search_contacts
                 )
+                if (searchValue.isNotBlank()) {
+                    ContactsSearchResultsRow(
+                        users = searchedUsers.take(5),
+                        onUserClickAdd = {},
+                        currentUserId = currentUserId
+                    )
+                }
                 if (sentRequestsCount > 0) {
                     SentRequestsButton(
                         onNavigateToSentRequests = onNavigateToSentRequests,

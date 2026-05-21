@@ -52,7 +52,7 @@ fun PendingRequestsSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .clickable { onViewAllRequests() },
             horizontalArrangement = Arrangement.SpaceBetween
