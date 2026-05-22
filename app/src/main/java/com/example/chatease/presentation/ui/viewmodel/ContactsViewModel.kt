@@ -52,6 +52,7 @@ class ContactsViewModel @Inject constructor(
             }
         }
         getPendingRequests()
+        getSentRequests()
     }
 
     fun onSearchValueChange(value: String) {
@@ -122,4 +123,22 @@ class ContactsViewModel @Inject constructor(
             }
         }
     }
+
+    fun getSentRequests() {
+        viewModelScope.launch {
+            val currentUserId = auth.currentUser?.uid ?: return@launch
+            try {
+                val requests = contactRequestRepository.getSentRequests(currentUserId)
+                _sentRequests.value = requests.map { request ->
+                    request.receiverUserId
+                }
+            } catch (e: Exception) {
+                Log.e(
+                    "ContactsViewModel",
+                    e.message ?: "Failed to get sent request"
+                )
+            }
+        }
+    }
+
 }
