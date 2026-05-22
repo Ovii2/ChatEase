@@ -1,5 +1,6 @@
-package com.example.chatease.presentation.screens.new_chat.components
+package com.example.chatease.presentation.screens.shared.chat
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
@@ -13,18 +14,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.example.chatease.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewChatTopBar(
+fun CommonTopBar(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    @StringRes title: Int
 ) {
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = stringResource(R.string.new_chat),
+                text = stringResource(title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold
             )
