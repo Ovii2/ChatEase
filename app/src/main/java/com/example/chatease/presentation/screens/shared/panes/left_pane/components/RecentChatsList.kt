@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.panes.left_pane.components
+package com.example.chatease.presentation.screens.shared.panes.left_pane.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -36,7 +36,7 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserStatus
-import com.example.chatease.presentation.screens.components.chat.UserAvatar
+import com.example.chatease.presentation.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toChatTimeStamp
 

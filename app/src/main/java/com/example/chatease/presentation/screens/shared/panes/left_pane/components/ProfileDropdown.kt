@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.panes.left_pane.components
+package com.example.chatease.presentation.screens.shared.panes.left_pane.components
 
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem

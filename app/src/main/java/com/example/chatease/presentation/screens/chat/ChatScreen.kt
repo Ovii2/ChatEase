@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
-import com.example.chatease.presentation.screens.components.panes.right_pane.RightPane
+import com.example.chatease.presentation.screens.shared.panes.right_pane.RightPane
 
 @Composable
 fun ChatScreen(modifier: Modifier = Modifier) {

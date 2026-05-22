@@ -29,9 +29,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
-import com.example.chatease.presentation.screens.components.auth.AuthActionButton
-import com.example.chatease.presentation.screens.components.auth.AuthPasswordInput
-import com.example.chatease.presentation.screens.components.auth.AuthTextInput
+import com.example.chatease.presentation.screens.shared.auth.AuthActionButton
+import com.example.chatease.presentation.screens.shared.auth.AuthPasswordInput
+import com.example.chatease.presentation.screens.shared.auth.AuthTextInput
 import com.example.chatease.presentation.ui.state.SignUpUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 

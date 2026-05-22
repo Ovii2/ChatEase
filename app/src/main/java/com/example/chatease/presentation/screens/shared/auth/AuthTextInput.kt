@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.auth
+package com.example.chatease.presentation.screens.shared.auth
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme

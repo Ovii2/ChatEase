@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.panes.left_pane
+package com.example.chatease.presentation.screens.shared.panes.left_pane
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -19,8 +19,8 @@ import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserStatus
-import com.example.chatease.presentation.screens.components.panes.left_pane.components.LeftPaneHeader
-import com.example.chatease.presentation.screens.components.panes.left_pane.components.RecentChatsList
+import com.example.chatease.presentation.screens.shared.panes.left_pane.components.LeftPaneHeader
+import com.example.chatease.presentation.screens.shared.panes.left_pane.components.RecentChatsList
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.chat
+package com.example.chatease.presentation.screens.shared.chat
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

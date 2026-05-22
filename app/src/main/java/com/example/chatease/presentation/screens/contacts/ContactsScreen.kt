@@ -22,12 +22,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserStatus
-import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
 import com.example.chatease.presentation.screens.contacts.components.ContactsScreenTopBar
 import com.example.chatease.presentation.screens.contacts.components.ContactsSearchResultsRow
 import com.example.chatease.presentation.screens.contacts.components.MyContactsSection
 import com.example.chatease.presentation.screens.contacts.components.PendingRequestsSection
 import com.example.chatease.presentation.screens.contacts.components.SentRequestsButton
+import com.example.chatease.presentation.screens.shared.chat.ChatSearchBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 

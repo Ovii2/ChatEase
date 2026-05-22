@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.chat
+package com.example.chatease.presentation.screens.shared.chat
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border

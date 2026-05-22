@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.panes.right_pane.compnents
+package com.example.chatease.presentation.screens.shared.panes.right_pane.compnents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserStatus
-import com.example.chatease.presentation.screens.components.chat.UserAvatar
+import com.example.chatease.presentation.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable

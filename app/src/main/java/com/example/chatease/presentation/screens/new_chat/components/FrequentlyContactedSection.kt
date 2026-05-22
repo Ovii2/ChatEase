@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.presentation.screens.components.chat.UserAvatar
+import com.example.chatease.presentation.screens.shared.chat.UserAvatar
 
 @Composable
 fun FrequentlyContactedSection(

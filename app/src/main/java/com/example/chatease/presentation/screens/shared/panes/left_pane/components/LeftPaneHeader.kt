@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.panes.left_pane.components
+package com.example.chatease.presentation.screens.shared.panes.left_pane.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.Category
-import com.example.chatease.presentation.screens.components.chat.ChatSearchBar
+import com.example.chatease.presentation.screens.shared.chat.ChatSearchBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable

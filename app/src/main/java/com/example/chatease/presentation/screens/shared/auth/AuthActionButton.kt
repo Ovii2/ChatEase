@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.screens.components.auth
+package com.example.chatease.presentation.screens.shared.auth
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
@@ -75,8 +75,9 @@ fun AuthActionButton(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true,
-         uiMode = Configuration.UI_MODE_TYPE_NORMAL
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
 private fun AuthActionButtonPreview() {
