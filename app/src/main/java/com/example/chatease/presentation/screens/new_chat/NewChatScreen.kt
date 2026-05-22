@@ -19,8 +19,8 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserStatus
 import com.example.chatease.presentation.screens.new_chat.components.AllContactsSection
 import com.example.chatease.presentation.screens.new_chat.components.FrequentlyContactedSection
-import com.example.chatease.presentation.screens.new_chat.components.NewChatTopBar
 import com.example.chatease.presentation.screens.shared.chat.ChatSearchBar
+import com.example.chatease.presentation.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -54,8 +54,9 @@ fun NewChatScreen(
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
         topBar = {
-            NewChatTopBar(
-                onBackClick = onBackClick
+            CommonTopBar(
+                onBackClick = onBackClick,
+                title = R.string.new_chat,
             )
         }
     ) { paddingValues ->
