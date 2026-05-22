@@ -3,7 +3,7 @@ package com.example.chatease.data.repository
 import com.example.chatease.data.mapper.toDomain
 import com.example.chatease.data.remote.dto.UserDto
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -19,7 +19,7 @@ class UserRepositoryImpl(
 
     override suspend fun updateUserStatus(
         userId: String,
-        status: UserStatus
+        status: UserPresenceStatus
     ) {
         firestore.collection(USERS)
             .document(userId)

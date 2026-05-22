@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.screens.shared.panes.right_pane.compnents.MessageInputBar
 import com.example.chatease.presentation.screens.shared.panes.right_pane.compnents.MessagesList
 import com.example.chatease.presentation.screens.shared.panes.right_pane.compnents.RightPaneTopBar
@@ -58,7 +58,7 @@ private fun RightPanePreview() {
         fullName = "Test Test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserStatus.ONLINE
+        status = UserPresenceStatus.ONLINE
     )
 
     val messages = listOf(

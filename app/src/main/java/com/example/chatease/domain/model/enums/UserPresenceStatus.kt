@@ -1,6 +1,6 @@
 package com.example.chatease.domain.model.enums
 
-enum class UserStatus {
+enum class UserPresenceStatus {
 
     ONLINE,
     AWAY,

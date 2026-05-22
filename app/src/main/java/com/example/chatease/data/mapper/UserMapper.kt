@@ -2,7 +2,7 @@ package com.example.chatease.data.mapper
 
 import com.example.chatease.data.remote.dto.UserDto
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 
 fun UserDto.toDomain(): User {
     return User(
@@ -10,7 +10,7 @@ fun UserDto.toDomain(): User {
         fullName = fullName,
         email = email,
         imageUrl = imageUrl,
-        status = UserStatus.valueOf(status)
+        status = UserPresenceStatus.valueOf(status)
     )
 }
 

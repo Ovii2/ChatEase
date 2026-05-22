@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.avatarGradients
 import com.example.chatease.presentation.ui.theme.awayYellow
@@ -55,9 +55,9 @@ fun UserAvatar(
     val avatarGradient = gradients[user.uid.hashCode().absoluteValue % gradients.size]
 
     val statusColor = when (user.status) {
-        UserStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
-        UserStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
-        UserStatus.OFFLINE -> Color.Transparent
+        UserPresenceStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
+        UserPresenceStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
+        UserPresenceStatus.OFFLINE -> Color.Transparent
     }
     Box() {
         if (user.imageUrl == null) {
@@ -97,7 +97,7 @@ fun UserAvatar(
                 contentDescription = null
             )
         }
-        if (user.status != UserStatus.OFFLINE && showStatus) {
+        if (user.status != UserPresenceStatus.OFFLINE && showStatus) {
             Box(
                 modifier = Modifier
                     .size(statusBubbleSize)
@@ -123,7 +123,7 @@ private fun UserAvatarPreview() {
         fullName = "Test Test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserStatus.ONLINE
+        status = UserPresenceStatus.ONLINE
     )
     ChatEaseTheme() {
         UserAvatar(

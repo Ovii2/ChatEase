@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.model.PendingRequestUiModel
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -167,7 +167,7 @@ private fun PendingRequestsSectionPreview() {
         fullName = "Test Testing",
         email = "test@email.com",
         imageUrl = null,
-        status = UserStatus.ONLINE
+        status = UserPresenceStatus.ONLINE
     )
 
     val pendingRequests = List(5) {

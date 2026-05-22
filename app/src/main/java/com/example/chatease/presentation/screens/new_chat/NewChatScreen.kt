@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.screens.new_chat.components.AllContactsSection
 import com.example.chatease.presentation.screens.new_chat.components.FrequentlyContactedSection
 import com.example.chatease.presentation.screens.shared.chat.ChatSearchBar
@@ -36,14 +36,14 @@ fun NewChatScreen(
             fullName = "Test testing",
             email = "test@email.com",
             imageUrl = null,
-            status = UserStatus.ONLINE
+            status = UserPresenceStatus.ONLINE
         ),
         User(
             uid = "",
             fullName = "Test testing",
             email = "test@email.com",
             imageUrl = null,
-            status = UserStatus.ONLINE
+            status = UserPresenceStatus.ONLINE
         )
     )
     val contacts = listOf("1", "2")

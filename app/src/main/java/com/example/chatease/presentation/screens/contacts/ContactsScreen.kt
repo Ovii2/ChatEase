@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.screens.contacts.components.ContactsScreenTopBar
 import com.example.chatease.presentation.screens.contacts.components.ContactsSearchResultsRow
 import com.example.chatease.presentation.screens.contacts.components.MyContactsSection
@@ -51,7 +51,7 @@ fun ContactsScreen(
             fullName = "Some User",
             email = "some@user.com",
             imageUrl = null,
-            status = UserStatus.OFFLINE
+            status = UserPresenceStatus.OFFLINE
         )
     )
 

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
@@ -107,7 +107,7 @@ private fun MessagesListPreview() {
         fullName = "Test Test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserStatus.ONLINE
+        status = UserPresenceStatus.ONLINE
     )
     ChatEaseTheme() {
         Column(modifier = Modifier.systemBarsPadding()) {

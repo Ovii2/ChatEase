@@ -19,7 +19,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.screens.shared.chat.ChatBottomBar
 import com.example.chatease.presentation.screens.shared.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.navigation.Screens
@@ -143,7 +143,7 @@ private fun HomeScreenCompactLayoutPreview() {
         fullName = "Test test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserStatus.AWAY
+        status = UserPresenceStatus.AWAY
     )
 
     val categories = listOf(

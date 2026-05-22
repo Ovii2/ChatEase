@@ -3,7 +3,7 @@ package com.example.chatease.presentation.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.data.local.datastore.auth.AuthPreferencesRepository
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.state.LoginUiState
 import com.google.firebase.auth.FirebaseAuth
@@ -40,7 +40,7 @@ class AuthViewModel @Inject constructor(
 
                     userRepository.updateUserStatus(
                         userId = currentUserId,
-                        status = UserStatus.ONLINE
+                        status = UserPresenceStatus.ONLINE
                     )
                 }
                 _uiState.value = LoginUiState.Success
@@ -59,7 +59,7 @@ class AuthViewModel @Inject constructor(
             currentUserId?.let {
                 userRepository.updateUserStatus(
                     userId = currentUserId,
-                    status = UserStatus.OFFLINE
+                    status = UserPresenceStatus.OFFLINE
                 )
             }
             auth.signOut()

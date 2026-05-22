@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.awayYellow
@@ -45,16 +45,16 @@ fun RightPaneTopBar(
     modifier: Modifier = Modifier,
     user: User
 ) {
-    val userStatus = when (user.status) {
-        UserStatus.ONLINE -> R.string.online
-        UserStatus.AWAY -> R.string.away
+    val userPresenceStatus = when (user.status) {
+        UserPresenceStatus.ONLINE -> R.string.online
+        UserPresenceStatus.AWAY -> R.string.away
         else -> R.string.offline
     }
 
     val statusColor = when (user.status) {
-        UserStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
-        UserStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
-        UserStatus.OFFLINE -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+        UserPresenceStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
+        UserPresenceStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
+        UserPresenceStatus.OFFLINE -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
     }
 
     TopAppBar(
@@ -86,7 +86,7 @@ fun RightPaneTopBar(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = stringResource(userStatus),
+                            text = stringResource(userPresenceStatus),
                             style = MaterialTheme.typography.labelMedium,
                             color = statusColor,
                             maxLines = 1,
@@ -130,7 +130,7 @@ private fun RightPaneTopBarPreview() {
         fullName = "Test test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserStatus.ONLINE
+        status = UserPresenceStatus.ONLINE
     )
     ChatEaseTheme() {
         Column(
