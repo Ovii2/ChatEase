@@ -10,6 +10,7 @@ import com.example.chatease.presentation.screens.contacts.ContactsScreen
 import com.example.chatease.presentation.screens.home.HomeScreen
 import com.example.chatease.presentation.screens.login.LoginScreen
 import com.example.chatease.presentation.screens.new_chat.NewChatScreen
+import com.example.chatease.presentation.screens.sent_requests.SentRequestsScreen
 import com.example.chatease.presentation.screens.sign_up.SignUpScreen
 
 @Composable
@@ -89,8 +90,17 @@ fun AppNavHost(
         }
         composable(route = Screens.Contacts.route) {
             ContactsScreen(
-                onNavigateToSentRequests = {},
+                onNavigateToSentRequests = {
+                    navController.navigate(Screens.SentRequests.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onBackClick = { navController.popBackStack() },
+            )
+        }
+        composable(route = Screens.SentRequests.route) {
+            SentRequestsScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
