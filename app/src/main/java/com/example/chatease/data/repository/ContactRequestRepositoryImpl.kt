@@ -6,6 +6,7 @@ import com.example.chatease.domain.model.ContactRequest
 import com.example.chatease.domain.model.enums.ContactRequestStatus
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 
 class ContactRequestRepositoryImpl(
@@ -15,6 +16,7 @@ class ContactRequestRepositoryImpl(
     companion object {
         const val CONTACT_REQUESTS = "contact_requests"
         const val RECEIVER_USER_ID = "receiverUserId"
+        const val SENDER_USER_ID = "senderUserId"
         const val STATUS = "status"
     }
 
@@ -49,6 +51,21 @@ class ContactRequestRepositoryImpl(
             .get()
             .await()
 
+        return mapDocumentsToContactRequests(snapshot)
+    }
+
+    override suspend fun getSentRequests(currentUserId: String): List<ContactRequest> {
+        val snapshot = firestore
+            .collection(CONTACT_REQUESTS)
+            .whereEqualTo(SENDER_USER_ID, currentUserId)
+            .whereEqualTo(STATUS, ContactRequestStatus.PENDING)
+            .get()
+            .await()
+
+        return mapDocumentsToContactRequests(snapshot)
+    }
+
+    private fun mapDocumentsToContactRequests(snapshot: QuerySnapshot): List<ContactRequest> {
         return snapshot.documents.mapNotNull { document ->
             document.toObject(ContactRequestDto::class.java)?.toDomain()
         }
