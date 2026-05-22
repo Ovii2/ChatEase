@@ -54,4 +54,27 @@ class SentRequestsViewModel @Inject constructor(
         }
     }
 
+    fun withdrawContactRequest(requestId: String) {
+        viewModelScope.launch {
+            try {
+                val currentState = _sentRequests.value
+                if (currentState is SentRequestsUiState.Success) {
+                    contactRequestRepository.withdrawContactRequest(requestId)
+                    val updatedRequests = currentState.requests.filterNot {
+                        it.requestId == requestId
+                    }
+                    _sentRequests.value = if (updatedRequests.isEmpty()) {
+                        SentRequestsUiState.Empty
+                    } else {
+                        SentRequestsUiState.Success(updatedRequests)
+                    }
+                }
+            } catch (e: Exception) {
+                _sentRequests.value = SentRequestsUiState.Error(
+                    message = e.message ?: "Failed to withdraw request"
+                )
+            }
+        }
+    }
+
 }
