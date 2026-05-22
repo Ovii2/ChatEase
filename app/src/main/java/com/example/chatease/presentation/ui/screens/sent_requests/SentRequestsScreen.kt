@@ -1,6 +1,13 @@
 package com.example.chatease.presentation.ui.screens.sent_requests
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,8 +26,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,6 +49,7 @@ import com.example.chatease.presentation.ui.screens.shared.user.UserHeader
 import com.example.chatease.presentation.ui.state.SentRequestsUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.SentRequestsViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun SentRequestsScreen(
@@ -107,11 +119,18 @@ fun SentRequestsScreen(
                             fontSize = 15.sp
                         )
                     }
-                    items(uiState.requests) { sentRequest ->
+                    items(
+                        items = uiState.requests,
+                        key = { it.requestId }
+                    ) { sentRequest ->
                         SentRequestsItem(
                             user = sentRequest.receiver,
                             contactRequestStatus = sentRequest.status,
-                            onWithdrawRequest = {}
+                            onWithdrawRequest = {
+                                sentRequestsViewModel.withdrawContactRequest(
+                                    sentRequest.requestId
+                                )
+                            }
                         )
                     }
                 }
@@ -133,29 +152,60 @@ fun SentRequestsItem(
     contactRequestStatus: ContactRequestStatus,
     onWithdrawRequest: (String) -> Unit
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        UserHeader(
-            user = user,
-            contactRequestStatus = contactRequestStatus,
-            statusType = UserHeaderStatusType.REQUEST
-        )
-        Button(
-            onClick = { onWithdrawRequest(user.uid) },
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.primary
-            ),
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.primary
+    var isWithdrawn by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(isWithdrawn) {
+        if (isWithdrawn) {
+            delay(900)
+            onWithdrawRequest(user.uid)
+        }
+    }
+
+    AnimatedContent(
+        targetState = isWithdrawn,
+        transitionSpec = {
+            fadeIn(
+                animationSpec = tween(400)
+            ) + scaleIn() togetherWith fadeOut(
+                animationSpec = tween(400)
+            ) + scaleOut()
+        },
+        label = "Withdraw state"
+    ) { withdrawn ->
+        if (withdrawn) {
+            Text(
+                text = stringResource(R.string.request_withdrawn),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-        ) {
-            Text(text = stringResource(R.string.withdraw))
+        } else {
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                UserHeader(
+                    user = user,
+                    contactRequestStatus = contactRequestStatus,
+                    statusType = UserHeaderStatusType.REQUEST
+                )
+                Button(
+                    onClick = {
+                        isWithdrawn = true
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(text = stringResource(R.string.withdraw))
+                }
+            }
         }
     }
 }
