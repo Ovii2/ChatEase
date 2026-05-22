@@ -65,6 +65,14 @@ class ContactRequestRepositoryImpl(
         return mapDocumentsToContactRequests(snapshot)
     }
 
+    override suspend fun withdrawContactRequest(requestId: String) {
+        firestore
+            .collection(CONTACT_REQUESTS)
+            .document(requestId)
+            .delete()
+            .await()
+    }
+
     private fun mapDocumentsToContactRequests(snapshot: QuerySnapshot): List<ContactRequest> {
         return snapshot.documents.mapNotNull { document ->
             document.toObject(ContactRequestDto::class.java)?.toDomain()

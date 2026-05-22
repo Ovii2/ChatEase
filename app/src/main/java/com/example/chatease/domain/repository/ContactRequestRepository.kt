@@ -10,4 +10,6 @@ interface ContactRequestRepository {
 
     suspend fun getSentRequests(currentUserId: String): List<ContactRequest>
 
+    suspend fun withdrawContactRequest(requestId: String)
+
 }
