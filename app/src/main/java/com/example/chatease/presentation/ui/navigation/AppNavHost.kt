@@ -5,13 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.chatease.presentation.screens.chat.ChatScreen
-import com.example.chatease.presentation.screens.contacts.ContactsScreen
-import com.example.chatease.presentation.screens.home.HomeScreen
-import com.example.chatease.presentation.screens.login.LoginScreen
-import com.example.chatease.presentation.screens.new_chat.NewChatScreen
-import com.example.chatease.presentation.screens.sent_requests.SentRequestsScreen
-import com.example.chatease.presentation.screens.sign_up.SignUpScreen
+import com.example.chatease.presentation.ui.screens.chat.ChatScreen
+import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
+import com.example.chatease.presentation.ui.screens.home.HomeScreen
+import com.example.chatease.presentation.ui.screens.login.LoginScreen
+import com.example.chatease.presentation.ui.screens.new_chat.NewChatScreen
+import com.example.chatease.presentation.ui.screens.sent_requests.SentRequestsScreen
+import com.example.chatease.presentation.ui.screens.sign_up.SignUpScreen
 
 @Composable
 fun AppNavHost(
