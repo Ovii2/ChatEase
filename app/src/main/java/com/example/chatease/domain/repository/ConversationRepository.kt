@@ -7,4 +7,5 @@ interface ConversationRepository {
     suspend fun getUserConversations(
         userId: String
     ): List<Conversation>
+
 }
