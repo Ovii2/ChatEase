@@ -35,4 +35,14 @@ fun Long.toChatTimeStamp(): String {
             localDateTime.format(dateFormatter)
         }
     }
+
+}
+
+fun Long.toFormattedTime(): String {
+    val totalMinutes = this / (1000 * 60)
+
+    val hours = totalMinutes / 60
+    val minutes = totalMinutes % 60
+
+    return "%02d:%02d".format(hours, minutes)
 }
