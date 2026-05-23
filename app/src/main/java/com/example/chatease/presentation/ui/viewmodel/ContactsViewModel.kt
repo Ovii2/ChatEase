@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.example.chatease.presentation.ui.model.CooldownUiModel
 import com.example.chatease.presentation.ui.model.PendingRequestUiModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,9 @@ class ContactsViewModel @Inject constructor(
 
     private val _pendingRequests = MutableStateFlow<List<PendingRequestUiModel>>(emptyList())
     val pendingRequests = _pendingRequests.asStateFlow()
+
+    private val _cooldowns = MutableStateFlow<List<CooldownUiModel>>(emptyList())
+    val cooldowns = _cooldowns.asStateFlow()
 
     @OptIn(FlowPreview::class)
     val debouncedSearch = searchValue.debounce(300)
@@ -72,7 +76,13 @@ class ContactsViewModel @Inject constructor(
                     _isSearching.value = false
                 } else {
                     _isSearching.value = true
-                    _searchedUsers.value = userRepository.searchUsers(query)
+                    val users = userRepository.searchUsers(query)
+                    val currentUserId = auth.currentUser?.uid ?: return@launch
+                    loadCooldownUserIds(
+                        users = users,
+                        currentUserId = currentUserId
+                    )
+                    _searchedUsers.value = users
                     _isSearching.value = false
                 }
             } catch (e: Exception) {
@@ -141,4 +151,26 @@ class ContactsViewModel @Inject constructor(
         }
     }
 
+    private suspend fun loadCooldownUserIds(users: List<User>, currentUserId: String) {
+        try {
+            val activeCooldowns = users.mapNotNull { user ->
+                val cooldown = contactRequestRepository.getCooldown(
+                    senderUserId = currentUserId,
+                    receiverUserId = user.uid
+                )
+                if (cooldown != null && cooldown.expiresAt > System.currentTimeMillis()) {
+                    CooldownUiModel(
+                        userId = user.uid,
+                        expiresAt = cooldown.expiresAt
+                    )
+                } else {
+                    null
+                }
+            }
+            _cooldowns.value = activeCooldowns
+
+        } catch (e: Exception) {
+            Log.e("ContactsViewModel", e.message ?: "Loading cooldown user ids failed")
+        }
+    }
 }
