@@ -17,6 +17,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,21 +32,43 @@ import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.model.CooldownUiModel
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.utils.toFormattedTime
+import kotlinx.coroutines.delay
 
 @Composable
 fun ContactsSearchResultsRow(
     users: List<User>,
     onAddContactClick: (String) -> Unit,
     currentUserId: String,
-    sentRequests: List<String>
+    sentRequests: List<String>,
+    cooldownRequests: List<CooldownUiModel>
 ) {
+    var currentTime by rememberSaveable { mutableLongStateOf(System.currentTimeMillis()) }
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(users) { user ->
+
             val isInvitationSent = user.uid in sentRequests
+            val cooldown = cooldownRequests.find {
+                it.userId == user.uid
+            }
+            val isCooldownActive = cooldown != null
+            val remainingCooldownTime = cooldown?.expiresAt?.minus(currentTime) ?: 0L
+
+            LaunchedEffect(isCooldownActive) {
+                if (isCooldownActive) {
+                    while (true) {
+                        currentTime = System.currentTimeMillis()
+                        delay(1000)
+                    }
+                }
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -67,7 +94,7 @@ fun ContactsSearchResultsRow(
                 }
                 if (currentUserId != user.uid) {
                     Button(
-                        enabled = !isInvitationSent,
+                        enabled = !isInvitationSent && !isCooldownActive,
                         onClick = { onAddContactClick(user.uid) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
@@ -75,9 +102,11 @@ fun ContactsSearchResultsRow(
                         shape = RoundedCornerShape(10.dp)
                     ) {
                         Text(
-                            text = if (isInvitationSent) stringResource(R.string.invite_sent) else stringResource(
-                                R.string.add
-                            )
+                            text = when {
+                                isInvitationSent -> stringResource(R.string.invite_sent)
+                                isCooldownActive -> remainingCooldownTime.toFormattedTime()
+                                else -> stringResource(R.string.add)
+                            }
                         )
                     }
                 }
@@ -126,6 +155,7 @@ private fun ContactsSearchResultsRowPreview() {
                     onAddContactClick = {},
                     currentUserId = "1",
                     sentRequests = listOf("1", "3", "4"),
+                    cooldownRequests = listOf(),
                 )
             }
         }
