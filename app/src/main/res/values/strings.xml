@@ -91,4 +91,9 @@
 
     <string name="loading">Loading…</string>
     <string name="request_withdrawn">Your request has been withdrawn</string>
+
+    <string name="confirm_withdraw_request_title">Withdraw request</string>
+    <string name="confirm_withdraw_request_body">If you withdraw this request, you can send it again in %1$d hours.</string>
+    <string name="dismiss_btn">Cancel</string>
+    <string name="withdraw_btn">Withdraw</string>
 </resources>
