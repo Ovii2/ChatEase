@@ -42,8 +42,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.AlertDialogType
 import com.example.chatease.domain.model.enums.ContactRequestStatus
 import com.example.chatease.domain.model.enums.UserHeaderStatusType
+import com.example.chatease.presentation.ui.screens.shared.chat.CommonAlertDialog
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.user.UserHeader
 import com.example.chatease.presentation.ui.state.SentRequestsUiState
@@ -153,6 +155,7 @@ fun SentRequestsItem(
     onWithdrawRequest: (String) -> Unit
 ) {
     var isWithdrawn by rememberSaveable { mutableStateOf(false) }
+    var showDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(isWithdrawn) {
         if (isWithdrawn) {
@@ -191,7 +194,7 @@ fun SentRequestsItem(
                 )
                 Button(
                     onClick = {
-                        isWithdrawn = true
+                        showDialog = true
                     },
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -207,6 +210,21 @@ fun SentRequestsItem(
                 }
             }
         }
+    }
+    if (showDialog) {
+        CommonAlertDialog(
+            title = R.string.confirm_withdraw_request_title,
+            bodyText = R.string.confirm_withdraw_request_body,
+            bodyTextParam = 24,
+            dismissButtonText = R.string.dismiss_btn,
+            acceptButtonText = R.string.withdraw_btn,
+            onDismiss = { showDialog = false },
+            onAccept = {
+                showDialog = false
+                isWithdrawn = true
+            },
+            alertDialogType = AlertDialogType.CONFIRMATION
+        )
     }
 }
 
