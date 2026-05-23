@@ -58,8 +58,21 @@ class SentRequestsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val currentState = _sentRequests.value
+                val currentUserId = auth.currentUser?.uid ?: return@launch
+
+
                 if (currentState is SentRequestsUiState.Success) {
-                    contactRequestRepository.withdrawContactRequest(requestId)
+                    val matchingRequest = currentState.requests.find {
+                        it.requestId == requestId
+                    }
+
+                    val receiverUserId = matchingRequest?.receiver?.uid ?: return@launch
+
+                    contactRequestRepository.withdrawContactRequest(
+                        requestId = requestId,
+                        senderUserId = currentUserId,
+                        receiverUserId = receiverUserId
+                    )
                     val updatedRequests = currentState.requests.filterNot {
                         it.requestId == requestId
                     }
