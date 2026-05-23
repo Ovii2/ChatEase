@@ -86,7 +86,7 @@ fun PendingRequestsSection(
                     )
                 }
             }
-            if (pendingRequests.size > pendingRequestLimit) {
+            if (pendingRequestsCount > pendingRequestLimit) {
                 Text(
                     text = stringResource(R.string.view_all),
                     style = MaterialTheme.typography.labelLarge,
