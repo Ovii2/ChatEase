@@ -44,6 +44,7 @@ fun ContactsScreen(
     val searchedUsers by contactsViewModel.searchedUsers.collectAsState()
     val sentRequests by contactsViewModel.sentRequests.collectAsState()
     val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
+    val cooldownRequests by contactsViewModel.cooldowns.collectAsState()
     val currentUserId = contactsViewModel.currentUserId ?: ""
     val pendingRequestLimit = 3
     val users = listOf(
@@ -93,12 +94,17 @@ fun ContactsScreen(
                         users = searchedUsers.take(5),
                         onAddContactClick = contactsViewModel::sendContactRequest,
                         currentUserId = currentUserId,
-                        sentRequests = sentRequests
+                        sentRequests = sentRequests,
+                        cooldownRequests = cooldownRequests,
                     )
                 }
                 if (sentRequests.isNotEmpty()) {
                     SentRequestsButton(
-                        onNavigateToSentRequests = onNavigateToSentRequests,
+                        onNavigateToSentRequests = {
+                            onNavigateToSentRequests()
+                            contactsViewModel.clearSearch()
+                            focusManager.clearFocus()
+                        },
                         sentRequestsCount = sentRequests.size
                     )
                 }
