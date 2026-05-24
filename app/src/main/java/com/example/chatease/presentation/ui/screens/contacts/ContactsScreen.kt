@@ -48,6 +48,7 @@ fun ContactsScreen(
     val cooldownRequests by contactsViewModel.cooldowns.collectAsState()
     val currentUserId = contactsViewModel.currentUserId ?: ""
     val pendingRequestLimit = 3
+    val receivedRequestUserIds by contactsViewModel.receivedRequestUserIds.collectAsState()
     val users = listOf(
         User(
             uid = "10",
@@ -97,6 +98,7 @@ fun ContactsScreen(
                         currentUserId = currentUserId,
                         sentRequests = sentRequests,
                         cooldownRequests = cooldownRequests,
+                        receivedRequestUserIds = receivedRequestUserIds,
                     )
                 }
                 if (sentRequests.isNotEmpty()) {

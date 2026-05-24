@@ -44,7 +44,8 @@ fun ContactsSearchResultsRow(
     onAddContactClick: (String) -> Unit,
     currentUserId: String,
     sentRequests: List<String>,
-    cooldownRequests: List<CooldownUiModel>
+    cooldownRequests: List<CooldownUiModel>,
+    receivedRequestUserIds: List<String>
 ) {
     var currentTime by rememberSaveable { mutableLongStateOf(System.currentTimeMillis()) }
 
@@ -93,6 +94,7 @@ fun ContactsSearchResultsRow(
                     )
                 }
                 if (currentUserId != user.uid) {
+                    val hasReceivedRequest = user.uid in receivedRequestUserIds
                     Button(
                         enabled = !isInvitationSent && !isCooldownActive,
                         onClick = { onAddContactClick(user.uid) },
@@ -105,6 +107,7 @@ fun ContactsSearchResultsRow(
                             text = when {
                                 isInvitationSent -> stringResource(R.string.invite_sent)
                                 isCooldownActive -> remainingCooldownTime.toFormattedTime()
+                                hasReceivedRequest -> stringResource(R.string.accept)
                                 else -> stringResource(R.string.add)
                             }
                         )
@@ -156,6 +159,7 @@ private fun ContactsSearchResultsRowPreview() {
                     currentUserId = "1",
                     sentRequests = listOf("1", "3", "4"),
                     cooldownRequests = listOf(),
+                    receivedRequestUserIds = listOf()
                 )
             }
         }

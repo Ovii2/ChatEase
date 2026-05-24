@@ -43,6 +43,9 @@ class ContactsViewModel @Inject constructor(
     private val _cooldowns = MutableStateFlow<List<CooldownUiModel>>(emptyList())
     val cooldowns = _cooldowns.asStateFlow()
 
+    private val _receivedRequestUserIds = MutableStateFlow<List<String>>(emptyList())
+    val receivedRequestUserIds = _receivedRequestUserIds.asStateFlow()
+
     @OptIn(FlowPreview::class)
     val debouncedSearch = searchValue.debounce(300)
 
@@ -118,6 +121,9 @@ class ContactsViewModel @Inject constructor(
             val currentUserId = auth.currentUser?.uid ?: return@launch
             try {
                 val requests = contactRequestRepository.getPendingRequests(currentUserId)
+                _receivedRequestUserIds.value = requests.map { request ->
+                    request.senderUserId
+                }
                 val pendingRequestUiModels = requests.map { request ->
                     PendingRequestUiModel(
                         requestId = request.id,
