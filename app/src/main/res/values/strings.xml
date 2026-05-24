@@ -97,4 +97,12 @@
     <string name="confirm_withdraw_request_body">If you withdraw this request, you can send it again in %1$d hours.</string>
     <string name="dismiss_btn">Cancel</string>
     <string name="withdraw_btn">Withdraw</string>
+
+    <string name="all_requests">All Requests</string>
+    <string name="received">Received</string>
+    <string name="sent">Sent</string>
+    <string name="search_requests">Search requests</string>
+    <string name="all_requests_column_label">Requests are people who want to connect with you.</string>
+    <string name="title_empty_requests">That\'s all for now!</string>
+    <string name="label_empty_requests">New requests will appear here.</string>
 </resources>
