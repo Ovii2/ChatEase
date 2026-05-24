@@ -105,4 +105,6 @@
     <string name="all_requests_column_label">Requests are people who want to connect with you.</string>
     <string name="title_empty_requests">That\'s all for now!</string>
     <string name="label_empty_requests">New requests will appear here.</string>
+
+    <string name="accept">Accept</string>
 </resources>
