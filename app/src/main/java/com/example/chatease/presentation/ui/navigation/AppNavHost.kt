@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.chatease.presentation.ui.screens.all_requests.AllRequestsScreen
 import com.example.chatease.presentation.ui.screens.chat.ChatScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
 import com.example.chatease.presentation.ui.screens.home.HomeScreen
@@ -96,10 +97,20 @@ fun AppNavHost(
                     }
                 },
                 onBackClick = { navController.popBackStack() },
+                onNavigateToAllRequests = {
+                    navController.navigate(Screens.AllRequests.route) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.SentRequests.route) {
             SentRequestsScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        composable(route = Screens.AllRequests.route) {
+            AllRequestsScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
