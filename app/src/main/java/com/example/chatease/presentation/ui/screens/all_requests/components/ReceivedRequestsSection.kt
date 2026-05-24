@@ -47,7 +47,17 @@ fun ReceivedRequestsSection(
     onAcceptRequestClick: () -> Unit
 ) {
     if (receivedContactRequests.isNotEmpty()) {
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item {
+                Text(
+                    text = stringResource(R.string.all_requests_column_label),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
             items(receivedContactRequests) { request ->
                 AllRequestsItem(
                     user = request.user,
@@ -92,7 +102,7 @@ fun AllRequestsItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .height(90.dp)
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
@@ -112,7 +122,7 @@ fun AllRequestsItem(
             ) {
                 UserHeader(
                     user = user,
-                    avatarSize = 50.dp,
+                    avatarSize = 60.dp,
                     initialsFontSize = 23.sp,
                     contactRequestStatus = ContactRequestStatus.PENDING,
                     statusType = UserHeaderStatusType.REQUEST
@@ -148,7 +158,6 @@ private fun ReceivedRequestsSectionPreview() {
     )
 
     val contactRequests = List(10) {
-
         PendingRequestUiModel(
             requestId = "1",
             user = user
@@ -159,7 +168,6 @@ private fun ReceivedRequestsSectionPreview() {
         Scaffold() { paddingValues ->
             ReceivedRequestsSection(
                 modifier = Modifier
-                    .systemBarsPadding()
                     .padding(paddingValues),
                 receivedContactRequests = contactRequests,
                 onDismissRequestClick = {},
