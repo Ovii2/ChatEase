@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.all_requests.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,11 +30,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
-import com.example.chatease.domain.model.ContactRequest
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.ContactRequestStatus
 import com.example.chatease.domain.model.enums.UserHeaderStatusType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.model.PendingRequestUiModel
 import com.example.chatease.presentation.ui.screens.contacts.components.PendingItemRequestButton
 import com.example.chatease.presentation.ui.screens.shared.user.UserHeader
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -43,16 +42,15 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun ReceivedRequestsSection(
     modifier: Modifier = Modifier,
-    contactRequests: List<ContactRequest>,
-    user: User,
+    receivedContactRequests: List<PendingRequestUiModel>,
     onDismissRequestClick: () -> Unit,
     onAcceptRequestClick: () -> Unit
 ) {
-    if (contactRequests.isNotEmpty()) {
+    if (receivedContactRequests.isNotEmpty()) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(contactRequests) { request ->
+            items(receivedContactRequests) { request ->
                 AllRequestsItem(
-                    user = user,
+                    user = request.user,
                     onDismissRequestClick = onDismissRequestClick,
                     onAcceptRequestClick = onAcceptRequestClick,
                 )
@@ -141,16 +139,6 @@ fun AllRequestsItem(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun ReceivedRequestsSectionPreview() {
-    val contactRequests = List(10) {
-        ContactRequest(
-            id = it.toString(),
-            senderUserId = it.toString(),
-            receiverUserId = it.toString(),
-            timestamp = System.currentTimeMillis(),
-            status = ContactRequestStatus.PENDING
-        )
-    }
-
     val user = User(
         uid = "1",
         fullName = "Test Tester",
@@ -158,14 +146,22 @@ private fun ReceivedRequestsSectionPreview() {
         imageUrl = null,
         status = UserPresenceStatus.ONLINE
     )
+
+    val contactRequests = List(10) {
+
+        PendingRequestUiModel(
+            requestId = "1",
+            user = user
+        )
+    }
+
     ChatEaseTheme() {
         Scaffold() { paddingValues ->
             ReceivedRequestsSection(
                 modifier = Modifier
                     .systemBarsPadding()
                     .padding(paddingValues),
-                contactRequests = contactRequests,
-                user = user,
+                receivedContactRequests = contactRequests,
                 onDismissRequestClick = {},
                 onAcceptRequestClick = {}
             )
