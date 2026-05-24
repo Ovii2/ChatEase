@@ -36,6 +36,7 @@ import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 fun ContactsScreen(
     modifier: Modifier = Modifier,
     onNavigateToSentRequests: () -> Unit,
+    onNavigateToAllRequests: () -> Unit,
     onBackClick: () -> Unit,
     contactsViewModel: ContactsViewModel = hiltViewModel()
 ) {
@@ -110,7 +111,7 @@ fun ContactsScreen(
                 }
                 if (pendingRequests.isNotEmpty()) {
                     PendingRequestsSection(
-                        onViewAllRequests = {},
+                        onViewAllRequests = onNavigateToAllRequests,
                         pendingRequests = pendingRequests.take(pendingRequestLimit),
                         onDismissRequestClick = {},
                         onAcceptRequestClick = {},
@@ -139,6 +140,7 @@ private fun ContactsScreenPreview() {
             ContactsScreen(
                 onNavigateToSentRequests = {},
                 onBackClick = {},
+                onNavigateToAllRequests = {},
             )
         }
     }
