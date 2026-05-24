@@ -1,57 +1,21 @@
 package com.example.chatease.presentation.ui.screens.sent_requests
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
-import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.AlertDialogType
-import com.example.chatease.domain.model.enums.ContactRequestStatus
-import com.example.chatease.domain.model.enums.UserHeaderStatusType
-import com.example.chatease.presentation.ui.screens.shared.chat.CommonAlertDialog
+import com.example.chatease.presentation.ui.screens.sent_requests.components.SentRequestsContent
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
-import com.example.chatease.presentation.ui.screens.shared.user.UserHeader
-import com.example.chatease.presentation.ui.state.SentRequestsUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.SentRequestsViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun SentRequestsScreen(
@@ -70,163 +34,14 @@ fun SentRequestsScreen(
             )
         }
     ) { paddingValues ->
-        when (val uiState = sentRequests) {
-            SentRequestsUiState.Loading -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    LinearProgressIndicator()
-                    Text(text = stringResource(R.string.loading))
-                }
-            }
-
-            SentRequestsUiState.Empty -> {
-                Column(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Column(
-                        modifier = Modifier.widthIn(max = 300.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = stringResource(R.string.no_sent_requests),
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                        Text(
-                            text = stringResource(R.string.when_you_send),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-
-            is SentRequestsUiState.Success -> {
-                LazyColumn(
-                    modifier = Modifier.padding(paddingValues),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    item {
-                        Text(
-                            text = stringResource(R.string.label_sent_requests),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.7f),
-                            fontSize = 15.sp
-                        )
-                    }
-                    items(
-                        items = uiState.requests,
-                        key = { it.requestId }
-                    ) { sentRequest ->
-                        SentRequestsItem(
-                            user = sentRequest.receiver,
-                            contactRequestStatus = sentRequest.status,
-                            onWithdrawRequest = {
-                                sentRequestsViewModel.withdrawContactRequest(
-                                    sentRequest.requestId
-                                )
-                            }
-                        )
-                    }
-                }
-            }
-
-            is SentRequestsUiState.Error -> {
-                Text(text = "Failed to load")
-            }
-
-        }
-    }
-}
-
-
-@Composable
-fun SentRequestsItem(
-    modifier: Modifier = Modifier,
-    user: User,
-    contactRequestStatus: ContactRequestStatus,
-    onWithdrawRequest: (String) -> Unit
-) {
-    var isWithdrawn by rememberSaveable { mutableStateOf(false) }
-    var showDialog by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(isWithdrawn) {
-        if (isWithdrawn) {
-            delay(900)
-            onWithdrawRequest(user.uid)
-        }
-    }
-
-    AnimatedContent(
-        targetState = isWithdrawn,
-        transitionSpec = {
-            fadeIn(
-                animationSpec = tween(400)
-            ) + scaleIn() togetherWith fadeOut(
-                animationSpec = tween(400)
-            ) + scaleOut()
-        },
-        label = "Withdraw state"
-    ) { withdrawn ->
-        if (withdrawn) {
-            Text(
-                text = stringResource(R.string.request_withdrawn),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        } else {
-            Row(
-                modifier = modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                UserHeader(
-                    user = user,
-                    contactRequestStatus = contactRequestStatus,
-                    statusType = UserHeaderStatusType.REQUEST
-                )
-                Button(
-                    onClick = {
-                        showDialog = true
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.primary
-                    ),
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Text(text = stringResource(R.string.withdraw))
-                }
-            }
-        }
-    }
-    if (showDialog) {
-        CommonAlertDialog(
-            title = R.string.confirm_withdraw_request_title,
-            bodyText = R.string.confirm_withdraw_request_body,
-            bodyTextParam = 24,
-            dismissButtonText = R.string.dismiss_btn,
-            acceptButtonText = R.string.withdraw_btn,
-            onDismiss = { showDialog = false },
-            onAccept = {
-                showDialog = false
-                isWithdrawn = true
-            },
-            alertDialogType = AlertDialogType.CONFIRMATION
+        SentRequestsContent(
+            paddingValues = paddingValues,
+            sentRequests = sentRequests,
+            onWithdrawRequest = sentRequestsViewModel::withdrawContactRequest
         )
     }
 }
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(showBackground = true, showSystemUi = true)
