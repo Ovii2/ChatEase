@@ -3,10 +3,12 @@ package com.example.chatease.presentation.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatease.R
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.model.PendingRequestUiModel
 import com.example.chatease.presentation.ui.model.SentRequestUiModel
+import com.example.chatease.presentation.ui.state.ReceivedRequestsUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +23,9 @@ class AllRequestsViewModel @Inject constructor(
     private val contactRequestRepository: ContactRequestRepository
 ) : ViewModel() {
 
-    private val _receivedRequests = MutableStateFlow<List<PendingRequestUiModel>>(emptyList())
+    private val _receivedRequests = MutableStateFlow<ReceivedRequestsUiState>(
+        ReceivedRequestsUiState.Loading
+    )
     val receivedRequests = _receivedRequests.asStateFlow()
 
     private val _sentRequests = MutableStateFlow<List<SentRequestUiModel>>(emptyList())
@@ -43,8 +47,17 @@ class AllRequestsViewModel @Inject constructor(
                         user = userRepository.getUserById(request.senderUserId)
                     )
                 }
-                _receivedRequests.value = pendingRequestUiModels
+                _receivedRequests.value = if (pendingRequestUiModels.isEmpty()) {
+                    ReceivedRequestsUiState.Empty
+                } else {
+                    ReceivedRequestsUiState.Success(
+                        requests = pendingRequestUiModels
+                    )
+                }
             } catch (e: Exception) {
+                ReceivedRequestsUiState.Error(
+                    errorMessage = R.string.fail_load_received_requests
+                )
                 Log.e("AllRequestsViewModel", e.message ?: "Failed to load received requests")
             }
         }
