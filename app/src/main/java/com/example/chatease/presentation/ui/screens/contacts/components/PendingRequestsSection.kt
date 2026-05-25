@@ -176,8 +176,8 @@ private fun PendingRequestsSectionPreview() {
             user = user
         )
     }
-    ChatEaseTheme() {
-        Scaffold() {
+    ChatEaseTheme {
+        Scaffold {
             Column(
                 modifier = Modifier
                     .systemBarsPadding()

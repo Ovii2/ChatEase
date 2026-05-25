@@ -137,8 +137,8 @@ fun ContactsScreen(
 )
 @Composable
 private fun ContactsScreenPreview() {
-    ChatEaseTheme() {
-        Scaffold() {
+    ChatEaseTheme {
+        Scaffold {
             ContactsScreen(
                 onNavigateToSentRequests = {},
                 onBackClick = {},

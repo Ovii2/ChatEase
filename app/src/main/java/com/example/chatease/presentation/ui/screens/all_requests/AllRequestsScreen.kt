@@ -109,9 +109,9 @@ fun AllRequestsScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun AllRequestsScreenPreview() {
-    ChatEaseTheme() {
-        Scaffold() {
-            Column() {
+    ChatEaseTheme {
+        Scaffold {
+            Column {
                 AllRequestsScreen(
                     onBackClick = {}
                 )
