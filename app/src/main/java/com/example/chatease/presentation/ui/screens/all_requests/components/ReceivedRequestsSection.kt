@@ -40,6 +40,7 @@ import com.example.chatease.domain.model.enums.UserHeaderStatusType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.PendingRequestUiModel
 import com.example.chatease.presentation.ui.screens.contacts.components.PendingItemRequestButton
+import com.example.chatease.presentation.ui.screens.shared.shimmer.ShimmerContactRequestsSection
 import com.example.chatease.presentation.ui.screens.shared.user.UserHeader
 import com.example.chatease.presentation.ui.state.ReceivedRequestsUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -53,14 +54,10 @@ fun ReceivedRequestsSection(
 ) {
     when (receivedContactRequests) {
         ReceivedRequestsUiState.Loading -> {
-            // Todo: "Add shimmering"
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Loading")
-            }
+            ShimmerContactRequestsSection(
+                columns = 1,
+                isReceivedRequest = true
+            )
         }
 
         is ReceivedRequestsUiState.Success -> {
@@ -218,13 +215,15 @@ private fun ReceivedRequestsSectionPreview() {
         errorMessage = R.string.fail_load_received_requests
     )
 
+    val loadingState = ReceivedRequestsUiState.Loading
+
 
     ChatEaseTheme() {
         Scaffold() { paddingValues ->
             ReceivedRequestsSection(
                 modifier = Modifier
                     .padding(paddingValues),
-                receivedContactRequests = successState,
+                receivedContactRequests = loadingState,
                 onDismissRequestClick = {},
                 onAcceptRequestClick = {}
             )

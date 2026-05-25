@@ -8,18 +8,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
+import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.ContactRequestStatus
+import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.model.SentRequestUiModel
+import com.example.chatease.presentation.ui.screens.shared.shimmer.ShimmerContactRequestsSection
 import com.example.chatease.presentation.ui.state.SentRequestsUiState
+import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun SentRequestsContent(
@@ -35,8 +42,10 @@ fun SentRequestsContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LinearProgressIndicator()
-                Text(text = stringResource(R.string.loading))
+                ShimmerContactRequestsSection(
+                    columns = 1,
+                    isReceivedRequest = false
+                )
             }
         }
 
@@ -97,6 +106,39 @@ fun SentRequestsContent(
         is SentRequestsUiState.Error -> {
             Text(text = "Failed to load")
         }
+    }
+}
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun SentRequestsContentPreview() {
+    val user = User(
+        uid = "1",
+        fullName = "Test Test",
+        email = "test@email.com",
+        imageUrl = null,
+        status = UserPresenceStatus.ONLINE
+    )
+
+    val requests = List(10) {
+        SentRequestUiModel(
+            requestId = it.toString(),
+            receiver = user,
+            status = ContactRequestStatus.PENDING
+        )
+    }
+
+    val loadingState = SentRequestsUiState.Loading
+    val successState = SentRequestsUiState.Success(
+        requests = requests
+    )
+    ChatEaseTheme() {
+        Surface() {
+            SentRequestsContent(
+                paddingValues = PaddingValues(),
+                sentRequests = loadingState,
+                onWithdrawRequest = {}
+            )
+        }
     }
 }
