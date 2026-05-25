@@ -11,7 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.example.chatease.R
+import com.example.chatease.presentation.ui.navigation.Screens
+import com.example.chatease.presentation.ui.navigation.toScreenName
 import com.example.chatease.presentation.ui.screens.sent_requests.components.SentRequestsContent
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -30,7 +31,7 @@ fun SentRequestsScreen(
         topBar = {
             CommonTopBar(
                 onBackClick = onBackClick,
-                title = R.string.sent_requests,
+                title = Screens.SentRequests.toScreenName(),
             )
         }
     ) { paddingValues ->

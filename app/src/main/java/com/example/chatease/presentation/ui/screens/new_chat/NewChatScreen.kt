@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.navigation.Screens
+import com.example.chatease.presentation.ui.navigation.toScreenName
 import com.example.chatease.presentation.ui.screens.new_chat.components.AllContactsSection
 import com.example.chatease.presentation.ui.screens.new_chat.components.FrequentlyContactedSection
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatSearchBar
@@ -56,7 +58,7 @@ fun NewChatScreen(
         topBar = {
             CommonTopBar(
                 onBackClick = onBackClick,
-                title = R.string.new_chat,
+                title = Screens.NewChat.toScreenName(),
             )
         }
     ) { paddingValues ->

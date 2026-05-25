@@ -18,6 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
+import com.example.chatease.presentation.ui.navigation.Screens
+import com.example.chatease.presentation.ui.navigation.toScreenName
 import com.example.chatease.presentation.ui.screens.all_requests.components.AllRequestsTab
 import com.example.chatease.presentation.ui.screens.all_requests.components.ReceivedRequestsSection
 import com.example.chatease.presentation.ui.screens.sent_requests.components.SentRequestsContent
@@ -49,7 +51,7 @@ fun AllRequestsScreen(
         topBar = {
             CommonTopBar(
                 onBackClick = onBackClick,
-                title = R.string.all_requests
+                title = Screens.AllRequests.toScreenName()
             )
         }) { paddingValues ->
         Column(
