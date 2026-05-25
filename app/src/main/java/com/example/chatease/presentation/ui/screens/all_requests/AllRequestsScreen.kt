@@ -23,6 +23,7 @@ import com.example.chatease.presentation.ui.screens.all_requests.components.Rece
 import com.example.chatease.presentation.ui.screens.sent_requests.components.SentRequestsContent
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatSearchBar
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.state.ReceivedRequestsUiState
 import com.example.chatease.presentation.ui.state.SentRequestsUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AllRequestsViewModel
@@ -37,6 +38,11 @@ fun AllRequestsScreen(
 
     val receivedContactRequests by allRequestsViewModel.receivedRequests.collectAsState()
     val sentContactRequests by allRequestsViewModel.sentRequests.collectAsState()
+
+    val receivedCount = when (val state = receivedContactRequests) {
+        is ReceivedRequestsUiState.Success -> state.requests.size
+        else -> 0
+    }
 
     Scaffold(
         modifier = modifier.padding(8.dp),
@@ -60,7 +66,7 @@ fun AllRequestsScreen(
                         selectedTabIndex = 0
                     },
                     title = R.string.received,
-                    count = receivedContactRequests.size,
+                    count = receivedCount
                 )
                 AllRequestsTab(
                     selected = selectedTabIndex == 1,
