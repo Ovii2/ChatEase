@@ -42,10 +42,12 @@ import kotlinx.coroutines.delay
 fun ContactsSearchResultsRow(
     users: List<User>,
     onAddContactClick: (String) -> Unit,
+    onAcceptContactClick: (String) -> Unit,
     currentUserId: String,
     sentRequests: List<String>,
     cooldownRequests: List<CooldownUiModel>,
-    receivedRequestUserIds: List<String>
+    receivedRequestUserIds: List<String>,
+    contactIds: List<String>
 ) {
     var currentTime by rememberSaveable { mutableLongStateOf(System.currentTimeMillis()) }
 
@@ -60,6 +62,7 @@ fun ContactsSearchResultsRow(
             }
             val isCooldownActive = cooldown != null
             val remainingCooldownTime = cooldown?.expiresAt?.minus(currentTime) ?: 0L
+            val isAlreadyContact = contactIds.contains(user.uid)
 
             LaunchedEffect(isCooldownActive) {
                 if (isCooldownActive) {
@@ -95,9 +98,16 @@ fun ContactsSearchResultsRow(
                 }
                 if (currentUserId != user.uid) {
                     val hasReceivedRequest = user.uid in receivedRequestUserIds
+
                     Button(
-                        enabled = !isInvitationSent && !isCooldownActive,
-                        onClick = { onAddContactClick(user.uid) },
+                        enabled = hasReceivedRequest || (!isInvitationSent && !isCooldownActive && !isAlreadyContact),
+                        onClick = {
+                            if (hasReceivedRequest) {
+                                onAcceptContactClick(user.uid)
+                            } else {
+                                onAddContactClick(user.uid)
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
                         ),
@@ -105,9 +115,10 @@ fun ContactsSearchResultsRow(
                     ) {
                         Text(
                             text = when {
+                                hasReceivedRequest -> stringResource(R.string.accept)
+                                isAlreadyContact -> stringResource(R.string.already_contact)
                                 isInvitationSent -> stringResource(R.string.invite_sent)
                                 isCooldownActive -> remainingCooldownTime.toFormattedTime()
-                                hasReceivedRequest -> stringResource(R.string.accept)
                                 else -> stringResource(R.string.add)
                             }
                         )
@@ -156,10 +167,12 @@ private fun ContactsSearchResultsRowPreview() {
                 ContactsSearchResultsRow(
                     users = users,
                     onAddContactClick = {},
+                    onAcceptContactClick = {},
                     currentUserId = "1",
                     sentRequests = listOf("1", "3", "4"),
                     cooldownRequests = listOf(),
-                    receivedRequestUserIds = listOf()
+                    receivedRequestUserIds = listOf(),
+                    contactIds = listOf("0"),
                 )
             }
         }
