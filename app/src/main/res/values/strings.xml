@@ -101,6 +101,7 @@
     <string name="all_requests">All Requests</string>
     <string name="received">Received</string>
     <string name="sent">Sent</string>
+    <string name="already_contact">In contacts</string>
     <string name="search_requests">Search requests</string>
     <string name="all_requests_column_label">Requests are people who want to connect with you.</string>
     <string name="title_empty_requests">That\'s all for now!</string>
