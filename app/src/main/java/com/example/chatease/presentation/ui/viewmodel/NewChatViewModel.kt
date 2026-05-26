@@ -1,0 +1,52 @@
+package com.example.chatease.presentation.ui.viewmodel
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.chatease.domain.model.Contact
+import com.example.chatease.domain.model.User
+import com.example.chatease.domain.repository.ContactsRepository
+import com.example.chatease.domain.repository.UserRepository
+import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class NewChatViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val contactsRepository: ContactsRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
+
+    private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
+    val contacts = _contacts.asStateFlow()
+
+    private val _users = MutableStateFlow<List<User>>(emptyList())
+    val users = _users.asStateFlow()
+
+    init {
+        loadContacts()
+    }
+
+    fun loadContacts() {
+        viewModelScope.launch {
+            try {
+                val currentUserId = auth.currentUser?.uid ?: return@launch
+                val contacts = contactsRepository.getContacts(currentUserId)
+                val users = contacts.map { contact ->
+                    val otherUserId = contact.userIds.first {
+                        it != currentUserId
+                    }
+                    userRepository.getUserById(otherUserId)
+                }
+                _users.value = users
+                _contacts.value = contacts
+            } catch (e: Exception) {
+                Log.e("NewChatViewModel", e.message ?: "Failed to load contacts")
+            }
+        }
+    }
+}
