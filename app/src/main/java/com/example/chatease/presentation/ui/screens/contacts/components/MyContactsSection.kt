@@ -41,10 +41,10 @@ import com.example.chatease.presentation.ui.theme.successGreenLight
 @Composable
 fun MyContactsSection(
     modifier: Modifier = Modifier,
-    users: List<User>,
+    contacts: List<User>,
     onContactClick: (String) -> Unit
 ) {
-    val groupedUsers = users
+    val groupedUsers = contacts
         .sortedBy { it.fullName }
         .groupBy { it.fullName.first().uppercase() }
 
@@ -65,9 +65,9 @@ fun MyContactsSection(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                items(usersInGroup) { user ->
+                items(usersInGroup) { contact ->
                     MyContactsItem(
-                        user = user,
+                        contact = contact,
                         onContactClick = onContactClick,
                     )
                 }
@@ -80,16 +80,16 @@ fun MyContactsSection(
 @Composable
 fun MyContactsItem(
     modifier: Modifier = Modifier,
-    user: User,
+    contact: User,
     onContactClick: (String) -> Unit
 ) {
-    val userPresenceStatus = when (user.status) {
+    val userPresenceStatus = when (contact.status) {
         UserPresenceStatus.ONLINE -> R.string.online
         UserPresenceStatus.AWAY -> R.string.away
         else -> R.string.offline
     }
 
-    val statusColor = when (user.status) {
+    val statusColor = when (contact.status) {
         UserPresenceStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
         UserPresenceStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
         UserPresenceStatus.OFFLINE -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
@@ -98,7 +98,7 @@ fun MyContactsItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onContactClick(user.uid) },
+            .clickable { onContactClick(contact.uid) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -107,14 +107,14 @@ fun MyContactsItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             UserAvatar(
-                user = user,
+                user = contact,
                 avatarSize = 50.dp,
                 initialsFontSize = 20.sp,
                 statusBubbleSize = 16.dp
             )
             Column(modifier = Modifier.widthIn(max = 250.dp)) {
                 Text(
-                    text = user.fullName,
+                    text = contact.fullName,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
@@ -154,15 +154,15 @@ private fun MyContactsSectionPreview() {
         )
     }
 
-    ChatEaseTheme() {
-        Scaffold() {
+    ChatEaseTheme {
+        Scaffold {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyContactsSection(
-                    users = users,
+                    contacts = users,
                     onContactClick = {},
                 )
             }
