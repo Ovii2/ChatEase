@@ -47,7 +47,7 @@ fun PendingRequestsSection(
     onViewAllRequests: () -> Unit,
     pendingRequests: List<PendingRequestUiModel>,
     onDismissRequestClick: () -> Unit,
-    onAcceptRequestClick: () -> Unit,
+    onAcceptRequestClick: (String) -> Unit,
     pendingRequestsCount: Int,
     pendingRequestLimit: Int
 ) {
@@ -112,7 +112,7 @@ fun PendingRequestItem(
     modifier: Modifier = Modifier,
     pendingRequest: PendingRequestUiModel,
     onDismissRequestClick: () -> Unit,
-    onAcceptRequestClick: () -> Unit
+    onAcceptRequestClick: (String) -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -149,7 +149,7 @@ fun PendingRequestItem(
                 iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             PendingItemRequestButton(
-                onClick = onAcceptRequestClick,
+                onClick = { onAcceptRequestClick(pendingRequest.requestId) },
                 icon = Icons.Default.Check,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 iconColor = MaterialTheme.colorScheme.surface
