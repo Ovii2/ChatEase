@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.ContactRequestRepository
+import com.example.chatease.domain.repository.ContactsRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.model.CooldownUiModel
 import com.example.chatease.presentation.ui.model.PendingRequestUiModel
@@ -22,7 +23,8 @@ import javax.inject.Inject
 class ContactsViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val auth: FirebaseAuth,
-    private val contactRequestRepository: ContactRequestRepository
+    private val contactRequestRepository: ContactRequestRepository,
+    private val contactsRepository: ContactsRepository
 ) : ViewModel() {
 
     private val _searchValue = MutableStateFlow("")
@@ -46,6 +48,9 @@ class ContactsViewModel @Inject constructor(
     private val _receivedRequestUserIds = MutableStateFlow<List<String>>(emptyList())
     val receivedRequestUserIds = _receivedRequestUserIds.asStateFlow()
 
+    private val _contacts = MutableStateFlow<List<User>>(emptyList())
+    val contacts = _contacts.asStateFlow()
+
     @OptIn(FlowPreview::class)
     val debouncedSearch = searchValue.debounce(300)
 
@@ -58,8 +63,8 @@ class ContactsViewModel @Inject constructor(
                 searchUsers(query)
             }
         }
-        getPendingRequests()
-        getSentRequests()
+        observePendingRequests()
+        getContacts()
     }
 
     fun onSearchValueChange(value: String) {
@@ -157,6 +162,51 @@ class ContactsViewModel @Inject constructor(
         }
     }
 
+    fun acceptContactRequest(requestId: String) {
+        viewModelScope.launch {
+            try {
+                contactRequestRepository.acceptContactRequest(requestId)
+                _pendingRequests.value = _pendingRequests.value.filterNot {
+                    it.requestId == requestId
+                }
+                getPendingRequests()
+                getContacts()
+            } catch (e: Exception) {
+                Log.e(
+                    "ContactsViewModel",
+                    e.message ?: "Failed to accept contact request"
+                )
+            }
+        }
+    }
+
+    fun declineContactRequest(requestId: String) {
+
+    }
+
+    fun getContacts() {
+        viewModelScope.launch {
+            try {
+                val currentUserId = auth.currentUser?.uid ?: return@launch
+                val contacts = contactsRepository.getContacts(currentUserId)
+                val otherUserId = contacts.map { contact ->
+                    contact.userIds.first { userId ->
+                        userId != currentUserId
+                    }
+                }
+                val users = otherUserId.map { userId ->
+                    userRepository.getUserById(userId)
+                }
+                _contacts.value = users
+            } catch (e: Exception) {
+                Log.e(
+                    "ContactsViewModel",
+                    e.message ?: "Failed to get contacts"
+                )
+            }
+        }
+    }
+
     private suspend fun loadCooldownUserIds(users: List<User>, currentUserId: String) {
         try {
             val activeCooldowns = users.mapNotNull { user ->
@@ -179,4 +229,23 @@ class ContactsViewModel @Inject constructor(
             Log.e("ContactsViewModel", e.message ?: "Loading cooldown user ids failed")
         }
     }
+
+    private fun observePendingRequests() {
+        viewModelScope.launch {
+            val currentUserId = auth.currentUser?.uid ?: return@launch
+
+            contactRequestRepository
+                .observePendingRequests(currentUserId)
+                .collect { requests ->
+                    val pendingUiModels = requests.map { request ->
+                        PendingRequestUiModel(
+                            requestId = request.id,
+                            user = userRepository.getUserById(request.senderUserId)
+                        )
+                    }
+                    _pendingRequests.value = pendingUiModels
+                }
+        }
+    }
+
 }
