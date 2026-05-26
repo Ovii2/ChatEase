@@ -3,10 +3,12 @@ package com.example.chatease.di
 import com.example.chatease.data.remote.CategoryRemoteDataSource
 import com.example.chatease.data.repository.CategoryRepositoryImpl
 import com.example.chatease.data.repository.ContactRequestRepositoryImpl
+import com.example.chatease.data.repository.ContactsRepositoryImpl
 import com.example.chatease.data.repository.ConversationRepositoryImpl
 import com.example.chatease.data.repository.UserRepositoryImpl
 import com.example.chatease.domain.repository.CategoryRepository
 import com.example.chatease.domain.repository.ContactRequestRepository
+import com.example.chatease.domain.repository.ContactsRepository
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -54,4 +56,8 @@ object AppModule {
     fun provideContactRequestRepository(firestore: FirebaseFirestore): ContactRequestRepository =
         ContactRequestRepositoryImpl(firestore)
 
+    @Provides
+    @Singleton
+    fun provideContactsRepository(firestore: FirebaseFirestore): ContactsRepository =
+        ContactsRepositoryImpl(firestore)
 }
