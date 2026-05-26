@@ -110,7 +110,9 @@ fun PendingRequestsSection(
             }
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(pendingRequests) { pendingRequest ->
+            items(
+                items = pendingRequests,
+                key = { it.requestId }) { pendingRequest ->
                 PendingRequestItem(
                     pendingRequest = pendingRequest,
                     onDismissRequestClick = onDismissRequestClick,
