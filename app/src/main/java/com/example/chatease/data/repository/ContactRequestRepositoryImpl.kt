@@ -1,6 +1,7 @@
 package com.example.chatease.data.repository
 
 import com.example.chatease.data.mapper.toDomain
+import com.example.chatease.data.remote.dto.ContactDto
 import com.example.chatease.data.remote.dto.ContactRequestCooldownDto
 import com.example.chatease.data.remote.dto.ContactRequestDto
 import com.example.chatease.domain.model.ContactRequest
@@ -9,6 +10,9 @@ import com.example.chatease.domain.model.enums.ContactRequestStatus
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class ContactRequestRepositoryImpl(
@@ -18,6 +22,7 @@ class ContactRequestRepositoryImpl(
     companion object {
         const val CONTACT_REQUESTS = "contact_requests"
         const val CONTACT_REQUEST_COOLDOWNS = "contact_request_cooldowns"
+        const val CONTACTS = "contacts"
         const val RECEIVER_USER_ID = "receiverUserId"
         const val SENDER_USER_ID = "senderUserId"
         const val STATUS = "status"
@@ -61,6 +66,28 @@ class ContactRequestRepositoryImpl(
 
         return mapDocumentsToContactRequests(snapshot)
     }
+
+    override fun observePendingRequests(currentUserId: String): Flow<List<ContactRequest>> =
+        callbackFlow {
+            val listener = firestore
+                .collection(CONTACT_REQUESTS)
+                .whereEqualTo(RECEIVER_USER_ID, currentUserId)
+                .whereEqualTo(STATUS, ContactRequestStatus.PENDING)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        close(error)
+                        return@addSnapshotListener
+                    }
+                    val requests = snapshot?.documents?.mapNotNull { document ->
+                        document.toObject(ContactRequestDto::class.java)?.toDomain()
+                    } ?: emptyList()
+
+                    trySend(requests)
+                }
+            awaitClose {
+                listener.remove()
+            }
+        }
 
     override suspend fun getSentRequests(currentUserId: String): List<ContactRequest> {
         val snapshot = firestore
@@ -148,6 +175,45 @@ class ContactRequestRepositoryImpl(
         }
 
         return document.toObject(ContactRequestCooldownDto::class.java)?.toDomain()
+    }
+
+    override suspend fun acceptContactRequest(requestId: String) {
+        val requestSnapshot = firestore
+            .collection(CONTACT_REQUESTS)
+            .document(requestId)
+            .get()
+            .await()
+
+        firestore
+            .collection(CONTACT_REQUESTS)
+            .document(requestId)
+            .update(STATUS, ContactRequestStatus.ACCEPTED)
+            .await()
+
+        val contactRequestDto = requestSnapshot.toObject(ContactRequestDto::class.java) ?: return
+
+        val contactDto = ContactDto(
+            id = requestId,
+            userIds = listOf(
+                contactRequestDto.senderUserId,
+                contactRequestDto.receiverUserId
+            ),
+            createdAt = System.currentTimeMillis()
+        )
+
+        firestore
+            .collection(CONTACTS)
+            .document(contactDto.id)
+            .set(contactDto)
+            .await()
+    }
+
+    override suspend fun declineContactRequest(requestId: String) {
+        firestore
+            .collection(CONTACT_REQUESTS)
+            .document(requestId)
+            .update(STATUS, ContactRequestStatus.DECLINED)
+            .await()
     }
 
     private fun mapDocumentsToContactRequests(snapshot: QuerySnapshot): List<ContactRequest> {
