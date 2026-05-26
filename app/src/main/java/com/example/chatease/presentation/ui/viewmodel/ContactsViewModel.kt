@@ -244,6 +244,9 @@ class ContactsViewModel @Inject constructor(
                         )
                     }
                     _pendingRequests.value = pendingUiModels
+                    _receivedRequestUserIds.value = requests.map { request ->
+                        request.senderUserId
+                    }
                 }
         }
     }
