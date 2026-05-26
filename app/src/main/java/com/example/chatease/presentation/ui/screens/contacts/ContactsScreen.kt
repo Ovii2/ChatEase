@@ -21,8 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
-import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsScreenTopBar
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsSearchResultsRow
 import com.example.chatease.presentation.ui.screens.contacts.components.MyContactsSection
@@ -49,18 +47,11 @@ fun ContactsScreen(
     val currentUserId = contactsViewModel.currentUserId ?: ""
     val pendingRequestLimit = 3
     val receivedRequestUserIds by contactsViewModel.receivedRequestUserIds.collectAsState()
-    val users = listOf(
-        User(
-            uid = "10",
-            fullName = "Some User",
-            email = "some@user.com",
-            imageUrl = null,
-            status = UserPresenceStatus.OFFLINE
-        )
-    )
+    val contacts by contactsViewModel.contacts.collectAsState()
 
     LaunchedEffect(Unit) {
         contactsViewModel.getSentRequests()
+        contactsViewModel.getContacts()
     }
 
     Scaffold(
@@ -116,15 +107,19 @@ fun ContactsScreen(
                         onViewAllRequests = onNavigateToAllRequests,
                         pendingRequests = pendingRequests.take(pendingRequestLimit),
                         onDismissRequestClick = {},
-                        onAcceptRequestClick = {},
+                        onAcceptRequestClick = { requestId ->
+                            contactsViewModel.acceptContactRequest(requestId)
+                        },
                         pendingRequestsCount = pendingRequests.size,
                         pendingRequestLimit = pendingRequestLimit
                     )
                 }
-                MyContactsSection(
-                    users = users,
-                    onContactClick = {}
-                )
+                if (contacts.isNotEmpty()) {
+                    MyContactsSection(
+                        contacts = contacts,
+                        onContactClick = {}
+                    )
+                }
             }
         }
     }
