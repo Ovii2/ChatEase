@@ -86,10 +86,12 @@ fun ContactsScreen(
                     ContactsSearchResultsRow(
                         users = searchedUsers.take(5),
                         onAddContactClick = contactsViewModel::sendContactRequest,
+                        onAcceptContactClick = {},
                         currentUserId = currentUserId,
                         sentRequests = sentRequests,
                         cooldownRequests = cooldownRequests,
                         receivedRequestUserIds = receivedRequestUserIds,
+                        contactIds = contacts.map { it.uid },
                     )
                 }
                 if (sentRequests.isNotEmpty()) {
