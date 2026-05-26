@@ -34,7 +34,8 @@ fun AppNavHost(
         }
         composable(route = Screens.Login.route) {
             LoginScreen(
-                paddingValues = paddingValues, onNavigateToSignUpScreen = {
+                paddingValues = paddingValues,
+                onNavigateToSignUpScreen = {
                     navController.navigate(Screens.SignUp.route) {
                         launchSingleTop = true
                     }
@@ -52,8 +53,10 @@ fun AppNavHost(
         composable(route = Screens.Home.route) {
             HomeScreen(
                 onNavigateToHome = {
-                    navController.navigate(Screens.Home.route) {
-                        launchSingleTop = true
+                    if (navController.currentDestination?.route != Screens.Home.route) {
+                        navController.navigate(Screens.Home.route) {
+                            launchSingleTop = true
+                        }
                     }
                 },
                 onNavigateToContacts = {
