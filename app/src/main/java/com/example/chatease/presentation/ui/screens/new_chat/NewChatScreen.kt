@@ -9,14 +9,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.navigation.toScreenName
 import com.example.chatease.presentation.ui.screens.new_chat.components.AllContactsSection
@@ -24,37 +26,26 @@ import com.example.chatease.presentation.ui.screens.new_chat.components.Frequent
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatSearchBar
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.NewChatViewModel
 
 @Composable
 fun NewChatScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    newChatViewModel: NewChatViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
 
-    val users = listOf(
-        User(
-            uid = "",
-            fullName = "Test testing",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserPresenceStatus.ONLINE
-        ),
-        User(
-            uid = "",
-            fullName = "Test testing",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserPresenceStatus.ONLINE
-        )
-    )
-    val contacts = listOf("1", "2")
+    val contacts by newChatViewModel.contacts.collectAsState()
+    val users by newChatViewModel.users.collectAsState()
+    val frequentlyContactedUsers = emptyList<User>()
 
-//    val users = emptyList<User>()
-//    val contacts = emptyList<String>()
 
     Scaffold(
-        modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+        modifier = modifier.padding(
+            vertical = 8.dp,
+            horizontal = 12.dp
+        ),
         topBar = {
             CommonTopBar(
                 onBackClick = onBackClick,
@@ -78,9 +69,9 @@ fun NewChatScreen(
                     onClearSearch = {},
                     placeholder = R.string.search_contacts
                 )
-                if (users.isNotEmpty()) {
+                if (frequentlyContactedUsers.isNotEmpty()) {
                     FrequentlyContactedSection(
-                        users = users
+                        users = frequentlyContactedUsers
                     )
                 }
 
