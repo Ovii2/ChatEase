@@ -46,6 +46,11 @@ fun AllRequestsScreen(
         else -> 0
     }
 
+    val sentCount = when (val state = sentContactRequests) {
+        is SentRequestsUiState.Success -> state.requests.size
+        else -> 0
+    }
+
     Scaffold(
         modifier = modifier.padding(8.dp),
         topBar = {
@@ -76,7 +81,7 @@ fun AllRequestsScreen(
                         selectedTabIndex = 1
                     },
                     title = R.string.sent,
-                    count = sentContactRequests.size
+                    count = sentCount
                 )
             }
             ChatSearchBar(
@@ -88,16 +93,14 @@ fun AllRequestsScreen(
             if (selectedTabIndex == 0) {
                 ReceivedRequestsSection(
                     receivedContactRequests = receivedContactRequests,
-                    onDismissRequestClick = {},
-                    onAcceptRequestClick = {}
+                    onDismissRequestClick = allRequestsViewModel::declineContactRequest,
+                    onAcceptRequestClick = allRequestsViewModel::acceptContactRequest
                 )
             } else {
                 SentRequestsContent(
                     paddingValues = PaddingValues(),
-                    sentRequests = SentRequestsUiState.Success(
-                        requests = sentContactRequests
-                    ),
-                    onWithdrawRequest = {}
+                    sentRequests = sentContactRequests,
+                    onWithdrawRequest = allRequestsViewModel::withDrawContactRequest
                 )
             }
         }
