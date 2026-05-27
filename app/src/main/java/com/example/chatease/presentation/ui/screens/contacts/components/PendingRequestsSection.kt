@@ -5,8 +5,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,7 +58,7 @@ fun PendingRequestsSection(
     modifier: Modifier = Modifier,
     onViewAllRequests: () -> Unit,
     pendingRequests: List<PendingRequestUiModel>,
-    onDismissRequestClick: () -> Unit,
+    onDismissRequestClick: (String) -> Unit,
     onAcceptRequestClick: (String) -> Unit,
     pendingRequestsCount: Int,
     pendingRequestLimit: Int
@@ -127,7 +125,7 @@ fun PendingRequestsSection(
 fun PendingRequestItem(
     modifier: Modifier = Modifier,
     pendingRequest: PendingRequestUiModel,
-    onDismissRequestClick: () -> Unit,
+    onDismissRequestClick: (String) -> Unit,
     onAcceptRequestClick: (String) -> Unit
 ) {
     var actionState by rememberSaveable {
@@ -138,6 +136,10 @@ fun PendingRequestItem(
         if (actionState == PendingRequestActionState.ACCEPTED) {
             delay(900)
             onAcceptRequestClick(pendingRequest.requestId)
+        }
+        if (actionState == PendingRequestActionState.DISMISSED) {
+            delay(900)
+            onDismissRequestClick(pendingRequest.requestId)
         }
     }
 
@@ -150,7 +152,7 @@ fun PendingRequestItem(
                 }
 
                 PendingRequestActionState.DISMISSED -> {
-                    slideInVertically() togetherWith slideOutHorizontally()
+                    fadeIn() togetherWith fadeOut()
                 }
 
                 else -> {
@@ -207,7 +209,7 @@ fun PendingRequestItem(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         PendingItemRequestButton(
-                            onClick = onDismissRequestClick,
+                            onClick = { actionState = PendingRequestActionState.DISMISSED },
                             icon = Icons.Default.Close,
                             containerColor = MaterialTheme.colorScheme.surfaceContainer,
                             iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
