@@ -89,6 +89,29 @@ class ContactRequestRepositoryImpl(
             }
         }
 
+    override fun observeSentRequests(currentUserId: String): Flow<List<ContactRequest>> =
+        callbackFlow {
+            val listener = firestore
+                .collection(CONTACT_REQUESTS)
+                .whereEqualTo(SENDER_USER_ID, currentUserId)
+                .whereEqualTo(STATUS, ContactRequestStatus.PENDING)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        close(error)
+                        return@addSnapshotListener
+                    }
+                    val sentRequests = snapshot?.documents?.mapNotNull { document ->
+                        document.toObject(ContactRequestDto::class.java)?.toDomain()
+                    } ?: emptyList()
+
+                    trySend(sentRequests)
+                }
+            awaitClose {
+                listener.remove()
+            }
+        }
+
+
     override suspend fun getSentRequests(currentUserId: String): List<ContactRequest> {
         val snapshot = firestore
             .collection(CONTACT_REQUESTS)

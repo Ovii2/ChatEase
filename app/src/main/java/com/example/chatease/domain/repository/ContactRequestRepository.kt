@@ -12,6 +12,8 @@ interface ContactRequestRepository {
 
     fun observePendingRequests(currentUserId: String): Flow<List<ContactRequest>>
 
+    fun observeSentRequests(currentUserId: String): Flow<List<ContactRequest>>
+
     suspend fun getSentRequests(currentUserId: String): List<ContactRequest>
 
     suspend fun withdrawContactRequest(
