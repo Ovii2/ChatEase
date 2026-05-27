@@ -148,7 +148,7 @@ fun PendingRequestItem(
         transitionSpec = {
             when (targetState) {
                 PendingRequestActionState.ACCEPTED -> {
-                    fadeIn() togetherWith scaleOut()
+                    fadeIn() togetherWith fadeOut()
                 }
 
                 PendingRequestActionState.DISMISSED -> {
@@ -156,7 +156,7 @@ fun PendingRequestItem(
                 }
 
                 else -> {
-                    fadeIn() togetherWith fadeOut()
+                    fadeIn() togetherWith scaleOut()
                 }
             }
         },
