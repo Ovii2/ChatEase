@@ -221,4 +221,10 @@ class ContactRequestRepositoryImpl(
             document.toObject(ContactRequestDto::class.java)?.toDomain()
         }
     }
+
+    private suspend fun getRequestSnapshot(requestId: String) = firestore
+        .collection(CONTACT_REQUESTS)
+        .document(requestId)
+        .get()
+        .await()
 }

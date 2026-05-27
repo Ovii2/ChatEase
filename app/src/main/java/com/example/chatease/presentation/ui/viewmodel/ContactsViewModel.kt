@@ -169,6 +169,7 @@ class ContactsViewModel @Inject constructor(
                 _pendingRequests.value = _pendingRequests.value.filterNot {
                     it.requestId == requestId
                 }
+                // TODO : remove filter later
                 getPendingRequests()
                 getContacts()
             } catch (e: Exception) {
@@ -181,7 +182,16 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun declineContactRequest(requestId: String) {
-
+        viewModelScope.launch {
+            try {
+                contactRequestRepository.declineContactRequest(requestId)
+            } catch (e: Exception) {
+                Log.e(
+                    "ContactsViewModel",
+                    e.message ?: "Failed to decline contact request"
+                )
+            }
+        }
     }
 
     fun getContacts() {
