@@ -1,5 +1,10 @@
 package com.example.chatease.presentation.ui.screens.all_requests.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +30,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.ContactRequestStatus
+import com.example.chatease.domain.model.enums.PendingRequestActionState
 import com.example.chatease.domain.model.enums.UserHeaderStatusType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.PendingRequestUiModel
@@ -44,13 +55,14 @@ import com.example.chatease.presentation.ui.screens.shared.shimmer.ShimmerContac
 import com.example.chatease.presentation.ui.screens.shared.user.UserHeader
 import com.example.chatease.presentation.ui.state.ReceivedRequestsUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun ReceivedRequestsSection(
     modifier: Modifier = Modifier,
     receivedContactRequests: ReceivedRequestsUiState,
-    onDismissRequestClick: () -> Unit,
-    onAcceptRequestClick: () -> Unit
+    onDismissRequestClick: (String) -> Unit,
+    onAcceptRequestClick: (String) -> Unit
 ) {
     when (receivedContactRequests) {
         ReceivedRequestsUiState.Loading -> {
@@ -72,11 +84,14 @@ fun ReceivedRequestsSection(
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
                 }
-                items(receivedContactRequests.requests) { request ->
+                items(
+                    items = receivedContactRequests.requests,
+                    key = { it.requestId }) { request ->
                     AllRequestsItem(
                         user = request.user,
                         onDismissRequestClick = onDismissRequestClick,
                         onAcceptRequestClick = onAcceptRequestClick,
+                        requestId = request.requestId
                     )
                 }
             }
@@ -140,49 +155,101 @@ fun ReceivedRequestsSection(
 fun AllRequestsItem(
     modifier: Modifier = Modifier,
     user: User,
-    onDismissRequestClick: () -> Unit,
-    onAcceptRequestClick: () -> Unit
+    onDismissRequestClick: (String) -> Unit,
+    onAcceptRequestClick: (String) -> Unit,
+    requestId: String
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(90.dp)
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                UserHeader(
-                    user = user,
-                    initialsFontSize = 23.sp,
-                    contactRequestStatus = ContactRequestStatus.PENDING,
-                    statusType = UserHeaderStatusType.REQUEST
+    var actionState by rememberSaveable {
+        mutableStateOf(PendingRequestActionState.IDLE)
+    }
+
+    LaunchedEffect(actionState) {
+        if (actionState == PendingRequestActionState.ACCEPTED) {
+            delay(900)
+            onAcceptRequestClick(requestId)
+        }
+        if (actionState == PendingRequestActionState.DISMISSED) {
+            delay(900)
+            onDismissRequestClick(requestId)
+        }
+    }
+
+    AnimatedContent(
+        targetState = actionState,
+        transitionSpec = {
+            when (targetState) {
+                PendingRequestActionState.ACCEPTED,
+                PendingRequestActionState.DISMISSED -> {
+                    fadeIn() togetherWith scaleOut()
+                }
+
+                else -> {
+                    fadeIn() togetherWith fadeOut()
+                }
+            }
+        }, label = "State"
+    ) { state ->
+        when (state) {
+            PendingRequestActionState.ACCEPTED -> {
+                Text(
+                    text = stringResource(R.string.request_accepted),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    PendingItemRequestButton(
-                        onClick = onDismissRequestClick,
-                        icon = Icons.Default.Close,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            }
+
+            PendingRequestActionState.DISMISSED -> {
+                Text(
+                    text = stringResource(R.string.request_declined),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            else -> {
+                Card(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(90.dp)
+                        .padding(vertical = 4.dp),
+                    elevation = CardDefaults.cardElevation(4.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
-                    PendingItemRequestButton(
-                        onClick = onAcceptRequestClick,
-                        icon = Icons.Default.Check,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        iconColor = MaterialTheme.colorScheme.surface
-                    )
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            UserHeader(
+                                user = user,
+                                initialsFontSize = 23.sp,
+                                contactRequestStatus = ContactRequestStatus.PENDING,
+                                statusType = UserHeaderStatusType.REQUEST
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                PendingItemRequestButton(
+                                    onClick = { actionState = PendingRequestActionState.DISMISSED },
+                                    icon = Icons.Default.Close,
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                    iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                PendingItemRequestButton(
+                                    onClick = { actionState = PendingRequestActionState.ACCEPTED },
+                                    icon = Icons.Default.Check,
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    iconColor = MaterialTheme.colorScheme.surface
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -218,8 +285,8 @@ private fun ReceivedRequestsSectionPreview() {
     val loadingState = ReceivedRequestsUiState.Loading
 
 
-    ChatEaseTheme() {
-        Scaffold() { paddingValues ->
+    ChatEaseTheme {
+        Scaffold { paddingValues ->
             ReceivedRequestsSection(
                 modifier = Modifier
                     .padding(paddingValues),

@@ -33,7 +33,7 @@ fun SentRequestsContent(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     sentRequests: SentRequestsUiState,
-    onWithdrawRequest: (String) -> Unit
+    onWithdrawRequest: (SentRequestUiModel) -> Unit
 ) {
     when (sentRequests) {
         SentRequestsUiState.Loading -> {
@@ -96,7 +96,7 @@ fun SentRequestsContent(
                         user = sentRequest.receiver,
                         contactRequestStatus = sentRequest.status,
                         onWithdrawRequest = {
-                            onWithdrawRequest(sentRequest.requestId)
+                            onWithdrawRequest(sentRequest)
                         }
                     )
                 }
