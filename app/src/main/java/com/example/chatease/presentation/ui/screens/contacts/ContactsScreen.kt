@@ -108,7 +108,9 @@ fun ContactsScreen(
                     PendingRequestsSection(
                         onViewAllRequests = onNavigateToAllRequests,
                         pendingRequests = pendingRequests.take(pendingRequestLimit),
-                        onDismissRequestClick = {},
+                        onDismissRequestClick = {
+                            contactsViewModel.declineContactRequest(it)
+                        },
                         onAcceptRequestClick = { requestId ->
                             contactsViewModel.acceptContactRequest(requestId)
                         },
