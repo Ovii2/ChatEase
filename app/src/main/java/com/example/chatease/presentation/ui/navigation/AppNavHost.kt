@@ -85,7 +85,11 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.Chat.route) {
-            ChatScreen()
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+            ChatScreen(
+                conversationId = conversationId,
+                onBackClick = { navController.popBackStack() },
+            )
         }
         composable(route = Screens.NewChat.route) {
             NewChatScreen(
