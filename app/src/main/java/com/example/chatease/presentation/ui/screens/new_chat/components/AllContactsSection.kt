@@ -64,6 +64,7 @@ fun AllContactsSection(
             }
         }
         Button(
+            enabled = selectedUserIds.isNotEmpty(),
             modifier = Modifier
                 .height(50.dp),
             shape = RoundedCornerShape(10.dp),
