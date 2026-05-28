@@ -2,6 +2,7 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.com
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,7 +46,8 @@ import com.example.chatease.presentation.ui.theme.successGreenLight
 @Composable
 fun RightPaneTopBar(
     modifier: Modifier = Modifier,
-    user: User
+    user: User,
+    onBackClick: () -> Unit
 ) {
     val userPresenceStatus = when (user.status) {
         UserPresenceStatus.ONLINE -> R.string.online
@@ -117,6 +119,7 @@ fun RightPaneTopBar(
         },
         navigationIcon = {
             Icon(
+                modifier = Modifier.clickable { onBackClick() },
                 imageVector = Icons.Default.ArrowBackIosNew,
                 contentDescription = null
             )
@@ -148,7 +151,8 @@ private fun RightPaneTopBarPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 RightPaneTopBar(
-                    user = user
+                    user = user,
+                    onBackClick = {},
                 )
             }
         }
