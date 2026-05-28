@@ -1,12 +1,17 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Message
@@ -22,28 +27,41 @@ fun RightPane(
     modifier: Modifier = Modifier,
     user: User,
     messages: List<Message>,
-    currentUserId: String
+    currentUserId: String,
+    onBackClick: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .systemBarsPadding()
-            .padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    val focusManager = LocalFocusManager.current
+
+    Box(
+        modifier = modifier.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        ) {
+            focusManager.clearFocus()
+        }
     ) {
-        RightPaneTopBar(
-            user = user
-        )
-        MessagesList(
-            modifier = Modifier.weight(1f),
-            messages = messages,
-            currentUserId = currentUserId,
-            user = user
-        )
-        MessageInputBar(
-            onEmojiClick = {},
-            onMicrophoneClick = {},
-            onMoreOptionsClick = {}
-        )
+        Column(
+            modifier = Modifier
+                .systemBarsPadding()
+                .padding(horizontal = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            RightPaneTopBar(
+                user = user,
+                onBackClick = onBackClick,
+            )
+            MessagesList(
+                modifier = Modifier.weight(1f),
+                messages = messages,
+                currentUserId = currentUserId,
+                user = user
+            )
+            MessageInputBar(
+                onEmojiClick = {},
+                onMicrophoneClick = {},
+                onMoreOptionsClick = {}
+            )
+        }
     }
 }
 
@@ -110,6 +128,7 @@ private fun RightPanePreview() {
                 user = user,
                 messages = messages,
                 currentUserId = "user_2",
+                onBackClick = {},
             )
         }
     }
