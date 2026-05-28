@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.repository.CategoryRepository
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,19 +37,38 @@ class HomeViewModel @Inject constructor(
             _uiState.value = HomeUiState.Loading
 
             try {
-                val currentUserId = auth.currentUser?.uid
-
-                if (currentUserId == null) {
-                    _uiState.value = HomeUiState.Error(
-                        message = "User not logged in"
-                    )
+                val currentUserId = auth.currentUser?.uid ?: run {
+                    _uiState.value = HomeUiState.Error("User not logged in")
                     return@launch
                 }
 
+                val user = userRepository.getUserById(currentUserId)
+                val categories = categoryRepository.getCategories()
+                val rawConversations = conversationRepository.getUserConversations(currentUserId)
+
+                val conversations = rawConversations.map { conversation ->
+                    val otherUserId = conversation.participantIds.first {
+                        it != currentUserId
+                    }
+
+                    val otherUser = userRepository.getUserById(otherUserId)
+
+                    ConversationUiModel(
+                        conversationId = conversation.id,
+                        title = otherUser.fullName,
+                        imageUrl = otherUser.imageUrl,
+                        participants = listOf(otherUser),
+                        lastMessage = conversation.lastMessage,
+                        timestamp = conversation.timestamp,
+                        unreadCount = conversation.unreadCount,
+                        isGroup = false
+                    )
+                }
+
                 _uiState.value = HomeUiState.Success(
-                    user = userRepository.getUserById(currentUserId),
-                    categories = categoryRepository.getCategories(),
-                    conversations = conversationRepository.getUserConversations(currentUserId),
+                    user = user,
+                    categories = categories,
+                    conversations = conversations
                 )
             } catch (e: Exception) {
                 _uiState.value = HomeUiState.Error(

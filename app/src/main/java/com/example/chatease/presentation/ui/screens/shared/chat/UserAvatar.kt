@@ -46,10 +46,13 @@ fun UserAvatar(
     statusBubbleOffsetY: Dp = (-1).dp,
     showStatus: Boolean = true
 ) {
-    val name = user.fullName.split(" ")[0]
-    val lastName = user.fullName.split(" ")[1]
-    val firstNameLetter = name.first().uppercase()
-    val lastNameFirstLetter = lastName.first().uppercase()
+    val initials = user.fullName
+        .trim()
+        .split(" ")
+        .filter { it.isNotBlank() }
+        .take(2)
+        .map { it.first().uppercaseChar() }
+        .joinToString("")
 
     val gradients = avatarGradients()
     val avatarGradient = gradients[user.uid.hashCode().absoluteValue % gradients.size]
@@ -73,7 +76,7 @@ fun UserAvatar(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "$firstNameLetter$lastNameFirstLetter",
+                    text = initials,
                     style = MaterialTheme.typography.headlineSmall.copy(fontSize = initialsFontSize),
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.surface
@@ -125,7 +128,7 @@ private fun UserAvatarPreview() {
         imageUrl = null,
         status = UserPresenceStatus.ONLINE
     )
-    ChatEaseTheme() {
+    ChatEaseTheme {
         UserAvatar(
             user = user
         )

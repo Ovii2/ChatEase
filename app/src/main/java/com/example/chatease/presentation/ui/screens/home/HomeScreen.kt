@@ -17,9 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.Category
-import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatBottomBar
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
@@ -110,7 +110,7 @@ fun HomeScreenCompactLayout(
     categories: List<Category>,
     selectedCategory: String,
     onSelectCategory: (String) -> Unit,
-    conversations: List<Conversation>,
+    conversations: List<ConversationUiModel>,
     onClickToSeeAll: () -> Unit,
     onConversationClick: (String) -> Unit,
     focusManager: FocusManager,
@@ -152,12 +152,15 @@ private fun HomeScreenCompactLayoutPreview() {
         Category(id = "friends", name = "Friends")
     )
 
-    val conversation = Conversation(
-        id = "1",
+    val conversation = ConversationUiModel(
+        conversationId = "1",
+        title = "Test Test",
+        imageUrl = null,
         participants = listOf(user),
-        lastMessage = "Hey! Are we still for lunch?",
+        lastMessage = "",
         timestamp = System.currentTimeMillis(),
-        unreadCount = 2
+        unreadCount = 0,
+        isGroup = false
     )
     ChatEaseTheme() {
         HomeScreenCompactLayout(

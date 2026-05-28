@@ -94,7 +94,13 @@ fun NewChatScreen(
                             }
                         },
                         onStartChatClick = {
-                            onNavigateToChatScreen(selectedUserIds.first())
+                            newChatViewModel.createNewConversation(
+                                selectedUserId = selectedUserIds.first(),
+                                onConversationCreated = {
+                                    onNavigateToChatScreen(it)
+
+                                }
+                            )
                         },
                     )
                 }

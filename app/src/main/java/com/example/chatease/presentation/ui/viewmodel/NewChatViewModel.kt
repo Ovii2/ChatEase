@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.Contact
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.ContactsRepository
+import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class NewChatViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val contactsRepository: ContactsRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val conversationRepository: ConversationRepository
 ) : ViewModel() {
 
     private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
@@ -46,6 +48,19 @@ class NewChatViewModel @Inject constructor(
                 _contacts.value = contacts
             } catch (e: Exception) {
                 Log.e("NewChatViewModel", e.message ?: "Failed to load contacts")
+            }
+        }
+    }
+
+    fun createNewConversation(selectedUserId: String, onConversationCreated: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val currentUserId = auth.currentUser?.uid ?: return@launch
+                val conversationId =
+                    conversationRepository.createConversation(listOf(currentUserId, selectedUserId))
+                onConversationCreated(conversationId)
+            } catch (e: Exception) {
+                Log.e("NewChatViewModel", e.message ?: "Failed to start conversation")
             }
         }
     }

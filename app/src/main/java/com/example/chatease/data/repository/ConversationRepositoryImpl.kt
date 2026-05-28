@@ -55,6 +55,29 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
         }
     }
 
+    override suspend fun createConversation(participantIds: List<String>): String {
+        val conversationId = firestore
+            .collection(CONVERSATIONS)
+            .document()
+            .id
+
+        val conversationDto = ConversationDto(
+            id = conversationId,
+            participantIds = participantIds,
+            lastMessage = "",
+            timestamp = System.currentTimeMillis(),
+            unreadCount = 0
+        )
+
+        firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .set(conversationDto)
+            .await()
+
+        return conversationId
+    }
+
     private fun <T> mapDocuments(
         snapshot: QuerySnapshot,
         mapper: (DocumentSnapshot) -> T?

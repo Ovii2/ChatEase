@@ -1,18 +1,32 @@
 package com.example.chatease.presentation.ui.screens.chat
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.example.chatease.domain.model.Message
-import com.example.chatease.domain.model.User
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
+import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 
 @Composable
-fun ChatScreen(modifier: Modifier = Modifier) {
-    val user = User()
-    val messages = listOf<Message>()
+fun ChatScreen(
+    modifier: Modifier = Modifier,
+    chatViewModel: ChatViewModel = hiltViewModel(),
+    conversationId: String,
+    onBackClick: () -> Unit
+) {
+    val user by chatViewModel.user.collectAsState()
+    val messages by chatViewModel.messages.collectAsState()
+
+    LaunchedEffect(conversationId) {
+        chatViewModel.loadConversation(conversationId)
+    }
+
     RightPane(
         user = user,
         messages = messages,
-        currentUserId = "1"
+        currentUserId = chatViewModel.currentUserId,
+        onBackClick = onBackClick,
     )
 }

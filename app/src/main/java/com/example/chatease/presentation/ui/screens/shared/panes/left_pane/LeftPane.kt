@@ -16,9 +16,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Category
-import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.components.LeftPaneHeader
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.components.RecentChatsList
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -32,7 +32,7 @@ fun LeftPane(
     onSelectCategory: (String) -> Unit,
     onConversationClick: (String) -> Unit,
     onClickToSeeAll: () -> Unit,
-    conversations: List<Conversation>,
+    conversations: List<ConversationUiModel>,
     focusManager: FocusManager,
     onLogoutClick: () -> Unit
 ) {
@@ -84,12 +84,15 @@ private fun LeftPanePreview() {
         Category(id = "friends", name = "Friends")
     )
 
-    val conversation = Conversation(
-        id = "1",
+    val conversation = ConversationUiModel(
+        conversationId = "1",
+        title = "Test Test",
+        imageUrl = null,
         participants = listOf(user),
-        lastMessage = "Hey! Are we still for lunch?",
+        lastMessage = "",
         timestamp = System.currentTimeMillis(),
-        unreadCount = 2
+        unreadCount = 0,
+        isGroup = false
     )
     ChatEaseTheme() {
         Column(modifier = Modifier.systemBarsPadding()) {
@@ -100,7 +103,7 @@ private fun LeftPanePreview() {
                 onSelectCategory = {},
                 onConversationClick = {},
                 onClickToSeeAll = {},
-                conversations = listOf(conversation, conversation, conversation, conversation),
+                conversations = List(4) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {}
             )

@@ -33,9 +33,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
-import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toChatTimeStamp
@@ -43,7 +43,7 @@ import com.example.chatease.utils.toChatTimeStamp
 @Composable
 fun RecentChatsList(
     modifier: Modifier = Modifier,
-    conversations: List<Conversation>,
+    conversations: List<ConversationUiModel>,
     onConversationClick: (String) -> Unit,
     onClickToSeeAll: () -> Unit
 ) {
@@ -110,7 +110,7 @@ fun RecentChatsList(
 @Composable
 fun RecentChatListItem(
     modifier: Modifier = Modifier,
-    conversation: Conversation,
+    conversation: ConversationUiModel,
     onNavigateToChatDetails: (String) -> Unit,
     showDivider: Boolean
 ) {
@@ -120,7 +120,7 @@ fun RecentChatListItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onNavigateToChatDetails(conversation.id) },
+            .clickable { onNavigateToChatDetails(conversation.conversationId) },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -137,7 +137,7 @@ fun RecentChatListItem(
                 modifier = Modifier.widthIn(max = 200.dp)
             ) {
                 Text(
-                    text = user.fullName,
+                    text = conversation.title,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
@@ -206,18 +206,20 @@ private fun RecentChatsListPreview() {
         imageUrl = null,
         status = UserPresenceStatus.AWAY
     )
-
-    val conversation = Conversation(
-        id = "1",
+    val conversation = ConversationUiModel(
+        conversationId = "1",
+        title = "Test Test",
+        imageUrl = null,
         participants = listOf(user),
-        lastMessage = "Hey! Are we still for lunch?",
+        lastMessage = "",
         timestamp = System.currentTimeMillis(),
-        unreadCount = 2
+        unreadCount = 0,
+        isGroup = false
     )
     ChatEaseTheme() {
         Column(modifier = Modifier.systemBarsPadding()) {
             RecentChatsList(
-                conversations = listOf(conversation, conversation, conversation, conversation),
+                conversations = List(4) { conversation },
                 onConversationClick = {},
                 onClickToSeeAll = {},
             )
