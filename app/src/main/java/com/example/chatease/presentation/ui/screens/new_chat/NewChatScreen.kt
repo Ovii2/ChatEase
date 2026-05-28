@@ -35,6 +35,7 @@ import com.example.chatease.presentation.ui.viewmodel.NewChatViewModel
 fun NewChatScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    onNavigateToChatScreen: (String) -> Unit,
     newChatViewModel: NewChatViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
@@ -92,7 +93,9 @@ fun NewChatScreen(
                                 selectedUserIds + userId
                             }
                         },
-                        onStartChatClick = {},
+                        onStartChatClick = {
+                            onNavigateToChatScreen(selectedUserIds.first())
+                        },
                     )
                 }
             }
@@ -107,9 +110,10 @@ fun NewChatScreen(
 )
 @Composable
 private fun NewChatScreenPreview() {
-    ChatEaseTheme() {
+    ChatEaseTheme {
         NewChatScreen(
-            onBackClick = {}
+            onBackClick = {},
+            onNavigateToChatScreen = {},
         )
     }
 }
