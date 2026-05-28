@@ -1,5 +1,7 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,17 +14,17 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -97,12 +99,12 @@ fun RightPaneTopBar(
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Icon(
                         modifier = Modifier.size(26.dp),
-                        imageVector = Icons.Outlined.Call,
+                        painter = painterResource(R.drawable.ic_phone),
                         contentDescription = null
                     )
                     Icon(
                         modifier = Modifier.size(26.dp),
-                        imageVector = Icons.Outlined.Videocam,
+                        painter = painterResource(R.drawable.ic_video_cam),
                         contentDescription = null
                     )
                     Icon(
@@ -122,7 +124,11 @@ fun RightPaneTopBar(
     )
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 private fun RightPaneTopBarPreview() {
     val user = User(
@@ -132,17 +138,19 @@ private fun RightPaneTopBarPreview() {
         imageUrl = null,
         status = UserPresenceStatus.ONLINE
     )
-    ChatEaseTheme() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            RightPaneTopBar(
-                user = user
-            )
+    ChatEaseTheme {
+        Scaffold {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                RightPaneTopBar(
+                    user = user
+                )
+            }
         }
     }
 }
