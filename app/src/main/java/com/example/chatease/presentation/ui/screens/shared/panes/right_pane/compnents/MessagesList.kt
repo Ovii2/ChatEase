@@ -45,6 +45,7 @@ fun MessagesList(
             ) {
                 Row(
                     verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     if (!isSentByCurrentUser) {
                         UserAvatar(

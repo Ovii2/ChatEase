@@ -1,18 +1,18 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,14 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.theme.successGreenDark
+import com.example.chatease.presentation.ui.theme.successGreenLight
 import com.example.chatease.utils.toChatTimeStamp
 
 @Composable
@@ -39,19 +37,29 @@ fun ChatBubble(
     val backgroundColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
 
-    Row(verticalAlignment = Alignment.Bottom) {
-        if (!isSentByCurrentUser) {
-            MessageTail(
-                backgroundColor = backgroundColor,
-                rotation = -100f,
-                offsetX = 9.dp,
-                offsetY = 1.dp
+    val shape =
+        if (isSentByCurrentUser) {
+            RoundedCornerShape(
+                topStart = 18.dp,
+                topEnd = 18.dp,
+                bottomStart = 18.dp,
+                bottomEnd = 4.dp
+            )
+        } else {
+            RoundedCornerShape(
+                topStart = 18.dp,
+                topEnd = 18.dp,
+                bottomStart = 4.dp,
+                bottomEnd = 18.dp
             )
         }
 
+    val seenCheckColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
+
+    Row(verticalAlignment = Alignment.Bottom) {
         Surface(
             color = backgroundColor,
-            shape = RoundedCornerShape(16.dp)
+            shape = shape
         ) {
             Column(
                 modifier = Modifier
@@ -77,52 +85,25 @@ fun ChatBubble(
                             MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         }
                     )
-                    if (isSentByCurrentUser && message.seenBy.isNotEmpty()) {
+                    if (isSentByCurrentUser) {
                         Icon(
-                            modifier = Modifier.size(13.dp),
-                            imageVector = Icons.Outlined.Check,
-                            contentDescription = null
+                            modifier = Modifier.size(16.dp),
+                            imageVector = if (message.seenBy.isNotEmpty()) {
+                                Icons.Outlined.DoneAll
+                            } else {
+                                Icons.Outlined.Check
+                            },
+                            contentDescription = null,
+                            tint = if (message.seenBy.isNotEmpty()) {
+                                seenCheckColor
+                            } else {
+                                MaterialTheme.colorScheme.surface
+                            }
                         )
                     }
                 }
             }
         }
-
-        if (isSentByCurrentUser) {
-            MessageTail(
-                backgroundColor = backgroundColor,
-                rotation = 145f,
-                offsetX = (-13).dp,
-                offsetY = 12.dp
-            )
-        }
-    }
-}
-
-@Composable
-private fun MessageTail(
-    backgroundColor: Color,
-    rotation: Float,
-    offsetX: Dp,
-    offsetY: Dp
-) {
-    Canvas(
-        modifier = Modifier
-            .offset(x = offsetX, y = offsetY)
-            .rotate(rotation)
-            .size(width = 20.dp, height = 21.dp)
-    ) {
-        val path = Path().apply {
-            moveTo(0f, 0f)
-            lineTo(0f, size.height)
-            lineTo(size.width, size.height)
-            close()
-        }
-
-        drawPath(
-            path = path,
-            color = backgroundColor
-        )
     }
 }
 
@@ -140,7 +121,7 @@ private fun ChatBubblePreview() {
         timeStamp = System.currentTimeMillis(),
         seenBy = listOf("user_1")
     )
-    ChatEaseTheme() {
+    ChatEaseTheme {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
