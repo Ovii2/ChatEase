@@ -1,9 +1,13 @@
 package com.example.chatease.presentation.ui.screens.all_requests
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
@@ -11,9 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -51,6 +58,38 @@ fun AllRequestsScreen(
         else -> 0
     }
 
+    var searchValue by rememberSaveable { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+
+    val successState = receivedContactRequests as? ReceivedRequestsUiState.Success
+    val filteredReceivedRequests =
+        if (successState != null) {
+            ReceivedRequestsUiState.Success(
+                successState.requests.filter {
+                    it.user.fullName.contains(other = searchValue, ignoreCase = true)
+                }
+            )
+        } else {
+            receivedContactRequests
+        }
+
+    val sentSuccessState = sentContactRequests as? SentRequestsUiState.Success
+    val filteredSentRequests =
+        if (sentSuccessState != null) {
+            SentRequestsUiState.Success(
+                sentSuccessState.requests.filter {
+                    it.receiver.fullName.contains(
+                        other = searchValue,
+                        ignoreCase = true
+                    )
+                }
+            )
+        } else {
+            sentContactRequests
+        }
+
+    val shouldShowSearch = if (selectedTabIndex == 0) receivedCount > 1 else sentCount > 1
+
     Scaffold(
         modifier = modifier.padding(8.dp),
         topBar = {
@@ -59,49 +98,60 @@ fun AllRequestsScreen(
                 title = Screens.AllRequests.toScreenName()
             )
         }) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SecondaryTabRow(
-                selectedTabIndex = selectedTabIndex,
+                .padding(paddingValues)
+                .fillMaxSize()
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    focusManager.clearFocus()
+                }) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                AllRequestsTab(
-                    selected = selectedTabIndex == 0,
-                    onTabClick = {
-                        selectedTabIndex = 0
-                    },
-                    title = R.string.received,
-                    count = receivedCount
-                )
-                AllRequestsTab(
-                    selected = selectedTabIndex == 1,
-                    onTabClick = {
-                        selectedTabIndex = 1
-                    },
-                    title = R.string.sent,
-                    count = sentCount
-                )
-            }
-            ChatSearchBar(
-                value = "",
-                onValueChange = {},
-                onClearSearch = {},
-                placeholder = R.string.search_requests
-            )
-            if (selectedTabIndex == 0) {
-                ReceivedRequestsSection(
-                    receivedContactRequests = receivedContactRequests,
-                    onDismissRequestClick = allRequestsViewModel::declineContactRequest,
-                    onAcceptRequestClick = allRequestsViewModel::acceptContactRequest
-                )
-            } else {
-                SentRequestsContent(
-                    paddingValues = PaddingValues(),
-                    sentRequests = sentContactRequests,
-                    onWithdrawRequest = allRequestsViewModel::withDrawContactRequest
-                )
+                SecondaryTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                ) {
+                    AllRequestsTab(
+                        selected = selectedTabIndex == 0,
+                        onTabClick = {
+                            selectedTabIndex = 0
+                        },
+                        title = R.string.received,
+                        count = receivedCount
+                    )
+                    AllRequestsTab(
+                        selected = selectedTabIndex == 1,
+                        onTabClick = {
+                            selectedTabIndex = 1
+                        },
+                        title = R.string.sent,
+                        count = sentCount
+                    )
+                }
+                if (shouldShowSearch) {
+                    ChatSearchBar(
+                        value = searchValue,
+                        onValueChange = { searchValue = it },
+                        onClearSearch = { searchValue = "" },
+                        placeholder = R.string.search_requests
+                    )
+                }
+                if (selectedTabIndex == 0) {
+                    ReceivedRequestsSection(
+                        receivedContactRequests = filteredReceivedRequests,
+                        onDismissRequestClick = allRequestsViewModel::declineContactRequest,
+                        onAcceptRequestClick = allRequestsViewModel::acceptContactRequest
+                    )
+                } else {
+                    SentRequestsContent(
+                        paddingValues = PaddingValues(),
+                        sentRequests = filteredSentRequests,
+                        onWithdrawRequest = allRequestsViewModel::withDrawContactRequest
+                    )
+                }
             }
         }
     }
