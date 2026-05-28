@@ -27,7 +27,7 @@ fun CircleCheckBox(
     val background = if (selected) MaterialTheme.colorScheme.surface else Color.Transparent
 
     IconButton(
-        onClick = { onChecked() },
+        onClick = onChecked,
         modifier = Modifier.offset(x = 4.dp, y = 4.dp),
         enabled = enabled
     ) {

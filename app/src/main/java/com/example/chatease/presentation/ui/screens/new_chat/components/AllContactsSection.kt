@@ -34,9 +34,9 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun AllContactsSection(
     modifier: Modifier = Modifier,
     users: List<User>,
-    count: Int,
-    selected: Boolean,
-    onChecked: () -> Unit,
+    selectedCount: Int,
+    selectedUserIds: Set<String>,
+    onChecked: (String) -> Unit,
     onStartChatClick: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -57,8 +57,8 @@ fun AllContactsSection(
                 items(users) { user ->
                     AllContactsItem(
                         user = user,
-                        selected = selected,
-                        onChecked = onChecked
+                        selected = user.uid in selectedUserIds,
+                        onChecked = { onChecked(user.uid) }
                     )
                 }
             }
@@ -78,7 +78,7 @@ fun AllContactsSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = stringResource(R.string.next))
-                if (count > 0) Text(text = "($count)") else Unit
+                if (selectedCount > 0) Text(text = "($selectedCount)") else Unit
             }
         }
     }
@@ -140,8 +140,8 @@ private fun AllContactsSectionPreview() {
             AllContactsSection(
                 modifier = Modifier.padding(paddingValues),
                 users = users,
-                count = 3,
-                selected = false,
+                selectedCount = 3,
+                selectedUserIds = setOf("1", "2"),
                 onChecked = {},
                 onStartChatClick = {}
             )

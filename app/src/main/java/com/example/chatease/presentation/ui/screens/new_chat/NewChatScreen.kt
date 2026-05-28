@@ -11,7 +11,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,10 +38,12 @@ fun NewChatScreen(
     newChatViewModel: NewChatViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-
     val contacts by newChatViewModel.contacts.collectAsState()
     val users by newChatViewModel.users.collectAsState()
     val frequentlyContactedUsers = emptyList<User>()
+    var selectedUserIds by rememberSaveable {
+        mutableStateOf(setOf<String>())
+    }
 
 
     Scaffold(
@@ -78,9 +83,15 @@ fun NewChatScreen(
                 if (contacts.isNotEmpty()) {
                     AllContactsSection(
                         users = users,
-                        count = 3,
-                        selected = true,
-                        onChecked = {},
+                        selectedCount = selectedUserIds.size,
+                        selectedUserIds = selectedUserIds,
+                        onChecked = { userId ->
+                            selectedUserIds = if (userId in selectedUserIds) {
+                                selectedUserIds - userId
+                            } else {
+                                selectedUserIds + userId
+                            }
+                        },
                         onStartChatClick = {},
                     )
                 }
