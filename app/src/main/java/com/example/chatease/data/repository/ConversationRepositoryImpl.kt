@@ -78,6 +78,23 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
         return conversationId
     }
 
+    override suspend fun getExistingConversationId(participantIds: List<String>): String? {
+        val sortedParticipantIds = participantIds.sorted()
+
+        val snapshot = firestore
+            .collection(CONVERSATIONS)
+            .whereArrayContains(PARTICIPANT_IDS, sortedParticipantIds.first())
+            .get()
+            .await()
+
+        val existingConversation = snapshot.documents.firstOrNull { document ->
+            val conversation = document.toObject(ConversationDto::class.java)
+            conversation?.participantIds?.sorted() == sortedParticipantIds
+        }
+
+        return existingConversation?.id
+    }
+
     private fun <T> mapDocuments(
         snapshot: QuerySnapshot,
         mapper: (DocumentSnapshot) -> T?

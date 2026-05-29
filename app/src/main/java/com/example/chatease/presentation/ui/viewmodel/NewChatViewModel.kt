@@ -56,8 +56,12 @@ class NewChatViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val currentUserId = auth.currentUser?.uid ?: return@launch
+                val participantIds = listOf(currentUserId, selectedUserId).sorted()
+
                 val conversationId =
-                    conversationRepository.createConversation(listOf(currentUserId, selectedUserId))
+                    conversationRepository.getExistingConversationId(participantIds)
+                        ?: conversationRepository.createConversation(participantIds)
+
                 onConversationCreated(conversationId)
             } catch (e: Exception) {
                 Log.e("NewChatViewModel", e.message ?: "Failed to start conversation")

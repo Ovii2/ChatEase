@@ -12,4 +12,6 @@ interface ConversationRepository {
     suspend fun getMessages(conversationId: String): List<Message>
 
     suspend fun createConversation(participantIds: List<String>): String
+
+    suspend fun getExistingConversationId(participantIds: List<String>): String?
 }
