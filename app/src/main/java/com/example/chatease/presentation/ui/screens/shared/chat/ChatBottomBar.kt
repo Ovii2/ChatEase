@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.shared.chat
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -12,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material3.Badge
@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,13 +63,13 @@ fun ChatBottomBar(
             selected = currentRoute == Screens.Home.route,
             onClick = onNavigateToHome,
             label = R.string.home,
-            image = Icons.Outlined.Forum
+            icon = Icons.Outlined.Forum
         )
         CustomNavigationBarItem(
             selected = currentRoute == Screens.Contacts.route,
             onClick = onNavigateToContacts,
             label = R.string.contacts,
-            image = Icons.Outlined.People,
+            icon = Icons.Outlined.People,
             badgeCount = pendingRequests,
             showBadge = showContactsBadge
         )
@@ -88,13 +89,19 @@ fun ChatBottomBar(
             selected = currentRoute == Screens.Calls.route,
             onClick = onNavigateToCalls,
             label = R.string.calls,
-            image = Icons.Outlined.Call
+            image = R.drawable.ic_phone
         )
+//        CustomNavigationBarItem(
+//            selected = currentRoute == Screens.Calls.route,
+//            onClick = onNavigateToCalls,
+//            label = R.string.calls,
+//            icon = Icons.Outlined.Call
+//        )
         CustomNavigationBarItem(
             selected = currentRoute == Screens.Profile.route,
             onClick = onNavigateToProfile,
             label = R.string.profile,
-            image = Icons.Outlined.AccountCircle
+            icon = Icons.Outlined.AccountCircle
         )
     }
 }
@@ -105,7 +112,8 @@ fun RowScope.CustomNavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
     @StringRes label: Int,
-    image: ImageVector,
+    icon: ImageVector? = null,
+    @DrawableRes image: Int? = null,
     badgeCount: Int = 0,
     showBadge: Boolean = badgeCount > 0
 ) {
@@ -123,10 +131,20 @@ fun RowScope.CustomNavigationBarItem(
                     }
                 }
             ) {
-                Icon(
-                    imageVector = image,
-                    contentDescription = null
-                )
+                if (icon != null) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = icon,
+                        contentDescription = null
+                    )
+                } else if (image != null) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(image),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         },
         label = {
