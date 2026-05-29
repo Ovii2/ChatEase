@@ -118,4 +118,9 @@
     <string name="conversation_starter_2">How are you?</string>
     <string name="conversation_starter_3">What\'s up?</string>
     <string name="conversation_starter_4">How was your day?</string>
+
+    <string name="preview">Preview :</string>
+    <string name="off">off</string>
+    <string name="on">on</string>
+    <string name="delete_chat">Delete chat</string>
 </resources>
