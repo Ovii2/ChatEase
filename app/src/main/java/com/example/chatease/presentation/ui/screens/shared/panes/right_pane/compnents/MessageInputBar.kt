@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.outlined.Add
@@ -48,16 +47,18 @@ fun MessageInputBar(
     modifier: Modifier = Modifier,
     onEmojiClick: () -> Unit,
     onMicrophoneClick: () -> Unit,
-    onSendClick: () -> Unit
+    onSendClick: () -> Unit,
+    messageText: String,
+    onMessageTextChange: (String) -> Unit
 ) {
-    val messageState = rememberTextFieldState()
 
     OutlinedTextField(
         modifier = Modifier
             .imePadding()
             .padding(bottom = 8.dp)
             .fillMaxWidth(),
-        state = messageState,
+        value = messageText,
+        onValueChange = onMessageTextChange,
         placeholder = { Text(text = stringResource(R.string.type_a_message)) },
         shape = CircleShape,
         leadingIcon = {
@@ -86,7 +87,7 @@ fun MessageInputBar(
                     contentDescription = null
                 )
                 AnimatedContent(
-                    targetState = messageState.text.isNotEmpty(),
+                    targetState = messageText.isNotEmpty(),
                     transitionSpec = {
                         fadeIn() + scaleIn() togetherWith fadeOut() + scaleOut()
                     },
@@ -133,6 +134,8 @@ private fun MessageInputBarPreview() {
                     onEmojiClick = {},
                     onMicrophoneClick = {},
                     onSendClick = {},
+                    messageText = "",
+                    onMessageTextChange = {},
                 )
             }
         }

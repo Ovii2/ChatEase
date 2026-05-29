@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.screens.shared.chat.ConversationStarterRow
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageInputBar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesList
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.RightPaneTopBar
@@ -31,6 +36,7 @@ fun RightPane(
     onBackClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    var messageText by rememberSaveable { mutableStateOf("") }
 
     Box(
         modifier = modifier.clickable(
@@ -57,10 +63,17 @@ fun RightPane(
                 currentUserId = currentUserId,
                 user = user
             )
+            if (messages.isEmpty()) {
+                ConversationStarterRow(
+                    onStarterClick = { messageText = it }
+                )
+            }
             MessageInputBar(
                 onEmojiClick = {},
                 onMicrophoneClick = {},
                 onSendClick = {},
+                messageText = messageText,
+                onMessageTextChange = { messageText = it },
             )
         }
     }
