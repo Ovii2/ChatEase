@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +60,8 @@ fun RightPaneTopBar(
         UserPresenceStatus.OFFLINE -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
     }
 
+    val iconSize = 21.dp
+
     TopAppBar(
         title = {
             Row(
@@ -98,20 +99,20 @@ fun RightPaneTopBar(
                         )
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Icon(
-                        modifier = Modifier.size(26.dp),
+                        modifier = Modifier.size(iconSize),
                         painter = painterResource(R.drawable.ic_phone),
                         contentDescription = null
                     )
                     Icon(
-                        modifier = Modifier.size(26.dp),
+                        modifier = Modifier.size(iconSize),
                         painter = painterResource(R.drawable.ic_video_cam),
                         contentDescription = null
                     )
                     Icon(
-                        modifier = Modifier.size(26.dp),
-                        imageVector = Icons.Outlined.MoreVert,
+                        modifier = Modifier.size(iconSize),
+                        painter = painterResource(R.drawable.ic_more_vert),
                         contentDescription = null
                     )
                 }
