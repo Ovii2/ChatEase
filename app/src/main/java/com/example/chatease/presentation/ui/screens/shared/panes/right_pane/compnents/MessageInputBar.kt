@@ -2,6 +2,12 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.com
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +23,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Mic
-import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.TagFaces
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,14 +48,16 @@ fun MessageInputBar(
     modifier: Modifier = Modifier,
     onEmojiClick: () -> Unit,
     onMicrophoneClick: () -> Unit,
-    onMoreOptionsClick: () -> Unit
+    onSendClick: () -> Unit
 ) {
+    val messageState = rememberTextFieldState()
+
     OutlinedTextField(
-        modifier = modifier
+        modifier = Modifier
             .imePadding()
             .padding(bottom = 8.dp)
             .fillMaxWidth(),
-        state = rememberTextFieldState(),
+        state = messageState,
         placeholder = { Text(text = stringResource(R.string.type_a_message)) },
         shape = CircleShape,
         leadingIcon = {
@@ -70,22 +78,36 @@ fun MessageInputBar(
         trailingIcon = {
             Row(
                 modifier = Modifier.padding(end = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Icon(
                     modifier = Modifier.clickable { onEmojiClick() },
                     imageVector = Icons.Outlined.TagFaces,
                     contentDescription = null
                 )
-                Icon(
-                    modifier = Modifier.clickable { onMicrophoneClick() },
-                    imageVector = Icons.Outlined.Mic,
-                    contentDescription = null
-                )
-                Icon(
-                    modifier = Modifier.clickable { onMoreOptionsClick() },
-                    imageVector = Icons.Outlined.MoreVert, contentDescription = null
-                )
+                AnimatedContent(
+                    targetState = messageState.text.isNotEmpty(),
+                    transitionSpec = {
+                        fadeIn() + scaleIn() togetherWith fadeOut() + scaleOut()
+                    },
+                ) { hasText ->
+                    if (hasText) {
+                        Icon(
+                            modifier = Modifier
+                                .clickable { onSendClick() }
+                                .size(24.dp),
+                            imageVector = Icons.AutoMirrored.Filled.Send,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    } else {
+                        Icon(
+                            modifier = Modifier.clickable { onMicrophoneClick() },
+                            imageVector = Icons.Outlined.Mic,
+                            contentDescription = null
+                        )
+                    }
+                }
             }
         },
         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
@@ -110,7 +132,7 @@ private fun MessageInputBarPreview() {
                 MessageInputBar(
                     onEmojiClick = {},
                     onMicrophoneClick = {},
-                    onMoreOptionsClick = {}
+                    onSendClick = {},
                 )
             }
         }

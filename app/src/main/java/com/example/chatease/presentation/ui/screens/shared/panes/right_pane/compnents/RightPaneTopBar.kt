@@ -46,7 +46,8 @@ import com.example.chatease.presentation.ui.theme.successGreenLight
 fun RightPaneTopBar(
     modifier: Modifier = Modifier,
     user: User,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onMoreOptionsClick: () -> Unit
 ) {
     val userPresenceStatus = when (user.status) {
         UserPresenceStatus.ONLINE -> R.string.online
@@ -111,7 +112,9 @@ fun RightPaneTopBar(
                         contentDescription = null
                     )
                     Icon(
-                        modifier = Modifier.size(iconSize),
+                        modifier = Modifier
+                            .size(iconSize)
+                            .clickable { onMoreOptionsClick() },
                         painter = painterResource(R.drawable.ic_more_vert),
                         contentDescription = null
                     )
@@ -154,6 +157,7 @@ private fun RightPaneTopBarPreview() {
                 RightPaneTopBar(
                     user = user,
                     onBackClick = {},
+                    onMoreOptionsClick = {},
                 )
             }
         }

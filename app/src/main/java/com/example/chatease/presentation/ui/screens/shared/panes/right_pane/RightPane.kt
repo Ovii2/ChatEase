@@ -49,6 +49,7 @@ fun RightPane(
             RightPaneTopBar(
                 user = user,
                 onBackClick = onBackClick,
+                onMoreOptionsClick = {},
             )
             MessagesList(
                 modifier = Modifier.weight(1f),
@@ -59,7 +60,7 @@ fun RightPane(
             MessageInputBar(
                 onEmojiClick = {},
                 onMicrophoneClick = {},
-                onMoreOptionsClick = {}
+                onSendClick = {},
             )
         }
     }
