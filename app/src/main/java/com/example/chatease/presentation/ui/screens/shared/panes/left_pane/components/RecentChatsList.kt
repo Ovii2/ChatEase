@@ -87,10 +87,10 @@ fun RecentChatsList(
         } else {
             LazyColumn(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.3f))
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f))
                     .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
+                        width = 0.5.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(24.dp)
                     ),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -166,7 +166,10 @@ fun RecentChatListItem(
                 Box(
                     modifier = Modifier
                         .size(25.dp)
-                        .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -188,7 +191,7 @@ fun RecentChatListItem(
                 top = 8.dp
             ),
             thickness = 0.75.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
         )
     }
 }
