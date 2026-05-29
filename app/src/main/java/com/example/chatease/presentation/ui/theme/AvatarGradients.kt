@@ -18,6 +18,26 @@ fun avatarGradients(): List<List<Color>> {
         listOf(
             MaterialTheme.colorScheme.primaryContainer,
             MaterialTheme.colorScheme.secondaryContainer
+        ),
+        listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.tertiary
+        ),
+        listOf(
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.primaryContainer
+        ),
+        listOf(
+            MaterialTheme.colorScheme.tertiary,
+            MaterialTheme.colorScheme.secondaryContainer
+        ),
+        listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.tertiaryContainer
+        ),
+        listOf(
+            MaterialTheme.colorScheme.secondaryContainer,
+            MaterialTheme.colorScheme.tertiaryContainer
         )
     )
 }
