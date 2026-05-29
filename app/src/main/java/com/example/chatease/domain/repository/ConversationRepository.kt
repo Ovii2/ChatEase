@@ -2,6 +2,7 @@ package com.example.chatease.domain.repository
 
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.Message
+import kotlinx.coroutines.flow.Flow
 
 interface ConversationRepository {
 
@@ -14,4 +15,7 @@ interface ConversationRepository {
     suspend fun createConversation(participantIds: List<String>): String
 
     suspend fun getExistingConversationId(participantIds: List<String>): String?
+
+    fun observeUserConversations(userId: String): Flow<List<Conversation>>
+
 }

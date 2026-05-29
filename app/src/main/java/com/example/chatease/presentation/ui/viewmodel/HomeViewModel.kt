@@ -44,32 +44,30 @@ class HomeViewModel @Inject constructor(
 
                 val user = userRepository.getUserById(currentUserId)
                 val categories = categoryRepository.getCategories()
-                val rawConversations = conversationRepository.getUserConversations(currentUserId)
-
-                val conversations = rawConversations.map { conversation ->
-                    val otherUserId = conversation.participantIds.first {
-                        it != currentUserId
+                conversationRepository.observeUserConversations(currentUserId)
+                    .collect { rawConversations ->
+                        val conversations = rawConversations.map { conversation ->
+                            val otherUserId = conversation.participantIds.first {
+                                it != currentUserId
+                            }
+                            val otherUser = userRepository.getUserById(otherUserId)
+                            ConversationUiModel(
+                                conversationId = conversation.id,
+                                title = otherUser.fullName,
+                                imageUrl = otherUser.imageUrl,
+                                participants = listOf(otherUser),
+                                lastMessage = conversation.lastMessage,
+                                timestamp = conversation.timestamp,
+                                unreadCount = conversation.unreadCount,
+                                isGroup = false
+                            )
+                        }
+                        _uiState.value = HomeUiState.Success(
+                            user = user,
+                            categories = categories,
+                            conversations = conversations
+                        )
                     }
-
-                    val otherUser = userRepository.getUserById(otherUserId)
-
-                    ConversationUiModel(
-                        conversationId = conversation.id,
-                        title = otherUser.fullName,
-                        imageUrl = otherUser.imageUrl,
-                        participants = listOf(otherUser),
-                        lastMessage = conversation.lastMessage,
-                        timestamp = conversation.timestamp,
-                        unreadCount = conversation.unreadCount,
-                        isGroup = false
-                    )
-                }
-
-                _uiState.value = HomeUiState.Success(
-                    user = user,
-                    categories = categories,
-                    conversations = conversations
-                )
             } catch (e: Exception) {
                 _uiState.value = HomeUiState.Error(
                     message = e.message ?: ""

@@ -9,6 +9,9 @@ import com.example.chatease.domain.repository.ConversationRepository
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : ConversationRepository {
@@ -94,6 +97,27 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
 
         return existingConversation?.id
     }
+
+    override fun observeUserConversations(userId: String): Flow<List<Conversation>> = callbackFlow {
+        val listener = firestore
+            .collection(CONVERSATIONS)
+            .whereArrayContains(PARTICIPANT_IDS, userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val conversations = snapshot?.documents?.mapNotNull { document ->
+                    document.toObject(ConversationDto::class.java)?.toDomain()
+                } ?: emptyList()
+
+                trySend(conversations)
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
+
 
     private fun <T> mapDocuments(
         snapshot: QuerySnapshot,
