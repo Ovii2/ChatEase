@@ -54,8 +54,7 @@ fun RightPane(
         ) {
             RightPaneTopBar(
                 user = user,
-                onBackClick = onBackClick,
-                onMoreOptionsClick = {},
+                onBackClick = onBackClick
             )
             MessagesList(
                 modifier = Modifier.weight(1f),
