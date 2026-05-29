@@ -113,4 +113,9 @@
 
     <string name="request_accepted">You have accepted request</string>
     <string name="request_declined">You have declined request</string>
+
+    <string name="conversation_starter_1">Hi!</string>
+    <string name="conversation_starter_2">How are you?</string>
+    <string name="conversation_starter_3">What\'s up?</string>
+    <string name="conversation_starter_4">How was your day?</string>
 </resources>
