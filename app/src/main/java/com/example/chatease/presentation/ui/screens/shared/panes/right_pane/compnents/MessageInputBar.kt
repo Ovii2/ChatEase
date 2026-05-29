@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.outlined.TagFaces
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,7 +45,10 @@ fun MessageInputBar(
     onMoreOptionsClick: () -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .imePadding()
+            .padding(bottom = 8.dp)
+            .fillMaxWidth(),
         state = rememberTextFieldState(),
         placeholder = { Text(text = stringResource(R.string.type_a_message)) },
         shape = CircleShape,
@@ -86,24 +92,27 @@ fun MessageInputBar(
     )
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(
     showBackground = true, showSystemUi = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
 private fun MessageInputBarPreview() {
-    ChatEaseTheme() {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            MessageInputBar(
-                onEmojiClick = {},
-                onMicrophoneClick = {},
-                onMoreOptionsClick = {}
-            )
+    ChatEaseTheme {
+        Scaffold {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                MessageInputBar(
+                    onEmojiClick = {},
+                    onMicrophoneClick = {},
+                    onMoreOptionsClick = {}
+                )
+            }
         }
     }
 }

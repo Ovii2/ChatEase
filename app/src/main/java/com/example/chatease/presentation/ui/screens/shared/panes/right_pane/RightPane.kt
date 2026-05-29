@@ -120,6 +120,14 @@ private fun RightPanePreview() {
             text = "Yes, definitely! 😄",
             timeStamp = System.currentTimeMillis(),
             seenBy = listOf("user_1")
+        ),
+        Message(
+            messageId = "6",
+            conversationId = "conversation_1",
+            senderId = "user_2",
+            text = "Yes, definitely! 😄",
+            timeStamp = System.currentTimeMillis(),
+            seenBy = listOf("user_1")
         )
     )
     ChatEaseTheme() {
