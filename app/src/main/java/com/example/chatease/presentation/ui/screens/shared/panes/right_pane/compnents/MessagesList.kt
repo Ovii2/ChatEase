@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -28,10 +27,9 @@ fun MessagesList(
     messages: List<Message>,
     currentUserId: String,
     user: User,
-    listState: LazyListState
+    listState: LazyListState,
+    firstUnreadMessageId: String?
 ) {
-    val firstUnreadMessageId = "3"
-
     LazyColumn(
         modifier = modifier,
         state = listState,
@@ -121,6 +119,7 @@ private fun MessagesListPreview() {
                 currentUserId = "user_2",
                 user = user,
                 listState = rememberLazyListState(),
+                firstUnreadMessageId = "1",
             )
         }
     }

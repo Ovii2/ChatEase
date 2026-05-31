@@ -30,6 +30,11 @@ class ChatViewModel @Inject constructor(
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
+    val firstUnreadMessageId: String?
+        get() = _messages.value.firstOrNull { message ->
+            currentUserId !in message.seenBy
+        }?.messageId
+
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
             try {

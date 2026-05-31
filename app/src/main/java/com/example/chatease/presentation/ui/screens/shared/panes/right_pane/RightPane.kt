@@ -43,7 +43,8 @@ fun RightPane(
     messages: List<Message>,
     currentUserId: String,
     onBackClick: () -> Unit,
-    onSendMessageClick: (String) -> Unit
+    onSendMessageClick: (String) -> Unit,
+    firstUnreadMessageId: String?
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -127,7 +128,8 @@ fun RightPane(
                 messages = messages,
                 currentUserId = currentUserId,
                 user = user,
-                listState = listState
+                listState = listState,
+                firstUnreadMessageId = firstUnreadMessageId,
             )
             if (messages.isEmpty()) {
                 ConversationStarterRow(
@@ -221,6 +223,7 @@ private fun RightPanePreview() {
                 currentUserId = "user_2",
                 onBackClick = {},
                 onSendMessageClick = {},
+                firstUnreadMessageId = "1",
             )
         }
     }
