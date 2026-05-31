@@ -28,5 +28,6 @@ fun ChatScreen(
         messages = messages,
         currentUserId = chatViewModel.currentUserId,
         onBackClick = onBackClick,
+        onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
     )
 }
