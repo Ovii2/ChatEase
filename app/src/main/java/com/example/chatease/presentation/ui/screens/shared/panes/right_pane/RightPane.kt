@@ -148,6 +148,10 @@ fun RightPane(
                 onSendMessageClick = {
                     onSendMessageClick(it)
                     messageText = ""
+
+                    scope.launch {
+                        listState.animateScrollToItem(messages.size)
+                    }
                 },
                 messageText = messageText,
                 onMessageTextChange = { messageText = it },
