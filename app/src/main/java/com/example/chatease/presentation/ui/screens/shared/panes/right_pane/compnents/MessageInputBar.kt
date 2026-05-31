@@ -47,7 +47,7 @@ fun MessageInputBar(
     modifier: Modifier = Modifier,
     onEmojiClick: () -> Unit,
     onMicrophoneClick: () -> Unit,
-    onSendClick: () -> Unit,
+    onSendMessageClick: (String) -> Unit,
     messageText: String,
     onMessageTextChange: (String) -> Unit
 ) {
@@ -95,7 +95,7 @@ fun MessageInputBar(
                     if (hasText) {
                         Icon(
                             modifier = Modifier
-                                .clickable { onSendClick() }
+                                .clickable { onSendMessageClick(messageText) }
                                 .size(24.dp),
                             imageVector = Icons.AutoMirrored.Filled.Send,
                             contentDescription = null,
@@ -133,7 +133,7 @@ private fun MessageInputBarPreview() {
                 MessageInputBar(
                     onEmojiClick = {},
                     onMicrophoneClick = {},
-                    onSendClick = {},
+                    onSendMessageClick = {},
                     messageText = "",
                     onMessageTextChange = {},
                 )
