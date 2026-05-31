@@ -27,7 +27,6 @@ class ChatViewModel @Inject constructor(
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages = _messages.asStateFlow()
 
-
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -38,12 +37,47 @@ class ChatViewModel @Inject constructor(
                 val otherUserId = conversation.participantIds.first {
                     it != currentUserId
                 }
-                val otherUser = userRepository.getUserById(otherUserId)
-                _user.value = otherUser
-                _messages.value = conversationRepository.getMessages(conversationId)
+                observeUser(otherUserId)
+                observeMessages(conversationId)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", e.message ?: "Failed to load conversation")
             }
+        }
+    }
+
+    fun sendMessage(conversationId: String, text: String) {
+        viewModelScope.launch {
+            try {
+                val currentUserId = auth.currentUser?.uid ?: return@launch
+                val message = Message(
+                    conversationId = conversationId,
+                    senderId = currentUserId,
+                    text = text.trim(),
+                    timeStamp = System.currentTimeMillis(),
+                    seenBy = listOf(currentUserId)
+                )
+                conversationRepository.sendMessage(message)
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", e.message ?: "Failed to send message")
+            }
+        }
+    }
+
+    private fun observeMessages(conversationId: String) {
+        viewModelScope.launch {
+            conversationRepository.observeMessages(conversationId)
+                .collect { messages ->
+                    _messages.value = messages
+                }
+        }
+    }
+
+    private fun observeUser(userId: String) {
+        viewModelScope.launch {
+            userRepository.observeUser(userId)
+                .collect { user ->
+                    _user.value = user
+                }
         }
     }
 }
