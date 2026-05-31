@@ -22,6 +22,7 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
         private const val MESSAGES = "messages"
         private const val LAST_MESSAGE = "lastMessage"
         private const val TIMESTAMP = "timestamp"
+        private const val MESSAGE_TIMESTAMP = "timeStamp"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -151,7 +152,7 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
             .collection(CONVERSATIONS)
             .document(conversationId)
             .collection(MESSAGES)
-            .orderBy(TIMESTAMP)
+            .orderBy(MESSAGE_TIMESTAMP)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
