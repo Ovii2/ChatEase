@@ -6,6 +6,9 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
@@ -51,6 +54,23 @@ class UserRepositoryImpl(
                 other = query,
                 ignoreCase = true
             )
+        }
+    }
+
+    override fun observeUser(userId: String): Flow<User> = callbackFlow {
+        val listener = firestore
+            .collection(USERS)
+            .document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val user = snapshot?.toObject(UserDto::class.java)?.toDomain()
+                user?.let(::trySend)
+            }
+        awaitClose {
+            listener.remove()
         }
     }
 }
