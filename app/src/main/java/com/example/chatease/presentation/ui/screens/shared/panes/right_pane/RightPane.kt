@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -8,10 +9,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -24,9 +30,12 @@ import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationStarterRow
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageInputBar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesList
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.NewMessagesButton
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.RightPaneTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun RightPane(
     modifier: Modifier = Modifier,
@@ -38,6 +47,50 @@ fun RightPane(
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
+    val listState = rememberLazyListState()
+    val isNearBottom by derivedStateOf {
+        val lastVisibleItemIndex =
+            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+
+        lastVisibleItemIndex == null ||
+                lastVisibleItemIndex >= messages.lastIndex - 1
+    }
+
+    var hasInitialScrollDone by rememberSaveable { mutableStateOf(false) }
+    var newMessageCount by rememberSaveable { mutableIntStateOf(0) }
+    var previousMessageCount by rememberSaveable { mutableIntStateOf(messages.size) }
+    val showNewMessagesButton = newMessageCount > 0
+
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty() && !hasInitialScrollDone) {
+            listState.scrollToItem(messages.lastIndex)
+            hasInitialScrollDone = true
+            newMessageCount = 0
+            previousMessageCount = messages.size
+        }
+    }
+
+    LaunchedEffect(messages.size) {
+        val latestMessage = messages.lastOrNull()
+
+        if (
+            messages.size > previousMessageCount &&
+            !isNearBottom &&
+            latestMessage?.senderId != currentUserId
+        ) {
+            newMessageCount += messages.size - previousMessageCount
+        }
+
+        previousMessageCount = messages.size
+    }
+
+    LaunchedEffect(isNearBottom) {
+        if (isNearBottom) {
+            newMessageCount = 0
+        }
+    }
 
     Box(
         modifier = modifier.clickable(
@@ -57,11 +110,24 @@ fun RightPane(
                 user = user,
                 onBackClick = onBackClick
             )
+            if (showNewMessagesButton) {
+                NewMessagesButton(
+                    onClick = {
+                        newMessageCount = 0
+
+                        scope.launch {
+                            listState.animateScrollToItem(messages.lastIndex)
+                        }
+                    },
+                    newMessages = newMessageCount
+                )
+            }
             MessagesList(
                 modifier = Modifier.weight(1f),
                 messages = messages,
                 currentUserId = currentUserId,
-                user = user
+                user = user,
+                listState = listState
             )
             if (messages.isEmpty()) {
                 ConversationStarterRow(
