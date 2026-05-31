@@ -59,7 +59,8 @@ fun MessagesList(
                     } else Unit
                     ChatBubble(
                         message = message,
-                        isSentByCurrentUser = isSentByCurrentUser
+                        isSentByCurrentUser = isSentByCurrentUser,
+                        currentUserId = currentUserId,
                     )
                 }
             }

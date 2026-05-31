@@ -30,5 +30,6 @@ fun ChatScreen(
         onBackClick = onBackClick,
         onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
         firstUnreadMessageId = chatViewModel.firstUnreadMessageId,
+        onMessagesVisible = { chatViewModel.markMessagesAsSeen(conversationId) },
     )
 }

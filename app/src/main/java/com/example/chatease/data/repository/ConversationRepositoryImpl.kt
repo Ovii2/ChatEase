@@ -7,6 +7,7 @@ import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.repository.ConversationRepository
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.channels.awaitClose
@@ -23,6 +24,7 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
         private const val LAST_MESSAGE = "lastMessage"
         private const val TIMESTAMP = "timestamp"
         private const val MESSAGE_TIMESTAMP = "timeStamp"
+        private const val SEEN_BY = "seenBy"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -168,6 +170,32 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
             }
         awaitClose {
             listener.remove()
+        }
+    }
+
+    override suspend fun markMessagesAsSeen(
+        conversationId: String,
+        currentUserId: String
+    ) {
+        val messagesSnapshot = firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .collection(MESSAGES)
+            .get()
+            .await()
+
+        val unseenIncomingMessages = messagesSnapshot.filter { document ->
+            val message = document.toObject(MessageDto::class.java)
+
+            message != null &&
+                    message.senderId != currentUserId &&
+                    currentUserId !in message.seenBy
+        }
+
+        unseenIncomingMessages.forEach { document ->
+            document.reference
+                .update(SEEN_BY, FieldValue.arrayUnion(currentUserId))
+                .await()
         }
     }
 

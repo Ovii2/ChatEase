@@ -44,7 +44,8 @@ fun RightPane(
     currentUserId: String,
     onBackClick: () -> Unit,
     onSendMessageClick: (String) -> Unit,
-    firstUnreadMessageId: String?
+    firstUnreadMessageId: String?,
+    onMessagesVisible: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -53,8 +54,7 @@ fun RightPane(
         val lastVisibleItemIndex =
             listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
 
-        lastVisibleItemIndex == null ||
-                lastVisibleItemIndex >= messages.lastIndex - 1
+        messages.isNotEmpty() && lastVisibleItemIndex == messages.lastIndex
     }
 
     var hasInitialScrollDone by rememberSaveable { mutableStateOf(false) }
@@ -90,6 +90,12 @@ fun RightPane(
     LaunchedEffect(isNearBottom) {
         if (isNearBottom) {
             newMessageCount = 0
+        }
+    }
+
+    LaunchedEffect(isNearBottom, messages.size) {
+        if (isNearBottom) {
+            onMessagesVisible()
         }
     }
 
@@ -224,6 +230,7 @@ private fun RightPanePreview() {
                 onBackClick = {},
                 onSendMessageClick = {},
                 firstUnreadMessageId = "1",
+                onMessagesVisible = {},
             )
         }
     }

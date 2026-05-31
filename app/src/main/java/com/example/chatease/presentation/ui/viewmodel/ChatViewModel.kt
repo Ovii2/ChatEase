@@ -68,6 +68,17 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun markMessagesAsSeen(conversationId: String) {
+        viewModelScope.launch {
+            val currentUserId = auth.currentUser?.uid ?: return@launch
+            try {
+                conversationRepository.markMessagesAsSeen(conversationId, currentUserId)
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", e.message ?: "Failed to mark message as seen")
+            }
+        }
+    }
+
     private fun observeMessages(conversationId: String) {
         viewModelScope.launch {
             conversationRepository.observeMessages(conversationId)

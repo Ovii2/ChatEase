@@ -32,10 +32,12 @@ import com.example.chatease.utils.toChatTimeStamp
 fun ChatBubble(
     modifier: Modifier = Modifier,
     message: Message,
-    isSentByCurrentUser: Boolean
+    isSentByCurrentUser: Boolean,
+    currentUserId: String
 ) {
     val backgroundColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
+    val isSeenByOtherUser = message.seenBy.any { userId -> userId != currentUserId }
 
     val shape =
         if (isSentByCurrentUser) {
@@ -88,13 +90,13 @@ fun ChatBubble(
                     if (isSentByCurrentUser) {
                         Icon(
                             modifier = Modifier.size(16.dp),
-                            imageVector = if (message.seenBy.isNotEmpty()) {
+                            imageVector = if (isSeenByOtherUser) {
                                 Icons.Outlined.DoneAll
                             } else {
                                 Icons.Outlined.Check
                             },
                             contentDescription = null,
-                            tint = if (message.seenBy.isNotEmpty()) {
+                            tint = if (isSeenByOtherUser) {
                                 seenCheckColor
                             } else {
                                 MaterialTheme.colorScheme.surface
@@ -129,6 +131,7 @@ private fun ChatBubblePreview() {
             ChatBubble(
                 message = message,
                 isSentByCurrentUser = true,
+                currentUserId = "1",
             )
         }
     }

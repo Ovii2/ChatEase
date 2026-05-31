@@ -22,4 +22,6 @@ interface ConversationRepository {
 
     fun observeMessages(conversationId: String): Flow<List<Message>>
 
+    suspend fun markMessagesAsSeen(conversationId: String, currentUserId: String)
+
 }
