@@ -199,15 +199,16 @@ class ContactsViewModel @Inject constructor(
             try {
                 val currentUserId = auth.currentUser?.uid ?: return@launch
                 val contacts = contactsRepository.getContacts(currentUserId)
-                val otherUserId = contacts.map { contact ->
+                val otherUserIds = contacts.map { contact ->
                     contact.userIds.first { userId ->
                         userId != currentUserId
                     }
                 }
-                val users = otherUserId.map { userId ->
+                val users = otherUserIds.map { userId ->
                     userRepository.getUserById(userId)
                 }
                 _contacts.value = users
+                observeContactUsers(otherUserIds)
             } catch (e: Exception) {
                 Log.e(
                     "ContactsViewModel",
@@ -261,4 +262,20 @@ class ContactsViewModel @Inject constructor(
         }
     }
 
+    private fun observeContactUsers(userIds: List<String>) {
+        userIds.forEach { userId ->
+            viewModelScope.launch {
+                userRepository.observeUser(userId)
+                    .collect { updatedUser ->
+                        _contacts.value = _contacts.value.map { user ->
+                            if (user.uid == updatedUser.uid) {
+                                updatedUser
+                            } else {
+                                user
+                            }
+                        }
+                    }
+            }
+        }
+    }
 }
