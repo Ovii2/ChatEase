@@ -33,7 +33,8 @@ fun RightPane(
     user: User,
     messages: List<Message>,
     currentUserId: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onSendMessageClick: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -70,7 +71,10 @@ fun RightPane(
             MessageInputBar(
                 onEmojiClick = {},
                 onMicrophoneClick = {},
-                onSendClick = {},
+                onSendMessageClick = {
+                    onSendMessageClick(it)
+                    messageText = ""
+                },
                 messageText = messageText,
                 onMessageTextChange = { messageText = it },
             )
@@ -150,6 +154,7 @@ private fun RightPanePreview() {
                 messages = messages,
                 currentUserId = "user_2",
                 onBackClick = {},
+                onSendMessageClick = {},
             )
         }
     }
