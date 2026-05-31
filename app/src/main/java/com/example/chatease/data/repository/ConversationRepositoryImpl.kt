@@ -20,6 +20,8 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
         private const val CONVERSATIONS = "conversations"
         private const val PARTICIPANT_IDS = "participantIds"
         private const val MESSAGES = "messages"
+        private const val LAST_MESSAGE = "lastMessage"
+        private const val TIMESTAMP = "timestamp"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -112,6 +114,56 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
                 } ?: emptyList()
 
                 trySend(conversations)
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+    override suspend fun sendMessage(message: Message) {
+        val messageId = firestore
+            .collection(CONVERSATIONS)
+            .document(message.conversationId)
+            .collection(MESSAGES)
+            .document()
+            .id
+
+        firestore
+            .collection(CONVERSATIONS)
+            .document(message.conversationId)
+            .collection(MESSAGES)
+            .document(messageId)
+            .set(message.copy(messageId = messageId))
+            .await()
+
+        firestore
+            .collection(CONVERSATIONS)
+            .document(message.conversationId)
+            .update(
+                LAST_MESSAGE, message.text,
+                TIMESTAMP, message.timeStamp
+            )
+            .await()
+    }
+
+    override fun observeMessages(conversationId: String): Flow<List<Message>> = callbackFlow {
+        val listener = firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .collection(MESSAGES)
+            .orderBy(TIMESTAMP)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+
+                val messages = snapshot?.let {
+                    mapDocuments(it) { document ->
+                        document.toObject(MessageDto::class.java)?.toDomain()
+                    }
+                } ?: emptyList()
+                trySend(messages)
             }
         awaitClose {
             listener.remove()

@@ -18,4 +18,8 @@ interface ConversationRepository {
 
     fun observeUserConversations(userId: String): Flow<List<Conversation>>
 
+    suspend fun sendMessage(message: Message)
+
+    fun observeMessages(conversationId: String): Flow<List<Message>>
+
 }
