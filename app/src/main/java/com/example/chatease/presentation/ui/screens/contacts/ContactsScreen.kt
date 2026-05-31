@@ -135,7 +135,7 @@ fun ContactsScreen(
     uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
-private fun ContactsScreenPreview() {
+private fun ContactsScreenPreview(contactsViewModel: ContactsViewModel = hiltViewModel()) {
     ChatEaseTheme {
         Scaffold {
             ContactsScreen(
