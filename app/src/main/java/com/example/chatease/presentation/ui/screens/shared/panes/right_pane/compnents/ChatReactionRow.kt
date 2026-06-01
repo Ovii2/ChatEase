@@ -34,7 +34,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun ChatReactionRow(
     modifier: Modifier = Modifier,
-    onReactionClick: () -> Unit
+    onReactionClick: (String) -> Unit
 ) {
     var visibleCount by remember { mutableIntStateOf(0) }
 
@@ -68,7 +68,7 @@ fun ChatReactionRow(
                     enter = fadeIn() + scaleIn()
                 ) {
                     Text(
-                        modifier = Modifier.clickable { onReactionClick() },
+                        modifier = Modifier.clickable { onReactionClick(reaction) },
                         text = reaction,
                         fontSize = 24.sp
                     )
