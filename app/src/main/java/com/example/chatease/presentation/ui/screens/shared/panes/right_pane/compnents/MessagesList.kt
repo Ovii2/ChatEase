@@ -58,7 +58,7 @@ fun MessagesList(
             modifier = Modifier,
             state = listState,
             reverseLayout = true,
-            verticalArrangement = Arrangement.spacedBy(18.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             items(messages.reversed()) { message ->

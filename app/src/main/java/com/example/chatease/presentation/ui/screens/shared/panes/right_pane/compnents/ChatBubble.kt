@@ -67,8 +67,10 @@ fun ChatBubble(
 
     Row(
         modifier = Modifier.padding(
-            horizontal = 12.dp,
-            vertical = if (message.reactions.isNotEmpty()) 6.dp else 4.dp
+            start = 12.dp,
+            top = 2.dp,
+            end = 4.dp,
+            bottom = if (message.reactions.isNotEmpty()) 16.dp else 2.dp
         ),
         verticalAlignment = Alignment.Bottom
     ) {
