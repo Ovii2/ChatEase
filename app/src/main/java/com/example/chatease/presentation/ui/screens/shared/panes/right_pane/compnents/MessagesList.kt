@@ -1,6 +1,9 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +13,11 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,39 +38,53 @@ fun MessagesList(
     listState: LazyListState,
     firstUnreadMessageId: String?
 ) {
-    LazyColumn(
-        modifier = modifier,
-        state = listState,
-        reverseLayout = true,
-        verticalArrangement = Arrangement.spacedBy(18.dp)
-    ) {
-        items(messages.reversed()) { message ->
-            val isSentByCurrentUser = message.senderId == currentUserId
-            if (message.messageId == firstUnreadMessageId) {
-                UnreadMessagesDivider()
-            }
+    var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
-            ) {
+    Box(
+        modifier = Modifier.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        ) {
+            selectedReactionMessageId = null
+        }
+    ) {
+        LazyColumn(
+            modifier = Modifier,
+            state = listState,
+            reverseLayout = true,
+            verticalArrangement = Arrangement.spacedBy(18.dp)
+        ) {
+            items(messages.reversed()) { message ->
+                val isSentByCurrentUser = message.senderId == currentUserId
+                if (message.messageId == firstUnreadMessageId) {
+                    UnreadMessagesDivider()
+                }
+
                 Row(
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
                 ) {
-                    if (!isSentByCurrentUser) {
-                        UserAvatar(
-                            user = user,
-                            avatarSize = 50.dp,
-                            statusBubbleSize = 14.dp,
-                            initialsFontSize = 20.sp
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        if (!isSentByCurrentUser) {
+                            UserAvatar(
+                                user = user,
+                                avatarSize = 50.dp,
+                                statusBubbleSize = 14.dp,
+                                initialsFontSize = 20.sp
+                            )
+                        } else Unit
+                        ChatBubble(
+                            message = message,
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            currentUserId = currentUserId,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onLongClick = { selectedReactionMessageId = message.messageId },
+                            onDismissReactions = { selectedReactionMessageId = null },
                         )
-                    } else Unit
-                    ChatBubble(
-                        message = message,
-                        isSentByCurrentUser = isSentByCurrentUser,
-                        currentUserId = currentUserId,
-                    )
+                    }
                 }
             }
         }

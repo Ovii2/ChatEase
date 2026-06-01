@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.successGreenDark
@@ -33,76 +36,88 @@ fun ChatBubble(
     modifier: Modifier = Modifier,
     message: Message,
     isSentByCurrentUser: Boolean,
-    currentUserId: String
+    currentUserId: String,
+    showReactions: Boolean,
+    onLongClick: () -> Unit,
+    onDismissReactions: () -> Unit
 ) {
     val backgroundColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
     val isSeenByOtherUser = message.seenBy.any { userId -> userId != currentUserId }
 
     val shape =
-        if (isSentByCurrentUser) {
-            RoundedCornerShape(
-                topStart = 18.dp,
-                topEnd = 18.dp,
-                bottomStart = 18.dp,
-                bottomEnd = 4.dp
-            )
-        } else {
-            RoundedCornerShape(
-                topStart = 18.dp,
-                topEnd = 18.dp,
-                bottomStart = 4.dp,
-                bottomEnd = 18.dp
-            )
-        }
+        RoundedCornerShape(
+            topStart = 18.dp,
+            topEnd = 18.dp,
+            bottomStart = if (isSentByCurrentUser) 18.dp else 4.dp,
+            bottomEnd = if (isSentByCurrentUser) 4.dp else 18.dp
+        )
 
     val seenCheckColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
 
     Row(verticalAlignment = Alignment.Bottom) {
-        Surface(
-            color = backgroundColor,
-            shape = shape
-        ) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 280.dp)
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+        Box(contentAlignment = Alignment.TopCenter) {
+            Surface(
+                modifier = Modifier.combinedClickable(
+                    onClick = {},
+                    onLongClick = {
+                        onLongClick()
+                    }
+                ),
+                color = backgroundColor,
+                shape = shape
             ) {
-                Text(
-                    text = message.text,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                Column(
+                    modifier = Modifier
+                        .widthIn(max = 280.dp)
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = message.timeStamp.toChatTimeStamp(),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (isSentByCurrentUser) {
-                            MaterialTheme.colorScheme.surface
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                        }
+                        text = message.text,
+                        style = MaterialTheme.typography.bodyLarge
                     )
-                    if (isSentByCurrentUser) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            imageVector = if (isSeenByOtherUser) {
-                                Icons.Outlined.DoneAll
-                            } else {
-                                Icons.Outlined.Check
-                            },
-                            contentDescription = null,
-                            tint = if (isSeenByOtherUser) {
-                                seenCheckColor
-                            } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = message.timeStamp.toChatTimeStamp(),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = if (isSentByCurrentUser) {
                                 MaterialTheme.colorScheme.surface
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                             }
                         )
+                        if (isSentByCurrentUser) {
+                            Icon(
+                                modifier = Modifier.size(16.dp),
+                                imageVector = if (isSeenByOtherUser) {
+                                    Icons.Outlined.DoneAll
+                                } else {
+                                    Icons.Outlined.Check
+                                },
+                                contentDescription = null,
+                                tint = if (isSeenByOtherUser) {
+                                    seenCheckColor
+                                } else {
+                                    MaterialTheme.colorScheme.surface
+                                }
+                            )
+                        }
                     }
+                }
+            }
+            if (showReactions) {
+                Popup(
+                    alignment = Alignment.TopCenter,
+                    offset = IntOffset(0, -160)
+                ) {
+                    ChatReactionRow(
+                        onReactionClick = {}
+                    )
                 }
             }
         }
@@ -132,6 +147,9 @@ private fun ChatBubblePreview() {
                 message = message,
                 isSentByCurrentUser = true,
                 currentUserId = "1",
+                showReactions = true,
+                onLongClick = {},
+                onDismissReactions = {},
             )
         }
     }
