@@ -10,7 +10,8 @@ fun MessageDto.toDomain(): Message {
         senderId = senderId,
         text = text,
         timeStamp = timeStamp,
-        seenBy = seenBy
+        seenBy = seenBy,
+        reactions = reactions
     )
 }
 
@@ -21,6 +22,7 @@ fun Message.toDto(): MessageDto {
         senderId = senderId,
         text = text,
         timeStamp = timeStamp,
-        seenBy = seenBy
+        seenBy = seenBy,
+        reactions = reactions
     )
 }
