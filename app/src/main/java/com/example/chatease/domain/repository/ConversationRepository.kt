@@ -24,4 +24,11 @@ interface ConversationRepository {
 
     suspend fun markMessagesAsSeen(conversationId: String, currentUserId: String)
 
+    suspend fun addReactionToMessage(
+        conversationId: String,
+        messageId: String,
+        userId: String,
+        reaction: String
+    )
+
 }

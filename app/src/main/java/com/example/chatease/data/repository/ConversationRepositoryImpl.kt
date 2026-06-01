@@ -25,6 +25,7 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
         private const val TIMESTAMP = "timestamp"
         private const val MESSAGE_TIMESTAMP = "timeStamp"
         private const val SEEN_BY = "seenBy"
+        private const val REACTIONS = "reactions"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -197,6 +198,31 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
                 .update(SEEN_BY, FieldValue.arrayUnion(currentUserId))
                 .await()
         }
+    }
+
+    override suspend fun addReactionToMessage(
+        conversationId: String,
+        messageId: String,
+        userId: String,
+        reaction: String
+    ) {
+        val documentSnapshot = firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .collection(MESSAGES)
+            .document(messageId)
+            .get()
+            .await()
+
+        val message = documentSnapshot.toObject(MessageDto::class.java) ?: return
+
+        val updatedReactions = message.reactions.toMutableMap().apply {
+            put(userId, reaction)
+        }
+
+        documentSnapshot.reference
+            .update(REACTIONS, updatedReactions)
+            .await()
     }
 
 
