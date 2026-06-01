@@ -31,5 +31,12 @@ fun ChatScreen(
         onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
         firstUnreadMessageId = chatViewModel.firstUnreadMessageId,
         onMessagesVisible = { chatViewModel.markMessagesAsSeen(conversationId) },
+        onReactionClick = { messageId, reaction ->
+            chatViewModel.addReactionToMessage(
+                conversationId = conversationId,
+                messageId = messageId,
+                reaction = reaction
+            )
+        }
     )
 }
