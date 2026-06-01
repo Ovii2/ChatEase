@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -20,7 +21,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.domain.model.Message
@@ -36,23 +39,27 @@ fun MessagesList(
     currentUserId: String,
     user: User,
     listState: LazyListState,
-    firstUnreadMessageId: String?
+    firstUnreadMessageId: String?,
+    onReactionClick: (String, String) -> Unit
 ) {
     var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
+    val focusManager = LocalFocusManager.current
 
     Box(
-        modifier = Modifier.clickable(
+        modifier = modifier.clickable(
             indication = null,
             interactionSource = remember { MutableInteractionSource() }
         ) {
             selectedReactionMessageId = null
+            focusManager.clearFocus()
         }
     ) {
         LazyColumn(
             modifier = Modifier,
             state = listState,
             reverseLayout = true,
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+            verticalArrangement = Arrangement.spacedBy(18.dp),
+            contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             items(messages.reversed()) { message ->
                 val isSentByCurrentUser = message.senderId == currentUserId
@@ -83,6 +90,9 @@ fun MessagesList(
                             showReactions = message.messageId == selectedReactionMessageId,
                             onLongClick = { selectedReactionMessageId = message.messageId },
                             onDismissReactions = { selectedReactionMessageId = null },
+                            onReactionClick = { messageId, reaction ->
+                                onReactionClick(messageId, reaction)
+                            },
                         )
                     }
                 }
@@ -107,7 +117,7 @@ private fun MessagesListPreview() {
             messageId = "2",
             conversationId = "conversation_1",
             senderId = "user_2",
-            text = "I was thinking maybe we could also stop by that new café near the park afterwards. I heard they have really good desserts and coffee there 😄",
+            text = LoremIpsum(50).values.first(),
             timeStamp = System.currentTimeMillis(),
             seenBy = listOf("user_1")
         ),
@@ -144,6 +154,7 @@ private fun MessagesListPreview() {
                 user = user,
                 listState = rememberLazyListState(),
                 firstUnreadMessageId = "1",
+                onReactionClick = { _, _ -> },
             )
         }
     }
