@@ -7,6 +7,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -51,11 +53,10 @@ fun RightPane(
     var messageText by rememberSaveable { mutableStateOf("") }
     val listState = rememberLazyListState()
     val isNearBottom by derivedStateOf {
-        val lastVisibleItemIndex =
-            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-
-        messages.isNotEmpty() && lastVisibleItemIndex == messages.lastIndex
+        val firstVisibleItemIndex = listState.firstVisibleItemIndex
+        messages.isNotEmpty() && firstVisibleItemIndex == 0
     }
+    val firstIndex = 0
 
     var hasInitialScrollDone by rememberSaveable { mutableStateOf(false) }
     var newMessageCount by rememberSaveable { mutableIntStateOf(0) }
@@ -66,7 +67,7 @@ fun RightPane(
 
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty() && !hasInitialScrollDone) {
-            listState.scrollToItem(messages.lastIndex)
+            listState.scrollToItem(firstIndex)
             hasInitialScrollDone = true
             newMessageCount = 0
             previousMessageCount = messages.size
@@ -109,6 +110,8 @@ fun RightPane(
     ) {
         Column(
             modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
                 .systemBarsPadding()
                 .padding(horizontal = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -123,7 +126,7 @@ fun RightPane(
                         newMessageCount = 0
 
                         scope.launch {
-                            listState.animateScrollToItem(messages.lastIndex)
+                            listState.animateScrollToItem(firstIndex)
                         }
                     },
                     newMessages = newMessageCount
@@ -150,7 +153,7 @@ fun RightPane(
                     messageText = ""
 
                     scope.launch {
-                        listState.animateScrollToItem(messages.size)
+                        listState.animateScrollToItem(firstIndex)
                     }
                 },
                 messageText = messageText,

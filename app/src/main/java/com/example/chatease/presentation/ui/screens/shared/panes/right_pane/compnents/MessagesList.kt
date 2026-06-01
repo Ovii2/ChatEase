@@ -33,9 +33,10 @@ fun MessagesList(
     LazyColumn(
         modifier = modifier,
         state = listState,
+        reverseLayout = true,
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        items(messages) { message ->
+        items(messages.reversed()) { message ->
             val isSentByCurrentUser = message.senderId == currentUserId
             if (message.messageId == firstUnreadMessageId) {
                 UnreadMessagesDivider()

@@ -1,5 +1,6 @@
 package com.example.chatease
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -11,7 +12,10 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun ChatEase(modifier: Modifier = Modifier) {
     ChatEaseTheme {
-        Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
+        Scaffold(
+            modifier = modifier.fillMaxSize(),
+            contentWindowInsets = WindowInsets(0)
+        ) { innerPadding ->
             val navController = rememberNavController()
             AppNavHost(
                 paddingValues = innerPadding,
