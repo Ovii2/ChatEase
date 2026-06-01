@@ -146,7 +146,6 @@ fun RightPane(
                 )
             }
             MessageInputBar(
-                onEmojiClick = {},
                 onMicrophoneClick = {},
                 onSendMessageClick = {
                     onSendMessageClick(it)
@@ -228,8 +227,8 @@ private fun RightPanePreview() {
             seenBy = listOf("user_1")
         )
     )
-    ChatEaseTheme() {
-        Column() {
+    ChatEaseTheme {
+        Column {
             RightPane(
                 user = user,
                 messages = messages,

@@ -24,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Mic
-import androidx.compose.material.icons.outlined.TagFaces
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -44,7 +43,6 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun MessageInputBar(
     modifier: Modifier = Modifier,
-    onEmojiClick: () -> Unit,
     onMicrophoneClick: () -> Unit,
     onSendMessageClick: (String) -> Unit,
     messageText: String,
@@ -79,11 +77,6 @@ fun MessageInputBar(
                 modifier = Modifier.padding(end = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(
-                    modifier = Modifier.clickable { onEmojiClick() },
-                    imageVector = Icons.Outlined.TagFaces,
-                    contentDescription = null
-                )
                 AnimatedContent(
                     targetState = messageText.isNotEmpty(),
                     transitionSpec = {
@@ -129,7 +122,6 @@ private fun MessageInputBarPreview() {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 MessageInputBar(
-                    onEmojiClick = {},
                     onMicrophoneClick = {},
                     onSendMessageClick = {},
                     messageText = "",
