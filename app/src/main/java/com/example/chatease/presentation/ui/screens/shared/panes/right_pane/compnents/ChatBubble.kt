@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -39,7 +40,8 @@ fun ChatBubble(
     currentUserId: String,
     showReactions: Boolean,
     onLongClick: () -> Unit,
-    onDismissReactions: () -> Unit
+    onDismissReactions: () -> Unit,
+    onReactionClick: (String, String) -> Unit
 ) {
     val backgroundColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
@@ -54,8 +56,22 @@ fun ChatBubble(
         )
 
     val seenCheckColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
+    val reactionBadgeAlignment = if (isSentByCurrentUser) Alignment.BottomEnd else
+        Alignment.BottomStart
 
-    Row(verticalAlignment = Alignment.Bottom) {
+    val reactionBadgeOffset =
+        if (isSentByCurrentUser) IntOffset(x = -10, y = 65) else IntOffset(x = 30, y = 65)
+
+    val popUpAlignment = if (isSentByCurrentUser) Alignment.TopEnd else Alignment.TopStart
+
+
+    Row(
+        modifier = Modifier.padding(
+            horizontal = 12.dp,
+            vertical = if (message.reactions.isNotEmpty()) 6.dp else 4.dp
+        ),
+        verticalAlignment = Alignment.Bottom
+    ) {
         Box(contentAlignment = Alignment.TopCenter) {
             Surface(
                 modifier = Modifier.combinedClickable(
@@ -110,13 +126,27 @@ fun ChatBubble(
                     }
                 }
             }
+            if (message.reactions.isNotEmpty()) {
+                ReactionBadge(
+                    modifier = Modifier
+                        .align(reactionBadgeAlignment)
+                        .offset { reactionBadgeOffset },
+                    reactionCounts = message.reactions.values.groupingBy { it }.eachCount(),
+                    color = backgroundColor,
+                )
+            }
             if (showReactions) {
                 Popup(
-                    alignment = Alignment.TopCenter,
+                    alignment = popUpAlignment,
                     offset = IntOffset(0, -160)
                 ) {
                     ChatReactionRow(
-                        onReactionClick = {}
+                        onReactionClick = { reaction ->
+                            onReactionClick(
+                                message.messageId,
+                                reaction
+                            )
+                        }
                     )
                 }
             }
@@ -136,7 +166,8 @@ private fun ChatBubblePreview() {
         senderId = "1",
         text = "Hey! Are we still for lunch?",
         timeStamp = System.currentTimeMillis(),
-        seenBy = listOf("user_1")
+        seenBy = listOf("user_1"),
+        reactions = mapOf("\uD83D\uDE09" to "1")
     )
     ChatEaseTheme {
         Box(
@@ -150,6 +181,7 @@ private fun ChatBubblePreview() {
                 showReactions = true,
                 onLongClick = {},
                 onDismissReactions = {},
+                onReactionClick = { _, _ -> },
             )
         }
     }
