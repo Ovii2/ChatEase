@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +28,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun ReactionBadge(
     modifier: Modifier = Modifier,
     reactionCounts: Map<String, Int>,
-    color: Color
+    backGroundColor: Color,
+    textColor: Color
 ) {
     Box(
         modifier = modifier
@@ -37,7 +39,7 @@ fun ReactionBadge(
                 shape = CircleShape
             )
             .clip(CircleShape)
-            .background(color = color)
+            .background(color = backGroundColor)
             .defaultMinSize(
                 minWidth = 28.dp,
                 minHeight = 20.dp
@@ -57,7 +59,9 @@ fun ReactionBadge(
                 if (count > 1) {
                     Text(
                         text = if (count > 99) "99+" else "$count",
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = textColor,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -84,7 +88,8 @@ private fun ReactionBadgePreview() {
             ) {
                 ReactionBadge(
                     reactionCounts = reactionCounts,
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh
+                    backGroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    textColor = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }

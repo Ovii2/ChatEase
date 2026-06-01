@@ -63,6 +63,8 @@ fun ChatBubble(
         if (isSentByCurrentUser) IntOffset(x = -10, y = 65) else IntOffset(x = 30, y = 65)
 
     val popUpAlignment = if (isSentByCurrentUser) Alignment.TopEnd else Alignment.TopStart
+    val textColor =
+        if (isSentByCurrentUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
 
     Row(
@@ -134,7 +136,8 @@ fun ChatBubble(
                         .align(reactionBadgeAlignment)
                         .offset { reactionBadgeOffset },
                     reactionCounts = message.reactions.values.groupingBy { it }.eachCount(),
-                    color = backgroundColor,
+                    backGroundColor = backgroundColor,
+                    textColor = textColor,
                 )
             }
             if (showReactions) {
@@ -169,7 +172,10 @@ private fun ChatBubblePreview() {
         text = "Hey! Are we still for lunch?",
         timeStamp = System.currentTimeMillis(),
         seenBy = listOf("user_1"),
-        reactions = mapOf("\uD83D\uDE09" to "1")
+        reactions = mapOf(
+            "user_1" to "\uD83E\uDD70",
+            "user_2" to "\uD83E\uDD70"
+        )
     )
     ChatEaseTheme {
         Box(
