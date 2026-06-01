@@ -79,6 +79,22 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun addReactionToMessage(conversationId: String, messageId: String, reaction: String) {
+        viewModelScope.launch {
+            try {
+                val currentUserId = auth.currentUser?.uid ?: return@launch
+                conversationRepository.addReactionToMessage(
+                    conversationId = conversationId,
+                    messageId = messageId,
+                    userId = currentUserId,
+                    reaction = reaction
+                )
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", e.message ?: "Failed to add reaction to message")
+            }
+        }
+    }
+
     private fun observeMessages(conversationId: String) {
         viewModelScope.launch {
             conversationRepository.observeMessages(conversationId)
