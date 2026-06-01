@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
@@ -47,7 +48,8 @@ fun RightPane(
     onBackClick: () -> Unit,
     onSendMessageClick: (String) -> Unit,
     firstUnreadMessageId: String?,
-    onMessagesVisible: () -> Unit
+    onMessagesVisible: () -> Unit,
+    onReactionClick: (String, String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -139,6 +141,9 @@ fun RightPane(
                 user = user,
                 listState = listState,
                 firstUnreadMessageId = firstUnreadMessageId,
+                onReactionClick = { messageId, reaction ->
+                    onReactionClick(messageId, reaction)
+                },
             )
             if (messages.isEmpty()) {
                 ConversationStarterRow(
@@ -189,8 +194,7 @@ private fun RightPanePreview() {
             messageId = "2",
             conversationId = "conversation_1",
             senderId = "user_2",
-            text = "I was thinking maybe we could also stop by that new café near the park afterwards." +
-                    " I heard they have really good desserts and coffee there 😄",
+            text = LoremIpsum(30).values.first(),
             timeStamp = System.currentTimeMillis(),
             seenBy = listOf("user_1")
         ),
@@ -237,6 +241,7 @@ private fun RightPanePreview() {
                 onSendMessageClick = {},
                 firstUnreadMessageId = "1",
                 onMessagesVisible = {},
+                onReactionClick = { _, _ -> }
             )
         }
     }
