@@ -90,10 +90,10 @@ fun LoginScreen(
     LaunchedEffect(loginUiState) {
         when (loginUiState) {
             is LoginUiState.Success -> {
-                delay(1000)
-                focusManager.clearFocus()
+                delay(600)
                 authViewModel.resetState()
                 onNavigateToHomeScreen()
+                focusManager.clearFocus()
             }
 
             is LoginUiState.Error -> {
