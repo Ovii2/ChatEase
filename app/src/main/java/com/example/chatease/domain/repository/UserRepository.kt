@@ -16,4 +16,5 @@ interface UserRepository {
     suspend fun searchUsers(query: String): List<User>
 
     fun observeUser(userId: String): Flow<User>
+
 }
