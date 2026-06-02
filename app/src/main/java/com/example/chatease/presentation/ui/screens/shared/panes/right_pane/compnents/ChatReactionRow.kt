@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,29 +50,34 @@ fun ChatReactionRow(
 
     LaunchedEffect(Unit) {
         reactions.indices.forEach { index ->
-            delay(50)
+            delay(30)
 
             visibleCount = index + 1
         }
     }
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(color = MaterialTheme.colorScheme.secondaryContainer)
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            reactions.forEachIndexed { index, reaction ->
-                AnimatedVisibility(
-                    visible = index < visibleCount,
-                    enter = fadeIn() + scaleIn()
-                ) {
-                    Text(
-                        modifier = Modifier.clickable { onReactionClick(reaction) },
-                        text = reaction,
-                        fontSize = 24.sp
-                    )
+        Box(
+            modifier = modifier
+                .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                reactions.forEachIndexed { index, reaction ->
+                    AnimatedVisibility(
+                        visible = index < visibleCount,
+                        enter = fadeIn() + scaleIn()
+                    ) {
+                        Text(
+                            modifier = Modifier.clickable { onReactionClick(reaction) },
+                            text = reaction,
+                            fontSize = 24.sp
+                        )
+                    }
                 }
             }
         }
