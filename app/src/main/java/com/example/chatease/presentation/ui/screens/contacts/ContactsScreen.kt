@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
+import com.example.chatease.presentation.ui.navigation.Screens
+import com.example.chatease.presentation.ui.navigation.toScreenName
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsScreenTopBar
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsSearchResultsRow
 import com.example.chatease.presentation.ui.screens.contacts.components.MyContactsSection
@@ -58,7 +62,10 @@ fun ContactsScreen(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
         topBar = {
             ContactsScreenTopBar(
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                title = Screens.Contacts.toScreenName(),
+                actionIcon = Icons.Outlined.PersonAdd,
+                onActionIconClick = {},
             )
         }
     ) { paddingValues ->
