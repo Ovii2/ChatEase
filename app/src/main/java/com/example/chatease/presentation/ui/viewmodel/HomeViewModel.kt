@@ -58,14 +58,16 @@ class HomeViewModel @Inject constructor(
                                 participants = listOf(otherUser),
                                 lastMessage = conversation.lastMessage,
                                 timestamp = conversation.timestamp,
-                                unreadCount = conversation.unreadCount,
+                                unreadCount = conversation.unreadCounts[currentUserId] ?: 0,
                                 isGroup = false
                             )
                         }
+                        val unreadMessages = conversations.sumOf { it.unreadCount }
                         _uiState.value = HomeUiState.Success(
                             user = user,
                             categories = categories,
-                            conversations = conversations
+                            conversations = conversations,
+                            unreadMessages = unreadMessages
                         )
                     }
             } catch (e: Exception) {
