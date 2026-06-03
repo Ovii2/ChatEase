@@ -10,7 +10,8 @@ sealed class HomeUiState {
     data class Success(
         val user: User = User(),
         val categories: List<Category> = emptyList(),
-        val conversations: List<ConversationUiModel> = emptyList()
+        val conversations: List<ConversationUiModel> = emptyList(),
+        val unreadMessages: Int
     ) : HomeUiState()
 
     data class Error(
