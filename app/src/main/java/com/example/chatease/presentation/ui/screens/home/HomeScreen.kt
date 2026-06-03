@@ -54,6 +54,9 @@ fun HomeScreen(
     val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
     val showContactsBadge = pendingRequests.isNotEmpty()
 
+    val unreadMessages = (uiState as? HomeUiState.Success)?.unreadMessages ?: 0
+    val showHomeBadge = unreadMessages > 0
+
     Scaffold(
         bottomBar = {
             if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
@@ -66,6 +69,8 @@ fun HomeScreen(
                     onNavigateToProfile = onNavigateToProfile,
                     pendingRequests = pendingRequests.size,
                     showContactsBadge = showContactsBadge,
+                    unreadMessages = unreadMessages,
+                    showHomeBadge = showHomeBadge,
                 )
             }
         }
