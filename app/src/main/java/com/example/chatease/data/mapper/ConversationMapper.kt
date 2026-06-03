@@ -9,7 +9,7 @@ fun ConversationDto.toDomain(): Conversation {
         participantIds = participantIds,
         lastMessage = lastMessage,
         timestamp = timestamp,
-        unreadCount = unreadCount
+        unreadCounts = unreadCounts
     )
 }
 
@@ -19,6 +19,6 @@ fun Conversation.toDto(): ConversationDto {
         participantIds = participantIds,
         lastMessage = lastMessage,
         timestamp = timestamp,
-        unreadCount = unreadCount
+        unreadCounts = unreadCounts
     )
 }

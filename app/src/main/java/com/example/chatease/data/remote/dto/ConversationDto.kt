@@ -5,5 +5,5 @@ data class ConversationDto(
     val participantIds: List<String> = emptyList(),
     val lastMessage: String = "",
     val timestamp: Long = 0L,
-    val unreadCount: Int = 0
+    val unreadCounts: Map<String, Int> = emptyMap()
 )
