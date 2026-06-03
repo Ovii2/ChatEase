@@ -8,10 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
@@ -29,8 +31,11 @@ import androidx.compose.ui.unit.sp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.screens.shared.chat.CommonChip
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.utils.isSameDay
+import com.example.chatease.utils.toChatDateLabel
 
 @Composable
 fun MessagesList(
@@ -44,6 +49,7 @@ fun MessagesList(
 ) {
     var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
 
     Box(
         modifier = modifier.clickable(
@@ -54,6 +60,8 @@ fun MessagesList(
             focusManager.clearFocus()
         }
     ) {
+        val reversedMessages = messages.reversed()
+
         LazyColumn(
             modifier = Modifier,
             state = listState,
@@ -61,7 +69,9 @@ fun MessagesList(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            items(messages.reversed()) { message ->
+            itemsIndexed(reversedMessages) { index, message ->
+                val nextMessage = reversedMessages.getOrNull(index + 1)
+
                 val isSentByCurrentUser = message.senderId == currentUserId
                 if (message.messageId == firstUnreadMessageId) {
                     UnreadMessagesDivider()
@@ -93,6 +103,24 @@ fun MessagesList(
                             onReactionClick = { messageId, reaction ->
                                 onReactionClick(messageId, reaction)
                             },
+                        )
+                    }
+                }
+                if (nextMessage == null || !isSameDay(
+                        message.timeStamp,
+                        nextMessage.timeStamp
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        CommonChip(
+                            text = message.timeStamp.toChatDateLabel(context),
+                            selected = false,
+                            enabled = false
                         )
                     }
                 }
