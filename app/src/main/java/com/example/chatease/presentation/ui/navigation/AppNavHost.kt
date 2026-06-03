@@ -13,15 +13,20 @@ import com.example.chatease.presentation.ui.screens.login.LoginScreen
 import com.example.chatease.presentation.ui.screens.new_chat.NewChatScreen
 import com.example.chatease.presentation.ui.screens.sent_requests.SentRequestsScreen
 import com.example.chatease.presentation.ui.screens.sign_up.SignUpScreen
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun AppNavHost(
     paddingValues: PaddingValues,
     navController: NavHostController
 ) {
+    val auth = Firebase.auth
+    val startDestination = if (auth.currentUser != null) Screens.Home.route else Screens.Login.route
+
     NavHost(
         navController = navController,
-        startDestination = Screens.Login.route
+        startDestination = startDestination
     ) {
         composable(route = Screens.SignUp.route) {
             SignUpScreen(
