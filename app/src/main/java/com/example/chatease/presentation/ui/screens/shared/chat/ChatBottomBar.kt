@@ -48,7 +48,9 @@ fun ChatBottomBar(
     onNavigateToCalls: () -> Unit,
     onNavigateToProfile: () -> Unit,
     pendingRequests: Int,
-    showContactsBadge: Boolean
+    showContactsBadge: Boolean,
+    unreadMessages: Int,
+    showHomeBadge: Boolean
 ) {
     NavigationBar(
         modifier = modifier.border(
@@ -63,7 +65,9 @@ fun ChatBottomBar(
             selected = currentRoute == Screens.Home.route,
             onClick = onNavigateToHome,
             label = R.string.home,
-            icon = Icons.Outlined.Forum
+            icon = Icons.Outlined.Forum,
+            badgeCount = unreadMessages,
+            showBadge = showHomeBadge
         )
         CustomNavigationBarItem(
             selected = currentRoute == Screens.Contacts.route,
@@ -91,12 +95,6 @@ fun ChatBottomBar(
             label = R.string.calls,
             image = R.drawable.ic_phone
         )
-//        CustomNavigationBarItem(
-//            selected = currentRoute == Screens.Calls.route,
-//            onClick = onNavigateToCalls,
-//            label = R.string.calls,
-//            icon = Icons.Outlined.Call
-//        )
         CustomNavigationBarItem(
             selected = currentRoute == Screens.Profile.route,
             onClick = onNavigateToProfile,
@@ -182,6 +180,8 @@ private fun ChatBottomBarPreview() {
                 onNavigateToProfile = {},
                 pendingRequests = 1,
                 showContactsBadge = true,
+                unreadMessages = 1,
+                showHomeBadge = true,
             )
         }
     }
