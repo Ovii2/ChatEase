@@ -23,7 +23,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun CommonChip(
     text: String,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit = {},
+    enabled: Boolean = true
 ) {
     FilterChip(
         modifier = Modifier.padding(end = 8.dp),
@@ -43,7 +44,7 @@ fun CommonChip(
             selectedLabelColor = MaterialTheme.colorScheme.surface
         ),
         border = FilterChipDefaults.filterChipBorder(
-            enabled = true,
+            enabled = enabled,
             selected = selected,
             selectedBorderWidth = 1.5.dp,
             borderWidth = 0.dp,
@@ -65,7 +66,7 @@ private fun CommonChipPreview() {
         ) {
             CommonChip(
                 text = "Test",
-                selected = true,
+                selected = false,
                 onClick = {}
             )
         }
