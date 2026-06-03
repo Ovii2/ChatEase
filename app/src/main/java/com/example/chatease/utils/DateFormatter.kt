@@ -1,5 +1,7 @@
 package com.example.chatease.utils
 
+import android.content.Context
+import com.example.chatease.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -35,7 +37,6 @@ fun Long.toChatTimeStamp(): String {
             localDateTime.format(dateFormatter)
         }
     }
-
 }
 
 fun Long.toFormattedTime(): String {
@@ -45,4 +46,37 @@ fun Long.toFormattedTime(): String {
     val minutes = totalMinutes % 60
 
     return "%02d:%02d".format(hours, minutes)
+}
+
+fun isSameDay(firstTimestamp: Long, secondTimestamp: Long): Boolean {
+    val firstDate = Instant
+        .ofEpochMilli(firstTimestamp)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+        .toLocalDate()
+
+    val secondDate = Instant
+        .ofEpochMilli(secondTimestamp)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+        .toLocalDate()
+
+    return firstDate == secondDate
+}
+
+fun Long.toChatDateLabel(context: Context): String {
+    val localDateTime = Instant
+        .ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+
+    val messageDate = localDateTime.toLocalDate()
+    val today = LocalDate.now()
+    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM")
+
+    return when (messageDate) {
+        today -> context.getString(R.string.today)
+        today.minusDays(1) -> context.getString(R.string.yesterday)
+        else -> localDateTime.format(dateFormatter)
+    }
 }
