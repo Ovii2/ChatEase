@@ -19,7 +19,7 @@ sealed class Screens(val route: String) {
     data object SentRequests : Screens("sent_requests")
     data object AllRequests : Screens("all_requests")
     data object Calls : Screens("calls")
-    data object Profile : Screens("profile")
+    data object MyProfile : Screens("my_profile")
 }
 
 @StringRes
@@ -34,6 +34,6 @@ fun Screens.toScreenName(): Int {
         Screens.SentRequests -> R.string.sent_requests
         Screens.AllRequests -> R.string.all_requests
         Screens.Calls -> R.string.calls
-        Screens.Profile -> R.string.profile
+        Screens.MyProfile -> R.string.my_profile
     }
 }

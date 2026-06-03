@@ -97,9 +97,9 @@ fun ChatBottomBar(
             image = R.drawable.ic_phone
         )
         CustomNavigationBarItem(
-            selected = currentRoute == Screens.Profile.route,
+            selected = currentRoute == Screens.MyProfile.route,
             onClick = onNavigateToProfile,
-            label = R.string.profile,
+            label = R.string.my_profile,
             icon = Icons.Outlined.AccountCircle
         )
     }
