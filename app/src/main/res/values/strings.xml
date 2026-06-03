@@ -126,4 +126,7 @@
 
     <string name="new_message">new message</string>
     <string name="new_messages">new messages</string>
+    
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 </resources>
