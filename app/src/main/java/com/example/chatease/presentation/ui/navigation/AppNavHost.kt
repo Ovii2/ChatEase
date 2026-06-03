@@ -10,6 +10,7 @@ import com.example.chatease.presentation.ui.screens.chat.ChatScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
 import com.example.chatease.presentation.ui.screens.home.HomeScreen
 import com.example.chatease.presentation.ui.screens.login.LoginScreen
+import com.example.chatease.presentation.ui.screens.my_profile.MyProfileScreen
 import com.example.chatease.presentation.ui.screens.new_chat.NewChatScreen
 import com.example.chatease.presentation.ui.screens.sent_requests.SentRequestsScreen
 import com.example.chatease.presentation.ui.screens.sign_up.SignUpScreen
@@ -70,7 +71,11 @@ fun AppNavHost(
                     }
                 },
                 onNavigateToCalls = {},
-                onNavigateToProfile = {},
+                onNavigateToProfile = {
+                    navController.navigate(Screens.MyProfile.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onConversationClick = { conversationId ->
                     navController.navigate(Screens.Chat.createRoute(conversationId))
                 },
@@ -128,6 +133,11 @@ fun AppNavHost(
         }
         composable(route = Screens.AllRequests.route) {
             AllRequestsScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        composable(route = Screens.MyProfile.route) {
+            MyProfileScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
