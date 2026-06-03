@@ -26,6 +26,7 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
         private const val MESSAGE_TIMESTAMP = "timeStamp"
         private const val SEEN_BY = "seenBy"
         private const val REACTIONS = "reactions"
+        private const val UNREAD_COUNTS = "unreadCounts"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -75,7 +76,7 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
             participantIds = participantIds,
             lastMessage = "",
             timestamp = System.currentTimeMillis(),
-            unreadCount = 0
+            unreadCounts = participantIds.associateWith { 0 }
         )
 
         firestore
@@ -132,6 +133,26 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
             .document()
             .id
 
+        val conversationSnapshot = firestore
+            .collection(CONVERSATIONS)
+            .document(message.conversationId)
+            .get()
+            .await()
+
+        val conversation = conversationSnapshot.toObject(ConversationDto::class.java) ?: return
+        val receiverIds = conversation.participantIds.filter { participantId ->
+            participantId != message.senderId
+        }
+
+        val updates = mutableMapOf<String, Any>(
+            LAST_MESSAGE to message.text,
+            TIMESTAMP to message.timeStamp
+        )
+
+        receiverIds.forEach { receiverId ->
+            updates["$UNREAD_COUNTS.$receiverId"] = FieldValue.increment(1)
+        }
+
         firestore
             .collection(CONVERSATIONS)
             .document(message.conversationId)
@@ -140,13 +161,8 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
             .set(message.copy(messageId = messageId))
             .await()
 
-        firestore
-            .collection(CONVERSATIONS)
-            .document(message.conversationId)
-            .update(
-                LAST_MESSAGE, message.text,
-                TIMESTAMP, message.timeStamp
-            )
+        conversationSnapshot.reference
+            .update(updates)
             .await()
     }
 
@@ -196,6 +212,14 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
         unseenIncomingMessages.forEach { document ->
             document.reference
                 .update(SEEN_BY, FieldValue.arrayUnion(currentUserId))
+                .await()
+        }
+
+        if (unseenIncomingMessages.isNotEmpty()) {
+            firestore
+                .collection(CONVERSATIONS)
+                .document(conversationId)
+                .update("$UNREAD_COUNTS.$currentUserId", 0)
                 .await()
         }
     }
