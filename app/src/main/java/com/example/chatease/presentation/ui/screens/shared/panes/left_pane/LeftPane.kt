@@ -34,7 +34,8 @@ fun LeftPane(
     onClickToSeeAll: () -> Unit,
     conversations: List<ConversationUiModel>,
     focusManager: FocusManager,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     Box(
         modifier = modifier.clickable(
@@ -53,7 +54,8 @@ fun LeftPane(
                 categories = categories,
                 selectedCategory = selectedCategory,
                 onSelectCategory = onSelectCategory,
-                onLogoutClick = onLogoutClick
+                onLogoutClick = onLogoutClick,
+                onNavigateToProfile = onNavigateToProfile,
             )
             RecentChatsList(
                 conversations = conversations,
@@ -94,7 +96,7 @@ private fun LeftPanePreview() {
         unreadCount = 0,
         isGroup = false
     )
-    ChatEaseTheme() {
+    ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             LeftPane(
                 user = user,
@@ -105,7 +107,8 @@ private fun LeftPanePreview() {
                 onClickToSeeAll = {},
                 conversations = List(4) { conversation },
                 focusManager = LocalFocusManager.current,
-                onLogoutClick = {}
+                onLogoutClick = {},
+                onNavigateToProfile = {},
             )
         }
     }

@@ -95,7 +95,8 @@ fun HomeScreen(
                         onLogoutClick = {
                             authViewModel.logout()
                             onNavigateToLoginScreen()
-                        }
+                        },
+                        onNavigateToProfile = onNavigateToProfile
                     )
                 }
             }
@@ -119,7 +120,8 @@ fun HomeScreenCompactLayout(
     onClickToSeeAll: () -> Unit,
     onConversationClick: (String) -> Unit,
     focusManager: FocusManager,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     LeftPane(
         modifier = modifier
@@ -133,7 +135,8 @@ fun HomeScreenCompactLayout(
         onClickToSeeAll = onClickToSeeAll,
         conversations = conversations,
         focusManager = focusManager,
-        onLogoutClick = onLogoutClick
+        onLogoutClick = onLogoutClick,
+        onNavigateToProfile = onNavigateToProfile,
     )
 }
 
@@ -167,7 +170,7 @@ private fun HomeScreenCompactLayoutPreview() {
         unreadCount = 0,
         isGroup = false
     )
-    ChatEaseTheme() {
+    ChatEaseTheme {
         HomeScreenCompactLayout(
             paddingValues = PaddingValues(),
             user = user,
@@ -178,7 +181,8 @@ private fun HomeScreenCompactLayoutPreview() {
             onClickToSeeAll = {},
             onConversationClick = {},
             focusManager = LocalFocusManager.current,
-            onLogoutClick = {}
+            onLogoutClick = {},
+            onNavigateToProfile = {},
         )
     }
 }

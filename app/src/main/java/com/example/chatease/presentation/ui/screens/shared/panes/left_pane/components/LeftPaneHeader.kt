@@ -44,7 +44,8 @@ fun LeftPaneHeader(
     categories: List<Category>,
     selectedCategory: String,
     onSelectCategory: (String) -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     var expanded by rememberSaveable() { mutableStateOf(false) }
 
@@ -109,7 +110,7 @@ fun LeftPaneHeader(
                     ProfileDropdown(
                         expanded = expanded,
                         onDismiss = { expanded = false },
-                        onProfileClick = {},
+                        onProfileClick = onNavigateToProfile,
                         onLogoutClick = { onLogoutClick() },
                         offset = DpOffset(
                             x = 0.dp,
@@ -144,14 +145,15 @@ private fun LeftPaneHeaderPreview() {
         Category(id = "other", name = "Other")
     )
 
-    ChatEaseTheme() {
+    ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             LeftPaneHeader(
                 imageUrl = null,
                 categories = categories,
                 selectedCategory = "All",
                 onSelectCategory = {},
-                onLogoutClick = {}
+                onLogoutClick = {},
+                onNavigateToProfile = {},
             )
         }
     }
