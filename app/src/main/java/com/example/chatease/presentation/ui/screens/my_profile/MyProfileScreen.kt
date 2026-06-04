@@ -11,41 +11,30 @@ import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.chatease.R
-import com.example.chatease.domain.model.ProfileStat
-import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserPresenceStatus
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsScreenTopBar
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileStatsRow
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileTopSection
+import com.example.chatease.presentation.ui.state.MyProfileUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.MyProfileViewModel
 
 @Composable
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    myProfileViewModel: MyProfileViewModel = hiltViewModel()
 ) {
     val actionIcon =
         if (isSystemInDarkTheme()) Icons.Outlined.LightMode else Icons.Outlined.DarkMode
 
-    val user = User(
-        uid = "1",
-        fullName = "Test Test",
-        email = "test@email.com",
-        imageUrl = null,
-        status = UserPresenceStatus.AWAY
-    )
-
-    val stats = List(3) {
-        ProfileStat(
-            value = it.toString(),
-            label = R.string.chats
-        )
-    }
+    val uiState by myProfileViewModel.uiState.collectAsState()
 
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
@@ -63,12 +52,19 @@ fun MyProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            MyProfileTopSection(
-                user = user
-            )
-            MyProfileStatsRow(
-                stats = stats
-            )
+            when (val state = uiState) {
+                is MyProfileUiState.Error -> {}
+                MyProfileUiState.Loading -> {}
+                is MyProfileUiState.Success -> {
+                    MyProfileTopSection(
+                        user = state.user
+                    )
+                    MyProfileStatsRow(
+                        stats = state.stats
+                    )
+                }
+            }
+
         }
     }
 }
