@@ -1,8 +1,8 @@
-package com.example.chatease.domain.model
+package com.example.chatease.presentation.ui.model
 
 import androidx.annotation.StringRes
 
-data class ProfileStat(
+data class ProfileStatUiModel(
     val value: String,
     @StringRes val label: Int
 )
