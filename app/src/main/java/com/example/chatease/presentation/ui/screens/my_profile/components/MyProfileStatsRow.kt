@@ -17,16 +17,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
-import com.example.chatease.domain.model.ProfileStat
+import com.example.chatease.presentation.ui.model.ProfileStatUiModel
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun MyProfileStatsRow(
     modifier: Modifier = Modifier,
-    stats: List<ProfileStat>
+    stats: List<ProfileStatUiModel>
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -45,7 +46,7 @@ fun MyProfileStatsRow(
 @Composable
 fun MyProfileStatsItem(
     modifier: Modifier = Modifier,
-    profileStat: ProfileStat
+    profileStat: ProfileStatUiModel
 ) {
     Card(
         modifier = modifier
@@ -64,7 +65,9 @@ fun MyProfileStatsItem(
         ) {
             Text(
                 text = profileStat.value,
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.SemiBold
             )
             Text(
                 text = stringResource(profileStat.label),
@@ -79,12 +82,11 @@ fun MyProfileStatsItem(
 @Composable
 private fun MyProfileStatsRowPreview() {
     val stats = List(3) {
-        ProfileStat(
+        ProfileStatUiModel(
             value = it.toString(),
             label = R.string.chats
         )
     }
-
     ChatEaseTheme {
         Scaffold {
             Row(
