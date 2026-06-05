@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
@@ -64,10 +65,12 @@ fun MyProfileStatsItem(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = profileStat.value,
+                text = "%,d".format(profileStat.value.toInt()),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = stringResource(profileStat.label),
@@ -83,7 +86,7 @@ fun MyProfileStatsItem(
 private fun MyProfileStatsRowPreview() {
     val stats = List(3) {
         ProfileStatUiModel(
-            value = it.toString(),
+            value = (it * 1_000_000).toString(),
             label = R.string.chats
         )
     }
