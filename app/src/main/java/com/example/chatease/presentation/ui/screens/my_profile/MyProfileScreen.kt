@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.my_profile
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,17 +22,22 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ProfileStatUiModel
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsScreenTopBar
+import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileLogoutButton
+import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileSettingsSection
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileStatsRow
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileTopSection
 import com.example.chatease.presentation.ui.state.MyProfileUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
 import com.example.chatease.presentation.ui.viewmodel.MyProfileViewModel
 
 @Composable
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    myProfileViewModel: MyProfileViewModel = hiltViewModel()
+    myProfileViewModel: MyProfileViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
+    onNavigateToLoginScreen: () -> Unit
 ) {
     val actionIcon =
         if (isSystemInDarkTheme()) Icons.Outlined.LightMode else Icons.Outlined.DarkMode
@@ -57,9 +61,12 @@ fun MyProfileScreen(
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             MyProfileScreenContent(
-                uiState = uiState
+                uiState = uiState,
+                onLogoutClick = {
+                    authViewModel.logout()
+                    onNavigateToLoginScreen()
+                },
             )
-
         }
     }
 }
@@ -68,7 +75,8 @@ fun MyProfileScreen(
 @Composable
 fun MyProfileScreenContent(
     modifier: Modifier = Modifier,
-    uiState: MyProfileUiState
+    uiState: MyProfileUiState,
+    onLogoutClick: () -> Unit
 ) {
     when (uiState) {
         is MyProfileUiState.Error -> {}
@@ -79,6 +87,10 @@ fun MyProfileScreenContent(
             )
             MyProfileStatsRow(
                 stats = uiState.stats
+            )
+            MyProfileSettingsSection()
+            MyProfileLogoutButton(
+                onLogoutClick = onLogoutClick
             )
         }
     }
@@ -97,7 +109,7 @@ private fun MyProfileScreenPreview() {
     )
     val stats = List(3) {
         ProfileStatUiModel(
-            value = it.toString(),
+            value = (it * 1_000_000).toString(),
             label = R.string.chats
         )
     }
@@ -107,7 +119,12 @@ private fun MyProfileScreenPreview() {
         isUploadingImage = false
     )
     ChatEaseTheme {
-        Scaffold { paddingValues ->
+        Scaffold(
+            modifier = Modifier.padding(
+                vertical = 8.dp,
+                horizontal = 12.dp
+            ),
+        ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
@@ -116,7 +133,8 @@ private fun MyProfileScreenPreview() {
                 verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {
                 MyProfileScreenContent(
-                    uiState = successState
+                    uiState = successState,
+                    onLogoutClick = {},
                 )
             }
         }
