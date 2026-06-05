@@ -132,4 +132,10 @@
 
     <string name="chats">Chats</string>
     <string name="groups">Groups</string>
+
+    <string name="edit_profile">Edit Profile</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="privacy_security">Privacy &amp; Security</string>
+    <string name="notifications">Notifications</string>
+    <string name="help_support">Help &amp; Support</string>
 </resources>
