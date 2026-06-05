@@ -138,7 +138,15 @@ fun AppNavHost(
         }
         composable(route = Screens.MyProfile.route) {
             MyProfileScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginScreen = {
+                    navController.navigate(Screens.Login.route) {
+                        popUpTo(Screens.Home.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
     }
