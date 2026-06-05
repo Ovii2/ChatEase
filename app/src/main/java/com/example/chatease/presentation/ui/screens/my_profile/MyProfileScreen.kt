@@ -18,6 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.chatease.R
+import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.model.ProfileStatUiModel
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsScreenTopBar
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileStatsRow
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileTopSection
@@ -52,32 +56,67 @@ fun MyProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            when (val state = uiState) {
-                is MyProfileUiState.Error -> {}
-                MyProfileUiState.Loading -> {}
-                is MyProfileUiState.Success -> {
-                    MyProfileTopSection(
-                        user = state.user
-                    )
-                    MyProfileStatsRow(
-                        stats = state.stats
-                    )
-                }
-            }
+            MyProfileScreenContent(
+                uiState = uiState
+            )
 
         }
     }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+
+@Composable
+fun MyProfileScreenContent(
+    modifier: Modifier = Modifier,
+    uiState: MyProfileUiState
+) {
+    when (uiState) {
+        is MyProfileUiState.Error -> {}
+        MyProfileUiState.Loading -> {}
+        is MyProfileUiState.Success -> {
+            MyProfileTopSection(
+                user = uiState.user
+            )
+            MyProfileStatsRow(
+                stats = uiState.stats
+            )
+        }
+    }
+}
+
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun MyProfileScreenPreview() {
+    val user = User(
+        uid = "1",
+        fullName = "Test Test",
+        email = "test@email.com",
+        imageUrl = null,
+        status = UserPresenceStatus.AWAY
+    )
+    val stats = List(3) {
+        ProfileStatUiModel(
+            value = it.toString(),
+            label = R.string.chats
+        )
+    }
+    val successState = MyProfileUiState.Success(
+        user = user,
+        stats = stats,
+        isUploadingImage = false
+    )
     ChatEaseTheme {
-        Scaffold {
-            Column {
-                MyProfileScreen(
-                    onBackClick = {}
+        Scaffold { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(32.dp)
+            ) {
+                MyProfileScreenContent(
+                    uiState = successState
                 )
             }
         }
