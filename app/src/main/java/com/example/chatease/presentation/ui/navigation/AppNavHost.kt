@@ -20,7 +20,8 @@ import com.google.firebase.auth.auth
 @Composable
 fun AppNavHost(
     paddingValues: PaddingValues,
-    navController: NavHostController
+    navController: NavHostController,
+    onThemeToggleClick: () -> Unit
 ) {
     val auth = Firebase.auth
     val startDestination = if (auth.currentUser != null) Screens.Home.route else Screens.Login.route
@@ -147,6 +148,7 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onThemeToggleClick = onThemeToggleClick,
             )
         }
     }

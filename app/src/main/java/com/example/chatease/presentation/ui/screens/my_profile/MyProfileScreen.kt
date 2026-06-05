@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.my_profile
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.ThemeMode
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ProfileStatUiModel
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsScreenTopBar
@@ -28,6 +28,7 @@ import com.example.chatease.presentation.ui.screens.my_profile.components.MyProf
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileTopSection
 import com.example.chatease.presentation.ui.state.MyProfileUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.AppSettingsViewModel
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
 import com.example.chatease.presentation.ui.viewmodel.MyProfileViewModel
 
@@ -37,10 +38,16 @@ fun MyProfileScreen(
     onBackClick: () -> Unit,
     myProfileViewModel: MyProfileViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToLoginScreen: () -> Unit
+    appSettingsViewModel: AppSettingsViewModel = hiltViewModel(),
+    onNavigateToLoginScreen: () -> Unit,
+    onThemeToggleClick: () -> Unit
 ) {
+    val themeMode by appSettingsViewModel.themeMode.collectAsState()
     val actionIcon =
-        if (isSystemInDarkTheme()) Icons.Outlined.LightMode else Icons.Outlined.DarkMode
+        when (themeMode) {
+            ThemeMode.LIGHT -> Icons.Outlined.DarkMode
+            ThemeMode.DARK -> Icons.Outlined.LightMode
+        }
 
     val uiState by myProfileViewModel.uiState.collectAsState()
 
@@ -50,7 +57,7 @@ fun MyProfileScreen(
             ContactsScreenTopBar(
                 onBackClick = onBackClick,
                 actionIcon = actionIcon,
-                onActionIconClick = {}
+                onActionIconClick = onThemeToggleClick
             )
         }) { paddingValues ->
         Column(

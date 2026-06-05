@@ -1,5 +1,7 @@
 package com.example.chatease.di
 
+import android.content.Context
+import com.example.chatease.data.local.datastore.user_preferences.UserPreferencesRepository
 import com.example.chatease.data.remote.CategoryRemoteDataSource
 import com.example.chatease.data.repository.CategoryRepositoryImpl
 import com.example.chatease.data.repository.ContactRequestRepositoryImpl
@@ -16,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -60,4 +63,9 @@ object AppModule {
     @Singleton
     fun provideContactsRepository(firestore: FirebaseFirestore): ContactsRepository =
         ContactsRepositoryImpl(firestore)
+
+    @Provides
+    @Singleton
+    fun provideUserPreferencesRepository(@ApplicationContext context: Context): UserPreferencesRepository =
+        UserPreferencesRepository(context)
 }
