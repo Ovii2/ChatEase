@@ -1,9 +1,13 @@
 package com.example.chatease.presentation.ui.screens.my_profile
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.LightMode
@@ -60,20 +64,27 @@ fun MyProfileScreen(
                 onActionIconClick = onThemeToggleClick
             )
         }) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.TopCenter
         ) {
-            MyProfileScreenContent(
-                uiState = uiState,
-                onLogoutClick = {
-                    authViewModel.logout()
-                    onNavigateToLoginScreen()
-                },
-            )
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 600.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(32.dp)
+            ) {
+                MyProfileScreenContent(
+                    uiState = uiState,
+                    onLogoutClick = {
+                        authViewModel.logout()
+                        onNavigateToLoginScreen()
+                    },
+                )
+            }
         }
     }
 }
