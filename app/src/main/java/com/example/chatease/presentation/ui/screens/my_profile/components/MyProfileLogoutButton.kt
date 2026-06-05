@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
-import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -19,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
@@ -47,7 +47,11 @@ fun MyProfileLogoutButton(
                 imageVector = Icons.AutoMirrored.Outlined.Logout,
                 contentDescription = null
             )
-            Text(text = stringResource(R.string.logout))
+            Text(
+                text = stringResource(R.string.logout),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.W600
+            )
         }
     }
 }

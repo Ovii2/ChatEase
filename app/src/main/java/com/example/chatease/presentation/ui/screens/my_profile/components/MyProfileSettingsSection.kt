@@ -116,7 +116,7 @@ fun MyProfileSettingsItem(
                 Text(
                     text = stringResource(text),
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.W500
+                    fontWeight = FontWeight.W600
                 )
             }
             Icon(
