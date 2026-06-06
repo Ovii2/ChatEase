@@ -21,13 +21,14 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun CommonChip(
+    modifier: Modifier = Modifier,
     text: String,
     selected: Boolean,
     onClick: () -> Unit = {},
     enabled: Boolean = true
 ) {
     FilterChip(
-        modifier = Modifier.padding(end = 8.dp),
+        modifier = modifier.padding(end = 8.dp),
         selected = selected,
         onClick = onClick,
         label = {

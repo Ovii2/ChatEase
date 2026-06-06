@@ -66,11 +66,13 @@ fun MessagesList(
             modifier = Modifier,
             state = listState,
             reverseLayout = true,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(0.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             itemsIndexed(reversedMessages) { index, message ->
-                val nextMessage = reversedMessages.getOrNull(index + 1)
+                val previousVisibleMessage = reversedMessages.getOrNull(index + 1)
+                val previousVisibleMessageIsSameSender =
+                    previousVisibleMessage?.senderId == message.senderId
 
                 val isSentByCurrentUser = message.senderId == currentUserId
                 if (message.messageId == firstUnreadMessageId) {
@@ -78,7 +80,9 @@ fun MessagesList(
                 }
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = if (message.reactions.isNotEmpty()) 18.dp else 2.dp),
                     horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
                 ) {
                     Row(
@@ -106,9 +110,9 @@ fun MessagesList(
                         )
                     }
                 }
-                if (nextMessage == null || !isSameDay(
+                if (previousVisibleMessage == null || !isSameDay(
                         message.timeStamp,
-                        nextMessage.timeStamp
+                        previousVisibleMessage.timeStamp
                     )
                 ) {
                     Row(
@@ -118,6 +122,7 @@ fun MessagesList(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         CommonChip(
+                            modifier = Modifier.padding(vertical = 8.dp),
                             text = message.timeStamp.toChatDateLabel(context),
                             selected = false,
                             enabled = false
@@ -145,7 +150,15 @@ private fun MessagesListPreview() {
             messageId = "2",
             conversationId = "conversation_1",
             senderId = "user_2",
-            text = LoremIpsum(50).values.first(),
+            text = LoremIpsum(15).values.first(),
+            timeStamp = System.currentTimeMillis(),
+            seenBy = listOf("user_1")
+        ),
+        Message(
+            messageId = "2",
+            conversationId = "conversation_1",
+            senderId = "user_2",
+            text = LoremIpsum(20).values.first(),
             timeStamp = System.currentTimeMillis(),
             seenBy = listOf("user_1")
         ),

@@ -70,9 +70,9 @@ fun ChatBubble(
     Row(
         modifier = Modifier.padding(
             start = 12.dp,
-            top = 2.dp,
+            top = 0.dp,
             end = 4.dp,
-            bottom = 6.dp
+            bottom = 0.dp
         ),
         verticalAlignment = Alignment.Bottom
     ) {
@@ -138,12 +138,6 @@ fun ChatBubble(
                     reactionCounts = message.reactions.values.groupingBy { it }.eachCount(),
                     backGroundColor = backgroundColor,
                     textColor = textColor,
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .align(reactionBadgeAlignment)
-                        .size(24.dp)
                 )
             }
             if (showReactions) {
