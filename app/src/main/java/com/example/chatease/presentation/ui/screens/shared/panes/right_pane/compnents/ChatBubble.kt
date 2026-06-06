@@ -31,7 +31,6 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.successGreenDark
 import com.example.chatease.presentation.ui.theme.successGreenLight
 import com.example.chatease.utils.toChatBubbleTimeStamp
-import com.example.chatease.utils.toChatTimeStamp
 
 @Composable
 fun ChatBubble(
@@ -73,7 +72,7 @@ fun ChatBubble(
             start = 12.dp,
             top = 2.dp,
             end = 4.dp,
-            bottom = if (message.reactions.isNotEmpty()) 16.dp else 2.dp
+            bottom = 6.dp
         ),
         verticalAlignment = Alignment.Bottom
     ) {
@@ -139,6 +138,12 @@ fun ChatBubble(
                     reactionCounts = message.reactions.values.groupingBy { it }.eachCount(),
                     backGroundColor = backgroundColor,
                     textColor = textColor,
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .align(reactionBadgeAlignment)
+                        .size(24.dp)
                 )
             }
             if (showReactions) {
