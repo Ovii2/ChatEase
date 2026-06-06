@@ -30,6 +30,7 @@ import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.successGreenDark
 import com.example.chatease.presentation.ui.theme.successGreenLight
+import com.example.chatease.utils.toChatBubbleTimeStamp
 import com.example.chatease.utils.toChatTimeStamp
 
 @Composable
@@ -103,7 +104,7 @@ fun ChatBubble(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = message.timeStamp.toChatTimeStamp(),
+                            text = message.timeStamp.toChatBubbleTimeStamp(),
                             style = MaterialTheme.typography.labelMedium,
                             color = if (isSentByCurrentUser) {
                                 MaterialTheme.colorScheme.surface

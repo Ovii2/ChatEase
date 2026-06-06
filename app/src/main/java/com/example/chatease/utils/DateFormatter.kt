@@ -4,14 +4,12 @@ import android.content.Context
 import com.example.chatease.R
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 fun Long.toChatTimeStamp(): String {
-    val localDateTime = Instant
-        .ofEpochMilli(this)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDateTime()
+    val localDateTime = getLocalDateTime()
 
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     val dayFormatter = DateTimeFormatter.ofPattern("EEE")
@@ -65,14 +63,11 @@ fun isSameDay(firstTimestamp: Long, secondTimestamp: Long): Boolean {
 }
 
 fun Long.toChatDateLabel(context: Context): String {
-    val localDateTime = Instant
-        .ofEpochMilli(this)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDateTime()
+    val localDateTime = getLocalDateTime()
 
     val messageDate = localDateTime.toLocalDate()
     val today = LocalDate.now()
-    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM")
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy MMM dd")
 
     return when (messageDate) {
         today -> context.getString(R.string.today)
@@ -80,3 +75,18 @@ fun Long.toChatDateLabel(context: Context): String {
         else -> localDateTime.format(dateFormatter)
     }
 }
+
+fun Long.toChatBubbleTimeStamp(): String {
+    val localDateTime = getLocalDateTime()
+
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+    return localDateTime.format(timeFormatter)
+}
+
+private fun Long.getLocalDateTime(): LocalDateTime = Instant
+    .ofEpochMilli(this)
+    .atZone(ZoneId.systemDefault())
+    .toLocalDateTime()
+
+
