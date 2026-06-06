@@ -44,7 +44,7 @@ fun ReactionBadge(
                 minWidth = 28.dp,
                 minHeight = 20.dp
             )
-            .padding(horizontal = 6.dp, vertical = 3.dp),
+            .padding(horizontal = 6.dp, vertical = 2.dp),
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -77,6 +77,10 @@ private fun ReactionBadgePreview() {
         "❤" to 3,
         "\uD83D\uDC4D" to 45
     )
+//    val reactionCounts = mapOf(
+//        "❤" to 1
+//    )
+
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(

@@ -60,7 +60,7 @@ fun ChatBubble(
         Alignment.BottomStart
 
     val reactionBadgeOffset =
-        if (isSentByCurrentUser) IntOffset(x = -10, y = 65) else IntOffset(x = 30, y = 65)
+        if (isSentByCurrentUser) IntOffset(x = -10, y = 55) else IntOffset(x = 30, y = 50)
 
     val popUpAlignment = if (isSentByCurrentUser) Alignment.TopEnd else Alignment.TopStart
     val textColor =
