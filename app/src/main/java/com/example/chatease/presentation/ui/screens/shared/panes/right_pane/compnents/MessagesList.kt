@@ -71,8 +71,11 @@ fun MessagesList(
         ) {
             itemsIndexed(reversedMessages) { index, message ->
                 val previousVisibleMessage = reversedMessages.getOrNull(index + 1)
-                val previousVisibleMessageIsSameSender =
-                    previousVisibleMessage?.senderId == message.senderId
+                val nextVisibleMessage = reversedMessages.getOrNull(index - 1)
+
+                val isFirstInGroup = previousVisibleMessage?.senderId != message.senderId
+                val isLastInGroup = nextVisibleMessage?.senderId != message.senderId
+                val isMiddleInGroup = !isFirstInGroup && !isLastInGroup
 
                 val isSentByCurrentUser = message.senderId == currentUserId
                 if (message.messageId == firstUnreadMessageId) {
@@ -102,6 +105,9 @@ fun MessagesList(
                             isSentByCurrentUser = isSentByCurrentUser,
                             currentUserId = currentUserId,
                             showReactions = message.messageId == selectedReactionMessageId,
+                            isFirstInGroup = isFirstInGroup,
+                            isMiddleInGroup = isMiddleInGroup,
+                            isLastInGroup = isLastInGroup,
                             onLongClick = { selectedReactionMessageId = message.messageId },
                             onDismissReactions = { selectedReactionMessageId = null },
                             onReactionClick = { messageId, reaction ->
@@ -152,7 +158,11 @@ private fun MessagesListPreview() {
             senderId = "user_2",
             text = LoremIpsum(15).values.first(),
             timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1")
+            seenBy = listOf("user_1"),
+            reactions  = mapOf(
+                "user_1" to "\uD83E\uDD70",
+                "user_2" to "\uD83E\uDD70"
+            )
         ),
         Message(
             messageId = "2",
@@ -160,7 +170,11 @@ private fun MessagesListPreview() {
             senderId = "user_2",
             text = LoremIpsum(20).values.first(),
             timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1")
+            seenBy = listOf("user_1"),
+            reactions  = mapOf(
+                "user_1" to "\uD83E\uDD70",
+                "user_2" to "\uD83E\uDD70"
+            )
         ),
         Message(
             messageId = "3",

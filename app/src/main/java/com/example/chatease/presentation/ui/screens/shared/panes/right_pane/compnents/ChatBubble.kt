@@ -39,6 +39,9 @@ fun ChatBubble(
     isSentByCurrentUser: Boolean,
     currentUserId: String,
     showReactions: Boolean,
+    isFirstInGroup: Boolean,
+    isMiddleInGroup: Boolean,
+    isLastInGroup: Boolean,
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit
@@ -47,13 +50,46 @@ fun ChatBubble(
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
     val isSeenByOtherUser = message.seenBy.any { userId -> userId != currentUserId }
 
-    val shape =
+    val largeCorner = 18.dp
+    val smallCorner = 6.dp
+    val isSingleMessage = isFirstInGroup && isLastInGroup
+
+    val topEnd = if (isLastInGroup || isMiddleInGroup) smallCorner else largeCorner
+    val bottomEnd = if (isFirstInGroup || isMiddleInGroup) smallCorner else largeCorner
+
+    val shape = if (isSingleMessage && isSentByCurrentUser) {
         RoundedCornerShape(
-            topStart = 18.dp,
-            topEnd = 18.dp,
-            bottomStart = if (isSentByCurrentUser) 18.dp else 4.dp,
-            bottomEnd = if (isSentByCurrentUser) 4.dp else 18.dp
+            topStart = largeCorner,
+            topEnd = largeCorner,
+            bottomStart = largeCorner,
+            bottomEnd = smallCorner
         )
+    } else if (isSingleMessage) {
+        RoundedCornerShape(
+            topStart = largeCorner,
+            topEnd = largeCorner,
+            bottomStart = smallCorner,
+            bottomEnd = largeCorner
+        )
+    } else {
+
+        if (isSentByCurrentUser) {
+            RoundedCornerShape(
+                topStart = largeCorner,
+                topEnd = topEnd,
+                bottomStart = largeCorner,
+                bottomEnd = bottomEnd
+            )
+        } else {
+            RoundedCornerShape(
+                topStart = topEnd,
+                topEnd = largeCorner,
+                bottomStart = bottomEnd,
+                bottomEnd = largeCorner
+            )
+        }
+    }
+
 
     val seenCheckColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
     val reactionBadgeAlignment = if (isSentByCurrentUser) Alignment.BottomEnd else
@@ -190,6 +226,9 @@ private fun ChatBubblePreview() {
                 onLongClick = {},
                 onDismissReactions = {},
                 onReactionClick = { _, _ -> },
+                isFirstInGroup = true,
+                isMiddleInGroup = true,
+                isLastInGroup = true,
             )
         }
     }
