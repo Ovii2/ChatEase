@@ -42,24 +42,24 @@ fun ReactionBadge(
             .background(color = backGroundColor)
             .defaultMinSize(
                 minWidth = 28.dp,
-                minHeight = 20.dp
+                minHeight = 14.dp
             )
-            .padding(horizontal = 6.dp, vertical = 2.dp),
+            .padding(horizontal = 10.dp, vertical = 0.dp),
         contentAlignment = Alignment.Center
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
+            horizontalArrangement = Arrangement.spacedBy(1.dp)
         ) {
             reactionCounts.forEach { (reaction, count) ->
                 Text(
                     text = reaction,
-                    fontSize = 12.sp
+                    fontSize = 10.sp
                 )
                 if (count > 1) {
                     Text(
                         text = if (count > 99) "99+" else "$count",
-                        fontSize = 12.sp,
+                        fontSize = 10.sp,
                         color = textColor,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -73,13 +73,13 @@ fun ReactionBadge(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun ReactionBadgePreview() {
-    val reactionCounts = mapOf(
-        "❤" to 3,
-        "\uD83D\uDC4D" to 45
-    )
 //    val reactionCounts = mapOf(
-//        "❤" to 1
+//        "❤" to 3,
+//        "\uD83D\uDC4D" to 45
 //    )
+    val reactionCounts = mapOf(
+        "❤" to 1
+    )
 
     ChatEaseTheme {
         Scaffold { paddingValues ->

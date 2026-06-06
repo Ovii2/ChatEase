@@ -96,7 +96,7 @@ fun ChatBubble(
         Alignment.BottomStart
 
     val reactionBadgeOffset =
-        if (isSentByCurrentUser) IntOffset(x = -10, y = 55) else IntOffset(x = 30, y = 50)
+        if (isSentByCurrentUser) IntOffset(x = -10, y = 60) else IntOffset(x = 30, y = 55)
 
     val popUpAlignment = if (isSentByCurrentUser) Alignment.TopEnd else Alignment.TopStart
     val textColor =
@@ -170,7 +170,8 @@ fun ChatBubble(
                 ReactionBadge(
                     modifier = Modifier
                         .align(reactionBadgeAlignment)
-                        .offset { reactionBadgeOffset },
+                        .offset { reactionBadgeOffset }
+                        .padding(bottom = 6.dp),
                     reactionCounts = message.reactions.values.groupingBy { it }.eachCount(),
                     backGroundColor = backgroundColor,
                     textColor = textColor,
@@ -209,10 +210,8 @@ private fun ChatBubblePreview() {
         timeStamp = System.currentTimeMillis(),
         seenBy = listOf("user_1"),
         reactions = mapOf(
-            "user_1" to "\uD83E\uDD70",
-            "user_2" to "\uD83E\uDD70"
-        )
-    )
+            "user_1" to "\uD83E\uDD70"
+    ))
     ChatEaseTheme {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -220,7 +219,7 @@ private fun ChatBubblePreview() {
         ) {
             ChatBubble(
                 message = message,
-                isSentByCurrentUser = true,
+                isSentByCurrentUser = false,
                 currentUserId = "1",
                 showReactions = true,
                 onLongClick = {},
