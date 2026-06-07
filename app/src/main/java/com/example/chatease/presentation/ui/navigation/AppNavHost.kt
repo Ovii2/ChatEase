@@ -2,9 +2,11 @@ package com.example.chatease.presentation.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.chatease.presentation.ui.screens.all_requests.AllRequestsScreen
 import com.example.chatease.presentation.ui.screens.chat.ChatScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
@@ -25,6 +27,8 @@ fun AppNavHost(
 ) {
     val auth = Firebase.auth
     val startDestination = if (auth.currentUser != null) Screens.Home.route else Screens.Login.route
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route ?: Screens.Home.route
 
     NavHost(
         navController = navController,
@@ -92,7 +96,8 @@ fun AppNavHost(
                     navController.navigate(Screens.NewChat.route) {
                         launchSingleTop = true
                     }
-                }
+                },
+                currentRoute = currentRoute
             )
         }
         composable(route = Screens.Chat.route) {
