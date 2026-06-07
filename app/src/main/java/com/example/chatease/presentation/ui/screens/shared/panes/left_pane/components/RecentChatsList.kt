@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,7 +48,9 @@ fun RecentChatsList(
     onConversationClick: (String) -> Unit,
     onClickToSeeAll: () -> Unit
 ) {
-    Column() {
+    val cornerShape = RoundedCornerShape(24.dp)
+
+    Column {
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -91,7 +94,7 @@ fun RecentChatsList(
                     .border(
                         width = 0.5.dp,
                         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(24.dp)
+                        shape = cornerShape
                     ),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -99,7 +102,8 @@ fun RecentChatsList(
                     RecentChatListItem(
                         conversation = conversation,
                         onNavigateToChatDetails = onConversationClick,
-                        showDivider = index != conversations.lastIndex
+                        showDivider = index != conversations.lastIndex,
+                        cornerShape = cornerShape,
                     )
                 }
             }
@@ -112,74 +116,84 @@ fun RecentChatListItem(
     modifier: Modifier = Modifier,
     conversation: ConversationUiModel,
     onNavigateToChatDetails: (String) -> Unit,
-    showDivider: Boolean
+    showDivider: Boolean,
+    cornerShape: RoundedCornerShape
 ) {
     val user = conversation.participants.firstOrNull() ?: return
+    val backgroundColor =
+        if (conversation.unreadCount > 0) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else
+            MaterialTheme.colorScheme.surface
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onNavigateToChatDetails(conversation.conversationId) },
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    Box(
+        modifier = Modifier
+            .clip(cornerShape)
+            .background(color = backgroundColor)
     ) {
         Row(
-            horizontalArrangement = Arrangement.Center,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clickable { onNavigateToChatDetails(conversation.conversationId) },
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            UserAvatar(
-                user = user
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(
-                modifier = Modifier.widthIn(max = 200.dp)
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = conversation.title,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                UserAvatar(
+                    user = user
                 )
-                Text(
-                    modifier = Modifier.padding(start = 1.5.dp),
-                    text = conversation.lastMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-        Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
-        ) {
-            Text(
-                text = conversation.timestamp.toChatTimeStamp(),
-                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (conversation.unreadCount > 0) {
-                Box(
-                    modifier = Modifier
-                        .size(25.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column(
+                    modifier = Modifier.widthIn(max = 200.dp)
                 ) {
                     Text(
-                        text = if (conversation.unreadCount > 99) "99+" else conversation.unreadCount.toString(),
-                        color = MaterialTheme.colorScheme.surface,
-                        style = MaterialTheme.typography.labelMedium
+                        text = conversation.title,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 1.5.dp),
+                        text = conversation.lastMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
-            } else {
-                Box(modifier = Modifier.size(25.dp)) { }
+            }
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = conversation.timestamp.toChatTimeStamp(),
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (conversation.unreadCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(25.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (conversation.unreadCount > 99) "99+" else conversation.unreadCount.toString(),
+                            color = MaterialTheme.colorScheme.surface,
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                } else {
+                    Box(modifier = Modifier.size(25.dp)) { }
+                }
             }
         }
     }
