@@ -76,5 +76,6 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.compose.shimmer)
     implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
 
 }
