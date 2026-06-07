@@ -2,7 +2,6 @@ package com.example.chatease.presentation.ui.screens.home
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.NavigationDrawerItemDefaults
@@ -70,27 +69,27 @@ fun HomeScreen(
         else -> NavigationSuiteType.NavigationBar
     }
 
-    val selectedIconColor = MaterialTheme.colorScheme.primary
-    val unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val selectedColor = MaterialTheme.colorScheme.primary
+    val unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
     val indicatorColor = Color.Transparent
 
     val itemColors = NavigationSuiteDefaults.itemColors(
         navigationBarItemColors = NavigationBarItemDefaults.colors(
-            selectedIconColor = selectedIconColor,
-            selectedTextColor = selectedIconColor,
-            unselectedIconColor = unselectedIconColor,
+            selectedIconColor = selectedColor,
+            selectedTextColor = selectedColor,
+            unselectedIconColor = unselectedColor,
             indicatorColor = indicatorColor
         ),
         navigationRailItemColors = NavigationRailItemDefaults.colors(
-            selectedIconColor = selectedIconColor,
-            selectedTextColor = selectedIconColor,
-            unselectedIconColor = unselectedIconColor,
+            selectedIconColor = selectedColor,
+            selectedTextColor = selectedColor,
+            unselectedIconColor = unselectedColor,
             indicatorColor = indicatorColor
         ),
         navigationDrawerItemColors = NavigationDrawerItemDefaults.colors(
-            selectedIconColor = selectedIconColor,
-            selectedTextColor = selectedIconColor,
-            unselectedIconColor = unselectedIconColor
+            selectedIconColor = selectedColor,
+            selectedTextColor = selectedColor,
+            unselectedIconColor = unselectedColor
         )
     )
 
