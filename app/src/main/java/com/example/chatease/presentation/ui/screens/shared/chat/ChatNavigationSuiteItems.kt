@@ -22,7 +22,6 @@ fun NavigationSuiteScope.chatNavigationSuiteItems(
     pendingRequests: Int,
     onDestinationClick: (String) -> Unit,
     itemColors: NavigationSuiteItemColors
-
 ) {
     ChatNavigationItemsDataSource.items.forEach { item ->
         val badgeCount = when (item.route) {

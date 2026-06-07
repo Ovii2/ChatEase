@@ -72,6 +72,7 @@ fun HomeScreen(
     val selectedColor = MaterialTheme.colorScheme.primary
     val unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
     val indicatorColor = Color.Transparent
+    val navigationContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
 
     val itemColors = NavigationSuiteDefaults.itemColors(
         navigationBarItemColors = NavigationBarItemDefaults.colors(
@@ -110,6 +111,11 @@ fun HomeScreen(
                 itemColors = itemColors
             )
         },
+        navigationSuiteColors = NavigationSuiteDefaults.colors(
+            navigationBarContainerColor = navigationContainerColor,
+            navigationRailContainerColor = navigationContainerColor,
+            navigationDrawerContainerColor = navigationContainerColor
+        ),
         layoutType = customNavSuiteType
     ) {
         Scaffold(floatingActionButton = {
