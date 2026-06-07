@@ -169,7 +169,7 @@ fun RowScope.CustomNavigationBarItem(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun ChatBottomBarPreview() {
-    ChatEaseTheme() {
+    ChatEaseTheme {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomStart
