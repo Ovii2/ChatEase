@@ -1,9 +1,16 @@
 package com.example.chatease.presentation.ui.screens.home
 
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -11,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,7 +28,8 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.navigation.Screens
-import com.example.chatease.presentation.ui.screens.shared.chat.ChatBottomBar
+import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
+import com.example.chatease.presentation.ui.screens.shared.chat.chatNavigationSuiteItems
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -42,7 +50,8 @@ fun HomeScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     contactsViewModel: ContactsViewModel = hiltViewModel(),
     onNavigateToLoginScreen: () -> Unit,
-    onStartNewChat: () -> Unit
+    onStartNewChat: () -> Unit,
+    currentRoute: String
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -52,45 +61,79 @@ fun HomeScreen(
     val windowSizeClass = calculateWindowSizeClass(activity)
 
     val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
-    val showContactsBadge = pendingRequests.isNotEmpty()
-
     val unreadMessages = (uiState as? HomeUiState.Success)?.unreadMessages ?: 0
-    val showHomeBadge = unreadMessages > 0
 
-    Scaffold(
-        bottomBar = {
-            if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
-                ChatBottomBar(
-                    currentRoute = Screens.Home.route,
-                    onNavigateToHome = onNavigateToHome,
-                    onNavigateToContacts = onNavigateToContacts,
-                    onStartNewChat = onStartNewChat,
-                    onNavigateToCalls = onNavigateToCalls,
-                    onNavigateToProfile = onNavigateToProfile,
-                    pendingRequests = pendingRequests.size,
-                    showContactsBadge = showContactsBadge,
-                    unreadMessages = unreadMessages,
-                    showHomeBadge = showHomeBadge,
-                )
-            }
-        }
-    ) { paddingValues ->
-        when (val state = uiState) {
-            HomeUiState.Loading -> {
+    val customNavSuiteType = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> NavigationSuiteType.NavigationBar
+        WindowWidthSizeClass.Medium -> NavigationSuiteType.NavigationRail
+        WindowWidthSizeClass.Expanded -> NavigationSuiteType.NavigationRail
+        else -> NavigationSuiteType.NavigationBar
+    }
 
-            }
+    val selectedIconColor = MaterialTheme.colorScheme.primary
+    val unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val indicatorColor = Color.Transparent
 
-            is HomeUiState.Success -> {
-                when (windowSizeClass.widthSizeClass) {
-                    WindowWidthSizeClass.Compact -> HomeScreenCompactLayout(
-                        paddingValues = paddingValues,
+    val itemColors = NavigationSuiteDefaults.itemColors(
+        navigationBarItemColors = NavigationBarItemDefaults.colors(
+            selectedIconColor = selectedIconColor,
+            selectedTextColor = selectedIconColor,
+            unselectedIconColor = unselectedIconColor,
+            indicatorColor = indicatorColor
+        ),
+        navigationRailItemColors = NavigationRailItemDefaults.colors(
+            selectedIconColor = selectedIconColor,
+            selectedTextColor = selectedIconColor,
+            unselectedIconColor = unselectedIconColor,
+            indicatorColor = indicatorColor
+        ),
+        navigationDrawerItemColors = NavigationDrawerItemDefaults.colors(
+            selectedIconColor = selectedIconColor,
+            selectedTextColor = selectedIconColor,
+            unselectedIconColor = unselectedIconColor
+        )
+    )
+
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            chatNavigationSuiteItems(
+                currentRoute = currentRoute,
+                unreadMessages = unreadMessages,
+                pendingRequests = pendingRequests.size,
+                onDestinationClick = { route ->
+                    when (route) {
+                        Screens.Home.route -> onNavigateToHome()
+                        Screens.Contacts.route -> onNavigateToContacts()
+                        Screens.Calls.route -> onNavigateToCalls()
+                        Screens.MyProfile.route -> onNavigateToProfile()
+                    }
+                },
+                itemColors = itemColors
+            )
+        },
+        layoutType = customNavSuiteType
+    ) {
+        Scaffold(floatingActionButton = {
+            StartChatFab(
+                modifier = Modifier.padding(8.dp),
+                onStartNewChat = onStartNewChat
+            )
+        }) { paddingValues ->
+            when (val state = uiState) {
+                is HomeUiState.Error -> {}
+                HomeUiState.Loading -> {}
+                is HomeUiState.Success -> {
+                    LeftPane(
+                        modifier = modifier
+                            .padding(paddingValues)
+                            .padding(vertical = 8.dp),
                         user = state.user,
                         categories = state.categories,
                         selectedCategory = selectedCategory,
                         onSelectCategory = homeViewModel::selectCategory,
-                        conversations = state.conversations,
-                        onClickToSeeAll = {},
                         onConversationClick = onConversationClick,
+                        onClickToSeeAll = {},
+                        conversations = state.conversations,
                         focusManager = focusManager,
                         onLogoutClick = {
                             authViewModel.logout()
@@ -100,45 +143,10 @@ fun HomeScreen(
                     )
                 }
             }
-
-            is HomeUiState.Error -> {
-
-            }
         }
     }
 }
 
-@Composable
-fun HomeScreenCompactLayout(
-    modifier: Modifier = Modifier,
-    paddingValues: PaddingValues,
-    user: User,
-    categories: List<Category>,
-    selectedCategory: String,
-    onSelectCategory: (String) -> Unit,
-    conversations: List<ConversationUiModel>,
-    onClickToSeeAll: () -> Unit,
-    onConversationClick: (String) -> Unit,
-    focusManager: FocusManager,
-    onLogoutClick: () -> Unit,
-    onNavigateToProfile: () -> Unit
-) {
-    LeftPane(
-        modifier = modifier
-            .padding(paddingValues)
-            .padding(top = 8.dp),
-        user = user,
-        categories = categories,
-        selectedCategory = selectedCategory,
-        onSelectCategory = onSelectCategory,
-        onConversationClick = onConversationClick,
-        onClickToSeeAll = onClickToSeeAll,
-        conversations = conversations,
-        focusManager = focusManager,
-        onLogoutClick = onLogoutClick,
-        onNavigateToProfile = onNavigateToProfile,
-    )
-}
 
 @Preview(
     showBackground = true, showSystemUi = true,
@@ -171,18 +179,20 @@ private fun HomeScreenCompactLayoutPreview() {
         isGroup = false
     )
     ChatEaseTheme {
-        HomeScreenCompactLayout(
-            paddingValues = PaddingValues(),
-            user = user,
-            categories = categories,
-            selectedCategory = "All",
-            onSelectCategory = {},
-            conversations = listOf(conversation),
-            onClickToSeeAll = {},
-            onConversationClick = {},
-            focusManager = LocalFocusManager.current,
-            onLogoutClick = {},
-            onNavigateToProfile = {},
-        )
+        Scaffold { paddingValues ->
+            LeftPane(
+                modifier = Modifier.padding(paddingValues),
+                user = user,
+                categories = categories,
+                selectedCategory = "All",
+                onSelectCategory = {},
+                onConversationClick = { },
+                onClickToSeeAll = {},
+                conversations = List(3) { conversation },
+                focusManager = LocalFocusManager.current,
+                onLogoutClick = {},
+                onNavigateToProfile = {}
+            )
+        }
     }
 }
