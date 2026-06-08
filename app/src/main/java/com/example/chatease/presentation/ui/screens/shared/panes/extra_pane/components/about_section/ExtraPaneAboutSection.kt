@@ -11,12 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chatease.R
-import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.components.info_section.InfoSectionContainer
+import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.components.section_container.SectionContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun ExtraPaneAboutSection(modifier: Modifier = Modifier) {
-    InfoSectionContainer(
+    SectionContainer(
         modifier = modifier,
         sectionTitle = R.string.about,
         content = {
