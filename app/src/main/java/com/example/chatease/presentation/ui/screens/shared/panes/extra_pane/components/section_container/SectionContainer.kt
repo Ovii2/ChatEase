@@ -1,4 +1,4 @@
-package com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.components.info_section
+package com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.components.section_container
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -21,7 +21,7 @@ import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun InfoSectionContainer(
+fun SectionContainer(
     modifier: Modifier = Modifier,
     @StringRes sectionTitle: Int,
     content: @Composable () -> Unit,
@@ -57,7 +57,7 @@ fun InfoSectionContainer(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun InfoSectionContainerPreview() {
+private fun SectionContainerPreview() {
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -65,7 +65,7 @@ private fun InfoSectionContainerPreview() {
                     .systemBarsPadding()
                     .padding(paddingValues)
             ) {
-                InfoSectionContainer(
+                SectionContainer(
                     sectionTitle = R.string.about,
                     showActionText = true,
                     content = {}
