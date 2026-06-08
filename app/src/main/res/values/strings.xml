@@ -143,4 +143,12 @@
     <string name="video">Video</string>
     <string name="search">Search</string>
     <string name="more">More</string>
+
+    <string name="about">About</string>
+    <string name="about_placeholder">Hey! I\'m using %1$s.</string>
+    <string name="media_links_more">Media, links and docs</string>
+
+    <string name="view_contact">View contact</string>
+    <string name="share_contact">Share contact</string>
+    <string name="block_contact">Block contact</string>
 </resources>
