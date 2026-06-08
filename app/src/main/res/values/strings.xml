@@ -138,4 +138,9 @@
     <string name="privacy_security">Privacy &amp; Security</string>
     <string name="notifications">Notifications</string>
     <string name="help_support">Help &amp; Support</string>
+
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+    <string name="search">Search</string>
+    <string name="more">More</string>
 </resources>
