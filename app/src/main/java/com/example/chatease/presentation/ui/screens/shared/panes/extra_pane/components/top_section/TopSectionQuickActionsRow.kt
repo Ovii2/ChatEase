@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,7 +37,7 @@ fun TopSectionQuickActionsRow(
     val items = QuickActionsDataSource.actions
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         items.forEach { item ->
@@ -51,6 +52,9 @@ fun TopSectionQuickActionsRow(
             }
 
             TopSectionQuickActionItem(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 4.dp),
                 item = item,
                 onClick = onClick
             )
@@ -72,7 +76,7 @@ fun TopSectionQuickActionItem(
                 color = MaterialTheme.colorScheme.surfaceContainer,
                 shape = RoundedCornerShape(15.dp)
             )
-            .size(80.dp)
+            .height(80.dp)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -105,7 +109,7 @@ fun TopSectionQuickActionItem(
 @Composable
 private fun TopSectionQuickActionsRowPreview() {
     ChatEaseTheme {
-        Scaffold() { paddingValues ->
+        Scaffold { paddingValues ->
             Row(modifier = Modifier.padding(paddingValues)) {
                 TopSectionQuickActionsRow(
                     onAudioClick = {},
