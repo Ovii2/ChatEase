@@ -50,7 +50,9 @@ fun RightPane(
     firstUnreadMessageId: String?,
     onMessagesVisible: () -> Unit,
     onReactionClick: (String, String) -> Unit,
-    onNavigateToChatInfo: () -> Unit
+    onNavigateToChatInfo: () -> Unit,
+    isPeekEnabled: Boolean,
+    onPeekClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -164,6 +166,8 @@ fun RightPane(
                 },
                 messageText = messageText,
                 onMessageTextChange = { messageText = it },
+                isPeekEnabled = isPeekEnabled,
+                onPeekClick = onPeekClick
             )
         }
     }
@@ -245,6 +249,8 @@ private fun RightPanePreview() {
                 onMessagesVisible = {},
                 onReactionClick = { _, _ -> },
                 onNavigateToChatInfo = {},
+                isPeekEnabled = false,
+                onPeekClick = {},
             )
         }
     }

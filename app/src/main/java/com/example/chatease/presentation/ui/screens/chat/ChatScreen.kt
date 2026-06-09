@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
@@ -19,6 +22,7 @@ fun ChatScreen(
 ) {
     val user by chatViewModel.user.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
+    var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -39,6 +43,8 @@ fun ChatScreen(
                 reaction = reaction
             )
         },
-        onNavigateToChatInfo = { onNavigateToChatInfo(conversationId) }
+        onNavigateToChatInfo = { onNavigateToChatInfo(conversationId) },
+        isPeekEnabled = isPeekEnabled,
+        onPeekClick = { isPeekEnabled = !isPeekEnabled }
     )
 }

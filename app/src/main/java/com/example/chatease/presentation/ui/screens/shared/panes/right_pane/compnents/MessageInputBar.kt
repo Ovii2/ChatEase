@@ -10,6 +10,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Mic
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -39,6 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.theme.successGreenDark
+import com.example.chatease.presentation.ui.theme.successGreenLight
 
 @Composable
 fun MessageInputBar(
@@ -46,11 +50,14 @@ fun MessageInputBar(
     onMicrophoneClick: () -> Unit,
     onSendMessageClick: (String) -> Unit,
     messageText: String,
-    onMessageTextChange: (String) -> Unit
+    onMessageTextChange: (String) -> Unit,
+    isPeekEnabled: Boolean,
+    onPeekClick: () -> Unit
 ) {
+    val activeTint = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
 
     OutlinedTextField(
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = 8.dp)
             .fillMaxWidth(),
         value = messageText,
@@ -77,6 +84,14 @@ fun MessageInputBar(
                 modifier = Modifier.padding(end = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                Icon(
+                    modifier = Modifier.clickable {
+                        onPeekClick()
+                    },
+                    imageVector = Icons.Outlined.Tune,
+                    contentDescription = null,
+                    tint = if (isPeekEnabled) activeTint else MaterialTheme.colorScheme.onSurface
+                )
                 AnimatedContent(
                     targetState = messageText.isNotEmpty(),
                     transitionSpec = {
@@ -126,6 +141,8 @@ private fun MessageInputBarPreview() {
                     onSendMessageClick = {},
                     messageText = "",
                     onMessageTextChange = {},
+                    isPeekEnabled = false,
+                    onPeekClick = {},
                 )
             }
         }
