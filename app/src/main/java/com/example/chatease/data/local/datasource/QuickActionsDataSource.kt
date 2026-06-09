@@ -15,7 +15,7 @@ object QuickActionsDataSource {
             label = R.string.audio
         ),
         QuickActionsItem(
-            icon = Icons.Outlined.Videocam,
+            image = R.drawable.ic_video_cam,
             label = R.string.video
         ),
         QuickActionsItem(

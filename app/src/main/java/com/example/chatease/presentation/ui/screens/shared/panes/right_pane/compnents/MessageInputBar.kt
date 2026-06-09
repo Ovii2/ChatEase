@@ -10,7 +10,6 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Mic
-import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -41,8 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
-import com.example.chatease.presentation.ui.theme.successGreenDark
-import com.example.chatease.presentation.ui.theme.successGreenLight
 
 @Composable
 fun MessageInputBar(
@@ -54,7 +52,6 @@ fun MessageInputBar(
     isPeekEnabled: Boolean,
     onPeekClick: () -> Unit
 ) {
-    val activeTint = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
 
     OutlinedTextField(
         modifier = modifier
@@ -88,9 +85,8 @@ fun MessageInputBar(
                     modifier = Modifier.clickable {
                         onPeekClick()
                     },
-                    imageVector = Icons.Outlined.Tune,
-                    contentDescription = null,
-                    tint = if (isPeekEnabled) activeTint else MaterialTheme.colorScheme.onSurface
+                    imageVector = if (isPeekEnabled) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                    contentDescription = null
                 )
                 AnimatedContent(
                     targetState = messageText.isNotEmpty(),
