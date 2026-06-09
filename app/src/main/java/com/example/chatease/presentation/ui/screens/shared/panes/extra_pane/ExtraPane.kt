@@ -31,7 +31,7 @@ import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.comp
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun ExtraPaneScreen(modifier: Modifier = Modifier) {
+fun ExtraPane(modifier: Modifier = Modifier) {
     var checked by rememberSaveable { mutableStateOf(false) }
     val iconSize = 26.dp
 
@@ -97,11 +97,11 @@ fun ExtraPaneScreen(modifier: Modifier = Modifier) {
     uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
-private fun ExtraPaneScreenPreview() {
+private fun ExtraPanePreview() {
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
-                ExtraPaneScreen()
+                ExtraPane()
             }
         }
     }
