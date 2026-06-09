@@ -20,6 +20,12 @@ sealed class Screens(val route: String) {
     data object AllRequests : Screens("all_requests")
     data object Calls : Screens("calls")
     data object MyProfile : Screens("my_profile")
+
+    data object ChatInfo : Screens("chat_info/{conversationId}") {
+        fun createRoute(conversationId: String): String {
+            return "chat_info/$conversationId"
+        }
+    }
 }
 
 @StringRes
@@ -35,5 +41,6 @@ fun Screens.toScreenName(): Int {
         Screens.AllRequests -> R.string.all_requests
         Screens.Calls -> R.string.calls
         Screens.MyProfile -> R.string.my_profile
+        Screens.ChatInfo -> R.string.chat_info
     }
 }
