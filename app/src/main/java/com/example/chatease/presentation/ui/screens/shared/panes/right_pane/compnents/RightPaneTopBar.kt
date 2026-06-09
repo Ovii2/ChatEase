@@ -52,7 +52,8 @@ import com.example.chatease.presentation.ui.theme.successGreenLight
 fun RightPaneTopBar(
     modifier: Modifier = Modifier,
     user: User,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToChatInfo: () -> Unit
 ) {
     val userPresenceStatus = when (user.status) {
         UserPresenceStatus.ONLINE -> R.string.online
@@ -129,7 +130,10 @@ fun RightPaneTopBar(
                         MoreOptionsDropDown(
                             expanded = expanded,
                             onDismiss = { expanded = false },
-                            onViewProfileClick = {},
+                            onChatInfoClick = {
+                                expanded = false
+                                onNavigateToChatInfo()
+                            },
                             onTogglePreviewClick = {},
                             onDeleteChatClick = {},
                             offset = DpOffset(
@@ -176,7 +180,8 @@ private fun RightPaneTopBarPreview() {
             ) {
                 RightPaneTopBar(
                     user = user,
-                    onBackClick = {}
+                    onBackClick = {},
+                    onNavigateToChatInfo = {},
                 )
             }
         }

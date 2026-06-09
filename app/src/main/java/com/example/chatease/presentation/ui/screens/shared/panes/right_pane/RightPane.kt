@@ -49,7 +49,8 @@ fun RightPane(
     onSendMessageClick: (String) -> Unit,
     firstUnreadMessageId: String?,
     onMessagesVisible: () -> Unit,
-    onReactionClick: (String, String) -> Unit
+    onReactionClick: (String, String) -> Unit,
+    onNavigateToChatInfo: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -120,7 +121,8 @@ fun RightPane(
         ) {
             RightPaneTopBar(
                 user = user,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onNavigateToChatInfo = onNavigateToChatInfo,
             )
             if (showNewMessagesButton) {
                 NewMessagesButton(
@@ -241,7 +243,8 @@ private fun RightPanePreview() {
                 onSendMessageClick = {},
                 firstUnreadMessageId = "1",
                 onMessagesVisible = {},
-                onReactionClick = { _, _ -> }
+                onReactionClick = { _, _ -> },
+                onNavigateToChatInfo = {},
             )
         }
     }

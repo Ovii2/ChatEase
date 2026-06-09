@@ -14,7 +14,8 @@ fun ChatScreen(
     modifier: Modifier = Modifier,
     chatViewModel: ChatViewModel = hiltViewModel(),
     conversationId: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToChatInfo: (String) -> Unit,
 ) {
     val user by chatViewModel.user.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
@@ -37,6 +38,7 @@ fun ChatScreen(
                 messageId = messageId,
                 reaction = reaction
             )
-        }
+        },
+        onNavigateToChatInfo = { onNavigateToChatInfo(conversationId) }
     )
 }
