@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,10 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -34,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
@@ -68,8 +64,6 @@ fun RightPaneTopBar(
     }
 
     val iconSize = 21.dp
-
-    var expanded by rememberSaveable { mutableStateOf(false) }
 
     TopAppBar(
         title = {
@@ -112,34 +106,25 @@ fun RightPaneTopBar(
                     Icon(
                         modifier = Modifier.size(iconSize),
                         painter = painterResource(R.drawable.ic_phone),
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
                     )
                     Icon(
                         modifier = Modifier.size(iconSize),
                         painter = painterResource(R.drawable.ic_video_cam),
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
                     )
                     Box {
                         Icon(
                             modifier = Modifier
                                 .size(iconSize)
-                                .clickable { expanded = true },
-                            painter = painterResource(R.drawable.ic_more_vert),
-                            contentDescription = null
-                        )
-                        MoreOptionsDropDown(
-                            expanded = expanded,
-                            onDismiss = { expanded = false },
-                            onChatInfoClick = {
-                                expanded = false
-                                onNavigateToChatInfo()
-                            },
-                            onTogglePreviewClick = {},
-                            onDeleteChatClick = {},
-                            offset = DpOffset(
-                                x = (-10).dp,
-                                y = (8).dp
-                            )
+                                .clickable {
+                                    onNavigateToChatInfo()
+                                },
+                            imageVector = Icons.Default.Info,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
