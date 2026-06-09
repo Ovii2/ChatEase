@@ -33,15 +33,17 @@ fun MoreOptionsDropDown(
     modifier: Modifier = Modifier,
     expanded: Boolean,
     onDismiss: () -> Unit,
-    onViewProfileClick: () -> Unit,
+    onChatInfoClick: () -> Unit,
     onTogglePreviewClick: () -> Unit,
     onDeleteChatClick: () -> Unit,
     offset: DpOffset = DpOffset(0.dp, 0.dp)
 ) {
     var isPreviewEnabled by rememberSaveable { mutableStateOf(false) }
     val greenColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
-    val previewStatusColor = if (isPreviewEnabled) greenColor else MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
-    val previewStatusText = if (isPreviewEnabled) stringResource(R.string.on) else stringResource(R.string.off)
+    val previewStatusColor =
+        if (isPreviewEnabled) greenColor else MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+    val previewStatusText =
+        if (isPreviewEnabled) stringResource(R.string.on) else stringResource(R.string.off)
 
     DropdownMenu(
         modifier = modifier,
@@ -50,8 +52,8 @@ fun MoreOptionsDropDown(
         offset = offset
     ) {
         DropdownMenuItem(
-            text = { Text(text = stringResource(R.string.view_profile)) },
-            onClick = onViewProfileClick
+            text = { Text(text = stringResource(R.string.view_info)) },
+            onClick = onChatInfoClick
         )
         DropdownMenuItem(
             text = {
@@ -95,7 +97,7 @@ private fun MoreOptionsDropDownPreview() {
                 MoreOptionsDropDown(
                     expanded = true,
                     onDismiss = {},
-                    onViewProfileClick = {},
+                    onChatInfoClick = {},
                     onTogglePreviewClick = {},
                     onDeleteChatClick = {},
                 )
