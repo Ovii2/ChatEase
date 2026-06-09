@@ -28,13 +28,6 @@ fun ExtraPaneTopSection(
     modifier: Modifier = Modifier,
     user: User
 ) {
-    val user = User(
-        uid = "",
-        fullName = "Test Test",
-        email = "test@email.com",
-        imageUrl = null,
-        status = UserPresenceStatus.ONLINE
-    )
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
