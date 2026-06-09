@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.chatease.presentation.ui.screens.all_requests.AllRequestsScreen
 import com.example.chatease.presentation.ui.screens.chat.ChatScreen
+import com.example.chatease.presentation.ui.screens.chat_info.ChatInfoScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
 import com.example.chatease.presentation.ui.screens.home.HomeScreen
 import com.example.chatease.presentation.ui.screens.login.LoginScreen
@@ -105,6 +106,15 @@ fun AppNavHost(
             ChatScreen(
                 conversationId = conversationId,
                 onBackClick = { navController.popBackStack() },
+                onNavigateToChatInfo = {
+                    navController.navigate(
+                        Screens.ChatInfo.createRoute(
+                            conversationId
+                        )
+                    ) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.NewChat.route) {
@@ -154,6 +164,13 @@ fun AppNavHost(
                     }
                 },
                 onThemeToggleClick = onThemeToggleClick,
+            )
+        }
+        composable(route = Screens.ChatInfo.route) {
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+            ChatInfoScreen(
+                conversationId = conversationId,
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
