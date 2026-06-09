@@ -60,6 +60,7 @@
     <string name="calls">Calls</string>
     <string name="my_profile">My Profile</string>
     <string name="new_chat">New chat</string>
+    <string name="chat_info">Chat info</string>
 
     <string name="online">Online</string>
     <string name="away">Away</string>
@@ -69,6 +70,7 @@
     <string name="type_a_message">Type a message…</string>
 
     <string name="view_profile">View profile</string>
+    <string name="view_info">View info</string>
     <string name="logout">Logout</string>
 
     <string name="frequently_contacted">Frequently contacted</string>
