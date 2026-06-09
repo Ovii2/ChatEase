@@ -98,7 +98,9 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
-                currentRoute = currentRoute
+                currentRoute = currentRoute,
+                onBackClick = { navController.popBackStack() },
+                onNavigateToChatInfo = {}
             )
         }
         composable(route = Screens.Chat.route) {
