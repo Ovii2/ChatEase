@@ -31,17 +31,12 @@ import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.comp
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun ExtraPane(modifier: Modifier = Modifier) {
+fun ExtraPane(
+    modifier: Modifier = Modifier,
+    user: User
+) {
     var checked by rememberSaveable { mutableStateOf(false) }
     val iconSize = 26.dp
-
-    val user = User(
-        uid = "",
-        fullName = "Test Test",
-        email = "test@email.com",
-        imageUrl = null,
-        status = UserPresenceStatus.ONLINE
-    )
 
     val mediaItems = List(2) { index ->
         MediaItem(
@@ -51,42 +46,40 @@ fun ExtraPane(modifier: Modifier = Modifier) {
             type = MediaType.IMAGE
         )
     }
-    Scaffold { paddingValues ->
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Column(
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .widthIn(max = 500.dp)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = modifier
-                    .verticalScroll(rememberScrollState())
-                    .widthIn(max = 500.dp)
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ExtraPaneTopSection(
-                    user = user
-                )
-                ExtraPaneAboutSection()
-                if (mediaItems.isNotEmpty()) {
-                    ExtraPaneMediaSection(
-                        items = mediaItems
-                    )
-                }
-                ExtraPaneNotificationsSection(
-                    checked = checked,
-                    onCheckedChange = { checked = it },
-                    iconSize = iconSize,
-                )
-                ExtraPaneMoreSection(
-                    iconSize = iconSize,
-                    onViewContactClick = {},
-                    onShareContactClick = {},
-                    onBlockContactClick = {},
-                    onDeleteContactClick = {}
+            ExtraPaneTopSection(
+                user = user
+            )
+            ExtraPaneAboutSection()
+            if (mediaItems.isNotEmpty()) {
+                ExtraPaneMediaSection(
+                    items = mediaItems
                 )
             }
+            ExtraPaneNotificationsSection(
+                checked = checked,
+                onCheckedChange = { checked = it },
+                iconSize = iconSize,
+            )
+            ExtraPaneMoreSection(
+                iconSize = iconSize,
+                onViewContactClick = {},
+                onShareContactClick = {},
+                onBlockContactClick = {},
+                onDeleteContactClick = {}
+            )
         }
     }
 }
@@ -98,10 +91,20 @@ fun ExtraPane(modifier: Modifier = Modifier) {
 )
 @Composable
 private fun ExtraPanePreview() {
+    val user = User(
+        uid = "",
+        fullName = "Test Test",
+        email = "test@email.com",
+        imageUrl = null,
+        status = UserPresenceStatus.ONLINE
+    )
+
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
-                ExtraPane()
+                ExtraPane(
+                    user = user
+                )
             }
         }
     }
