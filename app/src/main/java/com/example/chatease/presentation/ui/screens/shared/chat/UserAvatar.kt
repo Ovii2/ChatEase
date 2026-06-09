@@ -79,7 +79,7 @@ fun UserAvatar(
                     text = initials,
                     style = MaterialTheme.typography.headlineSmall.copy(fontSize = initialsFontSize),
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.surface
+                    color = Color.White
                 )
             }
         } else {
