@@ -27,6 +27,12 @@ class ChatViewModel @Inject constructor(
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages = _messages.asStateFlow()
 
+    private val _isConversationDeleted = MutableStateFlow(false)
+    val isConversationDeleted = _isConversationDeleted.asStateFlow()
+
+    private val _isConversationCreator = MutableStateFlow(false)
+    val isConversationCreator = _isConversationCreator.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -39,11 +45,14 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val conversation = conversationRepository.getConversation(conversationId)
+                val loggedInUserId = auth.currentUser?.uid ?: return@launch
+                _isConversationCreator.value = conversation.creatorId == loggedInUserId
                 val otherUserId = conversation.participantIds.first {
-                    it != currentUserId
+                    it != loggedInUserId
                 }
                 observeUser(otherUserId)
                 observeMessages(conversationId)
+                observeConversation(conversationId)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", e.message ?: "Failed to load conversation")
             }
@@ -92,6 +101,28 @@ class ChatViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("ChatViewModel", e.message ?: "Failed to add reaction to message")
             }
+        }
+    }
+
+    fun deleteConversation(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                conversationRepository.deleteConversation(conversationId)
+                _isConversationDeleted.value = true
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", e.message ?: "Failed to delete conversation")
+            }
+        }
+    }
+
+    private fun observeConversation(conversationId: String) {
+        viewModelScope.launch {
+            conversationRepository.observeConversation(conversationId)
+                .collect { conversation ->
+                    if (conversation == null) {
+                        _isConversationDeleted.value = true
+                    }
+                }
         }
     }
 
