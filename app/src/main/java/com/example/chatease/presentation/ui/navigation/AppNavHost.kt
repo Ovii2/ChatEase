@@ -117,6 +117,14 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToHomeScreen = {
+                    navController.navigate(Screens.Home.route) {
+                        popUpTo(Screens.Home.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.NewChat.route) {
@@ -172,7 +180,15 @@ fun AppNavHost(
             val conversationId = it.arguments?.getString("conversationId") ?: return@composable
             ChatInfoScreen(
                 conversationId = conversationId,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onNavigateToHomeScreen = {
+                    navController.navigate(Screens.Home.route) {
+                        popUpTo(Screens.Home.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
     }
