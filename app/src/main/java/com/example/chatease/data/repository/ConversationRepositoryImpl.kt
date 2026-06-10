@@ -123,6 +123,8 @@ class ConversationRepositoryImpl(
                 }
                 val conversations = snapshot?.documents?.mapNotNull { document ->
                     document.toObject(ConversationDto::class.java)?.toDomain()
+                }?.filter { conversation ->
+                    conversation.lastMessage.isNotBlank()
                 } ?: emptyList()
 
                 trySend(conversations)
@@ -291,6 +293,14 @@ class ConversationRepositoryImpl(
             .document(conversationId)
             .delete()
             .await()
+    }
+
+    override suspend fun deleteIfEmptyConversation(conversationId: String) {
+        val messages = getMessages(conversationId)
+
+        if (messages.isEmpty()) {
+            deleteConversation(conversationId)
+        }
     }
 
 

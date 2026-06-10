@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.chat
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,11 +37,19 @@ fun ChatScreen(
         }
     }
 
+    BackHandler {
+        chatViewModel.deleteConversationIfEmpty(conversationId)
+        onBackClick()
+    }
+
     RightPane(
         user = user,
         messages = messages,
         currentUserId = chatViewModel.currentUserId,
-        onBackClick = onBackClick,
+        onBackClick = {
+            chatViewModel.deleteConversationIfEmpty(conversationId)
+            onBackClick()
+        },
         onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
         firstUnreadMessageId = chatViewModel.firstUnreadMessageId,
         onMessagesVisible = { chatViewModel.markMessagesAsSeen(conversationId) },

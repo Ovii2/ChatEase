@@ -35,4 +35,6 @@ interface ConversationRepository {
 
     suspend fun deleteConversation(conversationId: String)
 
+    suspend fun deleteIfEmptyConversation(conversationId: String)
+
 }
