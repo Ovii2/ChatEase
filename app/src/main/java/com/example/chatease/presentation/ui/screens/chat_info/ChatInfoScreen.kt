@@ -8,30 +8,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
+import com.example.chatease.domain.model.enums.AlertDialogType
+import com.example.chatease.presentation.ui.screens.shared.chat.CommonAlertDialog
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.ChatInfoViewModel
+import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 
 @Composable
 fun ChatInfoScreen(
     modifier: Modifier = Modifier,
     conversationId: String,
     chatInfoViewModel: ChatInfoViewModel = hiltViewModel(),
-    onBackClick: () -> Unit
+    chatViewModel: ChatViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
+    onNavigateToHomeScreen: () -> Unit
 ) {
     val user by chatInfoViewModel.user.collectAsState()
+    var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
+    val isConversationCreator by chatInfoViewModel.isConversationCreator.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatInfoViewModel.loadConversation(conversationId)
     }
-
 
     Scaffold(topBar = {
         CommonTopBar(
@@ -44,7 +53,24 @@ fun ChatInfoScreen(
                 .padding(paddingValues)
                 .padding(vertical = 8.dp, horizontal = 12.dp),
             user = user,
+            onDeleteConversationClick = { showDeleteDialog = true },
+            isConversationCreator = isConversationCreator,
         )
+        if (showDeleteDialog) {
+            CommonAlertDialog(
+                title = R.string.confirm_chat_delete_title,
+                bodyText = R.string.confirm_chat_delete_body,
+                dismissButtonText = R.string.dismiss_btn,
+                acceptButtonText = R.string.delete_chat,
+                onDismiss = { showDeleteDialog = false },
+                onAccept = {
+                    showDeleteDialog = false
+                    chatViewModel.deleteConversation(conversationId)
+                    onNavigateToHomeScreen()
+                },
+                alertDialogType = AlertDialogType.CONFIRMATION
+            )
+        }
     }
 }
 
@@ -61,6 +87,7 @@ private fun ChatInfoScreenPreview() {
                 ChatInfoScreen(
                     conversationId = "1",
                     onBackClick = {},
+                    onNavigateToHomeScreen = {},
                 )
             }
         }

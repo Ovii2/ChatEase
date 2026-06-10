@@ -33,7 +33,9 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun ExtraPane(
     modifier: Modifier = Modifier,
-    user: User
+    user: User,
+    onDeleteConversationClick: () -> Unit,
+    isConversationCreator: Boolean
 ) {
     var checked by rememberSaveable { mutableStateOf(false) }
     val iconSize = 26.dp
@@ -78,7 +80,8 @@ fun ExtraPane(
                 onViewContactClick = {},
                 onShareContactClick = {},
                 onBlockContactClick = {},
-                onDeleteContactClick = {}
+                onDeleteConversationClick = onDeleteConversationClick,
+                isConversationCreator = isConversationCreator,
             )
         }
     }
@@ -103,7 +106,9 @@ private fun ExtraPanePreview() {
         Scaffold { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
                 ExtraPane(
-                    user = user
+                    user = user,
+                    onDeleteConversationClick = {},
+                    isConversationCreator = false,
                 )
             }
         }

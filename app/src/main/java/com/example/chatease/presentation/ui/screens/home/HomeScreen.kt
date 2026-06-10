@@ -139,6 +139,8 @@ fun HomeScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val isConversationCreator by chatViewModel.isConversationCreator.collectAsState()
+
     LaunchedEffect(selectedConversationId) {
         selectedConversationId?.let { conversationId ->
             chatViewModel.loadConversation(conversationId)
@@ -312,7 +314,9 @@ fun HomeScreen(
                                 extraPane = {
                                     AnimatedPane {
                                         ExtraPane(
-                                            user = state.user
+                                            user = state.user,
+                                            onDeleteConversationClick = {},
+                                            isConversationCreator = isConversationCreator,
                                         )
                                     }
                                 }
