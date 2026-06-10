@@ -155,4 +155,7 @@
     <string name="block_contact">Block contact</string>
     <string name="mute_notifications">Mute notifications</string>
     <string name="unmute_notifications">Unmute notifications</string>
+
+    <string name="confirm_chat_delete_title">Delete conversation</string>
+    <string name="confirm_chat_delete_body">Are you sure you want to delete this conversation?</string>
 </resources>
