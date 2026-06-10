@@ -23,11 +23,15 @@ class ChatInfoViewModel @Inject constructor(
     private val _user = MutableStateFlow(User())
     val user = _user.asStateFlow()
 
+    private val _isConversationCreator = MutableStateFlow(false)
+    val isConversationCreator = _isConversationCreator.asStateFlow()
+
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
             try {
                 val currentUserId = auth.currentUser?.uid ?: return@launch
                 val conversation = conversationRepository.getConversation(conversationId)
+                _isConversationCreator.value = conversation.creatorId == currentUserId
                 val otherUserId = conversation.participantIds.first { it != currentUserId }
                 observeUser(otherUserId)
             } catch (e: Exception) {

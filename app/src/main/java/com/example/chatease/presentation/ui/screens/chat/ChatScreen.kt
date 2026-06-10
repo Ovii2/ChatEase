@@ -19,13 +19,21 @@ fun ChatScreen(
     conversationId: String,
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
+    onNavigateToHomeScreen: () -> Unit
 ) {
     val user by chatViewModel.user.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
+    val isConversationDeleted by chatViewModel.isConversationDeleted.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
+    }
+
+    LaunchedEffect(isConversationDeleted) {
+        if (isConversationDeleted) {
+            onNavigateToHomeScreen()
+        }
     }
 
     RightPane(

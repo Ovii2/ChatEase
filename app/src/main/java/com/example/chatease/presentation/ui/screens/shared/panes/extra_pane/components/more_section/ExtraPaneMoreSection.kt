@@ -30,19 +30,22 @@ fun ExtraPaneMoreSection(
     onViewContactClick: () -> Unit,
     onShareContactClick: () -> Unit,
     onBlockContactClick: () -> Unit,
-    onDeleteContactClick: () -> Unit
+    onDeleteConversationClick: () -> Unit,
+    isConversationCreator: Boolean,
 ) {
     val actions = ContactActionsDataSource.actions
+    val visibleActions =
+        actions.filter { action -> action.label != R.string.delete_chat || isConversationCreator }
 
     SectionContainer(
         sectionTitle = R.string.more,
         content = {
-            actions.forEach { action ->
+            visibleActions.forEach { action ->
                 val onClick = when (action.label) {
                     R.string.view_contact -> onViewContactClick
                     R.string.share_contact -> onShareContactClick
                     R.string.block_contact -> onBlockContactClick
-                    R.string.delete_chat -> onDeleteContactClick
+                    R.string.delete_chat -> onDeleteConversationClick
                     else -> {
                         {}
                     }
@@ -103,7 +106,8 @@ private fun ExtraPaneMoreSectionPreview() {
                     onViewContactClick = {},
                     onShareContactClick = {},
                     onBlockContactClick = {},
-                    onDeleteContactClick = {},
+                    onDeleteConversationClick = {},
+                    isConversationCreator = false,
                 )
             }
         }
