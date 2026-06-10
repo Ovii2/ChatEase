@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun ChatReactionRow(
@@ -50,7 +51,7 @@ fun ChatReactionRow(
 
     LaunchedEffect(Unit) {
         reactions.indices.forEach { index ->
-            delay(30)
+            delay(30.milliseconds)
 
             visibleCount = index + 1
         }

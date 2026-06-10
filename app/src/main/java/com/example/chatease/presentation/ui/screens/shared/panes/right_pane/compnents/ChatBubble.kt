@@ -211,7 +211,8 @@ private fun ChatBubblePreview() {
         seenBy = listOf("user_1"),
         reactions = mapOf(
             "user_1" to "\uD83E\uDD70"
-    ))
+        )
+    )
     ChatEaseTheme {
         Box(
             modifier = Modifier.fillMaxSize(),

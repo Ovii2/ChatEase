@@ -112,6 +112,7 @@ fun MessagesList(
                             onDismissReactions = { selectedReactionMessageId = null },
                             onReactionClick = { messageId, reaction ->
                                 onReactionClick(messageId, reaction)
+                                selectedReactionMessageId = null
                             },
                         )
                     }
@@ -159,7 +160,7 @@ private fun MessagesListPreview() {
             text = LoremIpsum(15).values.first(),
             timeStamp = System.currentTimeMillis(),
             seenBy = listOf("user_1"),
-            reactions  = mapOf(
+            reactions = mapOf(
                 "user_1" to "\uD83E\uDD70",
                 "user_2" to "\uD83E\uDD70"
             )
@@ -171,7 +172,7 @@ private fun MessagesListPreview() {
             text = LoremIpsum(20).values.first(),
             timeStamp = System.currentTimeMillis(),
             seenBy = listOf("user_1"),
-            reactions  = mapOf(
+            reactions = mapOf(
                 "user_1" to "\uD83E\uDD70",
                 "user_2" to "\uD83E\uDD70"
             )
