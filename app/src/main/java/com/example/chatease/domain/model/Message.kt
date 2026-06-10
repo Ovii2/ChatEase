@@ -1,5 +1,7 @@
 package com.example.chatease.domain.model
 
+import com.example.chatease.domain.model.enums.MessageType
+
 data class Message(
     val messageId: String = "",
     val conversationId: String = "",
@@ -7,5 +9,6 @@ data class Message(
     val text: String = "",
     val timeStamp: Long = 0L,
     val seenBy: List<String> = emptyList(),
-    val reactions: Map<String, String> = emptyMap()
+    val reactions: Map<String, String> = emptyMap(),
+    val messageType: MessageType = MessageType.TEXT
 )

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -68,7 +69,8 @@ class ChatViewModel @Inject constructor(
                     senderId = currentUserId,
                     text = text.trim(),
                     timeStamp = System.currentTimeMillis(),
-                    seenBy = listOf(currentUserId)
+                    seenBy = listOf(currentUserId),
+                    messageType = MessageType.TEXT
                 )
                 conversationRepository.sendMessage(message)
             } catch (e: Exception) {

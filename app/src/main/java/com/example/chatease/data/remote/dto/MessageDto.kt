@@ -1,5 +1,7 @@
 package com.example.chatease.data.remote.dto
 
+import com.example.chatease.domain.model.enums.MessageType
+
 data class MessageDto(
     val messageId: String = "",
     val conversationId: String = "",
@@ -7,5 +9,6 @@ data class MessageDto(
     val text: String = "",
     val timeStamp: Long = 0L,
     val seenBy: List<String> = emptyList(),
-    val reactions: Map<String, String> = emptyMap()
+    val reactions: Map<String, String> = emptyMap(),
+    val messageType: MessageType = MessageType.TEXT
 )
