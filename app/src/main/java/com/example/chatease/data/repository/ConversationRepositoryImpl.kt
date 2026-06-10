@@ -6,6 +6,7 @@ import com.example.chatease.data.remote.dto.MessageDto
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.repository.ConversationRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,7 +16,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
-class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : ConversationRepository {
+class ConversationRepositoryImpl(
+    val firestore: FirebaseFirestore,
+    val auth: FirebaseAuth
+) :
+    ConversationRepository {
 
     companion object {
         private const val CONVERSATIONS = "conversations"
@@ -66,6 +71,7 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
     }
 
     override suspend fun createConversation(participantIds: List<String>): String {
+        val creatorId = auth.currentUser?.uid ?: ""
         val conversationId = firestore
             .collection(CONVERSATIONS)
             .document()
@@ -73,6 +79,7 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
 
         val conversationDto = ConversationDto(
             id = conversationId,
+            creatorId = creatorId,
             participantIds = participantIds,
             lastMessage = "",
             timestamp = System.currentTimeMillis(),
@@ -119,6 +126,28 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
                 } ?: emptyList()
 
                 trySend(conversations)
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+    override fun observeConversation(conversationId: String): Flow<Conversation?> = callbackFlow {
+        val listener = firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                if ((snapshot == null) || !snapshot.exists()) {
+                    trySend(null)
+                    return@addSnapshotListener
+                }
+                val conversation = snapshot.toObject(ConversationDto::class.java)?.toDomain()
+
+                trySend(conversation)
             }
         awaitClose {
             listener.remove()
@@ -246,6 +275,21 @@ class ConversationRepositoryImpl(val firestore: FirebaseFirestore) : Conversatio
 
         documentSnapshot.reference
             .update(REACTIONS, updatedReactions)
+            .await()
+    }
+
+    override suspend fun deleteConversation(conversationId: String) {
+        val currentUserId = auth.currentUser?.uid ?: return
+        val conversation = getConversation(conversationId)
+
+        if (conversation.creatorId != currentUserId) {
+            return
+        }
+
+        firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .delete()
             .await()
     }
 

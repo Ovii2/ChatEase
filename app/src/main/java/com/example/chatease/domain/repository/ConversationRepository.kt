@@ -18,6 +18,8 @@ interface ConversationRepository {
 
     fun observeUserConversations(userId: String): Flow<List<Conversation>>
 
+    fun observeConversation(conversationId: String): Flow<Conversation?>
+
     suspend fun sendMessage(message: Message)
 
     fun observeMessages(conversationId: String): Flow<List<Message>>
@@ -30,5 +32,7 @@ interface ConversationRepository {
         userId: String,
         reaction: String
     )
+
+    suspend fun deleteConversation(conversationId: String)
 
 }
