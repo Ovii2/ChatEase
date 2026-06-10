@@ -63,7 +63,7 @@ fun RightPaneTopBar(
         UserPresenceStatus.OFFLINE -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
     }
 
-    val iconSize = 21.dp
+    val iconSize = 26.dp
 
     TopAppBar(
         title = {
