@@ -59,7 +59,7 @@ fun RightPane(
     val listState = rememberLazyListState()
     val isNearBottom by derivedStateOf {
         val firstVisibleItemIndex = listState.firstVisibleItemIndex
-        messages.isNotEmpty() && firstVisibleItemIndex == 0
+        messages.isNotEmpty() && firstVisibleItemIndex <= 1
     }
     val firstIndex = 0
 
