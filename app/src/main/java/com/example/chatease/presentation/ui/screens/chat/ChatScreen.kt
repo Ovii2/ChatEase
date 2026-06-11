@@ -39,6 +39,7 @@ fun ChatScreen(
     }
 
     BackHandler {
+        chatViewModel.markMessagesAsSeen(conversationId)
         chatViewModel.updateTypingStatus(conversationId, false)
         chatViewModel.deleteConversationIfEmpty(conversationId)
         onBackClick()
@@ -49,7 +50,9 @@ fun ChatScreen(
         messages = messages,
         currentUserId = chatViewModel.currentUserId,
         onBackClick = {
+            chatViewModel.markMessagesAsSeen(conversationId)
             chatViewModel.deleteConversationIfEmpty(conversationId)
+            chatViewModel.updateTypingStatus(conversationId, false)
             onBackClick()
         },
         onSendMessageClick = {

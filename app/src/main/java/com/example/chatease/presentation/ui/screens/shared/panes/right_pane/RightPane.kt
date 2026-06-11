@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,16 +73,33 @@ fun RightPane(
     }
     val firstIndex = 0
 
-    var hasInitialScrollDone by rememberSaveable { mutableStateOf(false) }
+    var hasInitialScrollDone by remember { mutableStateOf(false) }
     var newMessageCount by rememberSaveable { mutableIntStateOf(0) }
     var previousMessageCount by rememberSaveable { mutableIntStateOf(messages.size) }
     val showNewMessagesButton = newMessageCount > 0
 
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty() && !hasInitialScrollDone) {
-            listState.scrollToItem(firstIndex)
+    var hasUserScrolledAfterOpen by remember { mutableStateOf(false) }
+    val isUserDragging by listState.interactionSource.collectIsDraggedAsState()
+
+    var shouldShowUnreadDivider by remember { mutableStateOf(false) }
+
+    LaunchedEffect(messages.size, firstUnreadMessageId) {
+        if (messages.isNotEmpty() && !hasInitialScrollDone && firstUnreadMessageId != null) {
+            val reversedMessages = messages.reversed()
+
+            val unreadIndex = reversedMessages.indexOfFirst { message ->
+                message.messageId == firstUnreadMessageId
+            }
+
+            if (unreadIndex != -1) {
+                shouldShowUnreadDivider = true
+                listState.scrollToItem(unreadIndex)
+            } else {
+                listState.scrollToItem(firstIndex)
+            }
+
             hasInitialScrollDone = true
             newMessageCount = 0
             previousMessageCount = messages.size
@@ -108,11 +126,23 @@ fun RightPane(
         }
     }
 
-    LaunchedEffect(isNearBottom, messages.size) {
-        if (isNearBottom) {
+    LaunchedEffect(
+        isNearBottom,
+        messages.size,
+        hasUserScrolledAfterOpen
+    ) {
+        if (isNearBottom && hasUserScrolledAfterOpen) {
+            shouldShowUnreadDivider = false
             onMessagesVisible()
         }
     }
+
+    LaunchedEffect(isUserDragging) {
+        if (isUserDragging) {
+            hasUserScrolledAfterOpen = true
+        }
+    }
+
 
     val firstUserName = user.fullName.substringBefore(" ")
     val secondUsername = user.fullName.substringBefore(" ")
@@ -162,7 +192,7 @@ fun RightPane(
                 currentUserId = currentUserId,
                 user = user,
                 listState = listState,
-                firstUnreadMessageId = if (isNearBottom) null else firstUnreadMessageId,
+                firstUnreadMessageId = if (shouldShowUnreadDivider) firstUnreadMessageId else null,
                 onReactionClick = { messageId, reaction ->
                     onReactionClick(messageId, reaction)
                 },
@@ -197,7 +227,11 @@ fun RightPane(
                     updateTypingStatus(it)
                 },
                 isPeekEnabled = isPeekEnabled,
-                onPeekClick = onPeekClick
+                onPeekClick = onPeekClick,
+                onInputFocused = {
+                    shouldShowUnreadDivider = false
+                    onMessagesVisible()
+                },
             )
         }
     }

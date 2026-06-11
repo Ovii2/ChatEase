@@ -78,9 +78,7 @@ fun MessagesList(
                 val isMiddleInGroup = !isFirstInGroup && !isLastInGroup
 
                 val isSentByCurrentUser = message.senderId == currentUserId
-                if (message.messageId == firstUnreadMessageId) {
-                    UnreadMessagesDivider()
-                }
+
 
                 Row(
                     modifier = Modifier
@@ -116,6 +114,9 @@ fun MessagesList(
                             },
                         )
                     }
+                }
+                if (message.messageId == firstUnreadMessageId) {
+                    UnreadMessagesDivider()
                 }
                 if (previousVisibleMessage == null || !isSameDay(
                         message.timeStamp,

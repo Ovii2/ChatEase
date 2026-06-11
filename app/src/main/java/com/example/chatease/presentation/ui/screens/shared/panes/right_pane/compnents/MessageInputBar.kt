@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,13 +51,19 @@ fun MessageInputBar(
     messageText: String,
     onMessageTextChange: (String) -> Unit,
     isPeekEnabled: Boolean,
-    onPeekClick: () -> Unit
+    onPeekClick: () -> Unit,
+    onInputFocused: () -> Unit
 ) {
 
     OutlinedTextField(
         modifier = modifier
             .padding(bottom = 8.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .onFocusChanged { focusState ->
+                if (focusState.isFocused) {
+                    onInputFocused()
+                }
+            },
         value = messageText,
         onValueChange = onMessageTextChange,
         placeholder = { Text(text = stringResource(R.string.type_a_message)) },
@@ -139,6 +146,7 @@ private fun MessageInputBarPreview() {
                     onMessageTextChange = {},
                     isPeekEnabled = false,
                     onPeekClick = {},
+                    onInputFocused = {},
                 )
             }
         }
