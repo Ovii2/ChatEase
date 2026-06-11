@@ -162,4 +162,12 @@
     <string name="one_is_typing">%1$s is typing…</string>
     <string name="two_are_typing">%1$s and %2$s are typing…</string>
     <string name="many_are_typing">%1$d people are typing…</string>
+
+    <string name="profile">Profile</string>
+    <string name="not_connected">Not connected</string>
+    <string name="send_request">Send Request</string>
+    <string name="view_photo">View Photo</string>
+    <string name="block">Block</string>
+    <string name="report">Report</string>
+    <string name="message">Message</string>
 </resources>
