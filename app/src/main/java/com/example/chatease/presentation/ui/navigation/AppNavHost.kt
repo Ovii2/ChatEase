@@ -15,6 +15,7 @@ import com.example.chatease.presentation.ui.screens.home.HomeScreen
 import com.example.chatease.presentation.ui.screens.login.LoginScreen
 import com.example.chatease.presentation.ui.screens.my_profile.MyProfileScreen
 import com.example.chatease.presentation.ui.screens.new_chat.NewChatScreen
+import com.example.chatease.presentation.ui.screens.other_user_profile.OtherUserProfileScreen
 import com.example.chatease.presentation.ui.screens.sent_requests.SentRequestsScreen
 import com.example.chatease.presentation.ui.screens.sign_up.SignUpScreen
 import com.google.firebase.Firebase
@@ -189,6 +190,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+            )
+        }
+        composable(route = Screens.OtherUserProfile.route) {
+            OtherUserProfileScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
