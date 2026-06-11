@@ -144,7 +144,7 @@ fun RightPane(
                 currentUserId = currentUserId,
                 user = user,
                 listState = listState,
-                firstUnreadMessageId = firstUnreadMessageId,
+                firstUnreadMessageId = if (isNearBottom) null else firstUnreadMessageId,
                 onReactionClick = { messageId, reaction ->
                     onReactionClick(messageId, reaction)
                 },

@@ -39,7 +39,7 @@ class ChatViewModel @Inject constructor(
 
     val firstUnreadMessageId: String?
         get() = _messages.value.firstOrNull { message ->
-            currentUserId !in message.seenBy
+            currentUserId !in message.seenBy && message.senderId != currentUserId
         }?.messageId
 
     fun loadConversation(conversationId: String) {
