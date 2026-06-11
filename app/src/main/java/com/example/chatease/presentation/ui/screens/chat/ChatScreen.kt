@@ -26,6 +26,7 @@ fun ChatScreen(
     val messages by chatViewModel.messages.collectAsState()
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
     val isConversationDeleted by chatViewModel.isConversationDeleted.collectAsState()
+    val typingUserIds by chatViewModel.typingUserIds.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -38,6 +39,7 @@ fun ChatScreen(
     }
 
     BackHandler {
+        chatViewModel.updateTypingStatus(conversationId, false)
         chatViewModel.deleteConversationIfEmpty(conversationId)
         onBackClick()
     }
@@ -50,7 +52,13 @@ fun ChatScreen(
             chatViewModel.deleteConversationIfEmpty(conversationId)
             onBackClick()
         },
-        onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
+        onSendMessageClick = {
+            chatViewModel.sendMessage(conversationId, it)
+            chatViewModel.updateTypingStatus(
+                conversationId = conversationId,
+                isTyping = false
+            )
+        },
         firstUnreadMessageId = chatViewModel.firstUnreadMessageId,
         onMessagesVisible = { chatViewModel.markMessagesAsSeen(conversationId) },
         onReactionClick = { messageId, reaction ->
@@ -62,6 +70,13 @@ fun ChatScreen(
         },
         onNavigateToChatInfo = { onNavigateToChatInfo(conversationId) },
         isPeekEnabled = isPeekEnabled,
-        onPeekClick = { isPeekEnabled = !isPeekEnabled }
+        onPeekClick = { isPeekEnabled = !isPeekEnabled },
+        typingUserIds = typingUserIds,
+        updateTypingStatus = {
+            chatViewModel.updateTypingStatus(
+                conversationId = conversationId,
+                isTyping = it.isNotBlank()
+            )
+        },
     )
 }

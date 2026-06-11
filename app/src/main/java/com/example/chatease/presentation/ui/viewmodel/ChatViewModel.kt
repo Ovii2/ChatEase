@@ -34,6 +34,9 @@ class ChatViewModel @Inject constructor(
     private val _isConversationCreator = MutableStateFlow(false)
     val isConversationCreator = _isConversationCreator.asStateFlow()
 
+    private val _typingUserIds = MutableStateFlow<List<String>>(emptyList())
+    val typingUserIds = _typingUserIds.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -128,12 +131,32 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun updateTypingStatus(conversationId: String, isTyping: Boolean) {
+        viewModelScope.launch {
+            try {
+                val userId = auth.currentUser?.uid ?: return@launch
+                conversationRepository.updateTypingStatus(
+                    conversationId = conversationId,
+                    userId = userId,
+                    isTyping = isTyping
+                )
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", e.message ?: "Failed to update typing status")
+            }
+        }
+    }
+
     private fun observeConversation(conversationId: String) {
         viewModelScope.launch {
             conversationRepository.observeConversation(conversationId)
                 .collect { conversation ->
                     if (conversation == null) {
                         _isConversationDeleted.value = true
+                        return@collect
+                    }
+
+                    _typingUserIds.value = conversation.typingUserIds.filter { userId ->
+                        userId != currentUserId
                     }
                 }
         }

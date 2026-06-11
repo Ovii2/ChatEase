@@ -307,7 +307,9 @@ fun HomeScreen(
                                                 }
                                             },
                                             isPeekEnabled = isPeekEnabled,
-                                            onPeekClick = { isPeekEnabled = !isPeekEnabled }
+                                            onPeekClick = { isPeekEnabled = !isPeekEnabled },
+                                            typingUserIds = listOf(),
+                                            updateTypingStatus = { },
                                         )
                                     }
                                 },

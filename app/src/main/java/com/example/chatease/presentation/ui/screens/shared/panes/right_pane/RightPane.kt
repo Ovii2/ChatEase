@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -24,9 +28,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
+import com.example.chatease.R
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
@@ -52,7 +59,9 @@ fun RightPane(
     onReactionClick: (String, String) -> Unit,
     onNavigateToChatInfo: () -> Unit,
     isPeekEnabled: Boolean,
-    onPeekClick: () -> Unit
+    onPeekClick: () -> Unit,
+    typingUserIds: List<String>,
+    updateTypingStatus: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -105,6 +114,15 @@ fun RightPane(
         }
     }
 
+    val firstUserName = user.fullName.substringBefore(" ")
+    val secondUsername = user.fullName.substringBefore(" ")
+
+    val typingText = when (typingUserIds.size) {
+        1 -> stringResource(R.string.one_is_typing, firstUserName)
+        2 -> stringResource(R.string.two_are_typing, firstUserName, secondUsername)
+        else -> stringResource(R.string.many_are_typing, typingUserIds.size)
+    }
+
     Box(
         modifier = modifier.clickable(
             indication = null,
@@ -149,6 +167,15 @@ fun RightPane(
                     onReactionClick(messageId, reaction)
                 },
             )
+            if (typingUserIds.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End,
+                    text = typingText,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                )
+            }
             if (messages.isEmpty()) {
                 ConversationStarterRow(
                     onStarterClick = { messageText = it }
@@ -165,7 +192,10 @@ fun RightPane(
                     }
                 },
                 messageText = messageText,
-                onMessageTextChange = { messageText = it },
+                onMessageTextChange = {
+                    messageText = it
+                    updateTypingStatus(it)
+                },
                 isPeekEnabled = isPeekEnabled,
                 onPeekClick = onPeekClick
             )
@@ -175,7 +205,7 @@ fun RightPane(
 
 @Preview(
     showBackground = true, showSystemUi = true,
-    uiMode = Configuration.UI_MODE_TYPE_NORMAL
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
 private fun RightPanePreview() {
@@ -238,20 +268,24 @@ private fun RightPanePreview() {
         )
     )
     ChatEaseTheme {
-        Column {
-            RightPane(
-                user = user,
-                messages = messages,
-                currentUserId = "user_2",
-                onBackClick = {},
-                onSendMessageClick = {},
-                firstUnreadMessageId = "1",
-                onMessagesVisible = {},
-                onReactionClick = { _, _ -> },
-                onNavigateToChatInfo = {},
-                isPeekEnabled = false,
-                onPeekClick = {},
-            )
+        Scaffold { paddingValues ->
+            Column(modifier = Modifier.padding(paddingValues)) {
+                RightPane(
+                    user = user,
+                    messages = messages,
+                    currentUserId = "user_2",
+                    onBackClick = {},
+                    onSendMessageClick = {},
+                    firstUnreadMessageId = "1",
+                    onMessagesVisible = {},
+                    onReactionClick = { _, _ -> },
+                    onNavigateToChatInfo = {},
+                    isPeekEnabled = false,
+                    onPeekClick = {},
+                    typingUserIds = listOf("user_1", "user_2"),
+                    updateTypingStatus = {},
+                )
+            }
         }
     }
 }
