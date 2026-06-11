@@ -28,10 +28,20 @@ fun UserPresenceStatus.toScreenName(): String {
 }
 
 @Composable
-fun UserPresenceStatus.color(): Color {
+fun UserPresenceStatus.textColor(): Color {
     return when (this) {
         UserPresenceStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
         UserPresenceStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
         UserPresenceStatus.OFFLINE -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
     }
 }
+
+@Composable
+fun UserPresenceStatus.statusColor(): Color {
+    return when (this) {
+        UserPresenceStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
+        UserPresenceStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
+        UserPresenceStatus.OFFLINE -> Color.Transparent
+    }
+}
+

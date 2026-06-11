@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
-import com.example.chatease.domain.model.enums.color
+import com.example.chatease.domain.model.enums.textColor
 import com.example.chatease.domain.model.enums.toScreenName
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -58,7 +58,7 @@ fun ExtraPaneTopSection(
                 text = user.status.toScreenName(),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.W500,
-                color = user.status.color()
+                color = user.status.textColor()
             )
         }
         TopSectionQuickActionsRow(

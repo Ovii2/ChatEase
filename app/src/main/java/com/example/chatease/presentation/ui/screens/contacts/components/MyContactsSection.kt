@@ -3,7 +3,6 @@ package com.example.chatease.presentation.ui.screens.contacts.components
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,12 +30,10 @@ import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.domain.model.enums.textColor
+import com.example.chatease.domain.model.enums.toScreenName
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
-import com.example.chatease.presentation.ui.theme.awayYellow
-import com.example.chatease.presentation.ui.theme.awayYellowDark
-import com.example.chatease.presentation.ui.theme.successGreenDark
-import com.example.chatease.presentation.ui.theme.successGreenLight
 
 @Composable
 fun MyContactsSection(
@@ -83,18 +80,6 @@ fun MyContactsItem(
     contact: User,
     onContactClick: (String) -> Unit
 ) {
-    val userPresenceStatus = when (contact.status) {
-        UserPresenceStatus.ONLINE -> R.string.online
-        UserPresenceStatus.AWAY -> R.string.away
-        else -> R.string.offline
-    }
-
-    val statusColor = when (contact.status) {
-        UserPresenceStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
-        UserPresenceStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
-        UserPresenceStatus.OFFLINE -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-    }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -121,9 +106,9 @@ fun MyContactsItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = stringResource(userPresenceStatus),
+                    text = contact.status.toScreenName(),
                     style = MaterialTheme.typography.labelMedium,
-                    color = statusColor,
+                    color = contact.status.textColor(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -150,7 +135,7 @@ private fun MyContactsSectionPreview() {
             fullName = "Test Testingggggggggggggggggggggggggggggggggg",
             email = "test@email.com",
             imageUrl = null,
-            status = UserPresenceStatus.ONLINE
+            status = UserPresenceStatus.AWAY
         )
     }
 

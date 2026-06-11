@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.domain.model.enums.statusColor
+import com.example.chatease.domain.model.enums.toScreenName
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.awayYellow
@@ -51,18 +53,6 @@ fun RightPaneTopBar(
     onBackClick: () -> Unit,
     onNavigateToChatInfo: () -> Unit
 ) {
-    val userPresenceStatus = when (user.status) {
-        UserPresenceStatus.ONLINE -> R.string.online
-        UserPresenceStatus.AWAY -> R.string.away
-        else -> R.string.offline
-    }
-
-    val statusColor = when (user.status) {
-        UserPresenceStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
-        UserPresenceStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
-        UserPresenceStatus.OFFLINE -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-    }
-
     val iconSize = 26.dp
 
     TopAppBar(
@@ -94,9 +84,9 @@ fun RightPaneTopBar(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = stringResource(userPresenceStatus),
+                            text = user.status.toScreenName(),
                             style = MaterialTheme.typography.labelMedium,
-                            color = statusColor,
+                            color = user.status.statusColor(),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )

@@ -7,15 +7,19 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
+import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun FrequentlyContactedSection(
@@ -62,5 +66,33 @@ fun FrequentlyContactedItem(
             user = user
         )
         Text(text = name, style = MaterialTheme.typography.labelLarge)
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun FrequentlyContactedSectionPreview() {
+    val users = List(5) {
+        User(
+            uid = it.toString(),
+            fullName = "Test Test",
+            email = "test@email.com",
+            imageUrl = null,
+            status = UserPresenceStatus.ONLINE
+        )
+
+    }
+    ChatEaseTheme {
+        Scaffold { paddingValues ->
+            Column(
+                modifier = Modifier.padding(paddingValues),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                FrequentlyContactedSection(
+                    users = users
+                )
+            }
+        }
     }
 }

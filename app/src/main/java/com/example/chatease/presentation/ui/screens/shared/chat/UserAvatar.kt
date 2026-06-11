@@ -3,8 +3,10 @@ package com.example.chatease.presentation.ui.screens.shared.chat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -27,12 +29,9 @@ import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.domain.model.enums.statusColor
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.avatarGradients
-import com.example.chatease.presentation.ui.theme.awayYellow
-import com.example.chatease.presentation.ui.theme.awayYellowDark
-import com.example.chatease.presentation.ui.theme.successGreenDark
-import com.example.chatease.presentation.ui.theme.successGreenLight
 import kotlin.math.absoluteValue
 
 @Composable
@@ -57,12 +56,7 @@ fun UserAvatar(
     val gradients = avatarGradients()
     val avatarGradient = gradients[user.uid.hashCode().absoluteValue % gradients.size]
 
-    val statusColor = when (user.status) {
-        UserPresenceStatus.ONLINE -> if (isSystemInDarkTheme()) successGreenDark else successGreenLight
-        UserPresenceStatus.AWAY -> if (isSystemInDarkTheme()) awayYellowDark else awayYellow
-        UserPresenceStatus.OFFLINE -> Color.Transparent
-    }
-    Box() {
+    Box {
         if (user.imageUrl == null) {
             Box(
                 modifier = modifier
@@ -111,7 +105,7 @@ fun UserAvatar(
                         shape = CircleShape
                     )
                     .clip(CircleShape)
-                    .background(color = statusColor)
+                    .background(color = user.status.statusColor())
                     .align(Alignment.BottomEnd)
             ) {}
         }
@@ -126,11 +120,17 @@ private fun UserAvatarPreview() {
         fullName = "Test Test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserPresenceStatus.ONLINE
+        status = UserPresenceStatus.OFFLINE
     )
     ChatEaseTheme {
-        UserAvatar(
-            user = user
-        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            UserAvatar(
+                user = user
+            )
+        }
     }
 }
