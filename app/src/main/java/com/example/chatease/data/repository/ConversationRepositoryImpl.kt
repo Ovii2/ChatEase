@@ -32,6 +32,7 @@ class ConversationRepositoryImpl(
         private const val SEEN_BY = "seenBy"
         private const val REACTIONS = "reactions"
         private const val UNREAD_COUNTS = "unreadCounts"
+        private const val TYPING_USER_IDS = "typingUserIds"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -301,6 +302,24 @@ class ConversationRepositoryImpl(
         if (messages.isEmpty()) {
             deleteConversation(conversationId)
         }
+    }
+
+    override suspend fun updateTypingStatus(
+        conversationId: String,
+        userId: String,
+        isTyping: Boolean
+    ) {
+        val updateValue = if (isTyping) {
+            FieldValue.arrayUnion(userId)
+        } else {
+            FieldValue.arrayRemove(userId)
+        }
+
+        firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .update(TYPING_USER_IDS, updateValue)
+            .await()
     }
 
 

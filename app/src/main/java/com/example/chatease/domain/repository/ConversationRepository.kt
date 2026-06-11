@@ -37,4 +37,10 @@ interface ConversationRepository {
 
     suspend fun deleteIfEmptyConversation(conversationId: String)
 
+    suspend fun updateTypingStatus(
+        conversationId: String,
+        userId: String,
+        isTyping: Boolean
+    )
+
 }
