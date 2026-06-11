@@ -20,15 +20,18 @@ import androidx.compose.ui.text.font.FontWeight
 fun CommonTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    @StringRes title: Int
+    @StringRes title: Int? = null
 ) {
     CenterAlignedTopAppBar(
+        modifier = modifier,
         title = {
-            Text(
-                text = stringResource(title),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold
-            )
+            title?.let {
+                Text(
+                    text = stringResource(title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+            } ?: ""
         },
         navigationIcon = {
             Icon(
