@@ -1,12 +1,13 @@
 package com.example.chatease.presentation.ui.screens.other_user_profile.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
@@ -16,16 +17,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
+import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun OtherUserProfileTopSection(
@@ -40,13 +45,9 @@ fun OtherUserProfileTopSection(
         if (!isConnected) stringResource(R.string.send_request) else stringResource(R.string.message)
     val buttonColor =
         if (!isConnected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
-
     val buttonTextColor =
-        if (!isConnected) {
-            MaterialTheme.colorScheme.surface
-        } else {
-            if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.scrim
-        }
+        if (!isConnected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface
+
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -103,6 +104,36 @@ fun OtherUserProfileTopSection(
                 Text(
                     text = buttonText,
                     style = MaterialTheme.typography.labelLarge
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true,
+         uiMode = Configuration.UI_MODE_TYPE_NORMAL
+)
+@Composable
+private fun OtherUserProfileTopSectionPreview() {
+    val user = User(
+        uid = "",
+        fullName = "Test Test",
+        email = "test@email.com",
+        imageUrl = null,
+        status = UserPresenceStatus.ONLINE
+    )
+    ChatEaseTheme {
+        Scaffold { paddingValues ->
+            Column(
+                modifier = Modifier.padding(paddingValues),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OtherUserProfileTopSection(
+                    user = user,
+                    isConnected = false,
+                    onSendRequest = {},
+                    onSendMessage = {}
                 )
             }
         }
