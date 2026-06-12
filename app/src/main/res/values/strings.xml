@@ -168,6 +168,10 @@
     <string name="send_request">Send Request</string>
     <string name="view_photo">View Photo</string>
     <string name="block">Block</string>
+    <string name="unblock">Unblock</string>
     <string name="report">Report</string>
     <string name="message">Message</string>
+
+    <string name="block_user_title">Block this user?</string>
+    <string name="block_user_message">This will remove the user from your contacts and prevent future messages and contact requests.</string>
 </resources>
