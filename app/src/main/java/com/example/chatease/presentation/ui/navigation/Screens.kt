@@ -20,7 +20,7 @@ sealed class Screens(val route: String) {
     data object AllRequests : Screens("all_requests")
     data object Calls : Screens("calls")
     data object MyProfile : Screens("my_profile")
-    data object OtherUserProfile : Screens("profile") {
+    data object OtherUserProfile : Screens("profile/{userId}") {
         fun createRoute(userId: String): String = "profile/$userId"
     }
 
