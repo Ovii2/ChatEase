@@ -17,4 +17,6 @@ interface UserRepository {
 
     fun observeUser(userId: String): Flow<User>
 
+    suspend fun isUserConnected(otherUserId: String): Boolean
+
 }
