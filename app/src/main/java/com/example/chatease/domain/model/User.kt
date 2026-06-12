@@ -7,5 +7,6 @@ data class User(
     val fullName: String = "",
     val email: String = "",
     val imageUrl: String? = null,
-    val status: UserPresenceStatus = UserPresenceStatus.OFFLINE
+    val status: UserPresenceStatus = UserPresenceStatus.OFFLINE,
+    val blockedUserIds: List<String> = emptyList()
 )

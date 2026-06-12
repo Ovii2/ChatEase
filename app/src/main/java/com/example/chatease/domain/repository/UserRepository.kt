@@ -19,4 +19,10 @@ interface UserRepository {
 
     suspend fun isUserConnected(otherUserId: String): Boolean
 
+    suspend fun blockUser(userId: String)
+
+    suspend fun unblockUser(userId: String)
+
+    suspend fun isUserBlocked(userId: String): Boolean
+
 }

@@ -7,5 +7,6 @@ data class UserDto(
     val fullName: String = "",
     val email: String = "",
     val imageUrl: String? = null,
-    val status: String = UserPresenceStatus.ONLINE.name
+    val status: String = UserPresenceStatus.ONLINE.name,
+    val blockedUserIds: List<String> = emptyList()
 )

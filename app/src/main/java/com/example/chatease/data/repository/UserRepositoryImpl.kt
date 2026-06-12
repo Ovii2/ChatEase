@@ -7,6 +7,7 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,7 @@ class UserRepositoryImpl(
         private const val USERS = "users"
         private const val STATUS = "status"
         private const val CONTACTS = "contacts"
+        private const val BLOCKED_USER_IDS = "blockedUserIds"
     }
 
     override suspend fun updateUserStatus(
@@ -90,6 +92,45 @@ class UserRepositoryImpl(
         return contacts.any { contact ->
             currentUserId in contact.userIds && otherUserId in contact.userIds
         }
+    }
+
+    override suspend fun blockUser(userId: String) {
+        val currentUserId = auth.currentUser?.uid ?: return
+
+        if (currentUserId == userId) return
+
+        firestore
+            .collection(USERS)
+            .document(currentUserId)
+            .update(BLOCKED_USER_IDS, FieldValue.arrayUnion(userId))
+            .await()
+
+    }
+
+    override suspend fun unblockUser(userId: String) {
+        val currentUserId = auth.currentUser?.uid ?: return
+
+        if (currentUserId == userId) return
+
+        firestore
+            .collection(USERS)
+            .document(currentUserId)
+            .update(BLOCKED_USER_IDS, FieldValue.arrayRemove(userId))
+            .await()
+    }
+
+    override suspend fun isUserBlocked(userId: String): Boolean {
+        val currentUserId = auth.currentUser?.uid ?: return false
+
+        val document = firestore
+            .collection(USERS)
+            .document(currentUserId)
+            .get()
+            .await()
+
+        val currentUser = document.toObject(UserDto::class.java)?.toDomain() ?: return false
+
+        return userId in currentUser.blockedUserIds
     }
 
 }

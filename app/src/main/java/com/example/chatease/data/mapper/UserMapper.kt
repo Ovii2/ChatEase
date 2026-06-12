@@ -10,7 +10,8 @@ fun UserDto.toDomain(): User {
         fullName = fullName,
         email = email,
         imageUrl = imageUrl,
-        status = UserPresenceStatus.valueOf(status)
+        status = UserPresenceStatus.valueOf(status),
+        blockedUserIds = blockedUserIds
     )
 }
 
@@ -20,7 +21,8 @@ fun User.toDto(): UserDto {
         fullName = fullName,
         email = email,
         imageUrl = imageUrl,
-        status = status.name
+        status = status.name,
+        blockedUserIds = blockedUserIds
     )
 }
 
