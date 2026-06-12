@@ -40,7 +40,8 @@ fun ContactsScreen(
     onNavigateToSentRequests: () -> Unit,
     onNavigateToAllRequests: () -> Unit,
     onBackClick: () -> Unit,
-    contactsViewModel: ContactsViewModel = hiltViewModel()
+    contactsViewModel: ContactsViewModel = hiltViewModel(),
+    onNavigateToOtherUserProfile: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val searchValue by contactsViewModel.searchValue.collectAsState()
@@ -128,7 +129,7 @@ fun ContactsScreen(
                 if (contacts.isNotEmpty()) {
                     MyContactsSection(
                         contacts = contacts,
-                        onContactClick = {}
+                        onContactClick = { onNavigateToOtherUserProfile(it) }
                     )
                 }
             }
@@ -149,6 +150,7 @@ private fun ContactsScreenPreview(contactsViewModel: ContactsViewModel = hiltVie
                 onNavigateToSentRequests = {},
                 onBackClick = {},
                 onNavigateToAllRequests = {},
+                onNavigateToOtherUserProfile = {},
             )
         }
     }
