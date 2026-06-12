@@ -21,6 +21,9 @@ class OtherUserProfileViewModel @Inject constructor(
     private val _isUserConnected = MutableStateFlow(false)
     val isUserConnected = _isUserConnected.asStateFlow()
 
+    private val _isUserBlocked = MutableStateFlow(false)
+    val isUserBlocked = _isUserBlocked.asStateFlow()
+
     fun loadUser(userId: String) {
         viewModelScope.launch {
             try {
@@ -46,4 +49,37 @@ class OtherUserProfileViewModel @Inject constructor(
             }
         }
     }
+
+    fun blockUser(userId: String) {
+        viewModelScope.launch {
+            try {
+                userRepository.blockUser(userId)
+                _isUserBlocked.value = true
+            } catch (e: Exception) {
+                Log.v("OtherUserProfileViewModel", e.message ?: "Failed to block user")
+            }
+        }
+    }
+
+    fun unblockUser(userId: String) {
+        viewModelScope.launch {
+            try {
+                userRepository.unblockUser(userId)
+                _isUserBlocked.value = false
+            } catch (e: Exception) {
+                Log.v("OtherUserProfileViewModel", e.message ?: "Failed to unblock user")
+            }
+        }
+    }
+
+    fun checkIfUserIsBlocked(userId: String) {
+        viewModelScope.launch {
+            try {
+                _isUserBlocked.value = userRepository.isUserBlocked(userId)
+            } catch (e: Exception) {
+                Log.v("OtherUserProfileViewModel", e.message ?: "Failed to check for blocked user")
+            }
+        }
+    }
+
 }

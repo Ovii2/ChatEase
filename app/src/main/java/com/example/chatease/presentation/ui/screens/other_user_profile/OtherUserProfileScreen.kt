@@ -14,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +26,7 @@ import com.example.chatease.presentation.ui.screens.other_user_profile.component
 import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfileActionsSection
 import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfileTopSection
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.screens.shared.user.BlockUserBottomSheet
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.OtherUserProfileViewModel
 
@@ -35,10 +39,13 @@ fun OtherUserProfileScreen(
 ) {
     val user by otherUserProfileViewModel.user.collectAsState()
     val isConnected by otherUserProfileViewModel.isUserConnected.collectAsState()
+    val isBlocked by otherUserProfileViewModel.isUserBlocked.collectAsState()
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(userId) {
         otherUserProfileViewModel.loadUser(userId)
         otherUserProfileViewModel.checkIfUserConnected(userId)
+        otherUserProfileViewModel.checkIfUserIsBlocked(userId)
     }
 
     Scaffold(
@@ -66,15 +73,30 @@ fun OtherUserProfileScreen(
                     isConnected = isConnected,
                     onSendRequest = {},
                     onSendMessage = {},
+                    isBlocked = isBlocked,
+                    onUnblockClick = { otherUserProfileViewModel.unblockUser(userId) },
                 )
-                OtherUserProfileActionsSection(
-                    onViewPhotoClick = {},
-                    onBlockClick = {},
-                    onReportClick = {}
-                )
-                OtherUserProfileAboutSection()
+                if (!isBlocked) {
+                    OtherUserProfileActionsSection(
+                        onViewPhotoClick = {},
+                        onBlockClick = {
+                            showBottomSheet = true
+                        },
+                        onReportClick = {}
+                    )
+                    OtherUserProfileAboutSection()
+                }
             }
         }
+    }
+    if (showBottomSheet) {
+        BlockUserBottomSheet(
+            onDismiss = { showBottomSheet = false },
+            onBlockClick = {
+                otherUserProfileViewModel.blockUser(userId)
+                showBottomSheet = false
+            },
+        )
     }
 }
 
