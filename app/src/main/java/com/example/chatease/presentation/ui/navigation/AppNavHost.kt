@@ -151,6 +151,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToOtherUserProfile = {
+                    navController.navigate(Screens.OtherUserProfile.createRoute(it)) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.SentRequests.route) {
@@ -193,8 +198,11 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.OtherUserProfile.route) {
+            val userId = it.arguments?.getString("userId") ?: return@composable
+
             OtherUserProfileScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                userId = userId,
             )
         }
     }
