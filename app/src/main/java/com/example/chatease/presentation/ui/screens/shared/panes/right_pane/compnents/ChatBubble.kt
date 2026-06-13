@@ -106,9 +106,9 @@ fun ChatBubble(
     Row(
         modifier = Modifier.padding(
             start = 12.dp,
-            top = 0.dp,
+            top = 4.dp,
             end = 4.dp,
-            bottom = 0.dp
+            bottom = 2.dp
         ),
         verticalAlignment = Alignment.Bottom
     ) {
