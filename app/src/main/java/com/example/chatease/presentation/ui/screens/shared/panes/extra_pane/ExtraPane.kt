@@ -35,10 +35,15 @@ fun ExtraPane(
     modifier: Modifier = Modifier,
     user: User,
     onDeleteConversationClick: () -> Unit,
-    isConversationCreator: Boolean
+    isConversationCreator: Boolean,
+    onBlockContactClick: (String) -> Unit,
+    onUnblockContactClick: (String) -> Unit,
+    isBlockedByMe: Boolean,
+    isBlockedByOtherUser: Boolean
 ) {
     var checked by rememberSaveable { mutableStateOf(false) }
     val iconSize = 26.dp
+    val showProfileDetails = !isBlockedByMe && !isBlockedByOtherUser
 
     val mediaItems = List(2) { index ->
         MediaItem(
@@ -62,26 +67,36 @@ fun ExtraPane(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ExtraPaneTopSection(
-                user = user
+                user = user,
+                showStatus = showProfileDetails,
+                showQuickActions = showProfileDetails,
             )
-            ExtraPaneAboutSection()
+            if (showProfileDetails) {
+                ExtraPaneAboutSection()
+
+            }
             if (mediaItems.isNotEmpty()) {
                 ExtraPaneMediaSection(
                     items = mediaItems
                 )
             }
-            ExtraPaneNotificationsSection(
-                checked = checked,
-                onCheckedChange = { checked = it },
-                iconSize = iconSize,
-            )
+            if (showProfileDetails) {
+                ExtraPaneNotificationsSection(
+                    checked = checked,
+                    onCheckedChange = { checked = it },
+                    iconSize = iconSize,
+                )
+            }
             ExtraPaneMoreSection(
                 iconSize = iconSize,
                 onViewContactClick = {},
                 onShareContactClick = {},
-                onBlockContactClick = {},
+                onBlockContactClick = { onBlockContactClick(user.uid) },
+                onUnblockContactClick = { onUnblockContactClick(user.uid) },
                 onDeleteConversationClick = onDeleteConversationClick,
                 isConversationCreator = isConversationCreator,
+                isBlockedByMe = isBlockedByMe,
+                isBlockedByOtherUser = isBlockedByOtherUser,
             )
         }
     }
@@ -108,7 +123,11 @@ private fun ExtraPanePreview() {
                 ExtraPane(
                     user = user,
                     onDeleteConversationClick = {},
-                    isConversationCreator = false,
+                    isConversationCreator = true,
+                    onBlockContactClick = {},
+                    onUnblockContactClick = {},
+                    isBlockedByMe = false,
+                    isBlockedByOtherUser = false,
                 )
             }
         }

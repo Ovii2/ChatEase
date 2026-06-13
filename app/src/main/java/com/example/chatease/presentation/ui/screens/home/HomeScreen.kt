@@ -323,6 +323,10 @@ fun HomeScreen(
                                             user = state.user,
                                             onDeleteConversationClick = {},
                                             isConversationCreator = isConversationCreator,
+                                            onBlockContactClick = {},
+                                            onUnblockContactClick = {},
+                                            isBlockedByMe = false,
+                                            isBlockedByOtherUser = false,
                                         )
                                     }
                                 }

@@ -30,12 +30,24 @@ fun ExtraPaneMoreSection(
     onViewContactClick: () -> Unit,
     onShareContactClick: () -> Unit,
     onBlockContactClick: () -> Unit,
+    onUnblockContactClick: () -> Unit,
     onDeleteConversationClick: () -> Unit,
     isConversationCreator: Boolean,
+    isBlockedByMe: Boolean,
+    isBlockedByOtherUser: Boolean,
 ) {
     val actions = ContactActionsDataSource.actions
     val visibleActions =
-        actions.filter { action -> action.label != R.string.delete_chat || isConversationCreator }
+        actions.filter { action ->
+            when (action.label) {
+                R.string.view_contact -> !isBlockedByMe && !isBlockedByOtherUser
+                R.string.share_contact -> !isBlockedByMe && !isBlockedByOtherUser
+                R.string.block_contact -> !isBlockedByMe
+                R.string.unblock_contact -> isBlockedByMe
+                R.string.delete_chat -> isConversationCreator
+                else -> true
+            }
+        }
 
     SectionContainer(
         sectionTitle = R.string.more,
@@ -45,6 +57,7 @@ fun ExtraPaneMoreSection(
                     R.string.view_contact -> onViewContactClick
                     R.string.share_contact -> onShareContactClick
                     R.string.block_contact -> onBlockContactClick
+                    R.string.unblock_contact -> onUnblockContactClick
                     R.string.delete_chat -> onDeleteConversationClick
                     else -> {
                         {}
@@ -106,8 +119,11 @@ private fun ExtraPaneMoreSectionPreview() {
                     onViewContactClick = {},
                     onShareContactClick = {},
                     onBlockContactClick = {},
+                    onUnblockContactClick = {},
                     onDeleteConversationClick = {},
                     isConversationCreator = false,
+                    isBlockedByMe = false,
+                    isBlockedByOtherUser = false,
                 )
             }
         }

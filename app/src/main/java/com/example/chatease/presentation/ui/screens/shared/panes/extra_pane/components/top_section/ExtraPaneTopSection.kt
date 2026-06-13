@@ -26,7 +26,9 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun ExtraPaneTopSection(
     modifier: Modifier = Modifier,
-    user: User
+    user: User,
+    showStatus: Boolean,
+    showQuickActions: Boolean
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -45,7 +47,7 @@ fun ExtraPaneTopSection(
                 statusBubbleOffsetX = (-3).dp,
                 statusBubbleOffsetY = (-20).dp,
                 initialsFontSize = 70.sp,
-                showStatus = true
+                showStatus = showStatus
             )
             Text(
                 text = user.fullName,
@@ -54,19 +56,23 @@ fun ExtraPaneTopSection(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = user.status.toScreenName(),
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.W500,
-                color = user.status.textColor()
+            if (showStatus) {
+                Text(
+                    text = user.status.toScreenName(),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.W500,
+                    color = user.status.textColor()
+                )
+            }
+        }
+        if (showQuickActions) {
+            TopSectionQuickActionsRow(
+                onAudioClick = {},
+                onVideoClick = {},
+                onSearchClick = {},
+                onMoreClick = {}
             )
         }
-        TopSectionQuickActionsRow(
-            onAudioClick = {},
-            onVideoClick = {},
-            onSearchClick = {},
-            onMoreClick = {}
-        )
     }
 }
 
@@ -84,7 +90,9 @@ private fun ExtraPaneTopSectionPreview() {
         Scaffold { paddingValues ->
             ExtraPaneTopSection(
                 modifier = Modifier.padding(paddingValues),
-                user = user
+                user = user,
+                showStatus = true,
+                showQuickActions = true,
             )
         }
     }
