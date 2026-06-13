@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -155,73 +153,67 @@ fun RightPane(
         else -> stringResource(R.string.many_are_typing, typingUserIds.size)
     }
 
-
-    Box(
-        modifier = modifier
+    Column(
+        modifier = Modifier
             .fillMaxSize()
+            .imePadding()
+            .systemBarsPadding()
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) {
                 focusManager.clearFocus()
-            }
+            },
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .imePadding()
-                .systemBarsPadding()
-                .padding(horizontal = 8.dp)
-                .padding(bottom = if (isBlockedByOtherUser) 10.dp else 72.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            RightPaneTopBar(
-                user = user,
-                onBackClick = onBackClick,
-                onNavigateToChatInfo = onNavigateToChatInfo,
-            )
-            if (showNewMessagesButton) {
-                NewMessagesButton(
-                    onClick = {
-                        newMessageCount = 0
+        RightPaneTopBar(
+            user = user,
+            onBackClick = onBackClick,
+            onNavigateToChatInfo = onNavigateToChatInfo,
+            isBlockedByOtherUser = isBlockedByOtherUser,
+        )
+        if (showNewMessagesButton) {
+            NewMessagesButton(
+                onClick = {
+                    newMessageCount = 0
 
-                        scope.launch {
-                            listState.animateScrollToItem(firstIndex)
-                        }
-                    },
-                    newMessages = newMessageCount
-                )
-            }
-            MessagesList(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(bottom = if (isBlockedByOtherUser) 60.dp else 0.dp),
-                messages = messages,
-                currentUserId = currentUserId,
-                user = user,
-                listState = listState,
-                firstUnreadMessageId = if (shouldShowUnreadDivider) firstUnreadMessageId else null,
-                onReactionClick = { messageId, reaction ->
-                    onReactionClick(messageId, reaction)
+                    scope.launch {
+                        listState.animateScrollToItem(firstIndex)
+                    }
                 },
+                newMessages = newMessageCount
             )
-            if (typingUserIds.isNotEmpty()) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.End,
-                    text = typingText,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-                )
-            }
-            if (messages.isEmpty()) {
-                ConversationStarterRow(
-                    onStarterClick = { messageText = it }
-                )
-            }
+        }
+        MessagesList(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .weight(1f),
+            messages = messages,
+            currentUserId = currentUserId,
+            user = user,
+            listState = listState,
+            firstUnreadMessageId = if (shouldShowUnreadDivider) firstUnreadMessageId else null,
+            onReactionClick = { messageId, reaction ->
+                onReactionClick(messageId, reaction)
+            },
+            isBlockedByOtherUser = isBlockedByOtherUser,
+        )
+        if (typingUserIds.isNotEmpty()) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.End,
+                text = typingText,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+            )
+        }
+        if (messages.isEmpty()) {
+            ConversationStarterRow(
+                onStarterClick = { messageText = it }
+            )
         }
         MessageInputBar(
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier,
             onMicrophoneClick = {},
             onSendMessageClick = {
                 onSendMessageClick(it)
@@ -246,6 +238,7 @@ fun RightPane(
         )
     }
 }
+
 
 @Preview(
     showBackground = true, showSystemUi = true,
