@@ -153,6 +153,7 @@
     <string name="view_contact">View contact</string>
     <string name="share_contact">Share contact</string>
     <string name="block_contact">Block contact</string>
+    <string name="unblock_contact">Unblock contact</string>
     <string name="mute_notifications">Mute notifications</string>
     <string name="unmute_notifications">Unmute notifications</string>
 
