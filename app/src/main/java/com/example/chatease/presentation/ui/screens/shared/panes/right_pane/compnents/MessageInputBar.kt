@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -52,76 +53,93 @@ fun MessageInputBar(
     onMessageTextChange: (String) -> Unit,
     isPeekEnabled: Boolean,
     onPeekClick: () -> Unit,
-    onInputFocused: () -> Unit
+    onInputFocused: () -> Unit,
+    isBlockedByOtherUser: Boolean
 ) {
 
-    OutlinedTextField(
-        modifier = modifier
-            .padding(bottom = 8.dp)
-            .fillMaxWidth()
-            .onFocusChanged { focusState ->
-                if (focusState.isFocused) {
-                    onInputFocused()
+    if (!isBlockedByOtherUser) {
+        OutlinedTextField(
+            modifier = modifier
+                .padding(bottom = 8.dp)
+                .fillMaxWidth()
+                .onFocusChanged { focusState ->
+                    if (focusState.isFocused) {
+                        onInputFocused()
+                    }
+                },
+            value = messageText,
+            onValueChange = onMessageTextChange,
+            placeholder = { Text(text = stringResource(R.string.type_a_message)) },
+            shape = CircleShape,
+            leadingIcon = {
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(CircleShape)
+                        .background(color = MaterialTheme.colorScheme.primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.surface
+                    )
                 }
             },
-        value = messageText,
-        onValueChange = onMessageTextChange,
-        placeholder = { Text(text = stringResource(R.string.type_a_message)) },
-        shape = CircleShape,
-        leadingIcon = {
-            Box(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clip(CircleShape)
-                    .background(color = MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.surface
-                )
-            }
-        },
-        trailingIcon = {
-            Row(
-                modifier = Modifier.padding(end = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.clickable {
-                        onPeekClick()
-                    },
-                    imageVector = if (isPeekEnabled) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                    contentDescription = null
-                )
-                AnimatedContent(
-                    targetState = messageText.isNotEmpty(),
-                    transitionSpec = {
-                        fadeIn() + scaleIn() togetherWith fadeOut() + scaleOut()
-                    },
-                ) { hasText ->
-                    if (hasText) {
-                        Icon(
-                            modifier = Modifier
-                                .clickable { onSendMessageClick(messageText) }
-                                .size(24.dp),
-                            imageVector = Icons.AutoMirrored.Filled.Send,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    } else {
-                        Icon(
-                            modifier = Modifier.clickable { onMicrophoneClick() },
-                            imageVector = Icons.Outlined.Mic,
-                            contentDescription = null
-                        )
+            trailingIcon = {
+                Row(
+                    modifier = Modifier.padding(end = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.clickable {
+                            onPeekClick()
+                        },
+                        imageVector = if (isPeekEnabled) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                        contentDescription = null
+                    )
+                    AnimatedContent(
+                        targetState = messageText.isNotEmpty(),
+                        transitionSpec = {
+                            fadeIn() + scaleIn() togetherWith fadeOut() + scaleOut()
+                        },
+                    ) { hasText ->
+                        if (hasText) {
+                            Icon(
+                                modifier = Modifier
+                                    .clickable { onSendMessageClick(messageText) }
+                                    .size(24.dp),
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        } else {
+                            Icon(
+                                modifier = Modifier.clickable { onMicrophoneClick() },
+                                imageVector = Icons.Outlined.Mic,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
-            }
-        },
-        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
-    )
+            },
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
+        )
+    } else {
+        Box(
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.primary)
+                .fillMaxWidth()
+                .height(60.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.cannot_reply),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.surface,
+            )
+        }
+    }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -147,6 +165,7 @@ private fun MessageInputBarPreview() {
                     isPeekEnabled = false,
                     onPeekClick = {},
                     onInputFocused = {},
+                    isBlockedByOtherUser = false,
                 )
             }
         }

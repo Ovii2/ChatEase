@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.other_user_profile
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfileAboutSection
@@ -27,7 +25,6 @@ import com.example.chatease.presentation.ui.screens.other_user_profile.component
 import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfileTopSection
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.user.BlockUserBottomSheet
-import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.OtherUserProfileViewModel
 
 @Composable
@@ -97,28 +94,5 @@ fun OtherUserProfileScreen(
                 showBottomSheet = false
             },
         )
-    }
-}
-
-
-@Preview(
-    showBackground = true, showSystemUi = true,
-    uiMode = Configuration.UI_MODE_TYPE_NORMAL
-)
-@Composable
-private fun OtherUserProfileScreenPreview() {
-    ChatEaseTheme {
-        Scaffold { paddingValues ->
-            Column(
-                modifier = Modifier.padding(paddingValues),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                OtherUserProfileScreen(
-                    onBackClick = {},
-                    userId = "",
-                )
-            }
-        }
     }
 }
