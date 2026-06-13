@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
@@ -24,6 +25,7 @@ class UserRepositoryImpl(
         private const val STATUS = "status"
         private const val CONTACTS = "contacts"
         private const val BLOCKED_USER_IDS = "blockedUserIds"
+        private const val USER_IDS = "userIds"
     }
 
     override suspend fun updateUserStatus(
@@ -48,6 +50,10 @@ class UserRepositoryImpl(
     }
 
     override suspend fun searchUsers(query: String): List<User> {
+        val currentUserId = auth.currentUser?.uid ?: ""
+        val currentUser = getUserById(currentUserId)
+        val blockedUserIds = currentUser.blockedUserIds
+
         val snapshot = firestore
             .collection(USERS)
             .get()
@@ -56,7 +62,9 @@ class UserRepositoryImpl(
         return snapshot.documents.mapNotNull { document ->
             document.toObject(UserDto::class.java)?.toDomain()
         }.filter { user ->
-            user.fullName.contains(
+            user.uid !in blockedUserIds
+                    && user.uid != currentUserId
+                    && user.fullName.contains(
                 other = query,
                 ignoreCase = true
             )
@@ -97,14 +105,28 @@ class UserRepositoryImpl(
     override suspend fun blockUser(userId: String) {
         val currentUserId = auth.currentUser?.uid ?: return
 
-        if (currentUserId == userId) return
+        if (currentUserId == userId) {
+            return
+        }
+
+        val contactSnapshot = firestore
+            .collection(CONTACTS)
+            .whereArrayContains(USER_IDS, currentUserId)
+            .get()
+            .await()
+
+        val contactDocument = contactSnapshot.documents.firstOrNull { document ->
+            val contact = document.toObject(ContactDto::class.java)?.toDomain()
+            contact?.userIds?.contains(userId) == true
+        }
+
+        contactDocument?.reference?.delete()?.await()
 
         firestore
             .collection(USERS)
             .document(currentUserId)
             .update(BLOCKED_USER_IDS, FieldValue.arrayUnion(userId))
             .await()
-
     }
 
     override suspend fun unblockUser(userId: String) {
@@ -131,6 +153,76 @@ class UserRepositoryImpl(
         val currentUser = document.toObject(UserDto::class.java)?.toDomain() ?: return false
 
         return userId in currentUser.blockedUserIds
+    }
+
+    override suspend fun isBlockedByUser(userId: String): Boolean {
+        val currentUserId = auth.currentUser?.uid ?: return false
+
+        val snapshot = firestore
+            .collection(USERS)
+            .document(userId)
+            .get()
+            .await()
+
+        val otherUser = snapshot.toObject(UserDto::class.java)?.toDomain() ?: return false
+
+        return currentUserId in otherUser.blockedUserIds
+    }
+
+    override fun observeBlockedUsers(): Flow<List<User>> = callbackFlow {
+        val currentUserId = auth.currentUser?.uid ?: return@callbackFlow
+
+        val listener = firestore
+            .collection(USERS)
+            .document(currentUserId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val currentUser = snapshot?.toObject(UserDto::class.java)?.toDomain()
+                val blockedUserIds = currentUser?.blockedUserIds.orEmpty()
+
+                if (blockedUserIds.isEmpty()) {
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
+                launch {
+                    val blockedUsers =
+                        blockedUserIds.map { blockedUserId -> getUserById(blockedUserId) }
+
+                    trySend(blockedUsers)
+                }
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+    override fun observeIsBlockedByUser(otherUserId: String): Flow<Boolean> = callbackFlow {
+        val listener = firestore
+            .collection(USERS)
+            .document(otherUserId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val currentUserId = auth.currentUser?.uid ?: run {
+                    trySend(false)
+                    return@addSnapshotListener
+                }
+                val otherUser = snapshot?.toObject(UserDto::class.java)?.toDomain()
+                    ?: return@addSnapshotListener
+
+                val isBlocked = currentUserId in otherUser.blockedUserIds
+
+                trySend(isBlocked)
+
+            }
+        awaitClose {
+            listener.remove()
+        }
     }
 
 }

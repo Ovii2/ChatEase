@@ -25,4 +25,10 @@ interface UserRepository {
 
     suspend fun isUserBlocked(userId: String): Boolean
 
+    suspend fun isBlockedByUser(userId: String): Boolean
+
+    fun observeBlockedUsers(): Flow<List<User>>
+
+    fun observeIsBlockedByUser(otherUserId: String): Flow<Boolean>
+
 }
