@@ -3,6 +3,7 @@ package com.example.chatease.data.local.datasource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Share
 import com.example.chatease.R
@@ -23,6 +24,11 @@ object ContactActionsDataSource {
         ContactActionItem(
             label = R.string.block_contact,
             icon = Icons.Outlined.Block,
+            isDestructive = false
+        ),
+        ContactActionItem(
+            label = R.string.unblock_contact,
+            icon = Icons.Outlined.LockOpen,
             isDestructive = false
         ),
         ContactActionItem(
