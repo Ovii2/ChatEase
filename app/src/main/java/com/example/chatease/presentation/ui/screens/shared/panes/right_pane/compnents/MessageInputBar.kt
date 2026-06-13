@@ -60,7 +60,7 @@ fun MessageInputBar(
     if (!isBlockedByOtherUser) {
         OutlinedTextField(
             modifier = modifier
-                .padding(vertical = 16.dp, horizontal = 8.dp)
+                .padding(horizontal = 8.dp)
                 .fillMaxWidth()
                 .onFocusChanged { focusState ->
                     if (focusState.isFocused) {

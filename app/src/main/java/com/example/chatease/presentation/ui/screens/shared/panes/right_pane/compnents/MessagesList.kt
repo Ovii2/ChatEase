@@ -64,7 +64,7 @@ fun MessagesList(
         val reversedMessages = messages.reversed()
 
         LazyColumn(
-            modifier = Modifier,
+            modifier = Modifier.fillMaxWidth(),
             state = listState,
             reverseLayout = true,
             verticalArrangement = Arrangement.spacedBy(0.dp),
