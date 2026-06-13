@@ -178,4 +178,5 @@
     <string name="total_blocked">Total blocked %1$d</string>
     <string name="congratulations">Congratulations!</string>
     <string name="no_blocks">You haven\'t blocked anyone!</string>
+    <string name="cannot_reply">You can\'t reply to this conversation</string>
 </resources>
