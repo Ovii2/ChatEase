@@ -61,7 +61,6 @@ fun MessageInputBar(
         OutlinedTextField(
             modifier = modifier
                 .padding(vertical = 16.dp, horizontal = 8.dp)
-                .systemBarsPadding()
                 .fillMaxWidth()
                 .onFocusChanged { focusState ->
                     if (focusState.isFocused) {
@@ -130,8 +129,8 @@ fun MessageInputBar(
         Box(
             modifier = modifier
                 .background(color = MaterialTheme.colorScheme.primary)
-                .fillMaxWidth()
-                .height(60.dp),
+                .height(56.dp)
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             Text(
