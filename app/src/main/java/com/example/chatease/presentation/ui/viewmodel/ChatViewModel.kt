@@ -113,17 +113,6 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun deleteConversation(conversationId: String) {
-        viewModelScope.launch {
-            try {
-                conversationRepository.deleteConversation(conversationId)
-                _isConversationDeleted.value = true
-            } catch (e: Exception) {
-                Log.e("ChatViewModel", e.message ?: "Failed to delete conversation")
-            }
-        }
-    }
-
     fun deleteConversationIfEmpty(conversationId: String) {
         viewModelScope.launch {
             try {
