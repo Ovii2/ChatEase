@@ -233,8 +233,7 @@ fun HomeScreen(
                                     authViewModel.logout()
                                     onNavigateToLoginScreen()
                                 },
-                                onNavigateToProfile = onNavigateToProfile,
-                                isBlockedByOtherUser = isBlockedByOtherUser
+                                onNavigateToProfile = onNavigateToProfile
                             )
                         }
 
@@ -271,8 +270,7 @@ fun HomeScreen(
                                                 authViewModel.logout()
                                                 onNavigateToLoginScreen()
                                             },
-                                            onNavigateToProfile = onNavigateToProfile,
-                                            isBlockedByOtherUser = isBlockedByOtherUser,
+                                            onNavigateToProfile = onNavigateToProfile
                                         )
                                     }
                                 },
@@ -397,8 +395,7 @@ private fun HomeScreenCompactLayoutPreview() {
                 conversations = List(3) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
-                onNavigateToProfile = {},
-                isBlockedByOtherUser = false,
+                onNavigateToProfile = {}
             )
         }
     }

@@ -111,7 +111,8 @@ class HomeViewModel @Inject constructor(
             lastMessage = conversation.lastMessage,
             timestamp = conversation.timestamp,
             unreadCount = conversation.unreadCounts[currentUserId] ?: 0,
-            isGroup = false
+            isGroup = false,
+            isBlockedByOtherUser = currentUserId in otherUser.blockedUserIds
         )
     }
 

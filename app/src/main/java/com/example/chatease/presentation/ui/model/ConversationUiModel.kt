@@ -10,5 +10,6 @@ data class ConversationUiModel(
     val lastMessage: String,
     val timestamp: Long,
     val unreadCount: Int,
-    val isGroup: Boolean
+    val isGroup: Boolean,
+    val isBlockedByOtherUser: Boolean = false
 )

@@ -35,8 +35,7 @@ fun LeftPane(
     conversations: List<ConversationUiModel>,
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
-    onNavigateToProfile: () -> Unit,
-    isBlockedByOtherUser: Boolean
+    onNavigateToProfile: () -> Unit
 ) {
     Box(
         modifier = modifier.clickable(
@@ -61,8 +60,7 @@ fun LeftPane(
             RecentChatsList(
                 conversations = conversations,
                 onConversationClick = onConversationClick,
-                onClickToSeeAll = onClickToSeeAll,
-                isBlockedByOtherUser = isBlockedByOtherUser,
+                onClickToSeeAll = onClickToSeeAll
             )
         }
     }
@@ -111,7 +109,6 @@ private fun LeftPanePreview() {
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
                 onNavigateToProfile = {},
-                isBlockedByOtherUser = false,
             )
         }
     }
