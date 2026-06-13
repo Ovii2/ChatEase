@@ -29,6 +29,8 @@ sealed class Screens(val route: String) {
             return "chat_info/$conversationId"
         }
     }
+
+    data object BlockedUsers : Screens("blocked_users")
 }
 
 @StringRes
@@ -46,5 +48,6 @@ fun Screens.toScreenName(): Int {
         Screens.MyProfile -> R.string.my_profile
         Screens.ChatInfo -> R.string.chat_info
         Screens.OtherUserProfile -> R.string.profile
+        Screens.BlockedUsers -> R.string.blocked_users
     }
 }
