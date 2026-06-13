@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationStarterRow
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageInputBar
@@ -164,7 +165,7 @@ fun RightPane(
             ) {
                 focusManager.clearFocus()
             },
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         RightPaneTopBar(
             user = user,
@@ -253,57 +254,19 @@ private fun RightPanePreview() {
         imageUrl = null,
         status = UserPresenceStatus.ONLINE
     )
-
-    val messages = listOf(
+    val senders = listOf("user_1", "user_2")
+    val messages = List(10) {
         Message(
-            messageId = "1",
+            messageId = it.toString(),
             conversationId = "conversation_1",
-            senderId = "user_1",
-            text = "Hey! Are we still for lunch?",
+            senderId = senders.random(),
+            text = LoremIpsum((10..50).random()).values.first(),
             timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_2")
-        ),
-        Message(
-            messageId = "2",
-            conversationId = "conversation_1",
-            senderId = "user_2",
-            text = LoremIpsum(30).values.first(),
-            timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1")
-        ),
-        Message(
-            messageId = "3",
-            conversationId = "conversation_1",
-            senderId = "user_1",
-            text = "Yes, definitely! GG 😄",
-            timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1")
-        ),
-        Message(
-            messageId = "4",
-            conversationId = "conversation_1",
-            senderId = "user_1",
-            text = "Yes, definitely! 😄",
-            timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1")
-        ),
-        Message(
-            messageId = "5",
-            conversationId = "conversation_1",
-            senderId = "user_2",
-            text = "Yes, definitely! 😄",
-            timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1")
-        ),
-        Message(
-            messageId = "6",
-            conversationId = "conversation_1",
-            senderId = "user_2",
-            text = "Yes, definitely! 😄",
-            timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1")
+            seenBy = emptyList(),
+            reactions = emptyMap(),
+            messageType = MessageType.TEXT
         )
-    )
+    }
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {

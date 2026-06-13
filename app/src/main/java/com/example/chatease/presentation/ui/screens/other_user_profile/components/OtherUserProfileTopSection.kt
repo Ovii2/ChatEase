@@ -160,10 +160,10 @@ private fun OtherUserProfileTopSectionPreview() {
             ) {
                 OtherUserProfileTopSection(
                     user = user,
-                    isConnected = false,
+                    isConnected = true,
                     onSendRequest = {},
                     onSendMessage = {},
-                    isBlocked = true,
+                    isBlocked = false,
                     onUnblockClick = {},
                 )
             }
