@@ -45,7 +45,8 @@ fun MessagesList(
     user: User,
     listState: LazyListState,
     firstUnreadMessageId: String?,
-    onReactionClick: (String, String) -> Unit
+    onReactionClick: (String, String) -> Unit,
+    isBlockedByOtherUser: Boolean
 ) {
     var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     val focusManager = LocalFocusManager.current
@@ -95,7 +96,8 @@ fun MessagesList(
                                 user = user,
                                 avatarSize = 50.dp,
                                 statusBubbleSize = 14.dp,
-                                initialsFontSize = 20.sp
+                                initialsFontSize = 20.sp,
+                                showStatus = !isBlockedByOtherUser
                             )
                         } else Unit
                         ChatBubble(
@@ -212,6 +214,7 @@ private fun MessagesListPreview() {
                 listState = rememberLazyListState(),
                 firstUnreadMessageId = "1",
                 onReactionClick = { _, _ -> },
+                isBlockedByOtherUser = true,
             )
         }
     }

@@ -46,7 +46,8 @@ fun RecentChatsList(
     modifier: Modifier = Modifier,
     conversations: List<ConversationUiModel>,
     onConversationClick: (String) -> Unit,
-    onClickToSeeAll: () -> Unit
+    onClickToSeeAll: () -> Unit,
+    isBlockedByOtherUser: Boolean
 ) {
     val cornerShape = RoundedCornerShape(24.dp)
 
@@ -104,6 +105,7 @@ fun RecentChatsList(
                         onNavigateToChatDetails = onConversationClick,
                         showDivider = index != conversations.lastIndex,
                         cornerShape = cornerShape,
+                        isBlockedByOtherUser = isBlockedByOtherUser
                     )
                 }
             }
@@ -117,7 +119,8 @@ fun RecentChatListItem(
     conversation: ConversationUiModel,
     onNavigateToChatDetails: (String) -> Unit,
     showDivider: Boolean,
-    cornerShape: RoundedCornerShape
+    cornerShape: RoundedCornerShape,
+    isBlockedByOtherUser: Boolean
 ) {
     val user = conversation.participants.firstOrNull() ?: return
     val backgroundColor =
@@ -142,7 +145,8 @@ fun RecentChatListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 UserAvatar(
-                    user = user
+                    user = user,
+                    showStatus = !isBlockedByOtherUser
                 )
                 Spacer(modifier = Modifier.width(12.dp))
 
@@ -239,6 +243,7 @@ private fun RecentChatsListPreview() {
                 conversations = List(4) { conversation },
                 onConversationClick = {},
                 onClickToSeeAll = {},
+                isBlockedByOtherUser = false,
             )
         }
     }

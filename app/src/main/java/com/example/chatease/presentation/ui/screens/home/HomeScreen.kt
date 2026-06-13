@@ -159,6 +159,8 @@ fun HomeScreen(
         keyboardController?.hide()
     }
 
+    val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             chatNavigationSuiteItems(
@@ -231,7 +233,8 @@ fun HomeScreen(
                                     authViewModel.logout()
                                     onNavigateToLoginScreen()
                                 },
-                                onNavigateToProfile = onNavigateToProfile
+                                onNavigateToProfile = onNavigateToProfile,
+                                isBlockedByOtherUser = isBlockedByOtherUser
                             )
                         }
 
@@ -268,7 +271,8 @@ fun HomeScreen(
                                                 authViewModel.logout()
                                                 onNavigateToLoginScreen()
                                             },
-                                            onNavigateToProfile = onNavigateToProfile
+                                            onNavigateToProfile = onNavigateToProfile,
+                                            isBlockedByOtherUser = isBlockedByOtherUser,
                                         )
                                     }
                                 },
@@ -393,7 +397,8 @@ private fun HomeScreenCompactLayoutPreview() {
                 conversations = List(3) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
-                onNavigateToProfile = {}
+                onNavigateToProfile = {},
+                isBlockedByOtherUser = false,
             )
         }
     }

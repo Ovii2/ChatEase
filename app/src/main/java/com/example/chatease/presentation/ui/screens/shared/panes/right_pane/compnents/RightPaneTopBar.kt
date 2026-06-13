@@ -3,7 +3,6 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.com
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,10 +38,6 @@ import com.example.chatease.domain.model.enums.statusColor
 import com.example.chatease.domain.model.enums.toScreenName
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
-import com.example.chatease.presentation.ui.theme.awayYellow
-import com.example.chatease.presentation.ui.theme.awayYellowDark
-import com.example.chatease.presentation.ui.theme.successGreenDark
-import com.example.chatease.presentation.ui.theme.successGreenLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +45,8 @@ fun RightPaneTopBar(
     modifier: Modifier = Modifier,
     user: User,
     onBackClick: () -> Unit,
-    onNavigateToChatInfo: () -> Unit
+    onNavigateToChatInfo: () -> Unit,
+    isBlockedByOtherUser: Boolean
 ) {
     val iconSize = 26.dp
 
@@ -73,9 +68,12 @@ fun RightPaneTopBar(
                         statusBubbleSize = 14.dp,
                         initialsFontSize = 20.sp,
                         statusBubbleOffsetX = 3.dp,
-                        statusBubbleOffsetY = (-1).dp
+                        statusBubbleOffsetY = (-1).dp,
+                        showStatus = !isBlockedByOtherUser
                     )
-                    Column(modifier = Modifier.widthIn(max = 170.dp)) {
+                    Column(
+                        modifier = Modifier.widthIn(max = 170.dp)
+                    ) {
                         Text(
                             text = user.fullName,
                             style = MaterialTheme.typography.titleMedium,
@@ -83,28 +81,32 @@ fun RightPaneTopBar(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Text(
-                            text = user.status.toScreenName(),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = user.status.statusColor(),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                        if (!isBlockedByOtherUser) {
+                            Text(
+                                text = user.status.toScreenName(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = user.status.statusColor(),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Icon(
-                        modifier = Modifier.size(iconSize),
-                        painter = painterResource(R.drawable.ic_phone),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Icon(
-                        modifier = Modifier.size(iconSize),
-                        painter = painterResource(R.drawable.ic_video_cam),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                    if (!isBlockedByOtherUser) {
+                        Icon(
+                            modifier = Modifier.size(iconSize),
+                            painter = painterResource(R.drawable.ic_phone),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Icon(
+                            modifier = Modifier.size(iconSize),
+                            painter = painterResource(R.drawable.ic_video_cam),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     Box {
                         Icon(
                             modifier = Modifier
@@ -157,6 +159,7 @@ private fun RightPaneTopBarPreview() {
                     user = user,
                     onBackClick = {},
                     onNavigateToChatInfo = {},
+                    isBlockedByOtherUser = true,
                 )
             }
         }
