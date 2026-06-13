@@ -27,6 +27,7 @@ fun ChatScreen(
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
     val isConversationDeleted by chatViewModel.isConversationDeleted.collectAsState()
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
+    val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -78,8 +79,9 @@ fun ChatScreen(
         updateTypingStatus = {
             chatViewModel.updateTypingStatus(
                 conversationId = conversationId,
-                isTyping = it.isNotBlank()
+                isTyping = it.isNotBlank(),
             )
         },
+        isBlockedByOtherUser = isBlockedByOtherUser,
     )
 }
