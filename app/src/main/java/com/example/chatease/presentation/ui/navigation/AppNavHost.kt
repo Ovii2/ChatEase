@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.chatease.presentation.ui.screens.all_requests.AllRequestsScreen
+import com.example.chatease.presentation.ui.screens.blocked_users.BlockedUsersScreen
 import com.example.chatease.presentation.ui.screens.chat.ChatScreen
 import com.example.chatease.presentation.ui.screens.chat_info.ChatInfoScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
@@ -180,6 +181,11 @@ fun AppNavHost(
                     }
                 },
                 onThemeToggleClick = onThemeToggleClick,
+                onNavigateToBlockedUsers = {
+                    navController.navigate(Screens.BlockedUsers.route) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.ChatInfo.route) {
@@ -203,6 +209,11 @@ fun AppNavHost(
             OtherUserProfileScreen(
                 onBackClick = { navController.popBackStack() },
                 userId = userId,
+            )
+        }
+        composable(route = Screens.BlockedUsers.route) {
+            BlockedUsersScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
