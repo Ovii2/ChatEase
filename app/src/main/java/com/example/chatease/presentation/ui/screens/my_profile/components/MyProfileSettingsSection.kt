@@ -17,7 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.outlined.ContactSupport
-import androidx.compose.material.icons.outlined.ContactSupport
+import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Notifications
@@ -39,7 +39,10 @@ import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun MyProfileSettingsSection(modifier: Modifier = Modifier) {
+fun MyProfileSettingsSection(
+    modifier: Modifier = Modifier,
+    onNavigateToBlockedUsers: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxWidth(),
@@ -64,6 +67,11 @@ fun MyProfileSettingsSection(modifier: Modifier = Modifier) {
             onClick = {},
             imageVector = Icons.Outlined.Notifications,
             text = R.string.notifications
+        )
+        MyProfileSettingsItem(
+            onClick = onNavigateToBlockedUsers,
+            imageVector = Icons.Outlined.Block,
+            text = R.string.blocked_users
         )
         MyProfileSettingsItem(
             onClick = {},
@@ -141,7 +149,9 @@ private fun MyProfileSettingsSectionPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MyProfileSettingsSection()
+                MyProfileSettingsSection(
+                    onNavigateToBlockedUsers = {}
+                )
             }
         }
     }
