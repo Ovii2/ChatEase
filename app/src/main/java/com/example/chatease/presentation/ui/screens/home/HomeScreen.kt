@@ -140,6 +140,7 @@ fun HomeScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val isConversationCreator by chatViewModel.isConversationCreator.collectAsState()
+    val isOtherUserBlocked by chatViewModel.isBlockedByOtherUser.collectAsState()
 
     LaunchedEffect(selectedConversationId) {
         selectedConversationId?.let { conversationId ->
@@ -310,6 +311,7 @@ fun HomeScreen(
                                             onPeekClick = { isPeekEnabled = !isPeekEnabled },
                                             typingUserIds = listOf(),
                                             updateTypingStatus = { },
+                                            isBlockedByOtherUser = isOtherUserBlocked,
                                         )
                                     }
                                 },

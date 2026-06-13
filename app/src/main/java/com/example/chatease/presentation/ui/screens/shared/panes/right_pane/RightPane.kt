@@ -62,7 +62,8 @@ fun RightPane(
     isPeekEnabled: Boolean,
     onPeekClick: () -> Unit,
     typingUserIds: List<String>,
-    updateTypingStatus: (String) -> Unit
+    updateTypingStatus: (String) -> Unit,
+    isBlockedByOtherUser: Boolean
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -153,6 +154,7 @@ fun RightPane(
         else -> stringResource(R.string.many_are_typing, typingUserIds.size)
     }
 
+
     Box(
         modifier = modifier.clickable(
             indication = null,
@@ -232,6 +234,7 @@ fun RightPane(
                     shouldShowUnreadDivider = false
                     onMessagesVisible()
                 },
+                isBlockedByOtherUser = isBlockedByOtherUser,
             )
         }
     }
@@ -318,6 +321,7 @@ private fun RightPanePreview() {
                     onPeekClick = {},
                     typingUserIds = listOf("user_1", "user_2"),
                     updateTypingStatus = {},
+                    isBlockedByOtherUser = false,
                 )
             }
         }

@@ -37,6 +37,9 @@ class ChatViewModel @Inject constructor(
     private val _typingUserIds = MutableStateFlow<List<String>>(emptyList())
     val typingUserIds = _typingUserIds.asStateFlow()
 
+    private val _isBlockedByOtherUser = MutableStateFlow(false)
+    val isBlockedByOtherUser = _isBlockedByOtherUser.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -54,6 +57,7 @@ class ChatViewModel @Inject constructor(
                 val otherUserId = conversation.participantIds.first {
                     it != loggedInUserId
                 }
+                observeIsBlockedByOtherUser(otherUserId)
                 observeUser(otherUserId)
                 observeMessages(conversationId)
                 observeConversation(conversationId)
@@ -143,6 +147,28 @@ class ChatViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("ChatViewModel", e.message ?: "Failed to update typing status")
             }
+        }
+    }
+
+    fun checkIfUserIsBlockedByOtherUser(otherUserId: String) {
+        viewModelScope.launch {
+            try {
+                _isBlockedByOtherUser.value = userRepository.isBlockedByUser(otherUserId)
+            } catch (e: Exception) {
+                Log.v(
+                    "ChatViewModel",
+                    e.message ?: "Failed to check if user is blocked by other user"
+                )
+            }
+        }
+    }
+
+    private fun observeIsBlockedByOtherUser(otherUserId: String) {
+        viewModelScope.launch {
+            userRepository.observeIsBlockedByUser(otherUserId)
+                .collect { isBlocked ->
+                    _isBlockedByOtherUser.value = isBlocked
+                }
         }
     }
 
