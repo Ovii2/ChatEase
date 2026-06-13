@@ -8,32 +8,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
-import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.blocked_users.components.BlockedUsersList
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.BlockedUsersViewModel
 
 @Composable
 fun BlockedUsersScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    blockedUsersViewModel: BlockedUsersViewModel = hiltViewModel()
 ) {
-    val users = List(8) {
-        User(
-            uid = it.toString(),
-            fullName = "Test Test",
-            email = "test@email.com",
-            imageUrl = null,
-            status = UserPresenceStatus.ONLINE,
-            blockedUserIds = listOf()
-        )
-    }
+    val blockedUsers by blockedUsersViewModel.blockedUsers.collectAsState()
+
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
         topBar = {
@@ -50,8 +45,8 @@ fun BlockedUsersScreen(
                 modifier = Modifier
                     .padding(paddingValues)
                     .widthIn(max = 600.dp),
-                users = users,
-                onUnblockUserClick = {},
+                users = blockedUsers,
+                onUnblockUserClick = blockedUsersViewModel::unblockUser,
             )
         }
     }
