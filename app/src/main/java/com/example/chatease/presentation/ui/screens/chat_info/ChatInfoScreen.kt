@@ -21,25 +21,34 @@ import com.example.chatease.domain.model.enums.AlertDialogType
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonAlertDialog
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
+import com.example.chatease.presentation.ui.screens.shared.user.BlockUserBottomSheet
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.ChatInfoViewModel
-import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 
 @Composable
 fun ChatInfoScreen(
     modifier: Modifier = Modifier,
     conversationId: String,
     chatInfoViewModel: ChatInfoViewModel = hiltViewModel(),
-    chatViewModel: ChatViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onNavigateToHomeScreen: () -> Unit
 ) {
     val user by chatInfoViewModel.user.collectAsState()
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
     val isConversationCreator by chatInfoViewModel.isConversationCreator.collectAsState()
+    var showBlockUserBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val isBlockedByMe by chatInfoViewModel.isBlockedByMe.collectAsState()
+    val isBlockedByOtherUser by chatInfoViewModel.isBlockedByOtherUser.collectAsState()
+    val isConversationDeleted by chatInfoViewModel.isConversationDeleted.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatInfoViewModel.loadConversation(conversationId)
+    }
+
+    LaunchedEffect(isConversationDeleted) {
+        if (isConversationDeleted) {
+            onNavigateToHomeScreen()
+        }
     }
 
     Scaffold(topBar = {
@@ -55,6 +64,10 @@ fun ChatInfoScreen(
             user = user,
             onDeleteConversationClick = { showDeleteDialog = true },
             isConversationCreator = isConversationCreator,
+            onBlockContactClick = { showBlockUserBottomSheet = true },
+            onUnblockContactClick = { chatInfoViewModel.unblockUser(user.uid) },
+            isBlockedByMe = isBlockedByMe,
+            isBlockedByOtherUser = isBlockedByOtherUser,
         )
         if (showDeleteDialog) {
             CommonAlertDialog(
@@ -65,12 +78,20 @@ fun ChatInfoScreen(
                 onDismiss = { showDeleteDialog = false },
                 onAccept = {
                     showDeleteDialog = false
-                    chatViewModel.deleteConversation(conversationId)
-                    onNavigateToHomeScreen()
+                    chatInfoViewModel.deleteConversation(conversationId)
                 },
                 alertDialogType = AlertDialogType.CONFIRMATION
             )
         }
+    }
+    if (showBlockUserBottomSheet) {
+        BlockUserBottomSheet(
+            onDismiss = { showBlockUserBottomSheet = false },
+            onBlockClick = {
+                chatInfoViewModel.blockUser(user.uid)
+                showBlockUserBottomSheet = false
+            },
+        )
     }
 }
 
