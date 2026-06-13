@@ -8,6 +8,7 @@ import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -26,6 +27,20 @@ class ChatInfoViewModel @Inject constructor(
     private val _isConversationCreator = MutableStateFlow(false)
     val isConversationCreator = _isConversationCreator.asStateFlow()
 
+    private val _isBlockedByMe = MutableStateFlow(false)
+    val isBlockedByMe = _isBlockedByMe.asStateFlow()
+
+    private val _isBlockedByOtherUser = MutableStateFlow(false)
+    val isBlockedByOtherUser = _isBlockedByOtherUser.asStateFlow()
+
+    private val _isConversationDeleted = MutableStateFlow(false)
+    val isConversationDeleted = _isConversationDeleted.asStateFlow()
+
+    private var observeUserJob: Job? = null
+
+    private val currentUserId: String
+        get() = auth.currentUser?.uid ?: ""
+
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
             try {
@@ -33,6 +48,8 @@ class ChatInfoViewModel @Inject constructor(
                 val conversation = conversationRepository.getConversation(conversationId)
                 _isConversationCreator.value = conversation.creatorId == currentUserId
                 val otherUserId = conversation.participantIds.first { it != currentUserId }
+                _isBlockedByMe.value = userRepository.isUserBlocked(otherUserId)
+                _isBlockedByOtherUser.value = userRepository.isBlockedByUser(otherUserId)
                 observeUser(otherUserId)
             } catch (e: Exception) {
                 Log.v("ChatInfoViewModel", e.message ?: "Failed to load conversation")
@@ -40,16 +57,53 @@ class ChatInfoViewModel @Inject constructor(
         }
     }
 
-    private suspend fun observeUser(userId: String) {
-        try {
-            userRepository.observeUser(userId)
-                .collect { user ->
-                    _user.value = user
-                }
-        } catch (e: Exception) {
-            Log.v("ChatInfoViewModel", e.message ?: "Failed to load user")
+    fun blockUser(userId: String) {
+        viewModelScope.launch {
+            try {
+                userRepository.blockUser(userId)
+                _isBlockedByMe.value = true
+            } catch (e: Exception) {
+                Log.v("ChatInfoViewModel", e.message ?: "Failed to block user")
+            }
         }
     }
 
+    fun unblockUser(userId: String) {
+        viewModelScope.launch {
+            try {
+                userRepository.unblockUser(userId)
+                _isBlockedByMe.value = false
+            } catch (e: Exception) {
+                Log.v("ChatInfoViewModel", e.message ?: "Failed to unblock user")
+            }
+        }
+    }
+
+    fun deleteConversation(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                conversationRepository.deleteConversation(conversationId)
+                _isConversationDeleted.value = true
+            } catch (e: Exception) {
+                Log.e("ChatInfoViewModel", e.message ?: "Failed to delete conversation")
+            }
+        }
+    }
+
+    private fun observeUser(userId: String) {
+        observeUserJob?.cancel()
+
+        observeUserJob = viewModelScope.launch {
+            try {
+                userRepository.observeUser(userId)
+                    .collect { user ->
+                        _user.value = user
+                        _isBlockedByOtherUser.value = currentUserId in user.blockedUserIds
+                    }
+            } catch (e: Exception) {
+                Log.v("ChatInfoViewModel", e.message ?: "Failed to load user")
+            }
+        }
+    }
 
 }
