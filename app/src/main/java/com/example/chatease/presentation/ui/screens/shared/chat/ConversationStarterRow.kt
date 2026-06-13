@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.chatease.data.local.datasource.ConversationStarterDataSource
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
@@ -22,7 +23,7 @@ fun ConversationStarterRow(
 ) {
     val starters = ConversationStarterDataSource.conversationStarters
 
-    LazyRow() {
+    LazyRow(modifier = modifier.padding(vertical = 4.dp)) {
         items(starters) { starter ->
             val starterText = stringResource(starter.text)
             CommonChip(

@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -156,19 +157,22 @@ fun RightPane(
 
 
     Box(
-        modifier = modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }
-        ) {
-            focusManager.clearFocus()
-        }
+        modifier = modifier
+            .fillMaxSize()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                focusManager.clearFocus()
+            }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .imePadding()
                 .systemBarsPadding()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = 8.dp)
+                .padding(bottom = if (isBlockedByOtherUser) 10.dp else 72.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             RightPaneTopBar(
@@ -189,7 +193,9 @@ fun RightPane(
                 )
             }
             MessagesList(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(bottom = if (isBlockedByOtherUser) 60.dp else 0.dp),
                 messages = messages,
                 currentUserId = currentUserId,
                 user = user,
@@ -213,36 +219,37 @@ fun RightPane(
                     onStarterClick = { messageText = it }
                 )
             }
-            MessageInputBar(
-                onMicrophoneClick = {},
-                onSendMessageClick = {
-                    onSendMessageClick(it)
-                    messageText = ""
-
-                    scope.launch {
-                        listState.animateScrollToItem(firstIndex)
-                    }
-                },
-                messageText = messageText,
-                onMessageTextChange = {
-                    messageText = it
-                    updateTypingStatus(it)
-                },
-                isPeekEnabled = isPeekEnabled,
-                onPeekClick = onPeekClick,
-                onInputFocused = {
-                    shouldShowUnreadDivider = false
-                    onMessagesVisible()
-                },
-                isBlockedByOtherUser = isBlockedByOtherUser,
-            )
         }
+        MessageInputBar(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            onMicrophoneClick = {},
+            onSendMessageClick = {
+                onSendMessageClick(it)
+                messageText = ""
+
+                scope.launch {
+                    listState.animateScrollToItem(firstIndex)
+                }
+            },
+            messageText = messageText,
+            onMessageTextChange = {
+                messageText = it
+                updateTypingStatus(it)
+            },
+            isPeekEnabled = isPeekEnabled,
+            onPeekClick = onPeekClick,
+            onInputFocused = {
+                shouldShowUnreadDivider = false
+                onMessagesVisible()
+            },
+            isBlockedByOtherUser = isBlockedByOtherUser,
+        )
     }
 }
 
 @Preview(
     showBackground = true, showSystemUi = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
 private fun RightPanePreview() {
