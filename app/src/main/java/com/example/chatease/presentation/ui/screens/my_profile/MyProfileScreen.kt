@@ -44,7 +44,8 @@ fun MyProfileScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     appSettingsViewModel: AppSettingsViewModel = hiltViewModel(),
     onNavigateToLoginScreen: () -> Unit,
-    onThemeToggleClick: () -> Unit
+    onThemeToggleClick: () -> Unit,
+    onNavigateToBlockedUsers: () -> Unit
 ) {
     val themeMode by appSettingsViewModel.themeMode.collectAsState()
     val actionIcon =
@@ -83,6 +84,7 @@ fun MyProfileScreen(
                         authViewModel.logout()
                         onNavigateToLoginScreen()
                     },
+                    onNavigateToBlockedUsers = onNavigateToBlockedUsers,
                 )
             }
         }
@@ -94,7 +96,8 @@ fun MyProfileScreen(
 fun MyProfileScreenContent(
     modifier: Modifier = Modifier,
     uiState: MyProfileUiState,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onNavigateToBlockedUsers: () -> Unit
 ) {
     when (uiState) {
         is MyProfileUiState.Error -> {}
@@ -106,55 +109,12 @@ fun MyProfileScreenContent(
             MyProfileStatsRow(
                 stats = uiState.stats
             )
-            MyProfileSettingsSection()
+            MyProfileSettingsSection(
+                onNavigateToBlockedUsers = onNavigateToBlockedUsers
+            )
             MyProfileLogoutButton(
                 onLogoutClick = onLogoutClick
             )
-        }
-    }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun MyProfileScreenPreview() {
-    val user = User(
-        uid = "1",
-        fullName = "Test Test",
-        email = "test@email.com",
-        imageUrl = null,
-        status = UserPresenceStatus.AWAY
-    )
-    val stats = List(3) {
-        ProfileStatUiModel(
-            value = (it * 1_000_000).toString(),
-            label = R.string.chats
-        )
-    }
-    val successState = MyProfileUiState.Success(
-        user = user,
-        stats = stats,
-        isUploadingImage = false
-    )
-    ChatEaseTheme {
-        Scaffold(
-            modifier = Modifier.padding(
-                vertical = 8.dp,
-                horizontal = 12.dp
-            ),
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(32.dp)
-            ) {
-                MyProfileScreenContent(
-                    uiState = successState,
-                    onLogoutClick = {},
-                )
-            }
         }
     }
 }
