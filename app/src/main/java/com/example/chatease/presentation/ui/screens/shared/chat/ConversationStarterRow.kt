@@ -23,7 +23,7 @@ fun ConversationStarterRow(
 ) {
     val starters = ConversationStarterDataSource.conversationStarters
 
-    LazyRow(modifier = modifier.padding(vertical = 4.dp)) {
+    LazyRow(modifier = modifier.padding(horizontal = 8.dp)) {
         items(starters) { starter ->
             val starterText = stringResource(starter.text)
             CommonChip(
