@@ -17,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -44,9 +43,7 @@ import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.comp
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.NewMessagesButton
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.RightPaneTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -75,87 +72,15 @@ fun RightPane(
         messages.isNotEmpty() && firstVisibleItemIndex <= 1
     }
     val firstIndex = 0
-
     var hasInitialScrollDone by remember { mutableStateOf(false) }
     var newMessageCount by rememberSaveable { mutableIntStateOf(0) }
     var previousMessageCount by rememberSaveable { mutableIntStateOf(messages.size) }
     val showNewMessagesButton = newMessageCount > 0
-
     val scope = rememberCoroutineScope()
-
     var hasUserScrolledAfterOpen by remember { mutableStateOf(false) }
     val isUserDragging by listState.interactionSource.collectIsDraggedAsState()
-
     var shouldShowUnreadDivider by remember { mutableStateOf(false) }
     var initialUnreadMessageId by rememberSaveable { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(messages.size, firstUnreadMessageId) {
-        if (messages.isNotEmpty() && !hasInitialScrollDone && firstUnreadMessageId != null) {
-            initialUnreadMessageId = firstUnreadMessageId
-            val reversedMessages = messages.reversed()
-
-            val unreadIndex = reversedMessages.indexOfFirst { message ->
-                message.messageId == firstUnreadMessageId
-            }
-
-            if (unreadIndex != -1) {
-                shouldShowUnreadDivider = true
-                listState.scrollToItem(unreadIndex)
-            } else {
-                listState.scrollToItem(firstIndex)
-            }
-
-            hasInitialScrollDone = true
-            newMessageCount = 0
-            previousMessageCount = messages.size
-        }
-    }
-
-    LaunchedEffect(messages.size) {
-        val latestMessage = messages.lastOrNull()
-
-        if (
-            messages.size > previousMessageCount &&
-            !isNearBottom &&
-            latestMessage?.senderId != currentUserId
-        ) {
-            newMessageCount += messages.size - previousMessageCount
-        }
-
-        previousMessageCount = messages.size
-    }
-
-    LaunchedEffect(isNearBottom) {
-        if (isNearBottom) {
-            newMessageCount = 0
-        }
-    }
-
-    LaunchedEffect(
-        isNearBottom,
-        messages.size,
-        hasUserScrolledAfterOpen
-    ) {
-        if (isNearBottom && hasUserScrolledAfterOpen) {
-            shouldShowUnreadDivider = false
-            onMessagesVisible()
-        }
-    }
-
-    LaunchedEffect(isUserDragging) {
-        if (isUserDragging) {
-            hasUserScrolledAfterOpen = true
-        }
-    }
-
-    LaunchedEffect(hasInitialScrollDone, shouldShowUnreadDivider, isNearBottom) {
-        if (hasInitialScrollDone && shouldShowUnreadDivider && isNearBottom) {
-            delay(1000.milliseconds)
-            shouldShowUnreadDivider = false
-            onMessagesVisible()
-        }
-    }
-
 
     val firstUserName = user.fullName.substringBefore(" ")
     val secondUsername = user.fullName.substringBefore(" ")
@@ -165,6 +90,27 @@ fun RightPane(
         2 -> stringResource(R.string.two_are_typing, firstUserName, secondUsername)
         else -> stringResource(R.string.many_are_typing, typingUserIds.size)
     }
+
+    RightPaneEffects(
+        messages = messages,
+        firstUnreadMessageId = firstUnreadMessageId,
+        currentUserId = currentUserId,
+        listState = listState,
+        isNearBottom = isNearBottom,
+        isUserDragging = isUserDragging,
+        hasInitialScrollDone = hasInitialScrollDone,
+        previousMessageCount = previousMessageCount,
+        shouldShowUnreadDivider = shouldShowUnreadDivider,
+        hasUserScrolledAfterOpen = hasUserScrolledAfterOpen,
+        onInitialUnreadMessageIdChange = { initialUnreadMessageId = it },
+        onHasInitialScrollDoneChange = { hasInitialScrollDone = it },
+        onNewMessageCountChange = { newMessageCount = it },
+        onNewMessageCountIncrease = { newMessageCount += it },
+        onPreviousMessageCountChange = { previousMessageCount = it },
+        onHasUserScrolledAfterOpenChange = { hasUserScrolledAfterOpen = it },
+        onShouldShowUnreadDividerChange = { shouldShowUnreadDivider = it },
+        onMessagesVisible = onMessagesVisible
+    )
 
     Column(
         modifier = Modifier
