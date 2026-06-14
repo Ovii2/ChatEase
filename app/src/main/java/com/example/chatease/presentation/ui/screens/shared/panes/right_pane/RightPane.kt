@@ -44,7 +44,9 @@ import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.comp
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.NewMessagesButton
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.RightPaneTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -85,9 +87,11 @@ fun RightPane(
     val isUserDragging by listState.interactionSource.collectIsDraggedAsState()
 
     var shouldShowUnreadDivider by remember { mutableStateOf(false) }
+    var initialUnreadMessageId by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(messages.size, firstUnreadMessageId) {
         if (messages.isNotEmpty() && !hasInitialScrollDone && firstUnreadMessageId != null) {
+            initialUnreadMessageId = firstUnreadMessageId
             val reversedMessages = messages.reversed()
 
             val unreadIndex = reversedMessages.indexOfFirst { message ->
@@ -144,6 +148,14 @@ fun RightPane(
         }
     }
 
+    LaunchedEffect(hasInitialScrollDone, shouldShowUnreadDivider, isNearBottom) {
+        if (hasInitialScrollDone && shouldShowUnreadDivider && isNearBottom) {
+            delay(1000.milliseconds)
+            shouldShowUnreadDivider = false
+            onMessagesVisible()
+        }
+    }
+
 
     val firstUserName = user.fullName.substringBefore(" ")
     val secondUsername = user.fullName.substringBefore(" ")
@@ -193,7 +205,7 @@ fun RightPane(
             currentUserId = currentUserId,
             user = user,
             listState = listState,
-            firstUnreadMessageId = if (shouldShowUnreadDivider) firstUnreadMessageId else null,
+            firstUnreadMessageId = if (shouldShowUnreadDivider) initialUnreadMessageId else null,
             onReactionClick = { messageId, reaction ->
                 onReactionClick(messageId, reaction)
             },

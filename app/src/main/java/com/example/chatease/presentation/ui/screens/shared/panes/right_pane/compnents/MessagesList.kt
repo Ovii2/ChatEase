@@ -117,7 +117,7 @@ fun MessagesList(
                         )
                     }
                 }
-                if (message.messageId == firstUnreadMessageId) {
+                if (firstUnreadMessageId != null && message.messageId == firstUnreadMessageId) {
                     UnreadMessagesDivider()
                 }
                 if (previousVisibleMessage == null || !isSameDay(
