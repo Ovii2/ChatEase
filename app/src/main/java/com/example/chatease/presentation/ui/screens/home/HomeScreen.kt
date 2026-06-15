@@ -12,10 +12,6 @@ import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
@@ -28,7 +24,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,20 +39,17 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.navigation.Screens
+import com.example.chatease.presentation.ui.screens.home.layouts.HomeCompactLayout
+import com.example.chatease.presentation.ui.screens.home.layouts.HomeTabletLayout
 import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
 import com.example.chatease.presentation.ui.screens.shared.chat.chatNavigationSuiteItems
-import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
-import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(
     ExperimentalMaterial3WindowSizeClassApi::class,
@@ -81,15 +73,12 @@ fun HomeScreen(
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
 ) {
-    val navigator = rememberListDetailPaneScaffoldNavigator()
 
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
-
     val focusManager = LocalFocusManager.current
     val activity = LocalActivity.current ?: return
     val windowSizeClass = calculateWindowSizeClass(activity)
-
     val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
     val unreadMessages = (uiState as? HomeUiState.Success)?.unreadMessages ?: 0
 
@@ -126,11 +115,7 @@ fun HomeScreen(
     )
 
     val messages by chatViewModel.messages.collectAsState()
-    var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
-    var selectedConversationId by rememberSaveable {
-        mutableStateOf<String?>(null)
-    }
-    val scope = rememberCoroutineScope()
+    var selectedConversationId by rememberSaveable { mutableStateOf<String?>(null) }
     val user by chatViewModel.user.collectAsState()
 
     val isCompactWidth = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
@@ -140,26 +125,17 @@ fun HomeScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val isConversationCreator by chatViewModel.isConversationCreator.collectAsState()
-    val isOtherUserBlocked by chatViewModel.isBlockedByOtherUser.collectAsState()
-
-    LaunchedEffect(selectedConversationId) {
-        selectedConversationId?.let { conversationId ->
-            chatViewModel.loadConversation(conversationId)
-        }
-    }
-
-    LaunchedEffect(
-        selectedConversationId,
-        messages.size,
-        windowSizeClass.widthSizeClass,
-        windowSizeClass.heightSizeClass
-    ) {
-        delay(100.milliseconds)
-        focusManager.clearFocus(force = true)
-        keyboardController?.hide()
-    }
-
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
+
+    HomeScreenEffects(
+        selectedConversationId = selectedConversationId,
+        onLoadConversation = chatViewModel::loadConversation,
+        messages = messages,
+        windowSizeClass = windowSizeClass,
+        focusManager = focusManager,
+        keyboardController = keyboardController
+    )
+
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
@@ -217,17 +193,12 @@ fun HomeScreen(
                 is HomeUiState.Success -> {
                     when {
                         usePhoneLayout -> {
-                            LeftPane(
-                                modifier = modifier
-                                    .padding(paddingValues)
-                                    .padding(vertical = 8.dp),
-                                user = state.user,
-                                categories = state.categories,
+                            HomeCompactLayout(
+                                paddingValues = paddingValues,
+                                state = state,
                                 selectedCategory = selectedCategory,
                                 onSelectCategory = homeViewModel::selectCategory,
                                 onConversationClick = onConversationClick,
-                                onClickToSeeAll = {},
-                                conversations = state.conversations,
                                 focusManager = focusManager,
                                 onLogoutClick = {
                                     authViewModel.logout()
@@ -244,92 +215,55 @@ fun HomeScreen(
                                 onConversationSelected = { selectedConversationId = it },
                                 isCompact = false
                             )
-                            NavigableListDetailPaneScaffold(
-                                navigator = navigator,
-                                listPane = {
-                                    AnimatedPane {
-                                        LeftPane(
-                                            modifier = modifier
-                                                .padding(paddingValues)
-                                                .padding(vertical = 8.dp),
-                                            user = state.user,
-                                            categories = state.categories,
-                                            selectedCategory = selectedCategory,
-                                            onSelectCategory = homeViewModel::selectCategory,
-                                            onConversationClick = { conversationId ->
-                                                selectedConversationId = conversationId
-
-                                                scope.launch {
-                                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                                                }
-                                            },
-                                            onClickToSeeAll = {},
-                                            conversations = state.conversations,
-                                            focusManager = focusManager,
-                                            onLogoutClick = {
-                                                authViewModel.logout()
-                                                onNavigateToLoginScreen()
-                                            },
-                                            onNavigateToProfile = onNavigateToProfile
+                            HomeTabletLayout(
+                                paddingValues = paddingValues,
+                                state = state,
+                                selectedCategory = selectedCategory,
+                                focusManager = focusManager,
+                                user = user,
+                                messages = messages,
+                                isConversationCreator = isConversationCreator,
+                                onSelectCategory = homeViewModel::selectCategory,
+                                onConversationClick = { conversationId ->
+                                    selectedConversationId = conversationId
+                                },
+                                onLogoutClick = {
+                                    authViewModel.logout()
+                                    onNavigateToLoginScreen()
+                                },
+                                onNavigateToProfile = onNavigateToProfile,
+                                currentUserId = chatViewModel.currentUserId,
+                                onBackClick = onBackClick,
+                                onSendMessageClick = {
+                                    selectedConversationId?.let { id ->
+                                        chatViewModel.sendMessage(
+                                            id,
+                                            it
                                         )
                                     }
                                 },
-                                detailPane = {
-                                    AnimatedPane {
-                                        RightPane(
-                                            user = user,
-                                            messages = messages,
-                                            currentUserId = chatViewModel.currentUserId,
-                                            onBackClick = onBackClick,
-                                            onSendMessageClick = {
-                                                selectedConversationId?.let { id ->
-                                                    chatViewModel.sendMessage(
-                                                        id,
-                                                        it
-                                                    )
-                                                }
-                                            },
-                                            firstUnreadMessageId = chatViewModel.firstUnreadMessageId,
-                                            onMessagesVisible = {
-                                                selectedConversationId?.let { id ->
-                                                    chatViewModel.markMessagesAsSeen(id)
-                                                }
-                                            },
-                                            onReactionClick = { messageId, reaction ->
-                                                selectedConversationId?.let { id ->
-                                                    chatViewModel.addReactionToMessage(
-                                                        conversationId = id,
-                                                        messageId = messageId,
-                                                        reaction = reaction
-                                                    )
-                                                }
-                                            },
-                                            onNavigateToChatInfo = {
-                                                selectedConversationId?.let { id ->
-                                                    onNavigateToChatInfo(id)
-                                                }
-                                            },
-                                            isPeekEnabled = isPeekEnabled,
-                                            onPeekClick = { isPeekEnabled = !isPeekEnabled },
-                                            typingUserIds = listOf(),
-                                            updateTypingStatus = { },
-                                            isBlockedByOtherUser = isOtherUserBlocked,
+                                firstUnreadMessageId = chatViewModel.firstUnreadMessageId,
+                                onMessagesVisible = {
+                                    selectedConversationId?.let { id ->
+                                        chatViewModel.markMessagesAsSeen(id)
+                                    }
+                                },
+                                onReactionClick = { messageId, reaction ->
+                                    selectedConversationId?.let { id ->
+                                        chatViewModel.addReactionToMessage(
+                                            conversationId = id,
+                                            messageId = messageId,
+                                            reaction = reaction
                                         )
                                     }
                                 },
-                                extraPane = {
-                                    AnimatedPane {
-                                        ExtraPane(
-                                            user = state.user,
-                                            onDeleteConversationClick = {},
-                                            isConversationCreator = isConversationCreator,
-                                            onBlockContactClick = {},
-                                            onUnblockContactClick = {},
-                                            isBlockedByMe = false,
-                                            isBlockedByOtherUser = false,
-                                        )
+                                onNavigateToChatInfo = {
+                                    selectedConversationId?.let { id ->
+                                        onNavigateToChatInfo(id)
                                     }
-                                }
+                                },
+                                isBlockedByOtherUser = isBlockedByOtherUser,
+                                isBlockedByMe = false,
                             )
                         }
                     }
