@@ -32,7 +32,8 @@ fun OtherUserProfileScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     otherUserProfileViewModel: OtherUserProfileViewModel = hiltViewModel(),
-    userId: String
+    userId: String,
+    onNavigateToChatScreen: (String) -> Unit
 ) {
     val user by otherUserProfileViewModel.user.collectAsState()
     val isConnected by otherUserProfileViewModel.isUserConnected.collectAsState()
@@ -69,7 +70,12 @@ fun OtherUserProfileScreen(
                     user = user,
                     isConnected = isConnected,
                     onSendRequest = {},
-                    onSendMessage = {},
+                    onSendMessage = {
+                        otherUserProfileViewModel.createNewConversation(
+                            selectedUserId = userId,
+                            onConversationCreated = { onNavigateToChatScreen(it) }
+                        )
+                    },
                     isBlocked = isBlocked,
                     onUnblockClick = { otherUserProfileViewModel.unblockUser(userId) },
                 )

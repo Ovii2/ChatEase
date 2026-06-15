@@ -209,6 +209,11 @@ fun AppNavHost(
             OtherUserProfileScreen(
                 onBackClick = { navController.popBackStack() },
                 userId = userId,
+                onNavigateToChatScreen = { conversationId ->
+                    navController.navigate(Screens.Chat.createRoute(conversationId)) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.BlockedUsers.route) {

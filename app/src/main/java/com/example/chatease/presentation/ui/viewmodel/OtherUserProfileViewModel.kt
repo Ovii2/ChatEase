@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,8 +15,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OtherUserProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val auth: FirebaseAuth,
+    private val userRepository: UserRepository,
+    private val conversationRepository: ConversationRepository
 ) : ViewModel() {
+
     private val _user = MutableStateFlow(User())
     val user = _user.asStateFlow()
 
@@ -78,6 +83,23 @@ class OtherUserProfileViewModel @Inject constructor(
                 _isUserBlocked.value = userRepository.isUserBlocked(userId)
             } catch (e: Exception) {
                 Log.v("OtherUserProfileViewModel", e.message ?: "Failed to check for blocked user")
+            }
+        }
+    }
+
+    fun createNewConversation(selectedUserId: String, onConversationCreated: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val currentUserId = auth.currentUser?.uid ?: return@launch
+                val participantIds = listOf(currentUserId, selectedUserId).sorted()
+
+                val conversationId =
+                    conversationRepository.getExistingConversationId(participantIds)
+                        ?: conversationRepository.createConversation(participantIds)
+
+                onConversationCreated(conversationId)
+            } catch (e: Exception) {
+                Log.e("OtherUserProfileViewModel", e.message ?: "Failed to start conversation")
             }
         }
     }
