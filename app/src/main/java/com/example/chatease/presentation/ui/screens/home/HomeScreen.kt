@@ -7,16 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.NavigationDrawerItemDefaults
-import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -30,7 +23,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -42,11 +34,10 @@ import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
-import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeCompactLayout
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeTabletLayout
+import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
-import com.example.chatease.presentation.ui.screens.shared.chat.chatNavigationSuiteItems
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -83,40 +74,9 @@ fun HomeScreen(
     val focusManager = LocalFocusManager.current
     val activity = LocalActivity.current ?: return
     val windowSizeClass = calculateWindowSizeClass(activity)
+
     val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
     val unreadMessages = (uiState as? HomeUiState.Success)?.unreadMessages ?: 0
-
-    val customNavSuiteType = when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> NavigationSuiteType.NavigationBar
-        WindowWidthSizeClass.Medium -> NavigationSuiteType.NavigationRail
-        WindowWidthSizeClass.Expanded -> NavigationSuiteType.NavigationRail
-        else -> NavigationSuiteType.NavigationBar
-    }
-
-    val selectedColor = MaterialTheme.colorScheme.primary
-    val unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
-    val indicatorColor = Color.Transparent
-    val navigationContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
-
-    val itemColors = NavigationSuiteDefaults.itemColors(
-        navigationBarItemColors = NavigationBarItemDefaults.colors(
-            selectedIconColor = selectedColor,
-            selectedTextColor = selectedColor,
-            unselectedIconColor = unselectedColor,
-            indicatorColor = indicatorColor
-        ),
-        navigationRailItemColors = NavigationRailItemDefaults.colors(
-            selectedIconColor = selectedColor,
-            selectedTextColor = selectedColor,
-            unselectedIconColor = unselectedColor,
-            indicatorColor = indicatorColor
-        ),
-        navigationDrawerItemColors = NavigationDrawerItemDefaults.colors(
-            selectedIconColor = selectedColor,
-            selectedTextColor = selectedColor,
-            unselectedIconColor = unselectedColor
-        )
-    )
 
     val messages by chatViewModel.messages.collectAsState()
     var selectedConversationId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -140,30 +100,16 @@ fun HomeScreen(
         keyboardController = keyboardController
     )
 
-
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            chatNavigationSuiteItems(
-                currentRoute = currentRoute,
-                unreadMessages = unreadMessages,
-                pendingRequests = pendingRequests.size,
-                onDestinationClick = { route ->
-                    when (route) {
-                        Screens.Home.route -> onNavigateToHome()
-                        Screens.Contacts.route -> onNavigateToContacts()
-                        Screens.Calls.route -> onNavigateToCalls()
-                        Screens.MyProfile.route -> onNavigateToProfile()
-                    }
-                },
-                itemColors = itemColors
-            )
-        },
-        navigationSuiteColors = NavigationSuiteDefaults.colors(
-            navigationBarContainerColor = navigationContainerColor,
-            navigationRailContainerColor = navigationContainerColor,
-            navigationDrawerContainerColor = navigationContainerColor
-        ),
-        layoutType = customNavSuiteType
+    ChatNavigationScaffold(
+        windowSizeClass = windowSizeClass,
+        currentRoute = currentRoute,
+        unreadMessages = unreadMessages,
+        pendingRequests = pendingRequests.size,
+        missedCalls = 1,
+        onNavigateToHome = onNavigateToHome,
+        onNavigateToContacts = onNavigateToContacts,
+        onNavigateToCalls = onNavigateToCalls,
+        onNavigateToProfile = onNavigateToProfile
     ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
