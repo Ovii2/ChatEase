@@ -180,4 +180,21 @@
     <string name="congratulations">Congratulations!</string>
     <string name="no_blocks">You haven\'t blocked anyone!</string>
     <string name="cannot_reply">You can\'t reply to this conversation</string>
+
+    <string name="missed">Missed</string>
+    <string name="incoming">Incoming</string>
+    <string name="outgoing">Outgoing</string>
+    <string name="no_calls">Your call history will appear here</string>
+    <string name="calling">Calling…</string>
+    <string name="incoming_call">Incoming Audio Call</string>
+    <string name="call_duration_format">%1$02d:%2$02d</string>
+    <string name="audio_call">Audio Call</string>
+    <string name="call_ended">Call ended</string>
+    <string name="speaker">Speaker</string>
+    <string name="mute">Mute</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="add_call">Add Call</string>
+    <string name="keypad">Keypad</string>
+    <string name="swipe_up_message">Swipe up to message</string>
+    <string name="decline">Decline</string>
 </resources>
