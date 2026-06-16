@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.chatease.presentation.ui.screens.all_requests.AllRequestsScreen
 import com.example.chatease.presentation.ui.screens.blocked_users.BlockedUsersScreen
+import com.example.chatease.presentation.ui.screens.calls.CallsScreen
 import com.example.chatease.presentation.ui.screens.chat.ChatScreen
 import com.example.chatease.presentation.ui.screens.chat_info.ChatInfoScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
@@ -78,7 +79,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
-                onNavigateToCalls = {},
+                onNavigateToCalls = {
+                    navController.navigate(Screens.Calls.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onNavigateToProfile = {
                     navController.navigate(Screens.MyProfile.route) {
                         launchSingleTop = true
@@ -219,6 +224,27 @@ fun AppNavHost(
         composable(route = Screens.BlockedUsers.route) {
             BlockedUsersScreen(
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+        composable(route = Screens.Calls.route) {
+            CallsScreen(
+                onBackClick = { navController.popBackStack() },
+                currentRoute = currentRoute,
+                onNavigateToHome = {
+                    navController.navigate(Screens.Home.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToContacts = {
+                    navController.navigate(Screens.Contacts.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToProfile = {
+                    navController.navigate(Screens.MyProfile.route) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
     }
