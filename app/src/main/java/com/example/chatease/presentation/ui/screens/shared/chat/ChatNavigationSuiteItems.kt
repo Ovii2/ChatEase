@@ -20,6 +20,7 @@ fun NavigationSuiteScope.chatNavigationSuiteItems(
     currentRoute: String,
     unreadMessages: Int,
     pendingRequests: Int,
+    missedCalls: Int,
     onDestinationClick: (String) -> Unit,
     itemColors: NavigationSuiteItemColors
 ) {
@@ -27,6 +28,7 @@ fun NavigationSuiteScope.chatNavigationSuiteItems(
         val badgeCount = when (item.route) {
             Screens.Home.route -> unreadMessages
             Screens.Contacts.route -> pendingRequests
+            Screens.Calls.route -> missedCalls
             else -> 0
         }
 
