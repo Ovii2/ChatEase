@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
@@ -37,7 +38,7 @@ fun AudioCallBottomSection(modifier: Modifier = Modifier, callStatus: CallStatus
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+        horizontalArrangement = Arrangement.spacedBy(64.dp, Alignment.CenterHorizontally)
     ) {
         val declineContainerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.9f)
         val acceptContainerColor =
@@ -69,6 +70,7 @@ fun AudioCallBottomSection(modifier: Modifier = Modifier, callStatus: CallStatus
             }
 
             CallStatus.ENDED -> {}
+            else -> {}
         }
     }
 }
@@ -85,7 +87,8 @@ fun AudioCallBottomItem(
 ) {
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         IconButton(
             modifier = Modifier.size(80.dp),
@@ -104,7 +107,8 @@ fun AudioCallBottomItem(
         text?.let {
             Text(
                 text = stringResource(it),
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.W600
             )
         }
     }
@@ -121,7 +125,7 @@ private fun AudioCallBottomSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AudioCallBottomSection(
-                    callStatus = CallStatus.CALLING
+                    callStatus = CallStatus.INCOMING
                 )
             }
         }
