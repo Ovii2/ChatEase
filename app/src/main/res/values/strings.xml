@@ -198,4 +198,6 @@
     <string name="swipe_up_message">Swipe up to message</string>
     <string name="decline">Decline</string>
     <string name="canceled">Canceled</string>
+    <string name="incoming_call_screen">Incoming call</string>
+    <string name="outgoing_call">Outgoing call</string>
 </resources>
