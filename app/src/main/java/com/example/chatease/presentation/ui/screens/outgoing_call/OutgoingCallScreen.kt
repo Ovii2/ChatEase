@@ -33,6 +33,7 @@ fun OutgoingCallScreen(modifier: Modifier = Modifier) {
     ActiveCallScreenLayout(
         backgroundColors = listOf(
             MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.tertiaryFixedDim,
             MaterialTheme.colorScheme.primary
         )
     ) {

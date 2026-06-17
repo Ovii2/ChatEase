@@ -32,10 +32,9 @@ fun IncomingCallScreen(modifier: Modifier = Modifier) {
 
     ActiveCallScreenLayout(
         backgroundColors = listOf(
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.error,
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.background
+            MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.surfaceVariant,
+            MaterialTheme.colorScheme.secondary
         )
     ) {
         AudioCallTopSection(
