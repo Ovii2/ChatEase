@@ -93,7 +93,7 @@ fun RightPaneTopBar(
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    if (!isBlockedByOtherUser) {
+                    if (!isBlockedByOtherUser && user.status != UserPresenceStatus.OFFLINE) {
                         Icon(
                             modifier = Modifier.size(iconSize),
                             painter = painterResource(R.drawable.ic_phone),
@@ -144,7 +144,7 @@ private fun RightPaneTopBarPreview() {
         fullName = "Test test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserPresenceStatus.ONLINE
+        status = UserPresenceStatus.OFFLINE
     )
     ChatEaseTheme {
         Scaffold {
@@ -159,7 +159,7 @@ private fun RightPaneTopBarPreview() {
                     user = user,
                     onBackClick = {},
                     onNavigateToChatInfo = {},
-                    isBlockedByOtherUser = true,
+                    isBlockedByOtherUser = false,
                 )
             }
         }
