@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,11 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlin.math.abs
 
 @Composable
 fun ActiveCallScreenLayout(
     modifier: Modifier = Modifier,
-    backgroundColors: List<Color>,
+    callId: String,
     content: @Composable () -> Unit
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "call_background")
@@ -38,10 +40,30 @@ fun ActiveCallScreenLayout(
         label = ""
     )
 
+    val palettes = listOf(
+        listOf(
+            MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.surfaceVariant,
+            MaterialTheme.colorScheme.secondary
+        ),
+        listOf(
+            MaterialTheme.colorScheme.surfaceContainerHighest,
+            MaterialTheme.colorScheme.tertiaryFixedDim,
+            MaterialTheme.colorScheme.secondary
+        ),
+        listOf(
+            MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.tertiaryFixedDim,
+            MaterialTheme.colorScheme.primary
+        )
+    )
+
+    val backgroundColor = palettes[abs(callId.hashCode()) % palettes.size]
+
     Box(
         modifier = modifier.background(
             brush = Brush.verticalGradient(
-                colors = backgroundColors,
+                colors = backgroundColor,
                 startY = offset,
                 endY = offset + 1000f
             )

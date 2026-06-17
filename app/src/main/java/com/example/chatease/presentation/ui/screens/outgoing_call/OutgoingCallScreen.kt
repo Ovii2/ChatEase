@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,11 +30,7 @@ fun OutgoingCallScreen(modifier: Modifier = Modifier) {
     )
 
     ActiveCallScreenLayout(
-        backgroundColors = listOf(
-            MaterialTheme.colorScheme.surface,
-            MaterialTheme.colorScheme.tertiaryFixedDim,
-            MaterialTheme.colorScheme.primary
-        )
+        callId = "1"
     ) {
         AudioCallTopSection(
             callStatus = CallStatus.CALLING,

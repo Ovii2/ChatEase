@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,11 +30,7 @@ fun ConnectedCallScreen(modifier: Modifier = Modifier) {
     )
 
     ActiveCallScreenLayout(
-        backgroundColors = listOf(
-            MaterialTheme.colorScheme.surfaceContainerHighest,
-            MaterialTheme.colorScheme.tertiaryFixedDim,
-            MaterialTheme.colorScheme.secondary
-        )
+        callId = "2"
     ) {
         AudioCallTopSection(
             callStatus = CallStatus.CONNECTED,
@@ -50,8 +45,9 @@ fun ConnectedCallScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true,
-         uiMode = Configuration.UI_MODE_TYPE_NORMAL
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
 private fun ConnectedCallScreenPreview() {
