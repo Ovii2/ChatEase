@@ -197,4 +197,5 @@
     <string name="keypad">Keypad</string>
     <string name="swipe_up_message">Swipe up to message</string>
     <string name="decline">Decline</string>
+    <string name="canceled">Canceled</string>
 </resources>
