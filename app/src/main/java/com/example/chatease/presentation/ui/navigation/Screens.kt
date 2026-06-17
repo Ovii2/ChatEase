@@ -33,6 +33,7 @@ sealed class Screens(val route: String) {
     data object BlockedUsers : Screens("blocked_users")
     data object OutgoingCall : Screens("outgoing_call")
     data object IncomingCall : Screens("incoming_call")
+    data object ConnectedCall : Screens("connected_call")
 }
 
 @StringRes
@@ -53,5 +54,6 @@ fun Screens.toScreenName(): Int {
         Screens.BlockedUsers -> R.string.blocked_users
         Screens.IncomingCall -> R.string.incoming_call_screen
         Screens.OutgoingCall -> R.string.outgoing_call
+        Screens.ConnectedCall -> R.string.connected_call
     }
 }
