@@ -33,6 +33,9 @@ fun AudioCallActionSection(modifier: Modifier = Modifier, callStatus: CallStatus
         CallStatus.INCOMING -> AudioCallActionsDataSource.incomingCallActions
         CallStatus.CONNECTED -> AudioCallActionsDataSource.activeCallActions
         CallStatus.ENDED -> emptyList()
+        CallStatus.DECLINED -> emptyList()
+        CallStatus.MISSED -> emptyList()
+        CallStatus.CANCELED -> emptyList()
     }
 
     val firstRow = actions.take(3)
