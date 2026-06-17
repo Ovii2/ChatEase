@@ -8,7 +8,10 @@ enum class CallStatus {
     CALLING,
     INCOMING,
     CONNECTED,
-    ENDED
+    ENDED,
+    DECLINED,
+    MISSED,
+    CANCELED
 }
 
 @Composable
@@ -22,4 +25,7 @@ fun CallStatus.toScreenName(minutes: Int? = null, seconds: Int? = null) = when (
     )
 
     CallStatus.ENDED -> stringResource(R.string.call_ended)
+    CallStatus.DECLINED -> stringResource(R.string.declined)
+    CallStatus.MISSED -> stringResource(R.string.missed)
+    CallStatus.CANCELED -> stringResource(R.string.canceled)
 }
