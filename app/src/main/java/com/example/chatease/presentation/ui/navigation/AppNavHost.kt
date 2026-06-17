@@ -12,6 +12,7 @@ import com.example.chatease.presentation.ui.screens.blocked_users.BlockedUsersSc
 import com.example.chatease.presentation.ui.screens.calls.CallsScreen
 import com.example.chatease.presentation.ui.screens.chat.ChatScreen
 import com.example.chatease.presentation.ui.screens.chat_info.ChatInfoScreen
+import com.example.chatease.presentation.ui.screens.connected_call.ConnectedCallScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
 import com.example.chatease.presentation.ui.screens.home.HomeScreen
 import com.example.chatease.presentation.ui.screens.incoming_call.IncomingCallScreen
@@ -254,6 +255,9 @@ fun AppNavHost(
         }
         composable(route = Screens.IncomingCall.route) {
             IncomingCallScreen()
+        }
+        composable(route = Screens.ConnectedCall.route) {
+            ConnectedCallScreen()
         }
     }
 }
