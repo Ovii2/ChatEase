@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
-import com.example.chatease.domain.model.Call
+import com.example.chatease.domain.model.CallHistory
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.CallDirection
 import com.example.chatease.domain.model.enums.CallType
@@ -44,16 +44,16 @@ import com.example.chatease.utils.toFormattedTime
 fun CallsList(
     modifier: Modifier = Modifier,
     user: User,
-    calls: List<Call>
+    callHistories: List<CallHistory>
 ) {
     val context = LocalContext.current
 
-    val groupedCalls = calls
+    val groupedCalls = callHistories
         .sortedByDescending { it.timestamp }
         .groupBy { call ->
             call.timestamp.toChatDateLabel(context)
         }
-    if (calls.isEmpty()) {
+    if (callHistories.isEmpty()) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -81,7 +81,7 @@ fun CallsList(
                 items(callsForDate) { call ->
                     CallsListItem(
                         user = user,
-                        call = call,
+                        callHistory = call,
                     )
                 }
             }
@@ -93,9 +93,9 @@ fun CallsList(
 fun CallsListItem(
     modifier: Modifier = Modifier,
     user: User,
-    call: Call
+    callHistory: CallHistory
 ) {
-    val icon = when (call.callDirection) {
+    val icon = when (callHistory.callDirection) {
         CallDirection.MISSED -> Icons.AutoMirrored.Filled.PhoneMissed
         CallDirection.INCOMING -> Icons.AutoMirrored.Filled.PhoneCallback
         CallDirection.OUTGOING -> Icons.Filled.Call
@@ -125,14 +125,14 @@ fun CallsListItem(
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        text = stringResource(call.callDirection.toScreenName()),
-                        color = call.callDirection.color(),
+                        text = stringResource(callHistory.callDirection.toScreenName()),
+                        color = callHistory.callDirection.color(),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.W500
                     )
-                    if (call.callDirection != CallDirection.MISSED) {
+                    if (callHistory.callDirection != CallDirection.MISSED) {
                         Text(
-                            text = call.callDuration?.toFormattedTime() ?: "",
+                            text = callHistory.callDuration?.toFormattedTime() ?: "",
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.W500
                         )
@@ -143,7 +143,7 @@ fun CallsListItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = call.callDirection.color()
+            tint = callHistory.callDirection.color()
         )
     }
 }
@@ -160,8 +160,8 @@ private fun CallsListPreview() {
         status = UserPresenceStatus.ONLINE,
         blockedUserIds = emptyList()
     )
-    val calls = List(10) {
-        Call(
+    val callHistories = List(10) {
+        CallHistory(
             id = it.toString(),
             callDirection = listOf(
                 CallDirection.MISSED,
@@ -198,7 +198,7 @@ private fun CallsListPreview() {
             ) {
                 CallsList(
                     user = user,
-                    calls = calls
+                    callHistories = callHistories
                 )
             }
         }

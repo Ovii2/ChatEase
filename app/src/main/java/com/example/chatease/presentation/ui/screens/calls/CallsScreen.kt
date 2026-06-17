@@ -3,10 +3,8 @@ package com.example.chatease.presentation.ui.screens.calls
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -14,16 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.chatease.R
-import com.example.chatease.domain.model.Call
+import com.example.chatease.domain.model.CallHistory
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.screens.calls.components.CallsList
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
-import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -49,7 +45,7 @@ fun CallsScreen(
         status = UserPresenceStatus.ONLINE,
         blockedUserIds = emptyList()
     )
-    val calls = emptyList<Call>()
+    val callHistories = emptyList<CallHistory>()
 
     ChatNavigationScaffold(
         windowSizeClass = windowSizeClass,
@@ -73,7 +69,7 @@ fun CallsScreen(
             CallsList(
                 modifier = Modifier.padding(paddingValues),
                 user = user,
-                calls = calls
+                callHistories = callHistories
             )
         }
     }
