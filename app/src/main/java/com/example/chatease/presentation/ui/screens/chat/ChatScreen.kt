@@ -10,13 +10,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
+import com.example.chatease.presentation.ui.viewmodel.CallViewModel
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 
 @Composable
 fun ChatScreen(
     modifier: Modifier = Modifier,
     chatViewModel: ChatViewModel = hiltViewModel(),
+    callViewModel: CallViewModel = hiltViewModel(),
     conversationId: String,
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
@@ -83,5 +86,11 @@ fun ChatScreen(
             )
         },
         isBlockedByOtherUser = isBlockedByOtherUser,
+        onStartAudioCall = { receiverId ->
+            callViewModel.createCall(
+                receiverId = receiverId,
+                callType = CallType.AUDIO
+            )
+        },
     )
 }

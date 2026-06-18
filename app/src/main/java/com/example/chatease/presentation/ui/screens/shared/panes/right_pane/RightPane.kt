@@ -62,7 +62,8 @@ fun RightPane(
     onPeekClick: () -> Unit,
     typingUserIds: List<String>,
     updateTypingStatus: (String) -> Unit,
-    isBlockedByOtherUser: Boolean
+    isBlockedByOtherUser: Boolean,
+    onStartAudioCall: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -130,6 +131,7 @@ fun RightPane(
             onBackClick = onBackClick,
             onNavigateToChatInfo = onNavigateToChatInfo,
             isBlockedByOtherUser = isBlockedByOtherUser,
+            onStartAudioCall = onStartAudioCall,
         )
         if (showNewMessagesButton) {
             NewMessagesButton(
@@ -243,6 +245,7 @@ private fun RightPanePreview() {
                     typingUserIds = listOf("user_1", "user_2"),
                     updateTypingStatus = {},
                     isBlockedByOtherUser = false,
+                    onStartAudioCall = {},
                 )
             }
         }

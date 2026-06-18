@@ -97,6 +97,7 @@ fun HomeTabletLayout(
                     typingUserIds = listOf(),
                     updateTypingStatus = { },
                     isBlockedByOtherUser = isBlockedByOtherUser,
+                    onStartAudioCall = {},
                 )
             }
         },

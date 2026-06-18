@@ -6,43 +6,56 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.CallStatus
 import com.example.chatease.domain.model.enums.UserPresenceStatus
-import com.example.chatease.presentation.ui.screens.shared.calls.ActiveCallScreenLayout
-import com.example.chatease.presentation.ui.screens.shared.calls.AudioCallActionSection
-import com.example.chatease.presentation.ui.screens.shared.calls.AudioCallBottomSection
-import com.example.chatease.presentation.ui.screens.shared.calls.AudioCallTopSection
+import com.example.chatease.presentation.ui.screens.outgoing_call.layouts.OutgoingCallScreenCompactLayout
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.CallViewModel
 
 @Composable
-fun OutgoingCallScreen(modifier: Modifier = Modifier) {
-    val user = User(
-        uid = "",
-        fullName = "Test Test",
-        email = "",
-        imageUrl = null,
-        status = UserPresenceStatus.ONLINE,
-        blockedUserIds = emptyList()
-    )
+fun OutgoingCallScreen(
+    modifier: Modifier = Modifier,
+    callViewModel: CallViewModel = hiltViewModel(),
+    onNavigateToConnectedCallScreen: () -> Unit,
+    onNavigateBack: () -> Unit
+) {
+    val call by callViewModel.call.collectAsState()
+    val user by callViewModel.user.collectAsState()
 
-    ActiveCallScreenLayout(
-        callId = "1"
-    ) {
-        AudioCallTopSection(
-            callStatus = CallStatus.CALLING,
-            user = user
-        )
-        AudioCallActionSection(
-            callStatus = CallStatus.CALLING
-        )
-        AudioCallBottomSection(
-            callStatus = CallStatus.CALLING
-        )
+    LaunchedEffect(call?.status) {
+        when (call?.status) {
+            CallStatus.CONNECTED -> {
+                onNavigateToConnectedCallScreen()
+            }
+
+            CallStatus.DECLINED,
+            CallStatus.CANCELED,
+            CallStatus.ENDED,
+            CallStatus.MISSED -> {
+                onNavigateBack()
+            }
+
+            else -> Unit
+        }
     }
+    OutgoingCallScreenCompactLayout(
+        callId = call?.id ?: "",
+        user = user,
+        onCancelCall = {
+            call?.id?.let { callId ->
+                callViewModel.cancelCall(callId)
+            }
+        },
+        onNavigateBack = onNavigateBack
+    )
 }
 
 @Preview(
@@ -51,6 +64,14 @@ fun OutgoingCallScreen(modifier: Modifier = Modifier) {
 )
 @Composable
 private fun OutgoingCallScreenPreview() {
+    val user = User(
+        uid = "",
+        fullName = "Test Test",
+        email = "",
+        imageUrl = null,
+        status = UserPresenceStatus.ONLINE,
+        blockedUserIds = emptyList()
+    )
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -58,7 +79,12 @@ private fun OutgoingCallScreenPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutgoingCallScreen()
+                OutgoingCallScreenCompactLayout(
+                    callId = "",
+                    user = user,
+                    onCancelCall = {},
+                    onNavigateBack = {}
+                )
             }
         }
     }

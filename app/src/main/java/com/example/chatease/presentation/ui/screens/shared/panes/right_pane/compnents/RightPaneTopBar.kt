@@ -46,7 +46,8 @@ fun RightPaneTopBar(
     user: User,
     onBackClick: () -> Unit,
     onNavigateToChatInfo: () -> Unit,
-    isBlockedByOtherUser: Boolean
+    isBlockedByOtherUser: Boolean,
+    onStartAudioCall: (String) -> Unit
 ) {
     val iconSize = 26.dp
 
@@ -95,7 +96,9 @@ fun RightPaneTopBar(
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     if (!isBlockedByOtherUser && user.status != UserPresenceStatus.OFFLINE) {
                         Icon(
-                            modifier = Modifier.size(iconSize),
+                            modifier = Modifier
+                                .size(iconSize)
+                                .clickable { onStartAudioCall(user.uid) },
                             painter = painterResource(R.drawable.ic_phone),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
@@ -144,7 +147,7 @@ private fun RightPaneTopBarPreview() {
         fullName = "Test test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserPresenceStatus.OFFLINE
+        status = UserPresenceStatus.ONLINE
     )
     ChatEaseTheme {
         Scaffold {
@@ -160,6 +163,7 @@ private fun RightPaneTopBarPreview() {
                     onBackClick = {},
                     onNavigateToChatInfo = {},
                     isBlockedByOtherUser = false,
+                    onStartAudioCall = {},
                 )
             }
         }
