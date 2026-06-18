@@ -33,7 +33,12 @@ import com.example.chatease.presentation.ui.theme.successGreenDark
 import com.example.chatease.presentation.ui.theme.successGreenLight
 
 @Composable
-fun AudioCallBottomSection(modifier: Modifier = Modifier, callStatus: CallStatus) {
+fun AudioCallBottomSection(
+    modifier: Modifier = Modifier,
+    callStatus: CallStatus,
+    onAcceptCall: () -> Unit = {},
+    onCancelCall: () -> Unit = {}
+) {
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -55,14 +60,14 @@ fun AudioCallBottomSection(modifier: Modifier = Modifier, callStatus: CallStatus
 
             CallStatus.INCOMING -> {
                 AudioCallBottomItem(
-                    onClick = {},
+                    onClick = onCancelCall,
                     icon = Icons.Filled.CallEnd,
                     text = R.string.decline,
                     containerColor = declineContainerColor
 
                 )
                 AudioCallBottomItem(
-                    onClick = {},
+                    onClick = onAcceptCall,
                     icon = Icons.Filled.Call,
                     text = R.string.accept,
                     containerColor = acceptContainerColor
@@ -125,7 +130,9 @@ private fun AudioCallBottomSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AudioCallBottomSection(
-                    callStatus = CallStatus.INCOMING
+                    callStatus = CallStatus.INCOMING,
+                    onAcceptCall = {},
+                    onCancelCall = {},
                 )
             }
         }
