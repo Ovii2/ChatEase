@@ -3,11 +3,13 @@ package com.example.chatease.di
 import android.content.Context
 import com.example.chatease.data.local.datastore.user_preferences.UserPreferencesRepository
 import com.example.chatease.data.remote.CategoryRemoteDataSource
+import com.example.chatease.data.repository.CallRepositoryImpl
 import com.example.chatease.data.repository.CategoryRepositoryImpl
 import com.example.chatease.data.repository.ContactRequestRepositoryImpl
 import com.example.chatease.data.repository.ContactsRepositoryImpl
 import com.example.chatease.data.repository.ConversationRepositoryImpl
 import com.example.chatease.data.repository.UserRepositoryImpl
+import com.example.chatease.domain.repository.CallRepository
 import com.example.chatease.domain.repository.CategoryRepository
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.example.chatease.domain.repository.ContactsRepository
@@ -71,4 +73,9 @@ object AppModule {
     @Singleton
     fun provideUserPreferencesRepository(@ApplicationContext context: Context): UserPreferencesRepository =
         UserPreferencesRepository(context)
+
+    @Provides
+    @Singleton
+    fun provideCallRepository(firestore: FirebaseFirestore): CallRepository =
+        CallRepositoryImpl(firestore)
 }
