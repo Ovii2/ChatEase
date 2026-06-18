@@ -251,7 +251,14 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.OutgoingCall.route) {
-            OutgoingCallScreen()
+            OutgoingCallScreen(
+                onNavigateToConnectedCallScreen = {
+                    navController.navigate(Screens.ConnectedCall.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
         composable(route = Screens.IncomingCall.route) {
             IncomingCallScreen()
