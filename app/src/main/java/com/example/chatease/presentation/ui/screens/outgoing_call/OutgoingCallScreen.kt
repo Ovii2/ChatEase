@@ -53,6 +53,7 @@ fun OutgoingCallScreen(
             call?.id?.let { callId ->
                 callViewModel.cancelCall(callId)
             }
+            onNavigateBack()
         },
         onNavigateBack = onNavigateBack
     )

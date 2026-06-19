@@ -52,7 +52,7 @@ fun AudioCallBottomSection(
         when (callStatus) {
             CallStatus.CALLING, CallStatus.CONNECTED -> {
                 AudioCallBottomItem(
-                    onClick = {},
+                    onClick = onCancelCall,
                     icon = Icons.Filled.CallEnd,
                     containerColor = declineContainerColor,
                 )

@@ -135,6 +135,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToOutgoingCallScreen = {
+                    navController.navigate(Screens.OutgoingCall.route) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.NewChat.route) {
