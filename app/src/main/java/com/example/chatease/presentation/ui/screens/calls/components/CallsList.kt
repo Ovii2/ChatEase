@@ -35,6 +35,7 @@ import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.model.enums.color
 import com.example.chatease.domain.model.enums.toScreenName
+import com.example.chatease.presentation.ui.model.CallHistoryUiModel
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toChatDateLabel
@@ -43,17 +44,15 @@ import com.example.chatease.utils.toFormattedTime
 @Composable
 fun CallsList(
     modifier: Modifier = Modifier,
-    user: User,
-    callHistories: List<CallHistory>
+    callHistoryUiModels: List<CallHistoryUiModel>
 ) {
     val context = LocalContext.current
 
-    val groupedCalls = callHistories
-        .sortedByDescending { it.timestamp }
-        .groupBy { call ->
-            call.timestamp.toChatDateLabel(context)
-        }
-    if (callHistories.isEmpty()) {
+    val groupedCalls = callHistoryUiModels
+        .sortedByDescending { it.callHistory.timestamp }
+        .groupBy { it.callHistory.timestamp.toChatDateLabel(context) }
+
+    if (callHistoryUiModels.isEmpty()) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -78,10 +77,9 @@ fun CallsList(
                     )
                 }
 
-                items(callsForDate) { call ->
+                items(callsForDate) { callHistoryUiModel ->
                     CallsListItem(
-                        user = user,
-                        callHistory = call,
+                        callHistoryUiModel = callHistoryUiModel
                     )
                 }
             }
@@ -92,9 +90,11 @@ fun CallsList(
 @Composable
 fun CallsListItem(
     modifier: Modifier = Modifier,
-    user: User,
-    callHistory: CallHistory
+    callHistoryUiModel: CallHistoryUiModel
 ) {
+    val user = callHistoryUiModel.user
+    val callHistory = callHistoryUiModel.callHistory
+
     val icon = when (callHistory.callDirection) {
         CallDirection.MISSED -> Icons.AutoMirrored.Filled.PhoneMissed
         CallDirection.INCOMING -> Icons.AutoMirrored.Filled.PhoneCallback
@@ -160,35 +160,31 @@ private fun CallsListPreview() {
         status = UserPresenceStatus.ONLINE,
         blockedUserIds = emptyList()
     )
-    val callHistories = List(10) {
-        CallHistory(
-            id = it.toString(),
-            callDirection = listOf(
-                CallDirection.MISSED,
-                CallDirection.INCOMING,
-                CallDirection.OUTGOING
-            ).random(),
-            timestamp = now - listOf(
-                5 * 60 * 1000L,
-                30 * 60 * 1000L,
-                2 * 60 * 60 * 1000L,
-                24 * 60 * 60 * 1000L,
-                2 * 24 * 60 * 60 * 1000L,
-                3 * 24 * 60 * 60 * 1000L,
-                7 * 24 * 60 * 60 * 1000L,
-            ).random(),
-            userId = "user_1",
-            callDuration = listOf(
-                15_000L,
-                42_000L,
-                75_000L,
-                180_000L,
-                420_000L,
-                840_000L
-            ).random(),
-            callType = CallType.AUDIO,
+
+    val callHistoryUiModels = List(10) { index ->
+        CallHistoryUiModel(
+            callHistory = CallHistory(
+                id = index.toString(),
+                callDirection = listOf(
+                    CallDirection.MISSED,
+                    CallDirection.INCOMING,
+                    CallDirection.OUTGOING
+                ).random(),
+                timestamp = now - listOf(
+                    5 * 60 * 1000L,
+                    30 * 60 * 1000L,
+                    2 * 60 * 60 * 1000L,
+                    24 * 60 * 60 * 1000L
+                ).random(),
+                callerId = "user_1",
+                receiverId = "user_2",
+                callDuration = listOf(15_000L, 42_000L, 75_000L).random(),
+                callType = CallType.AUDIO
+            ),
+            user = user
         )
     }
+
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -197,8 +193,7 @@ private fun CallsListPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CallsList(
-                    user = user,
-                    callHistories = callHistories
+                    callHistoryUiModels = callHistoryUiModels
                 )
             }
         }

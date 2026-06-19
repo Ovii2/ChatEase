@@ -8,19 +8,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
-import com.example.chatease.domain.model.CallHistory
-import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.screens.calls.components.CallsList
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.CallViewModel
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -30,22 +32,19 @@ fun CallsScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToContacts: () -> Unit,
     onNavigateToProfile: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    callViewModel: CallViewModel = hiltViewModel()
 ) {
     val activity = LocalActivity.current ?: return
     val windowSizeClass = calculateWindowSizeClass(activity)
     val unreadMessages = 1
     val pendingRequests = 1
     val missedCalls = 1
-    val user = User(
-        uid = "1",
-        fullName = "Test Test",
-        email = "test@email.com",
-        imageUrl = null,
-        status = UserPresenceStatus.ONLINE,
-        blockedUserIds = emptyList()
-    )
-    val callHistories = emptyList<CallHistory>()
+    val callHistoryUiModels by callViewModel.callHistoryUiModels.collectAsState()
+
+    LaunchedEffect(Unit) {
+        callViewModel.observeCallHistory()
+    }
 
     ChatNavigationScaffold(
         windowSizeClass = windowSizeClass,
@@ -68,8 +67,7 @@ fun CallsScreen(
             }) { paddingValues ->
             CallsList(
                 modifier = Modifier.padding(paddingValues),
-                user = user,
-                callHistories = callHistories
+                callHistoryUiModels = callHistoryUiModels
             )
         }
     }

@@ -4,17 +4,21 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.Call
+import com.example.chatease.domain.model.CallHistory
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.CallDirection
 import com.example.chatease.domain.model.enums.CallStatus
 import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.domain.repository.CallRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.example.chatease.presentation.ui.model.CallHistoryUiModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +34,14 @@ class CallViewModel @Inject constructor(
     private val _user = MutableStateFlow(User())
     val user = _user.asStateFlow()
 
+    private val _callHistories = MutableStateFlow<List<CallHistory>>(emptyList())
+    val callHistories = _callHistories.asStateFlow()
+
+    private val _callHistoryUiModels = MutableStateFlow<List<CallHistoryUiModel>>(emptyList())
+    val callHistoryUiModels = _callHistoryUiModels.asStateFlow()
+
     private var callObserverJob: Job? = null
+    private var callHistoryObserverJob: Job? = null
 
     fun createCall(
         receiverId: String,
@@ -60,7 +71,6 @@ class CallViewModel @Inject constructor(
     }
 
     fun observeCall(callId: String) {
-        println("VM observeCall called with = $callId")
         callObserverJob?.cancel()
 
         callObserverJob = viewModelScope.launch {
@@ -87,17 +97,6 @@ class CallViewModel @Inject constructor(
         callObserverJob = null
     }
 
-    fun observeIncomingCall(userId: String) {
-        callObserverJob?.cancel()
-
-        callObserverJob = viewModelScope.launch {
-            callRepository.observeIncomingCall(userId)
-                .collect { call ->
-                    _call.value = call
-                }
-        }
-    }
-
     fun answerCall(callId: String) {
         updateCallStatus(
             callId = callId,
@@ -113,6 +112,13 @@ class CallViewModel @Inject constructor(
     }
 
     fun cancelCall(callId: String) {
+        val currentCall = _call.value ?: return
+
+        createCallHistory(
+            call = currentCall,
+            callDirection = CallDirection.OUTGOING
+        )
+
         updateCallStatus(
             callId = callId,
             status = CallStatus.CANCELED
@@ -124,6 +130,55 @@ class CallViewModel @Inject constructor(
             callId = callId,
             status = CallStatus.ENDED
         )
+    }
+
+    fun observeCallHistory() {
+        callHistoryObserverJob?.cancel()
+
+        callHistoryObserverJob = viewModelScope.launch {
+            val currentUserId = auth.currentUser?.uid ?: return@launch
+            callRepository.observeCallHistory(currentUserId)
+                .collect { callHistories ->
+
+                    val uiModels = callHistories.map { callHistory ->
+                        val otherUserId =
+                            if (callHistory.callerId == currentUserId) callHistory.receiverId else callHistory.callerId
+
+                        val user = userRepository.getUserById(otherUserId)
+
+                        CallHistoryUiModel(
+                            callHistory = callHistory,
+                            user = user
+                        )
+                    }
+
+                    _callHistories.value = callHistories
+                    _callHistoryUiModels.value = uiModels
+                }
+        }
+    }
+
+    private fun createCallHistory(
+        call: Call,
+        callDirection: CallDirection,
+        callDuration: Long? = null
+    ) {
+        viewModelScope.launch {
+            try {
+                val callHistory = CallHistory(
+                    id = UUID.randomUUID().toString(),
+                    callerId = call.callerId,
+                    receiverId = call.receiverId,
+                    callType = call.callType,
+                    callDirection = callDirection,
+                    timestamp = System.currentTimeMillis(),
+                    callDuration = callDuration
+                )
+                callRepository.createCallHistory(callHistory)
+            } catch (e: Exception) {
+                Log.v("CallViewModel", e.message ?: "Failed to create call history")
+            }
+        }
     }
 
     private fun observeUser(userId: String) {

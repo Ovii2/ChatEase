@@ -1,9 +1,9 @@
-package com.example.chatease.domain.model
+package com.example.chatease.data.remote.dto
 
 import com.example.chatease.domain.model.enums.CallDirection
 import com.example.chatease.domain.model.enums.CallType
 
-data class CallHistory(
+data class CallHistoryDto(
     val id: String = "",
     val callerId: String = "",
     val receiverId: String = "",

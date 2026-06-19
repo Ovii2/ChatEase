@@ -1,6 +1,10 @@
 package com.example.chatease.data.repository
 
+import com.example.chatease.data.mapper.toDomain
+import com.example.chatease.data.mapper.toDto
+import com.example.chatease.data.remote.dto.CallHistoryDto
 import com.example.chatease.domain.model.Call
+import com.example.chatease.domain.model.CallHistory
 import com.example.chatease.domain.model.enums.CallStatus
 import com.example.chatease.domain.repository.CallRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,6 +21,9 @@ class CallRepositoryImpl(
         private const val CALLS = "calls"
         private const val STATUS = "status"
         private const val RECEIVER_ID = "receiverId"
+        private const val CALLER_ID = "callerId"
+        private const val CALL_HISTORY = "call_history"
+        private const val USER_ID = "userId"
     }
 
     override suspend fun createCall(call: Call) {
@@ -75,4 +82,34 @@ class CallRepositoryImpl(
             listener.remove()
         }
     }
+
+    override fun observeCallHistory(userId: String): Flow<List<CallHistory>> = callbackFlow {
+        val listener = firestore
+            .collection(CALL_HISTORY)
+            .whereEqualTo(CALLER_ID, userId)
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    close(exception)
+                    return@addSnapshotListener
+                }
+                val callHistories =
+                    snapshot
+                        ?.toObjects(CallHistoryDto::class.java)
+                        ?.map { it.toDomain() }.orEmpty()
+
+                trySend(callHistories)
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+    override suspend fun createCallHistory(callHistory: CallHistory) {
+        firestore
+            .collection(CALL_HISTORY)
+            .document(callHistory.id)
+            .set(callHistory.toDto())
+            .await()
+    }
+
 }
