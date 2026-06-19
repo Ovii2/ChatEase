@@ -37,10 +37,12 @@ fun OutgoingCallScreen(
                 onNavigateToConnectedCallScreen()
             }
 
-            CallStatus.DECLINED,
-            CallStatus.CANCELED,
-            CallStatus.ENDED,
-            CallStatus.MISSED -> {
+            CallStatus.DECLINED -> {
+                onNavigateBack()
+            }
+
+            CallStatus.CANCELED -> {
+                onNavigateBack()
             }
 
             else -> Unit
@@ -52,14 +54,11 @@ fun OutgoingCallScreen(
     }
 
     OutgoingCallScreenCompactLayout(
-        callId = call?.id ?: "",
+        callId = callId,
         user = user,
         onCancelCall = {
-            call?.id?.let { callId ->
-                callViewModel.cancelCall(callId)
-            }
+            callViewModel.cancelCall(callId)
         },
-        onNavigateBack = onNavigateBack
     )
 }
 
@@ -87,8 +86,7 @@ private fun OutgoingCallScreenPreview() {
                 OutgoingCallScreenCompactLayout(
                     callId = "",
                     user = user,
-                    onCancelCall = {},
-                    onNavigateBack = {}
+                    onCancelCall = {}
                 )
             }
         }

@@ -35,7 +35,10 @@ sealed class Screens(val route: String) {
         fun createRoute(callId: String): String = "outgoing_call/$callId"
     }
 
-    data object IncomingCall : Screens("incoming_call")
+    data object IncomingCall : Screens("incoming_call/{callId}") {
+        fun createRoute(callId: String) = "incoming_call/$callId"
+    }
+
     data object ConnectedCall : Screens("connected_call")
 }
 

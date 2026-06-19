@@ -22,8 +22,7 @@ fun OutgoingCallScreenCompactLayout(
     modifier: Modifier = Modifier,
     callId: String,
     user: User,
-    onCancelCall: () -> Unit,
-    onNavigateBack: () -> Unit
+    onCancelCall: () -> Unit
 ) {
     ActiveCallScreenLayout(
         callId = callId
@@ -39,7 +38,6 @@ fun OutgoingCallScreenCompactLayout(
             callStatus = CallStatus.CALLING,
             onCancelCall = {
                 onCancelCall()
-                onNavigateBack()
             }
         )
     }
@@ -66,8 +64,7 @@ private fun OutgoingCallScreenCompactLayoutPreview() {
                 OutgoingCallScreenCompactLayout(
                     callId = "",
                     user = user,
-                    onCancelCall = {},
-                    onNavigateBack = {}
+                    onCancelCall = {}
                 )
             }
         }

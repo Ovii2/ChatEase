@@ -269,7 +269,11 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.IncomingCall.route) {
-            IncomingCallScreen()
+            val callId = it.arguments?.getString("callId") ?: return@composable
+            IncomingCallScreen(
+                callId = callId,
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
         composable(route = Screens.ConnectedCall.route) {
             ConnectedCallScreen()
