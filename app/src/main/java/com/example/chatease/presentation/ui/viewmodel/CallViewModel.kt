@@ -32,7 +32,11 @@ class CallViewModel @Inject constructor(
 
     private var callObserverJob: Job? = null
 
-    fun createCall(receiverId: String, callType: CallType) {
+    fun createCall(
+        receiverId: String,
+        callType: CallType,
+        onCallCreated: (String) -> Unit
+    ) {
         viewModelScope.launch {
             try {
                 val callerId = auth.currentUser?.uid ?: return@launch
@@ -47,6 +51,8 @@ class CallViewModel @Inject constructor(
                 _call.value = call
                 observeCall(call.id)
                 observeUser(receiverId)
+
+                onCallCreated(call.id)
             } catch (e: Exception) {
                 Log.v("CallViewModel", e.message ?: "Failed to create call")
             }
@@ -54,12 +60,24 @@ class CallViewModel @Inject constructor(
     }
 
     fun observeCall(callId: String) {
+        println("VM observeCall called with = $callId")
         callObserverJob?.cancel()
 
         callObserverJob = viewModelScope.launch {
             callRepository.observeCall(callId)
                 .collect { call ->
                     _call.value = call
+
+                    val currentUserId = auth.currentUser?.uid ?: return@collect
+                    val otherUserId = if (call?.callerId == currentUserId) {
+                        call.receiverId
+                    } else {
+                        call?.callerId
+                    }
+
+                    if (otherUserId != null) {
+                        observeUser(otherUserId)
+                    }
                 }
         }
     }

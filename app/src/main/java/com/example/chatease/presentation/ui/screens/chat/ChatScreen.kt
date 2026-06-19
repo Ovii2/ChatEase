@@ -24,9 +24,10 @@ fun ChatScreen(
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
     onNavigateToHomeScreen: () -> Unit,
-    onNavigateToOutgoingCallScreen: () -> Unit
+    onNavigateToOutgoingCallScreen: (String) -> Unit
 ) {
     val user by chatViewModel.user.collectAsState()
+    println("Chat VM = ${callViewModel.hashCode()}")
     val messages by chatViewModel.messages.collectAsState()
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
     val isConversationDeleted by chatViewModel.isConversationDeleted.collectAsState()
@@ -90,9 +91,11 @@ fun ChatScreen(
         onStartAudioCall = { receiverId ->
             callViewModel.createCall(
                 receiverId = receiverId,
-                callType = CallType.AUDIO
+                callType = CallType.AUDIO,
+                onCallCreated = { callId ->
+                    onNavigateToOutgoingCallScreen(callId)
+                },
             )
-            onNavigateToOutgoingCallScreen()
         },
     )
 }

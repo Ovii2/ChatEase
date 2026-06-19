@@ -25,7 +25,8 @@ fun OutgoingCallScreen(
     modifier: Modifier = Modifier,
     callViewModel: CallViewModel = hiltViewModel(),
     onNavigateToConnectedCallScreen: () -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    callId: String
 ) {
     val call by callViewModel.call.collectAsState()
     val user by callViewModel.user.collectAsState()
@@ -40,12 +41,16 @@ fun OutgoingCallScreen(
             CallStatus.CANCELED,
             CallStatus.ENDED,
             CallStatus.MISSED -> {
-                onNavigateBack()
             }
 
             else -> Unit
         }
     }
+
+    LaunchedEffect(callId) {
+        callViewModel.observeCall(callId)
+    }
+
     OutgoingCallScreenCompactLayout(
         callId = call?.id ?: "",
         user = user,
@@ -53,7 +58,6 @@ fun OutgoingCallScreen(
             call?.id?.let { callId ->
                 callViewModel.cancelCall(callId)
             }
-            onNavigateBack()
         },
         onNavigateBack = onNavigateBack
     )
