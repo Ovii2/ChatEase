@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.outgoing_call.layouts
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -24,18 +25,20 @@ fun OutgoingCallScreenCompactLayout(
     user: User,
     onCancelCall: () -> Unit
 ) {
+    val callStatus = CallStatus.CALLING
+
     ActiveCallScreenLayout(
         callId = callId
     ) {
         AudioCallTopSection(
-            callStatus = CallStatus.CALLING,
+            callStatus = callStatus,
             user = user
         )
         AudioCallActionSection(
-            callStatus = CallStatus.CALLING
+            callStatus = callStatus
         )
         AudioCallBottomSection(
-            callStatus = CallStatus.CALLING,
+            callStatus = callStatus,
             onCancelCall = {
                 onCancelCall()
             }
@@ -43,7 +46,9 @@ fun OutgoingCallScreenCompactLayout(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true,
+         uiMode = Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 private fun OutgoingCallScreenCompactLayoutPreview() {
     val user = User(
@@ -54,7 +59,7 @@ private fun OutgoingCallScreenCompactLayoutPreview() {
         status = UserPresenceStatus.ONLINE,
         blockedUserIds = emptyList()
     )
-    ChatEaseTheme() {
+    ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
                 modifier = Modifier.padding(paddingValues),
