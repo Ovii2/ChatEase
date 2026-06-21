@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.shared.calls
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,17 +15,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.chatease.R
 import com.example.chatease.domain.model.enums.CallStatus
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.successGreenDark
@@ -62,14 +57,12 @@ fun AudioCallBottomSection(
                 AudioCallBottomItem(
                     onClick = onCancelCall,
                     icon = Icons.Filled.CallEnd,
-                    text = R.string.decline,
                     containerColor = declineContainerColor
 
                 )
                 AudioCallBottomItem(
                     onClick = onAcceptCall,
                     icon = Icons.Filled.Call,
-                    text = R.string.accept,
                     containerColor = acceptContainerColor
                 )
             }
@@ -86,7 +79,6 @@ fun AudioCallBottomItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
-    @StringRes text: Int? = null,
     containerColor: Color
 
 ) {
@@ -107,13 +99,6 @@ fun AudioCallBottomItem(
                 imageVector = icon,
                 contentDescription = null,
                 tint = Color.White
-            )
-        }
-        text?.let {
-            Text(
-                text = stringResource(it),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.W600
             )
         }
     }
