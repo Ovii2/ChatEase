@@ -21,8 +21,10 @@ import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.screens.calls.components.CallsList
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
+import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -33,11 +35,13 @@ fun CallsScreen(
     onNavigateToContacts: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onBackClick: () -> Unit,
-    callViewModel: CallViewModel = hiltViewModel()
+    callViewModel: CallViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val activity = LocalActivity.current ?: return
     val windowSizeClass = calculateWindowSizeClass(activity)
-    val unreadMessages = 1
+    val homeUiState by homeViewModel.uiState.collectAsState()
+    val unreadMessages = (homeUiState as? HomeUiState.Success)?.unreadMessages ?: 0
     val pendingRequests = 1
     val missedCalls = 1
     val callHistoryUiModels by callViewModel.callHistoryUiModels.collectAsState()
