@@ -116,7 +116,7 @@ class CallViewModel @Inject constructor(
 
         createCallHistory(
             call = currentCall,
-            callDirection = CallDirection.OUTGOING
+            status = CallStatus.CANCELED
         )
 
         updateCallStatus(
@@ -146,9 +146,17 @@ class CallViewModel @Inject constructor(
 
                         val user = userRepository.getUserById(otherUserId)
 
+                        val callDirection = when {
+                            callHistory.callerId == currentUserId -> CallDirection.OUTGOING
+                            callHistory.status == CallStatus.CANCELED -> CallDirection.MISSED
+                            callHistory.status == CallStatus.DECLINED -> CallDirection.MISSED
+                            else -> CallDirection.INCOMING
+                        }
+
                         CallHistoryUiModel(
                             callHistory = callHistory,
-                            user = user
+                            user = user,
+                            callDirection = callDirection
                         )
                     }
 
@@ -160,7 +168,7 @@ class CallViewModel @Inject constructor(
 
     private fun createCallHistory(
         call: Call,
-        callDirection: CallDirection,
+        status: CallStatus,
         callDuration: Long? = null
     ) {
         viewModelScope.launch {
@@ -169,8 +177,9 @@ class CallViewModel @Inject constructor(
                     id = UUID.randomUUID().toString(),
                     callerId = call.callerId,
                     receiverId = call.receiverId,
+                    participantIds = listOf(call.callerId, call.receiverId),
                     callType = call.callType,
-                    callDirection = callDirection,
+                    status = status,
                     timestamp = System.currentTimeMillis(),
                     callDuration = callDuration
                 )

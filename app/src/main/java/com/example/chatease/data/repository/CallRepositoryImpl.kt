@@ -23,7 +23,7 @@ class CallRepositoryImpl(
         private const val RECEIVER_ID = "receiverId"
         private const val CALLER_ID = "callerId"
         private const val CALL_HISTORY = "call_history"
-        private const val USER_ID = "userId"
+        private const val PARTICIPANT_IDS = "participantIds"
     }
 
     override suspend fun createCall(call: Call) {
@@ -86,16 +86,15 @@ class CallRepositoryImpl(
     override fun observeCallHistory(userId: String): Flow<List<CallHistory>> = callbackFlow {
         val listener = firestore
             .collection(CALL_HISTORY)
-            .whereEqualTo(CALLER_ID, userId)
+            .whereArrayContains(PARTICIPANT_IDS, userId)
             .addSnapshotListener { snapshot, exception ->
                 if (exception != null) {
                     close(exception)
                     return@addSnapshotListener
                 }
-                val callHistories =
-                    snapshot
-                        ?.toObjects(CallHistoryDto::class.java)
-                        ?.map { it.toDomain() }.orEmpty()
+                val callHistories = snapshot
+                    ?.toObjects(CallHistoryDto::class.java)
+                    ?.map { it.toDomain() }.orEmpty()
 
                 trySend(callHistories)
             }

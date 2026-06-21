@@ -8,8 +8,9 @@ fun CallHistoryDto.toDomain(): CallHistory {
         id = id,
         callerId = callerId,
         receiverId = receiverId,
+        participantIds = participantIds,
         callType = callType,
-        callDirection = callDirection,
+        status = status,
         timestamp = timestamp,
         callDuration = callDuration
     )
@@ -20,8 +21,9 @@ fun CallHistory.toDto(): CallHistoryDto {
         id = id,
         callerId = callerId,
         receiverId = receiverId,
+        participantIds = participantIds,
         callType = callType,
-        callDirection = callDirection,
+        status = status,
         timestamp = timestamp,
         callDuration = callDuration
     )

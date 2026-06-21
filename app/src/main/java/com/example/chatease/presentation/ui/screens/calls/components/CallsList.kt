@@ -93,9 +93,10 @@ fun CallsListItem(
     callHistoryUiModel: CallHistoryUiModel
 ) {
     val user = callHistoryUiModel.user
+    val callDirection = callHistoryUiModel.callDirection
     val callHistory = callHistoryUiModel.callHistory
 
-    val icon = when (callHistory.callDirection) {
+    val icon = when (callDirection) {
         CallDirection.MISSED -> Icons.AutoMirrored.Filled.PhoneMissed
         CallDirection.INCOMING -> Icons.AutoMirrored.Filled.PhoneCallback
         CallDirection.OUTGOING -> Icons.Filled.Call
@@ -125,12 +126,12 @@ fun CallsListItem(
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        text = stringResource(callHistory.callDirection.toScreenName()),
-                        color = callHistory.callDirection.color(),
+                        text = stringResource(callDirection.toScreenName()),
+                        color = callDirection.color(),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.W500
                     )
-                    if (callHistory.callDirection != CallDirection.MISSED) {
+                    if (callDirection != CallDirection.MISSED) {
                         Text(
                             text = callHistory.callDuration?.toFormattedTime() ?: "",
                             style = MaterialTheme.typography.labelLarge,
@@ -143,7 +144,7 @@ fun CallsListItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = callHistory.callDirection.color()
+            tint = callDirection.color()
         )
     }
 }
@@ -165,11 +166,6 @@ private fun CallsListPreview() {
         CallHistoryUiModel(
             callHistory = CallHistory(
                 id = index.toString(),
-                callDirection = listOf(
-                    CallDirection.MISSED,
-                    CallDirection.INCOMING,
-                    CallDirection.OUTGOING
-                ).random(),
                 timestamp = now - listOf(
                     5 * 60 * 1000L,
                     30 * 60 * 1000L,
@@ -181,7 +177,12 @@ private fun CallsListPreview() {
                 callDuration = listOf(15_000L, 42_000L, 75_000L).random(),
                 callType = CallType.AUDIO
             ),
-            user = user
+            user = user,
+            callDirection = listOf(
+                CallDirection.MISSED,
+                CallDirection.INCOMING,
+                CallDirection.OUTGOING
+            ).random(),
         )
     }
 
