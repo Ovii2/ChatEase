@@ -24,6 +24,7 @@ import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
+import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -36,13 +37,14 @@ fun CallsScreen(
     onNavigateToProfile: () -> Unit,
     onBackClick: () -> Unit,
     callViewModel: CallViewModel = hiltViewModel(),
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    contactsViewModel: ContactsViewModel = hiltViewModel(),
 ) {
     val activity = LocalActivity.current ?: return
     val windowSizeClass = calculateWindowSizeClass(activity)
     val homeUiState by homeViewModel.uiState.collectAsState()
     val unreadMessages = (homeUiState as? HomeUiState.Success)?.unreadMessages ?: 0
-    val pendingRequests = 1
+    val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
     val missedCalls = 1
     val callHistoryUiModels by callViewModel.callHistoryUiModels.collectAsState()
 
@@ -54,7 +56,7 @@ fun CallsScreen(
         windowSizeClass = windowSizeClass,
         currentRoute = currentRoute,
         unreadMessages = unreadMessages,
-        pendingRequests = pendingRequests,
+        pendingRequests = pendingRequests.size,
         missedCalls = missedCalls,
         onNavigateToHome = onNavigateToHome,
         onNavigateToContacts = onNavigateToContacts,
