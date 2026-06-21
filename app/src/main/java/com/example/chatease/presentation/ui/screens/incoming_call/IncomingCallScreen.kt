@@ -33,18 +33,10 @@ fun IncomingCallScreen(
 
     LaunchedEffect(call?.status) {
         when (call?.status) {
-            CallStatus.DECLINED -> {
-                onNavigateBack()
-            }
-
-            CallStatus.CANCELED -> {
-                onNavigateBack()
-            }
-
-            CallStatus.CONNECTED -> {
-
-            }
-
+            CallStatus.CONNECTED -> {}
+            CallStatus.DECLINED -> onNavigateBack()
+            CallStatus.CANCELED -> onNavigateBack()
+            CallStatus.MISSED -> onNavigateBack()
             else -> Unit
         }
     }

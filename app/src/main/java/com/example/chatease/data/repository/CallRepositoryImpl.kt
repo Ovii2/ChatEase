@@ -9,9 +9,12 @@ import com.example.chatease.domain.model.enums.CallStatus
 import com.example.chatease.domain.repository.CallRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
+import kotlin.time.Duration.Companion.milliseconds
 
 class CallRepositoryImpl(
     private val firestore: FirebaseFirestore
@@ -21,9 +24,9 @@ class CallRepositoryImpl(
         private const val CALLS = "calls"
         private const val STATUS = "status"
         private const val RECEIVER_ID = "receiverId"
-        private const val CALLER_ID = "callerId"
         private const val CALL_HISTORY = "call_history"
         private const val PARTICIPANT_IDS = "participantIds"
+        private const val CALL_TIMEOUT = 30_000L
     }
 
     override suspend fun createCall(call: Call) {
@@ -109,6 +112,34 @@ class CallRepositoryImpl(
             .document(callHistory.id)
             .set(callHistory.toDto())
             .await()
+    }
+
+    override suspend fun startCallTimeout(callId: String) {
+        delay(CALL_TIMEOUT.milliseconds)
+
+        val currentCall = firestore
+            .collection(CALLS)
+            .document(callId)
+            .get()
+            .await()
+
+        val call = currentCall.toObject(Call::class.java)
+
+        if (call?.status == CallStatus.CALLING) {
+            updateCallStatus(callId, CallStatus.MISSED)
+            createCallHistory(
+                CallHistory(
+                    id = UUID.randomUUID().toString(),
+                    callerId = call.callerId,
+                    receiverId = call.receiverId,
+                    participantIds = listOf(call.callerId, call.receiverId),
+                    callType = call.callType,
+                    status = CallStatus.MISSED,
+                    timestamp = System.currentTimeMillis(),
+                    callDuration = null
+                )
+            )
+        }
     }
 
 }

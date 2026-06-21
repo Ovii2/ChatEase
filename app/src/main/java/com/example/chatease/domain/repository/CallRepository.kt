@@ -13,4 +13,5 @@ interface CallRepository {
     fun observeIncomingCall(userId: String): Flow<Call?>
     fun observeCallHistory(userId: String): Flow<List<CallHistory>>
     suspend fun createCallHistory(callHistory: CallHistory)
+    suspend fun startCallTimeout(callId: String)
 }

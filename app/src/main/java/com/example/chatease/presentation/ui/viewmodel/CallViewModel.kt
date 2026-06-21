@@ -59,6 +59,11 @@ class CallViewModel @Inject constructor(
                     status = CallStatus.CALLING
                 )
                 callRepository.createCall(call)
+
+                viewModelScope.launch {
+                    callRepository.startCallTimeout(call.id)
+                }
+
                 _call.value = call
                 observeCall(call.id)
                 observeUser(receiverId)
