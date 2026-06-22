@@ -4,12 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.enums.CallStatus
 import com.example.chatease.presentation.ui.screens.audio_call.layouts.AudioCallCompactLayout
 import com.example.chatease.presentation.ui.screens.shared.calls.ActiveCallScreenLayout
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AudioCallScreen(
@@ -26,6 +31,7 @@ fun AudioCallScreen(
         else -> call?.status ?: CallStatus.CALLING
     }
     val user by callViewModel.user.collectAsState()
+    var callDurationSeconds by rememberSaveable { mutableIntStateOf(0) }
 
     LaunchedEffect(callId) {
         callViewModel.observeCall(callId)
@@ -45,7 +51,15 @@ fun AudioCallScreen(
 
             CallStatus.MISSED -> {}
         }
+    }
 
+    LaunchedEffect(callStatus) {
+        if (callStatus == CallStatus.CONNECTED) {
+            while (true) {
+                delay(1000.milliseconds)
+                callDurationSeconds++
+            }
+        }
     }
 
     ActiveCallScreenLayout(
@@ -60,7 +74,8 @@ fun AudioCallScreen(
             onCancelCall = {
                 callViewModel.cancelCall(callId)
             },
-            callId = callId
+            callId = callId,
+            callDurationSeconds = callDurationSeconds
         )
     }
 }

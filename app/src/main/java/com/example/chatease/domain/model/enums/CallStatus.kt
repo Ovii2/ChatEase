@@ -20,11 +20,16 @@ enum class CallStatus {
 }
 
 @Composable
-fun CallStatus.toScreenName(minutes: Int? = null, seconds: Int? = null) = when (this) {
+fun CallStatus.toScreenName(
+    hours: Int? = null,
+    minutes: Int? = null,
+    seconds: Int? = null
+) = when (this) {
     CallStatus.CALLING -> stringResource(R.string.calling)
     CallStatus.INCOMING -> stringResource(R.string.incoming_call)
     CallStatus.CONNECTED -> stringResource(
         R.string.call_duration_format,
+        hours ?: 0,
         minutes ?: 0,
         seconds ?: 0
     )

@@ -42,8 +42,7 @@ fun AudioCallTopSection(
     modifier: Modifier = Modifier,
     callStatus: CallStatus,
     user: User,
-    minutes: Int = 0,
-    seconds: Int = 0
+    callDurationSeconds: Int
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "status_breathing")
 
@@ -56,6 +55,9 @@ fun AudioCallTopSection(
         ),
         label = "status_alpha"
     )
+    val hours = callDurationSeconds / 3600
+    val minutes = (callDurationSeconds % 3600) / 60
+    val seconds = callDurationSeconds % 60
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -68,9 +70,10 @@ fun AudioCallTopSection(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = callStatus.toScreenName(minutes, seconds),
+                text = callStatus.toScreenName(hours, minutes, seconds),
                 style = MaterialTheme.typography.bodyLarge,
-                color = callStatus.color().copy(alpha = if (callStatus != CallStatus.CONNECTED) statusAlpha else 1f),
+                color = callStatus.color()
+                    .copy(alpha = if (callStatus != CallStatus.CONNECTED) statusAlpha else 1f),
                 fontWeight = FontWeight.W600
             )
             Text(
@@ -128,10 +131,9 @@ private fun AudioCallTopSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AudioCallTopSection(
-                    callStatus = CallStatus.INCOMING,
+                    callStatus = CallStatus.CONNECTED,
                     user = user,
-                    minutes = 3,
-                    seconds = 23
+                    callDurationSeconds = 120,
                 )
             }
         }

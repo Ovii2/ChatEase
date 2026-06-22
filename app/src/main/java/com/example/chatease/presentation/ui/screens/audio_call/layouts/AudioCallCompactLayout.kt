@@ -15,12 +15,14 @@ fun AudioCallCompactLayout(
     user: User,
     onAcceptCall: (String) -> Unit,
     onCancelCall: (String) -> Unit,
-    callId: String
+    callId: String,
+    callDurationSeconds: Int
 ) {
     AudioCallTopSection(
         modifier = modifier,
         callStatus = callStatus,
-        user = user
+        user = user,
+        callDurationSeconds = callDurationSeconds
     )
 
     AudioCallActionSection(

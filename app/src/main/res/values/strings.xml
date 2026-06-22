@@ -187,7 +187,7 @@
     <string name="no_calls">Your call history will appear here</string>
     <string name="calling">Calling…</string>
     <string name="incoming_call">Incoming Audio Call</string>
-    <string name="call_duration_format">%1$02d:%2$02d</string>
+    <string name="call_duration_format">%1$02d:%2$02d:%3$02d</string>
     <string name="audio_call">Audio Call</string>
     <string name="call_ended">Call ended</string>
     <string name="speaker">Speaker</string>
