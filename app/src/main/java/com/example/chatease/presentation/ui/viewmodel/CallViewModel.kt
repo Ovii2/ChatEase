@@ -45,6 +45,7 @@ class CallViewModel @Inject constructor(
 
     fun createCall(
         receiverId: String,
+        conversationId: String,
         callType: CallType,
         onCallCreated: (String) -> Unit
     ) {
@@ -56,7 +57,8 @@ class CallViewModel @Inject constructor(
                     callerId = callerId,
                     receiverId = receiverId,
                     callType = callType,
-                    status = CallStatus.CALLING
+                    status = CallStatus.CALLING,
+                    conversationId = conversationId
                 )
                 callRepository.createCall(call)
 

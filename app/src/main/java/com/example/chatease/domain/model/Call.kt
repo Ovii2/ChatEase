@@ -8,5 +8,6 @@ data class Call(
     val callerId: String = "",
     val receiverId: String = "",
     val callType: CallType = CallType.AUDIO,
-    val status: CallStatus = CallStatus.CALLING
+    val status: CallStatus = CallStatus.CALLING,
+    val conversationId: String = ""
 )

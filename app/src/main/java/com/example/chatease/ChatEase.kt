@@ -21,7 +21,7 @@ import com.example.chatease.presentation.ui.viewmodel.AppViewModel
 fun ChatEase(
     modifier: Modifier = Modifier,
     appSettingsViewModel: AppSettingsViewModel = hiltViewModel(),
-    appViewModel: AppViewModel = hiltViewModel()
+    appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val themeMode by appSettingsViewModel.themeMode.collectAsState()
     val navController = rememberNavController()
@@ -45,7 +45,7 @@ fun ChatEase(
 
     LaunchedEffect(incomingCall?.id) {
         incomingCall?.let { call ->
-            navController.navigate(Screens.IncomingCall.createRoute(call.id)) {
+            navController.navigate(Screens.IncomingCall.createRoute(call.id, call.conversationId)) {
                 launchSingleTop = true
             }
         }

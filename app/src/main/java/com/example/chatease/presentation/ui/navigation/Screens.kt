@@ -31,15 +31,20 @@ sealed class Screens(val route: String) {
     }
 
     data object BlockedUsers : Screens("blocked_users")
-    data object OutgoingCall : Screens("outgoing_call/{callId}") {
-        fun createRoute(callId: String): String = "outgoing_call/$callId"
+    data object OutgoingCall : Screens("outgoing_call/{callId}/{conversationId}") {
+        fun createRoute(callId: String, conversationId: String): String =
+            "outgoing_call/$callId/$conversationId"
     }
 
-    data object IncomingCall : Screens("incoming_call/{callId}") {
-        fun createRoute(callId: String) = "incoming_call/$callId"
+    data object IncomingCall : Screens("incoming_call/{callId}/{conversationId}") {
+        fun createRoute(callId: String, conversationId: String) =
+            "incoming_call/$callId/$conversationId"
     }
 
-    data object ConnectedCall : Screens("connected_call")
+    data object ConnectedCall : Screens("connected_call/{callId}/{conversationId}") {
+        fun createRoute(callId: String, conversationId: String) =
+            "connected_call/$callId/$conversationId"
+    }
 }
 
 @StringRes

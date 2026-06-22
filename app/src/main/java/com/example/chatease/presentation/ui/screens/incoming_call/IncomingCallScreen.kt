@@ -26,14 +26,18 @@ fun IncomingCallScreen(
     modifier: Modifier = Modifier,
     callViewModel: CallViewModel = hiltViewModel(),
     callId: String,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToConnectedCallScreen: (String) -> Unit
 ) {
     val user by callViewModel.user.collectAsState()
     val call by callViewModel.call.collectAsState()
 
     LaunchedEffect(call?.status) {
         when (call?.status) {
-            CallStatus.CONNECTED -> {}
+            CallStatus.CONNECTED -> {
+                onNavigateToConnectedCallScreen(callId)
+            }
+
             CallStatus.DECLINED -> onNavigateBack()
             CallStatus.CANCELED -> onNavigateBack()
             CallStatus.MISSED -> onNavigateBack()
@@ -57,7 +61,8 @@ fun IncomingCallScreen(
         )
         AudioCallBottomSection(
             callStatus = CallStatus.INCOMING,
-            onCancelCall = { callViewModel.declineCall(callId) }
+            onCancelCall = { callViewModel.declineCall(callId) },
+            onAcceptCall = { callViewModel.answerCall(callId) }
         )
     }
 }
@@ -79,6 +84,7 @@ private fun IncomingCallScreenPreview() {
                 IncomingCallScreen(
                     callId = "",
                     onNavigateBack = {},
+                    onNavigateToConnectedCallScreen = {},
                 )
             }
         }

@@ -136,7 +136,12 @@ fun AppNavHost(
                     }
                 },
                 onNavigateToOutgoingCallScreen = { callId ->
-                    navController.navigate(Screens.OutgoingCall.createRoute(callId)) {
+                    navController.navigate(
+                        Screens.OutgoingCall.createRoute(
+                            callId,
+                            conversationId
+                        )
+                    ) {
                         launchSingleTop = true
                     }
                 },
@@ -257,10 +262,15 @@ fun AppNavHost(
         }
         composable(route = Screens.OutgoingCall.route) {
             val callId = it.arguments?.getString("callId") ?: return@composable
-
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
             OutgoingCallScreen(
                 onNavigateToConnectedCallScreen = {
-                    navController.navigate(Screens.ConnectedCall.route) {
+                    navController.navigate(
+                        Screens.ConnectedCall.createRoute(
+                            callId,
+                            conversationId
+                        )
+                    ) {
                         launchSingleTop = true
                     }
                 },
@@ -270,13 +280,36 @@ fun AppNavHost(
         }
         composable(route = Screens.IncomingCall.route) {
             val callId = it.arguments?.getString("callId") ?: return@composable
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
             IncomingCallScreen(
                 callId = callId,
                 onNavigateBack = { navController.popBackStack() },
+                onNavigateToConnectedCallScreen = {
+                    navController.navigate(
+                        Screens.ConnectedCall.createRoute(
+                            callId,
+                            conversationId
+                        )
+                    ) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.ConnectedCall.route) {
-            ConnectedCallScreen()
+            val callId = it.arguments?.getString("callId") ?: return@composable
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+            ConnectedCallScreen(
+                callId = callId,
+                onNavigateToChatScreen = {
+                    navController.navigate(Screens.Chat.createRoute(conversationId)) {
+                        popUpTo(Screens.Home.route) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
     }
 }
