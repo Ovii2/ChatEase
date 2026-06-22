@@ -1,6 +1,10 @@
 package com.example.chatease.presentation.ui.screens.shared.calls
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,11 +32,10 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.CallStatus
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.domain.model.enums.color
 import com.example.chatease.domain.model.enums.toScreenName
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
-import com.example.chatease.presentation.ui.theme.successGreenDark
-import com.example.chatease.presentation.ui.theme.successGreenLight
 
 @Composable
 fun AudioCallTopSection(
@@ -41,7 +45,17 @@ fun AudioCallTopSection(
     minutes: Int = 0,
     seconds: Int = 0
 ) {
-    val statusColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
+    val infiniteTransition = rememberInfiniteTransition(label = "status_breathing")
+
+    val statusAlpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1300),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "status_alpha"
+    )
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -56,7 +70,7 @@ fun AudioCallTopSection(
             Text(
                 text = callStatus.toScreenName(minutes, seconds),
                 style = MaterialTheme.typography.bodyLarge,
-                color = statusColor,
+                color = callStatus.color().copy(alpha = if (callStatus != CallStatus.CONNECTED) statusAlpha else 1f),
                 fontWeight = FontWeight.W600
             )
             Text(
@@ -114,7 +128,7 @@ private fun AudioCallTopSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AudioCallTopSection(
-                    callStatus = CallStatus.CALLING,
+                    callStatus = CallStatus.INCOMING,
                     user = user,
                     minutes = 3,
                     seconds = 23

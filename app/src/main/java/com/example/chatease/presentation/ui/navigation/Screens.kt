@@ -31,19 +31,9 @@ sealed class Screens(val route: String) {
     }
 
     data object BlockedUsers : Screens("blocked_users")
-    data object OutgoingCall : Screens("outgoing_call/{callId}/{conversationId}") {
-        fun createRoute(callId: String, conversationId: String): String =
-            "outgoing_call/$callId/$conversationId"
-    }
 
-    data object IncomingCall : Screens("incoming_call/{callId}/{conversationId}") {
-        fun createRoute(callId: String, conversationId: String) =
-            "incoming_call/$callId/$conversationId"
-    }
-
-    data object ConnectedCall : Screens("connected_call/{callId}/{conversationId}") {
-        fun createRoute(callId: String, conversationId: String) =
-            "connected_call/$callId/$conversationId"
+    data object AudioCall : Screens("audio_call/{callId}") {
+        fun createRoute(callId: String) = "audio_call/$callId"
     }
 }
 
@@ -63,8 +53,6 @@ fun Screens.toScreenName(): Int {
         Screens.ChatInfo -> R.string.chat_info
         Screens.OtherUserProfile -> R.string.profile
         Screens.BlockedUsers -> R.string.blocked_users
-        Screens.IncomingCall -> R.string.incoming_call_screen
-        Screens.OutgoingCall -> R.string.outgoing_call
-        Screens.ConnectedCall -> R.string.connected_call
+        Screens.AudioCall -> R.string.audio_call
     }
 }

@@ -45,7 +45,7 @@ fun ChatEase(
 
     LaunchedEffect(incomingCall?.id) {
         incomingCall?.let { call ->
-            navController.navigate(Screens.IncomingCall.createRoute(call.id, call.conversationId)) {
+            navController.navigate(Screens.AudioCall.createRoute(call.id)) {
                 launchSingleTop = true
             }
         }

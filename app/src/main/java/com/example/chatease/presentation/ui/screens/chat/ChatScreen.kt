@@ -24,7 +24,7 @@ fun ChatScreen(
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
     onNavigateToHomeScreen: () -> Unit,
-    onNavigateToOutgoingCallScreen: (String) -> Unit
+    onNavigateToAudioCallScreen: (String) -> Unit
 ) {
     val user by chatViewModel.user.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
@@ -92,7 +92,7 @@ fun ChatScreen(
                 receiverId = receiverId,
                 callType = CallType.AUDIO,
                 onCallCreated = { callId ->
-                    onNavigateToOutgoingCallScreen(callId)
+                    onNavigateToAudioCallScreen(callId)
                 },
                 conversationId = conversationId
             )

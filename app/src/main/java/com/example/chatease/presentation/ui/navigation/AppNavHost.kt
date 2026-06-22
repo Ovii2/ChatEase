@@ -8,19 +8,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.chatease.presentation.ui.screens.all_requests.AllRequestsScreen
+import com.example.chatease.presentation.ui.screens.audio_call.AudioCallScreen
 import com.example.chatease.presentation.ui.screens.blocked_users.BlockedUsersScreen
 import com.example.chatease.presentation.ui.screens.calls.CallsScreen
 import com.example.chatease.presentation.ui.screens.chat.ChatScreen
 import com.example.chatease.presentation.ui.screens.chat_info.ChatInfoScreen
-import com.example.chatease.presentation.ui.screens.connected_call.ConnectedCallScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
 import com.example.chatease.presentation.ui.screens.home.HomeScreen
-import com.example.chatease.presentation.ui.screens.incoming_call.IncomingCallScreen
 import com.example.chatease.presentation.ui.screens.login.LoginScreen
 import com.example.chatease.presentation.ui.screens.my_profile.MyProfileScreen
 import com.example.chatease.presentation.ui.screens.new_chat.NewChatScreen
 import com.example.chatease.presentation.ui.screens.other_user_profile.OtherUserProfileScreen
-import com.example.chatease.presentation.ui.screens.outgoing_call.OutgoingCallScreen
 import com.example.chatease.presentation.ui.screens.sent_requests.SentRequestsScreen
 import com.example.chatease.presentation.ui.screens.sign_up.SignUpScreen
 import com.google.firebase.Firebase
@@ -115,6 +113,7 @@ fun AppNavHost(
         }
         composable(route = Screens.Chat.route) {
             val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+
             ChatScreen(
                 conversationId = conversationId,
                 onBackClick = { navController.popBackStack() },
@@ -135,13 +134,8 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
-                onNavigateToOutgoingCallScreen = { callId ->
-                    navController.navigate(
-                        Screens.OutgoingCall.createRoute(
-                            callId,
-                            conversationId
-                        )
-                    ) {
+                onNavigateToAudioCallScreen = { callId ->
+                    navController.navigate(Screens.AudioCall.createRoute(callId)) {
                         launchSingleTop = true
                     }
                 },
@@ -208,6 +202,7 @@ fun AppNavHost(
         }
         composable(route = Screens.ChatInfo.route) {
             val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+
             ChatInfoScreen(
                 conversationId = conversationId,
                 onBackClick = { navController.popBackStack() },
@@ -260,55 +255,12 @@ fun AppNavHost(
                 },
             )
         }
-        composable(route = Screens.OutgoingCall.route) {
+        composable(route = Screens.AudioCall.route) {
             val callId = it.arguments?.getString("callId") ?: return@composable
-            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
-            OutgoingCallScreen(
-                onNavigateToConnectedCallScreen = {
-                    navController.navigate(
-                        Screens.ConnectedCall.createRoute(
-                            callId,
-                            conversationId
-                        )
-                    ) {
-                        launchSingleTop = true
-                    }
-                },
-                onNavigateBack = { navController.popBackStack() },
-                callId = callId,
-            )
-        }
-        composable(route = Screens.IncomingCall.route) {
-            val callId = it.arguments?.getString("callId") ?: return@composable
-            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
-            IncomingCallScreen(
+
+            AudioCallScreen(
                 callId = callId,
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToConnectedCallScreen = {
-                    navController.navigate(
-                        Screens.ConnectedCall.createRoute(
-                            callId,
-                            conversationId
-                        )
-                    ) {
-                        launchSingleTop = true
-                    }
-                },
-            )
-        }
-        composable(route = Screens.ConnectedCall.route) {
-            val callId = it.arguments?.getString("callId") ?: return@composable
-            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
-            ConnectedCallScreen(
-                callId = callId,
-                onNavigateToChatScreen = {
-                    navController.navigate(Screens.Chat.createRoute(conversationId)) {
-                        popUpTo(Screens.Home.route) {
-                            inclusive = false
-                        }
-                        launchSingleTop = true
-                    }
-                }
             )
         }
     }
