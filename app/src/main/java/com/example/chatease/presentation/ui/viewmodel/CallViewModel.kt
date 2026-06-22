@@ -40,6 +40,9 @@ class CallViewModel @Inject constructor(
     private val _callHistoryUiModels = MutableStateFlow<List<CallHistoryUiModel>>(emptyList())
     val callHistoryUiModels = _callHistoryUiModels.asStateFlow()
 
+    val currentUserId: String
+        get() = auth.currentUser?.uid ?: ""
+
     private var callObserverJob: Job? = null
     private var callHistoryObserverJob: Job? = null
 
