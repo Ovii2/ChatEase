@@ -161,7 +161,9 @@ fun RightPane(
         )
         if (typingUserIds.isNotEmpty()) {
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 textAlign = TextAlign.End,
                 text = typingText,
                 style = MaterialTheme.typography.labelLarge,
