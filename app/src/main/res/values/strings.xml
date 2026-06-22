@@ -192,6 +192,7 @@
     <string name="call_ended">Call ended</string>
     <string name="speaker">Speaker</string>
     <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="add_call">Add Call</string>
     <string name="keypad">Keypad</string>
