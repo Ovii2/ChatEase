@@ -34,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,10 +51,8 @@ fun AudioCallActionSection(
     var isMuted by rememberSaveable { mutableStateOf(false) }
     val muteIcon = if (isMuted) Icons.Default.Mic else Icons.Default.MicOff
     val muteIconLabel = if (isMuted) R.string.unmute else R.string.mute
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     when (callStatus) {
-
         CallStatus.CALLING -> {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -133,9 +130,7 @@ fun AudioCallActionSection(
                     AudioCallActionItem(
                         label = R.string.keypad,
                         icon = Icons.Default.Dialpad,
-                        onClick = {
-                            keyboardController?.show()
-                        },
+                        onClick = { },
                     )
                     AudioCallActionItem(
                         label = R.string.more,
@@ -146,7 +141,6 @@ fun AudioCallActionSection(
             }
         }
 
-
         else -> Unit
     }
 }
@@ -156,8 +150,7 @@ fun AudioCallActionItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
-    @StringRes label: Int,
-    isSelected: Boolean = false
+    @StringRes label: Int
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
