@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -90,19 +91,13 @@ fun RecentChatsList(
         } else {
             LazyColumn(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f))
-                    .border(
-                        width = 0.5.dp,
-                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                        shape = cornerShape
-                    ),
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(conversations) { index, conversation ->
+                items(conversations) { conversation ->
                     RecentChatListItem(
                         conversation = conversation,
                         onNavigateToChatDetails = onConversationClick,
-                        showDivider = index != conversations.lastIndex,
                         cornerShape = cornerShape
                     )
                 }
@@ -116,7 +111,6 @@ fun RecentChatListItem(
     modifier: Modifier = Modifier,
     conversation: ConversationUiModel,
     onNavigateToChatDetails: (String) -> Unit,
-    showDivider: Boolean,
     cornerShape: RoundedCornerShape
 ) {
     val user = conversation.participants.firstOrNull() ?: return
@@ -198,17 +192,6 @@ fun RecentChatListItem(
             }
         }
     }
-    if (showDivider) {
-        HorizontalDivider(
-            modifier = Modifier.padding(
-                start = 88.dp,
-                end = 16.dp,
-                top = 8.dp
-            ),
-            thickness = 0.75.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-        )
-    }
 }
 
 @Preview(
@@ -231,10 +214,10 @@ private fun RecentChatsListPreview() {
         participants = listOf(user),
         lastMessage = "",
         timestamp = System.currentTimeMillis(),
-        unreadCount = 2,
+        unreadCount = 0,
         isGroup = false
     )
-    ChatEaseTheme() {
+    ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             RecentChatsList(
                 conversations = List(4) { conversation },
@@ -244,39 +227,3 @@ private fun RecentChatsListPreview() {
         }
     }
 }
-
-//@Preview(
-//    showBackground = true, showSystemUi = true,
-//    uiMode = Configuration.UI_MODE_TYPE_NORMAL
-//)
-//@Composable
-//fun RecentChatListItemPreview(modifier: Modifier = Modifier) {
-//    val user = User(
-//        uid = "1",
-//        fullName = "Test test",
-//        email = "test@email.com",
-//        imageUrl = null,
-//        status = UserStatus.ONLINE
-//    )
-//
-//    val conversation = Conversation(
-//        id = "1",
-//        participants = listOf(user),
-//        lastMessage = "Hey! Are we still for lunch?",
-//        timestamp = System.currentTimeMillis(),
-//        unreadCount = 9
-//    )
-//    ChatEaseTheme() {
-//        Column(
-//            modifier = Modifier.fillMaxSize(),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            RecentChatListItem(
-//                conversation = conversation,
-//                onNavigateToChatDetails = {},
-//                showDivider = true,
-//            )
-//        }
-//    }
-//}
