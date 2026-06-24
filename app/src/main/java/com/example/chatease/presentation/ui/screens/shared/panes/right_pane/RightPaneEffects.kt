@@ -86,7 +86,7 @@ fun RightPaneEffects(
 
     LaunchedEffect(hasInitialScrollDone, shouldShowUnreadDivider, isNearBottom) {
         if (hasInitialScrollDone && shouldShowUnreadDivider && isNearBottom) {
-            delay(1000.milliseconds)
+            delay(300.milliseconds)
             onShouldShowUnreadDividerChange(false)
             onMessagesVisible()
         }
