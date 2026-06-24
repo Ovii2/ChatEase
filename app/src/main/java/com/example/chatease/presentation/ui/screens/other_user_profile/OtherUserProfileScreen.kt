@@ -60,10 +60,10 @@ fun OtherUserProfileScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .widthIn(max = 600.dp)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(32.dp),
+                verticalArrangement = Arrangement.spacedBy(36.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OtherUserProfileTopSection(
@@ -87,7 +87,7 @@ fun OtherUserProfileScreen(
                         },
                         onReportClick = {}
                     )
-                    OtherUserProfileAboutSection()
+                    OtherUserProfileAboutSection(modifier = Modifier.padding(bottom = 16.dp))
                 }
             }
         }
