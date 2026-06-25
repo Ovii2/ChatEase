@@ -17,6 +17,7 @@ composeBom = "2026.05.01"
 material3WindowSizeClass = "1.4.0"
 materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.8"
+streamWebrtcAndroid = "1.3.10"
 uiTextGoogleFonts = "1.11.2"
 ksp = "2.3.5"
 hiltAndroid = "2.59.2"
@@ -64,6 +65,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
+stream-webrtc-android = { module = "io.getstream:stream-webrtc-android", version.ref = "streamWebrtcAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

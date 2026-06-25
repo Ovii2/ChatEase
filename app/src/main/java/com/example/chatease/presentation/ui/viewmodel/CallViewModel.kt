@@ -3,6 +3,10 @@ package com.example.chatease.presentation.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatease.data.mapper.toDto
+import com.example.chatease.data.mapper.toWebRtcIceCandidate
+import com.example.chatease.data.mapper.toWebRtcSessionDescription
+import com.example.chatease.data.webrtc.WebRtcClient
 import com.example.chatease.domain.model.Call
 import com.example.chatease.domain.model.CallHistory
 import com.example.chatease.domain.model.User
@@ -17,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -25,7 +30,8 @@ import javax.inject.Inject
 class CallViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val callRepository: CallRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val webRtcClient: WebRtcClient
 ) : ViewModel() {
 
     private val _call = MutableStateFlow<Call?>(null)
@@ -39,6 +45,11 @@ class CallViewModel @Inject constructor(
 
     private val _callHistoryUiModels = MutableStateFlow<List<CallHistoryUiModel>>(emptyList())
     val callHistoryUiModels = _callHistoryUiModels.asStateFlow()
+
+    private val processedIceCandidates = mutableSetOf<String>()
+
+    private val _isSpeakerEnabled = MutableStateFlow(false)
+    val isSpeakerEnabled = _isSpeakerEnabled.asStateFlow()
 
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
@@ -64,15 +75,38 @@ class CallViewModel @Inject constructor(
                     conversationId = conversationId
                 )
                 callRepository.createCall(call)
-
+                webRtcClient.initializeAudio()
+                webRtcClient.createPeerConnection()
+                observeIceCandidates(call.id)
+                webRtcClient.setOnIceCandidateCreatedListener { candidate ->
+                    viewModelScope.launch {
+                        callRepository.sendIceCandidate(
+                            callId = call.id,
+                            candidate = candidate.toDto()
+                        )
+                    }
+                }
+                webRtcClient.createOffer { offer ->
+                    viewModelScope.launch {
+                        callRepository.sendOffer(
+                            call.id,
+                            offer.toDto()
+                        )
+                    }
+                }
+                viewModelScope.launch {
+                    callRepository.observeAnswer(call.id)
+                        .first { it != null }
+                        ?.let { answerDto ->
+                            webRtcClient.setRemoteDescription(answerDto.toWebRtcSessionDescription())
+                        }
+                }
                 viewModelScope.launch {
                     callRepository.startCallTimeout(call.id)
                 }
-
                 _call.value = call
                 observeCall(call.id)
                 observeUser(receiverId)
-
                 onCallCreated(call.id)
             } catch (e: Exception) {
                 Log.v("CallViewModel", e.message ?: "Failed to create call")
@@ -108,10 +142,33 @@ class CallViewModel @Inject constructor(
     }
 
     fun answerCall(callId: String) {
-        updateCallStatus(
-            callId = callId,
-            status = CallStatus.CONNECTED
-        )
+        viewModelScope.launch {
+            val offerDto = callRepository.observeOffer(callId).first() ?: return@launch
+            webRtcClient.initializeAudio()
+            webRtcClient.createPeerConnection()
+            observeIceCandidates(callId)
+            webRtcClient.setOnIceCandidateCreatedListener { candidate ->
+                viewModelScope.launch {
+                    callRepository.sendIceCandidate(
+                        callId = callId,
+                        candidate = candidate.toDto()
+                    )
+                }
+            }
+            webRtcClient.setRemoteDescription(offerDto.toWebRtcSessionDescription())
+            webRtcClient.createAnswer { answer ->
+                viewModelScope.launch {
+                    callRepository.sendAnswer(
+                        callId = callId,
+                        answer = answer.toDto()
+                    )
+                    updateCallStatus(
+                        callId = callId,
+                        status = CallStatus.CONNECTED
+                    )
+                }
+            }
+        }
     }
 
     fun declineCall(callId: String) {
@@ -176,6 +233,13 @@ class CallViewModel @Inject constructor(
         }
     }
 
+    fun toggleSpeaker() {
+        val enabled = !_isSpeakerEnabled.value
+        _isSpeakerEnabled.value = enabled
+        webRtcClient.setSpeakerEnabled(enabled)
+        Log.v("CallViewModel", "Speaker enabled: $enabled")
+    }
+
     private fun createCallHistory(
         call: Call,
         status: CallStatus,
@@ -222,6 +286,23 @@ class CallViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.v("CallViewModel", e.message ?: "Failed to update call status")
             }
+        }
+    }
+
+    private fun observeIceCandidates(callId: String) {
+        viewModelScope.launch {
+
+            callRepository.observeIceCandidates(callId)
+                .collect { candidates ->
+                    candidates.forEach { candidateDto ->
+                        val key =
+                            "${candidateDto.sdpMid}_${candidateDto.sdpMLineIndex}_${candidateDto.sdp}"
+
+                        if (processedIceCandidates.add(key)) {
+                            webRtcClient.addIceCandidate(candidateDto.toWebRtcIceCandidate())
+                        }
+                    }
+                }
         }
     }
 

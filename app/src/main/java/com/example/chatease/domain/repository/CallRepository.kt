@@ -1,5 +1,7 @@
 package com.example.chatease.domain.repository
 
+import com.example.chatease.data.remote.dto.IceCandidateDto
+import com.example.chatease.data.remote.dto.SessionDescriptionDto
 import com.example.chatease.domain.model.Call
 import com.example.chatease.domain.model.CallHistory
 import com.example.chatease.domain.model.enums.CallStatus
@@ -14,4 +16,10 @@ interface CallRepository {
     fun observeCallHistory(userId: String): Flow<List<CallHistory>>
     suspend fun createCallHistory(callHistory: CallHistory)
     suspend fun startCallTimeout(callId: String)
+    suspend fun sendOffer(callId: String, offer: SessionDescriptionDto)
+    suspend fun sendAnswer(callId: String, answer: SessionDescriptionDto)
+    suspend fun sendIceCandidate(callId: String, candidate: IceCandidateDto)
+    fun observeOffer(callId: String): Flow<SessionDescriptionDto?>
+    fun observeAnswer(callId: String): Flow<SessionDescriptionDto?>
+    fun observeIceCandidates(callId: String): Flow<List<IceCandidateDto>>
 }

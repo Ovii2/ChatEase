@@ -3,6 +3,8 @@ package com.example.chatease.data.repository
 import com.example.chatease.data.mapper.toDomain
 import com.example.chatease.data.mapper.toDto
 import com.example.chatease.data.remote.dto.CallHistoryDto
+import com.example.chatease.data.remote.dto.IceCandidateDto
+import com.example.chatease.data.remote.dto.SessionDescriptionDto
 import com.example.chatease.domain.model.Call
 import com.example.chatease.domain.model.CallHistory
 import com.example.chatease.domain.model.enums.CallStatus
@@ -27,6 +29,9 @@ class CallRepositoryImpl(
         private const val CALL_HISTORY = "call_history"
         private const val PARTICIPANT_IDS = "participantIds"
         private const val CALL_TIMEOUT = 30_000L
+        private const val OFFER = "offer"
+        private const val ANSWER = "answer"
+        private const val ICE_CANDIDATES = "ice_candidates"
     }
 
     override suspend fun createCall(call: Call) {
@@ -139,6 +144,106 @@ class CallRepositoryImpl(
                     callDuration = null
                 )
             )
+        }
+    }
+
+    override suspend fun sendOffer(
+        callId: String,
+        offer: SessionDescriptionDto
+    ) {
+        firestore
+            .collection(CALLS)
+            .document(callId)
+            .collection(OFFER)
+            .document(OFFER)
+            .set(offer)
+            .await()
+    }
+
+    override suspend fun sendAnswer(
+        callId: String,
+        answer: SessionDescriptionDto
+    ) {
+        firestore
+            .collection(CALLS)
+            .document(callId)
+            .collection(ANSWER)
+            .document(ANSWER)
+            .set(answer)
+            .await()
+    }
+
+    override suspend fun sendIceCandidate(
+        callId: String,
+        candidate: IceCandidateDto
+    ) {
+        firestore
+            .collection(CALLS)
+            .document(callId)
+            .collection(ICE_CANDIDATES)
+            .document()
+            .set(candidate)
+            .await()
+    }
+
+    override fun observeOffer(callId: String): Flow<SessionDescriptionDto?> = callbackFlow {
+        val listener = firestore
+            .collection(CALLS)
+            .document(callId)
+            .collection(OFFER)
+            .document(OFFER)
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    close(exception)
+                    return@addSnapshotListener
+                }
+
+                val description = snapshot?.toObject(SessionDescriptionDto::class.java)
+                trySend(description)
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+    override fun observeAnswer(callId: String): Flow<SessionDescriptionDto?> = callbackFlow {
+        val listener = firestore
+            .collection(CALLS)
+            .document(callId)
+            .collection(ANSWER)
+            .document(ANSWER)
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    close(exception)
+                    return@addSnapshotListener
+                }
+
+                val description = snapshot?.toObject(SessionDescriptionDto::class.java)
+                trySend(description)
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+    override fun observeIceCandidates(callId: String): Flow<List<IceCandidateDto>> = callbackFlow {
+        val listener = firestore
+            .collection(CALLS)
+            .document(callId)
+            .collection(ICE_CANDIDATES)
+            .addSnapshotListener { snapshots, exception ->
+                if (exception != null) {
+                    close(exception)
+                    return@addSnapshotListener
+                }
+
+                val candidates = snapshots
+                    ?.toObjects(IceCandidateDto::class.java).orEmpty()
+
+                trySend(candidates)
+            }
+        awaitClose {
+            listener.remove()
         }
     }
 

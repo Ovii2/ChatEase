@@ -1,5 +1,9 @@
 package com.example.chatease.presentation.ui.screens.audio_call
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -8,6 +12,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.enums.CallStatus
 import com.example.chatease.presentation.ui.screens.audio_call.layouts.AudioCallCompactLayout
@@ -32,6 +38,12 @@ fun AudioCallScreen(
     }
     val user by callViewModel.user.collectAsState()
     var callDurationSeconds by rememberSaveable { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    val hasAudioPermission = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.RECORD_AUDIO
+    ) == PackageManager.PERMISSION_GRANTED
+    val isSpeakerEnabled by callViewModel.isSpeakerEnabled.collectAsState()
 
     LaunchedEffect(callId) {
         callViewModel.observeCall(callId)
@@ -62,6 +74,21 @@ fun AudioCallScreen(
         }
     }
 
+    val permissionLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { granted ->
+            if (!granted) {
+                callViewModel.cancelCall(callId)
+                onNavigateBack()
+            }
+        }
+
+    LaunchedEffect(Unit) {
+        if (!hasAudioPermission) {
+            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
+
+
     ActiveCallScreenLayout(
         callId = callId
     ) {
@@ -75,7 +102,8 @@ fun AudioCallScreen(
                 callViewModel.cancelCall(callId)
             },
             callId = callId,
-            callDurationSeconds = callDurationSeconds
+            callDurationSeconds = callDurationSeconds,
+            onSpeakerToggle = { callViewModel.toggleSpeaker() },
         )
     }
 }

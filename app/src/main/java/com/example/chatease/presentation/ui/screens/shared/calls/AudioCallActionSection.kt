@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Dialpad
@@ -28,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,11 +49,16 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun AudioCallActionSection(
     modifier: Modifier = Modifier,
-    callStatus: CallStatus
+    callStatus: CallStatus,
+    onSpeakerToggle: (Boolean) -> Unit
 ) {
     var isMuted by rememberSaveable { mutableStateOf(false) }
+    var isSpeakerEnabled by rememberSaveable { mutableStateOf(false) }
     val muteIcon = if (isMuted) Icons.Default.Mic else Icons.Default.MicOff
     val muteIconLabel = if (isMuted) R.string.unmute else R.string.mute
+    val speakerIcon =
+        if (isSpeakerEnabled) Icons.AutoMirrored.Filled.VolumeUp else Icons.AutoMirrored.Filled.VolumeOff
+    val speakerIconLabel = if (isSpeakerEnabled) R.string.speaker_on else R.string.speaker_off
 
     when (callStatus) {
         CallStatus.CALLING -> {
@@ -59,9 +67,12 @@ fun AudioCallActionSection(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 AudioCallActionItem(
-                    label = R.string.speaker,
-                    icon = Icons.AutoMirrored.Filled.VolumeUp,
-                    onClick = {},
+                    label = speakerIconLabel,
+                    icon = speakerIcon,
+                    onClick = {
+                        isSpeakerEnabled = !isSpeakerEnabled
+                        onSpeakerToggle(isSpeakerEnabled)
+                    },
                 )
                 AudioCallActionItem(
                     label = muteIconLabel,
@@ -102,9 +113,12 @@ fun AudioCallActionSection(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     AudioCallActionItem(
-                        label = R.string.speaker,
-                        icon = Icons.AutoMirrored.Filled.VolumeUp,
-                        onClick = {},
+                        label = speakerIconLabel,
+                        icon = speakerIcon,
+                        onClick = {
+                            isSpeakerEnabled = !isSpeakerEnabled
+                            onSpeakerToggle(isSpeakerEnabled)
+                        },
                     )
                     AudioCallActionItem(
                         label = muteIconLabel,
@@ -163,7 +177,10 @@ fun AudioCallActionItem(
                     shape = CircleShape
                 )
                 .size(65.dp)
-                .clickable { onClick() },
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) { onClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -197,7 +214,8 @@ private fun AudioCallActionSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AudioCallActionSection(
-                    callStatus = CallStatus.CONNECTED
+                    callStatus = CallStatus.CONNECTED,
+                    onSpeakerToggle = {},
                 )
             }
         }
