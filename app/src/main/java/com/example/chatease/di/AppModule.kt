@@ -9,6 +9,7 @@ import com.example.chatease.data.repository.ContactRequestRepositoryImpl
 import com.example.chatease.data.repository.ContactsRepositoryImpl
 import com.example.chatease.data.repository.ConversationRepositoryImpl
 import com.example.chatease.data.repository.UserRepositoryImpl
+import com.example.chatease.data.webrtc.WebRtcClient
 import com.example.chatease.domain.repository.CallRepository
 import com.example.chatease.domain.repository.CategoryRepository
 import com.example.chatease.domain.repository.ContactRequestRepository
@@ -78,4 +79,11 @@ object AppModule {
     @Singleton
     fun provideCallRepository(firestore: FirebaseFirestore): CallRepository =
         CallRepositoryImpl(firestore)
+
+
+    @Provides
+    @Singleton
+    fun provideWebRtcClient(@ApplicationContext context: Context): WebRtcClient =
+        WebRtcClient(context)
+
 }
