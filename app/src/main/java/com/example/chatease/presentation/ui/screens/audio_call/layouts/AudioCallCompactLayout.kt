@@ -16,6 +16,7 @@ fun AudioCallCompactLayout(
     onAcceptCall: (String) -> Unit,
     onCancelCall: (String) -> Unit,
     onEndCall: (String) -> Unit,
+    onDeclineCall: (String) -> Unit,
     callId: String,
     callDurationSeconds: Int,
     onSpeakerToggle: (Boolean) -> Unit
@@ -36,6 +37,7 @@ fun AudioCallCompactLayout(
         callStatus = callStatus,
         onAcceptCall = { onAcceptCall(callId) },
         onCancelCall = { onCancelCall(callId) },
-        onEndCall = { onEndCall(callId) }
+        onEndCall = { onEndCall(callId) },
+        onDeclineCall = { onDeclineCall(callId) }
     )
 }

@@ -60,7 +60,10 @@ fun AudioCallScreen(
             CallStatus.DECLINED,
             CallStatus.CANCELED -> onNavigateBack()
 
-            CallStatus.MISSED -> {}
+            CallStatus.MISSED -> {
+                delay(300.milliseconds)
+                onNavigateBack()
+            }
         }
     }
 
@@ -102,6 +105,9 @@ fun AudioCallScreen(
             },
             onEndCall = {
                 callViewModel.endCall(callId)
+            },
+            onDeclineCall = {
+                callViewModel.declineCall(callId)
             },
             callId = callId,
             callDurationSeconds = callDurationSeconds,

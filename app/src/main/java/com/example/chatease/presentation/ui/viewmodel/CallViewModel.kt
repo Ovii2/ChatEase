@@ -172,7 +172,13 @@ class CallViewModel @Inject constructor(
     }
 
     fun declineCall(callId: String) {
+        val currentCall = _call.value ?: return
         webRtcClient.endCall()
+
+        createCallHistory(
+            call = currentCall,
+            status = CallStatus.DECLINED
+        )
         updateCallStatus(
             callId = callId,
             status = CallStatus.DECLINED
@@ -182,11 +188,11 @@ class CallViewModel @Inject constructor(
     fun cancelCall(callId: String) {
         val currentCall = _call.value ?: return
         webRtcClient.endCall()
+
         createCallHistory(
             call = currentCall,
             status = CallStatus.CANCELED
         )
-
         updateCallStatus(
             callId = callId,
             status = CallStatus.CANCELED
@@ -194,7 +200,13 @@ class CallViewModel @Inject constructor(
     }
 
     fun endCall(callId: String) {
+        val currentCall = _call.value ?: return
         webRtcClient.endCall()
+
+        createCallHistory(
+            call = currentCall,
+            status = CallStatus.ENDED
+        )
         updateCallStatus(
             callId = callId,
             status = CallStatus.ENDED
