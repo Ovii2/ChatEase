@@ -219,6 +219,19 @@ class WebRtcClient(private val context: Context) {
         )
     }
 
+    fun endCall() {
+        localAudioTrack.setEnabled(false)
+        audioSource.dispose()
+        peerConnection?.close()
+        peerConnection?.dispose()
+        peerConnection = null
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            audioManager.clearCommunicationDevice()
+        }
+        audioManager.mode = AudioManager.MODE_NORMAL
+    }
+
     private fun configureAudioRoute() {
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
 

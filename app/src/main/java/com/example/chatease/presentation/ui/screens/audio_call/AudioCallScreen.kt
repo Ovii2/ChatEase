@@ -43,7 +43,6 @@ fun AudioCallScreen(
         context,
         Manifest.permission.RECORD_AUDIO
     ) == PackageManager.PERMISSION_GRANTED
-    val isSpeakerEnabled by callViewModel.isSpeakerEnabled.collectAsState()
 
     LaunchedEffect(callId) {
         callViewModel.observeCall(callId)
@@ -100,6 +99,9 @@ fun AudioCallScreen(
             },
             onCancelCall = {
                 callViewModel.cancelCall(callId)
+            },
+            onEndCall = {
+                callViewModel.endCall(callId)
             },
             callId = callId,
             callDurationSeconds = callDurationSeconds,

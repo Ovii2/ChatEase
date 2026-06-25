@@ -32,7 +32,8 @@ fun AudioCallBottomSection(
     modifier: Modifier = Modifier,
     callStatus: CallStatus,
     onAcceptCall: () -> Unit = {},
-    onCancelCall: () -> Unit = {}
+    onCancelCall: () -> Unit = {},
+    onEndCall: () -> Unit = {}
 ) {
 
     Row(
@@ -45,9 +46,17 @@ fun AudioCallBottomSection(
             if (isSystemInDarkTheme()) successGreenDark else successGreenLight
 
         when (callStatus) {
-            CallStatus.CALLING, CallStatus.CONNECTED -> {
+            CallStatus.CALLING -> {
                 AudioCallBottomItem(
                     onClick = onCancelCall,
+                    icon = Icons.Filled.CallEnd,
+                    containerColor = declineContainerColor,
+                )
+            }
+
+            CallStatus.CONNECTED -> {
+                AudioCallBottomItem(
+                    onClick = onEndCall,
                     icon = Icons.Filled.CallEnd,
                     containerColor = declineContainerColor,
                 )
@@ -115,9 +124,10 @@ private fun AudioCallBottomSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AudioCallBottomSection(
-                    callStatus = CallStatus.INCOMING,
+                    callStatus = CallStatus.CONNECTED,
                     onAcceptCall = {},
                     onCancelCall = {},
+                    onEndCall = {}
                 )
             }
         }
