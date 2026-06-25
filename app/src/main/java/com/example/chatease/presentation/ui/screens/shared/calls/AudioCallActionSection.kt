@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
@@ -167,6 +169,7 @@ fun AudioCallActionItem(
     @StringRes label: Int
 ) {
     Column(
+        modifier = Modifier.widthIn(min = 100.dp, max = 150.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -194,7 +197,9 @@ fun AudioCallActionItem(
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.W600,
             textAlign = TextAlign.Center,
-            color = Color.White
+            color = Color.White,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
