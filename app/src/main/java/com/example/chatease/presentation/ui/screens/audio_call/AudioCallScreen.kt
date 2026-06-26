@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -16,12 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.enums.CallStatus
-import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.screens.audio_call.layouts.AudioCallCompactLayout
 import com.example.chatease.presentation.ui.screens.shared.calls.ActiveCallScreenLayout
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AudioCallScreen(
@@ -48,41 +44,6 @@ fun AudioCallScreen(
     val isMuted by callViewModel.isMuted.collectAsState()
     val isSpeakerEnabled by callViewModel.isSpeakerEnabled.collectAsState()
 
-    LaunchedEffect(callId) {
-        callViewModel.observeCall(callId)
-    }
-
-    LaunchedEffect(callStatus) {
-        when (callStatus) {
-            CallStatus.CALLING -> {}
-
-            CallStatus.INCOMING -> {}
-
-            CallStatus.CONNECTED -> {}
-
-            CallStatus.ENDED,
-            CallStatus.DECLINED,
-            CallStatus.CANCELED -> onNavigateBack()
-
-            CallStatus.MISSED -> {
-                delay(600.milliseconds)
-                callViewModel.cleanUpCall()
-                if (currentRoute != Screens.Home.route) {
-                    onNavigateBack()
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(callStatus) {
-        if (callStatus == CallStatus.CONNECTED) {
-            while (true) {
-                delay(1000.milliseconds)
-                callDurationSeconds++
-            }
-        }
-    }
-
     val permissionLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { granted ->
             if (!granted) {
@@ -91,12 +52,17 @@ fun AudioCallScreen(
             }
         }
 
-    LaunchedEffect(Unit) {
-        if (!hasAudioPermission) {
-            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-        }
-    }
-
+    AudioCallsScreenEffects(
+        callId = callId,
+        onObserveCall = { callViewModel.observeCall(callId) },
+        callStatus = callStatus,
+        onNavigateBack = onNavigateBack,
+        onCleanUpCall = callViewModel::cleanUpCall,
+        currentRoute = currentRoute,
+        hasAudioPermission = hasAudioPermission,
+        onIncrementCallDuration = { callDurationSeconds++ },
+        permissionLauncher = permissionLauncher
+    )
 
     ActiveCallScreenLayout(
         callId = callId
