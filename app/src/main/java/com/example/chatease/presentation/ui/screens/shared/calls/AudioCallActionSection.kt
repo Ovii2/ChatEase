@@ -29,11 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,11 +48,11 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun AudioCallActionSection(
     modifier: Modifier = Modifier,
     callStatus: CallStatus,
-    onSpeakerToggle: (Boolean) -> Unit,
+    onSpeakerToggle: () -> Unit,
+    isSpeakerEnabled: Boolean,
     onMuteToggle: () -> Unit,
     isMuted: Boolean
 ) {
-    var isSpeakerEnabled by rememberSaveable { mutableStateOf(false) }
     val muteIcon = if (isMuted) Icons.Default.Mic else Icons.Default.MicOff
     val muteIconLabel = if (isMuted) R.string.unmute else R.string.mute
     val speakerIcon =
@@ -72,17 +68,12 @@ fun AudioCallActionSection(
                 AudioCallActionItem(
                     label = speakerIconLabel,
                     icon = speakerIcon,
-                    onClick = {
-                        isSpeakerEnabled = !isSpeakerEnabled
-                        onSpeakerToggle(isSpeakerEnabled)
-                    },
+                    onClick = { onSpeakerToggle() },
                 )
                 AudioCallActionItem(
                     label = muteIconLabel,
                     icon = muteIcon,
-                    onClick = {
-                        onMuteToggle()
-                    },
+                    onClick = { onMuteToggle() },
                 )
                 AudioCallActionItem(
                     label = R.string.bluetooth,
@@ -120,10 +111,7 @@ fun AudioCallActionSection(
                     AudioCallActionItem(
                         label = speakerIconLabel,
                         icon = speakerIcon,
-                        onClick = {
-                            isSpeakerEnabled = !isSpeakerEnabled
-                            onSpeakerToggle(isSpeakerEnabled)
-                        },
+                        onClick = { onSpeakerToggle() },
                     )
                     AudioCallActionItem(
                         label = muteIconLabel,
@@ -226,6 +214,7 @@ private fun AudioCallActionSectionPreview() {
                 AudioCallActionSection(
                     callStatus = CallStatus.CONNECTED,
                     onSpeakerToggle = {},
+                    isSpeakerEnabled = false,
                     onMuteToggle = {},
                     isMuted = false,
                 )
