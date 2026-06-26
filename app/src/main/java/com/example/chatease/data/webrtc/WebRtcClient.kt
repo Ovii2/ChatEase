@@ -16,31 +16,33 @@ import org.webrtc.PeerConnectionFactory
 import org.webrtc.SdpObserver
 import org.webrtc.SessionDescription
 
-class WebRtcClient(private val context: Context) {
+class WebRtcClient(
+    private val context: Context
+) {
+    companion object {
+        private const val TAG = "WebRTC"
+        private const val LOCAL_AUDIO_TRACK_ID = "local_audio_track"
+        private const val AUDIO_STREAM_ID = "audio_stream"
+    }
 
     lateinit var peerConnectionFactory: PeerConnectionFactory
         private set
 
-    lateinit var localAudioTrack: AudioTrack
-        private set
+    private var peerConnection: PeerConnection? = null
+    private var audioSource: AudioSource? = null
+    private var localAudioTrack: AudioTrack? = null
+    private var onIceCandidateCreated: ((IceCandidate) -> Unit)? = null
 
-    lateinit var audioSource: AudioSource
-        private set
+    private val audioManager =
+        context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
     private val iceServers = listOf(
-        PeerConnection
-            .IceServer
+        PeerConnection.IceServer
             .builder("stun:stun.l.google.com:19302")
             .createIceServer()
     )
 
-    private var peerConnection: PeerConnection? = null
-
     private val rtcConfiguration = PeerConnection.RTCConfiguration(iceServers)
-
-    private var onIceCandidateCreated: ((IceCandidate) -> Unit)? = null
-
-    private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
     init {
         PeerConnectionFactory.initialize(
@@ -52,62 +54,22 @@ class WebRtcClient(private val context: Context) {
         peerConnectionFactory = PeerConnectionFactory
             .builder()
             .createPeerConnectionFactory()
-
-        audioSource = peerConnectionFactory.createAudioSource(MediaConstraints())
-
-        localAudioTrack = peerConnectionFactory.createAudioTrack(
-            "local_audio_track",
-            audioSource
-        )
     }
 
     fun setOnIceCandidateCreatedListener(listener: (IceCandidate) -> Unit) {
         onIceCandidateCreated = listener
     }
 
-    val observer = object : PeerConnection.Observer {
-        override fun onSignalingChange(p0: PeerConnection.SignalingState?) {
+    fun initializeAudio() {
+        configureAudioRoute()
 
-        }
+        audioSource?.dispose()
 
-        override fun onIceConnectionChange(state: PeerConnection.IceConnectionState?) {
-            Log.v("WebRTC", "ICE connection state: $state")
-        }
-
-        override fun onIceConnectionReceivingChange(p0: Boolean) {
-
-        }
-
-        override fun onIceGatheringChange(p0: PeerConnection.IceGatheringState?) {
-
-        }
-
-        override fun onIceCandidate(candidate: IceCandidate?) {
-            if (candidate != null) {
-                onIceCandidateCreated?.invoke(candidate)
-            }
-        }
-
-        override fun onIceCandidatesRemoved(p0: Array<out IceCandidate?>?) {
-
-        }
-
-        override fun onAddStream(p0: MediaStream?) {
-
-        }
-
-        override fun onRemoveStream(p0: MediaStream?) {
-
-        }
-
-        override fun onDataChannel(p0: DataChannel?) {
-
-        }
-
-        override fun onRenegotiationNeeded() {
-
-        }
-
+        audioSource = peerConnectionFactory.createAudioSource(MediaConstraints())
+        localAudioTrack = peerConnectionFactory.createAudioTrack(
+            LOCAL_AUDIO_TRACK_ID,
+            audioSource
+        )
     }
 
     fun createPeerConnection(): PeerConnection? {
@@ -116,18 +78,14 @@ class WebRtcClient(private val context: Context) {
             observer
         )
 
-        peerConnection?.addTrack(localAudioTrack, listOf("audio_stream"))
+        localAudioTrack?.let { track ->
+            peerConnection?.addTrack(track, listOf(AUDIO_STREAM_ID))
+        }
 
         return peerConnection
     }
 
-    fun setMuted(isMuted: Boolean) {
-        localAudioTrack.setEnabled(!isMuted)
-    }
-
     fun createOffer(onOfferCreated: (SessionDescription) -> Unit) {
-        val constraints = MediaConstraints()
-
         peerConnection?.createOffer(
             object : SdpObserver {
                 override fun onCreateSuccess(description: SessionDescription?) {
@@ -137,25 +95,15 @@ class WebRtcClient(private val context: Context) {
                     }
                 }
 
-                override fun onSetSuccess() {
-
-                }
-
-                override fun onCreateFailure(p0: String?) {
-
-                }
-
-                override fun onSetFailure(p0: String?) {
-
-                }
+                override fun onSetSuccess() = Unit
+                override fun onCreateFailure(error: String?) = Unit
+                override fun onSetFailure(error: String?) = Unit
             },
-            constraints
+            MediaConstraints()
         )
     }
 
     fun createAnswer(onAnswerCreated: (SessionDescription) -> Unit) {
-        val constraints = MediaConstraints()
-
         peerConnection?.createAnswer(
             object : SdpObserver {
                 override fun onCreateSuccess(description: SessionDescription?) {
@@ -165,40 +113,21 @@ class WebRtcClient(private val context: Context) {
                     }
                 }
 
-                override fun onSetSuccess() {
-
-                }
-
-                override fun onCreateFailure(p0: String?) {
-
-                }
-
-                override fun onSetFailure(p0: String?) {
-
-                }
+                override fun onSetSuccess() = Unit
+                override fun onCreateFailure(error: String?) = Unit
+                override fun onSetFailure(error: String?) = Unit
             },
-            constraints
+            MediaConstraints()
         )
     }
 
     fun setRemoteDescription(description: SessionDescription) {
         peerConnection?.setRemoteDescription(
             object : SdpObserver {
-                override fun onCreateSuccess(p0: SessionDescription?) {
-
-                }
-
-                override fun onSetSuccess() {
-
-                }
-
-                override fun onCreateFailure(p0: String?) {
-
-                }
-
-                override fun onSetFailure(p0: String?) {
-
-                }
+                override fun onCreateSuccess(description: SessionDescription?) = Unit
+                override fun onSetSuccess() = Unit
+                override fun onCreateFailure(error: String?) = Unit
+                override fun onSetFailure(error: String?) = Unit
             },
             description
         )
@@ -208,35 +137,8 @@ class WebRtcClient(private val context: Context) {
         peerConnection?.addIceCandidate(candidate)
     }
 
-    fun initializeAudio() {
-        configureAudioRoute()
-
-        audioSource = peerConnectionFactory.createAudioSource(MediaConstraints())
-
-        localAudioTrack = peerConnectionFactory.createAudioTrack(
-            "local_audio_track",
-            audioSource
-        )
-    }
-
-    fun endCall() {
-        localAudioTrack.setEnabled(false)
-        audioSource.dispose()
-        peerConnection?.close()
-        peerConnection?.dispose()
-        peerConnection = null
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            audioManager.clearCommunicationDevice()
-        }
-        audioManager.mode = AudioManager.MODE_NORMAL
-    }
-
-    private fun configureAudioRoute() {
-        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
-
-        Log.v("WebRTC", "Audio mode = ${audioManager.mode}")
-        Log.v("WebRTC", "Speaker on = ${audioManager.isSpeakerphoneOn}")
+    fun setMuted(isMuted: Boolean) {
+        localAudioTrack?.setEnabled(!isMuted)
     }
 
     fun setSpeakerEnabled(enabled: Boolean) {
@@ -251,12 +153,78 @@ class WebRtcClient(private val context: Context) {
                 it.type == deviceType
             }
 
-            device?.let {
-                audioManager.setCommunicationDevice(it)
+            if (device != null) {
+                audioManager.setCommunicationDevice(device)
             }
         } else {
             audioManager.isSpeakerphoneOn = enabled
         }
+
+        setVoiceCallVolumeToMax()
     }
 
+    fun endCall() {
+        localAudioTrack?.setEnabled(false)
+        localAudioTrack = null
+
+        audioSource?.dispose()
+        audioSource = null
+
+        peerConnection?.close()
+        peerConnection?.dispose()
+        peerConnection = null
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            audioManager.clearCommunicationDevice()
+        }
+
+        audioManager.mode = AudioManager.MODE_NORMAL
+    }
+
+    private fun configureAudioRoute() {
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+
+        Log.v(
+            TAG,
+            "Audio mode=${audioManager.mode}, expected=${AudioManager.MODE_IN_COMMUNICATION}"
+        )
+    }
+
+    private fun setVoiceCallVolumeToMax() {
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL)
+
+        audioManager.setStreamVolume(
+            AudioManager.STREAM_VOICE_CALL,
+            maxVolume,
+            0
+        )
+
+        Log.v(
+            TAG,
+            "Voice call volume=${audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL)} / $maxVolume"
+        )
+    }
+
+    private val observer = object : PeerConnection.Observer {
+        override fun onSignalingChange(state: PeerConnection.SignalingState?) = Unit
+
+        override fun onIceConnectionChange(state: PeerConnection.IceConnectionState?) {
+            Log.v(TAG, "ICE connection state: $state")
+        }
+
+        override fun onIceConnectionReceivingChange(receiving: Boolean) = Unit
+        override fun onIceGatheringChange(state: PeerConnection.IceGatheringState?) = Unit
+
+        override fun onIceCandidate(candidate: IceCandidate?) {
+            if (candidate != null) {
+                onIceCandidateCreated?.invoke(candidate)
+            }
+        }
+
+        override fun onIceCandidatesRemoved(candidates: Array<out IceCandidate?>?) = Unit
+        override fun onAddStream(stream: MediaStream?) = Unit
+        override fun onRemoveStream(stream: MediaStream?) = Unit
+        override fun onDataChannel(channel: DataChannel?) = Unit
+        override fun onRenegotiationNeeded() = Unit
+    }
 }
