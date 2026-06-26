@@ -251,7 +251,10 @@ class CallViewModel @Inject constructor(
         val enabled = !_isSpeakerEnabled.value
         _isSpeakerEnabled.value = enabled
         webRtcClient.setSpeakerEnabled(enabled)
-        Log.v("CallViewModel", "Speaker enabled: $enabled")
+    }
+
+    fun cleanUpCall() {
+        webRtcClient.endCall()
     }
 
     private fun createCallHistory(

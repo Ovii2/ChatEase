@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.enums.CallStatus
+import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.screens.audio_call.layouts.AudioCallCompactLayout
 import com.example.chatease.presentation.ui.screens.shared.calls.ActiveCallScreenLayout
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
@@ -27,7 +28,8 @@ fun AudioCallScreen(
     modifier: Modifier = Modifier,
     callViewModel: CallViewModel = hiltViewModel(),
     callId: String,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    currentRoute: String
 ) {
     val call by callViewModel.call.collectAsState()
     val currentUserId = callViewModel.currentUserId
@@ -61,8 +63,11 @@ fun AudioCallScreen(
             CallStatus.CANCELED -> onNavigateBack()
 
             CallStatus.MISSED -> {
-                delay(300.milliseconds)
-                onNavigateBack()
+                delay(600.milliseconds)
+                callViewModel.cleanUpCall()
+                if (currentRoute != Screens.Home.route) {
+                    onNavigateBack()
+                }
             }
         }
     }

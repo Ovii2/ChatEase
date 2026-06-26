@@ -261,6 +261,7 @@ fun AppNavHost(
             AudioCallScreen(
                 callId = callId,
                 onNavigateBack = { navController.popBackStack() },
+                currentRoute = currentRoute
             )
         }
     }
