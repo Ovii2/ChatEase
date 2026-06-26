@@ -99,6 +99,7 @@ class CallViewModel @Inject constructor(
                         .first { it != null }
                         ?.let { answerDto ->
                             webRtcClient.setRemoteDescription(answerDto.toWebRtcSessionDescription())
+                            callRepository.updateConnectedAt(call.id, System.currentTimeMillis())
                         }
                 }
                 viewModelScope.launch {
@@ -166,6 +167,7 @@ class CallViewModel @Inject constructor(
                         callId = callId,
                         status = CallStatus.CONNECTED
                     )
+                    callRepository.updateConnectedAt(callId, System.currentTimeMillis())
                 }
             }
         }
@@ -203,9 +205,14 @@ class CallViewModel @Inject constructor(
         val currentCall = _call.value ?: return
         webRtcClient.endCall()
 
+        val callDuration = currentCall.connectedAt?.let {
+            System.currentTimeMillis() - it
+        }
+
         createCallHistory(
             call = currentCall,
-            status = CallStatus.ENDED
+            status = CallStatus.ENDED,
+            callDuration = callDuration
         )
         updateCallStatus(
             callId = callId,

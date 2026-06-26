@@ -32,6 +32,7 @@ class CallRepositoryImpl(
         private const val OFFER = "offer"
         private const val ANSWER = "answer"
         private const val ICE_CANDIDATES = "ice_candidates"
+        private const val CONNECTED_AT = "connectedAt"
     }
 
     override suspend fun createCall(call: Call) {
@@ -245,6 +246,14 @@ class CallRepositoryImpl(
         awaitClose {
             listener.remove()
         }
+    }
+
+    override suspend fun updateConnectedAt(callId: String, connectedAt: Long) {
+        firestore
+            .collection(CALLS)
+            .document(callId)
+            .update(CONNECTED_AT, connectedAt)
+            .await()
     }
 
 }

@@ -22,4 +22,5 @@ interface CallRepository {
     fun observeOffer(callId: String): Flow<SessionDescriptionDto?>
     fun observeAnswer(callId: String): Flow<SessionDescriptionDto?>
     fun observeIceCandidates(callId: String): Flow<List<IceCandidateDto>>
+    suspend fun updateConnectedAt(callId: String, connectedAt: Long)
 }
