@@ -39,7 +39,7 @@ import com.example.chatease.presentation.ui.model.CallHistoryUiModel
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toChatDateLabel
-import com.example.chatease.utils.toFormattedTime
+import com.example.chatease.utils.toFormattedCallHistoryTime
 
 @Composable
 fun CallsList(
@@ -133,7 +133,7 @@ fun CallsListItem(
                     )
                     if (callDirection != CallDirection.MISSED) {
                         Text(
-                            text = callHistory.callDuration?.toFormattedTime() ?: "",
+                            text = callHistory.callDuration?.toFormattedCallHistoryTime() ?: "",
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.W500
                         )
