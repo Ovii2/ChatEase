@@ -45,6 +45,7 @@ fun AudioCallScreen(
         context,
         Manifest.permission.RECORD_AUDIO
     ) == PackageManager.PERMISSION_GRANTED
+    val isMuted by callViewModel.isMuted.collectAsState()
 
     LaunchedEffect(callId) {
         callViewModel.observeCall(callId)
@@ -117,6 +118,8 @@ fun AudioCallScreen(
             callId = callId,
             callDurationSeconds = callDurationSeconds,
             onSpeakerToggle = { callViewModel.toggleSpeaker() },
+            onMute = { callViewModel.toggleMute() },
+            isMuted = isMuted,
         )
     }
 }

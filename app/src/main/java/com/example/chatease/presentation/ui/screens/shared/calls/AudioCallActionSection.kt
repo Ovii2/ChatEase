@@ -52,9 +52,10 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun AudioCallActionSection(
     modifier: Modifier = Modifier,
     callStatus: CallStatus,
-    onSpeakerToggle: (Boolean) -> Unit
+    onSpeakerToggle: (Boolean) -> Unit,
+    onMuteToggle: () -> Unit,
+    isMuted: Boolean
 ) {
-    var isMuted by rememberSaveable { mutableStateOf(false) }
     var isSpeakerEnabled by rememberSaveable { mutableStateOf(false) }
     val muteIcon = if (isMuted) Icons.Default.Mic else Icons.Default.MicOff
     val muteIconLabel = if (isMuted) R.string.unmute else R.string.mute
@@ -79,7 +80,9 @@ fun AudioCallActionSection(
                 AudioCallActionItem(
                     label = muteIconLabel,
                     icon = muteIcon,
-                    onClick = { isMuted = !isMuted },
+                    onClick = {
+                        onMuteToggle()
+                    },
                 )
                 AudioCallActionItem(
                     label = R.string.bluetooth,
@@ -125,7 +128,9 @@ fun AudioCallActionSection(
                     AudioCallActionItem(
                         label = muteIconLabel,
                         icon = muteIcon,
-                        onClick = { isMuted = !isMuted },
+                        onClick = {
+                            onMuteToggle()
+                        },
                     )
                     AudioCallActionItem(
                         label = R.string.bluetooth,
@@ -221,6 +226,8 @@ private fun AudioCallActionSectionPreview() {
                 AudioCallActionSection(
                     callStatus = CallStatus.CONNECTED,
                     onSpeakerToggle = {},
+                    onMuteToggle = {},
+                    isMuted = false,
                 )
             }
         }

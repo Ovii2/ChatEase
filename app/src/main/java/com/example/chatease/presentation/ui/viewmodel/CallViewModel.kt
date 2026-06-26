@@ -55,6 +55,9 @@ class CallViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<CallsUiState>(CallsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _isMuted = MutableStateFlow(false)
+    val isMuted = _isMuted.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -264,6 +267,11 @@ class CallViewModel @Inject constructor(
         val enabled = !_isSpeakerEnabled.value
         _isSpeakerEnabled.value = enabled
         webRtcClient.setSpeakerEnabled(enabled)
+    }
+
+    fun toggleMute() {
+        _isMuted.value = !_isMuted.value
+        webRtcClient.setMuted(_isMuted.value)
     }
 
     fun cleanUpCall() {

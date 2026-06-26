@@ -19,7 +19,9 @@ fun AudioCallCompactLayout(
     onDeclineCall: (String) -> Unit,
     callId: String,
     callDurationSeconds: Int,
-    onSpeakerToggle: (Boolean) -> Unit
+    onSpeakerToggle: (Boolean) -> Unit,
+    onMute: () -> Unit,
+    isMuted: Boolean
 ) {
     AudioCallTopSection(
         modifier = modifier,
@@ -31,6 +33,8 @@ fun AudioCallCompactLayout(
     AudioCallActionSection(
         callStatus = callStatus,
         onSpeakerToggle = onSpeakerToggle,
+        onMuteToggle = onMute,
+        isMuted = isMuted,
     )
 
     AudioCallBottomSection(
