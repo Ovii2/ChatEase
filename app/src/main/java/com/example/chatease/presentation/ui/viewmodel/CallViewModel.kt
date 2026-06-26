@@ -16,6 +16,7 @@ import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.domain.repository.CallRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.model.CallHistoryUiModel
+import com.example.chatease.presentation.ui.state.CallsUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -50,6 +51,9 @@ class CallViewModel @Inject constructor(
 
     private val _isSpeakerEnabled = MutableStateFlow(false)
     val isSpeakerEnabled = _isSpeakerEnabled.asStateFlow()
+
+    private val _uiState = MutableStateFlow<CallsUiState>(CallsUiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
@@ -224,6 +228,8 @@ class CallViewModel @Inject constructor(
         callHistoryObserverJob?.cancel()
 
         callHistoryObserverJob = viewModelScope.launch {
+            _uiState.value = CallsUiState.Loading
+
             val currentUserId = auth.currentUser?.uid ?: return@launch
             callRepository.observeCallHistory(currentUserId)
                 .collect { callHistories ->
@@ -247,9 +253,9 @@ class CallViewModel @Inject constructor(
                             callDirection = callDirection
                         )
                     }
-
-                    _callHistories.value = callHistories
-                    _callHistoryUiModels.value = uiModels
+                    _uiState.value = CallsUiState.Success(
+                        callHistoryList = uiModels
+                    )
                 }
         }
     }

@@ -21,6 +21,8 @@ import com.example.chatease.presentation.ui.navigation.Screens
 import com.example.chatease.presentation.ui.screens.calls.components.CallsList
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
+import com.example.chatease.presentation.ui.state.CallsUiState
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
@@ -46,7 +48,9 @@ fun CallsScreen(
     val unreadMessages = (homeUiState as? HomeUiState.Success)?.unreadMessages ?: 0
     val pendingRequests by contactsViewModel.pendingRequests.collectAsState()
     val missedCalls = 1
-    val callHistoryUiModels by callViewModel.callHistoryUiModels.collectAsState()
+    val callsUiState by callViewModel.uiState.collectAsState()
+    val callHistoryUiModels =
+        (callsUiState as? CallsUiState.Success)?.callHistoryList ?: emptyList()
 
     LaunchedEffect(Unit) {
         callViewModel.observeCallHistory()
@@ -71,10 +75,19 @@ fun CallsScreen(
                     title = R.string.calls
                 )
             }) { paddingValues ->
-            CallsList(
-                modifier = Modifier.padding(paddingValues),
-                callHistoryUiModels = callHistoryUiModels
-            )
+            when (callsUiState) {
+                is CallsUiState.Error -> {}
+                CallsUiState.Loading -> {
+                    CommonCircularLoader()
+                }
+
+                is CallsUiState.Success -> {
+                    CallsList(
+                        modifier = Modifier.padding(paddingValues),
+                        callHistoryUiModels = callHistoryUiModels
+                    )
+                }
+            }
         }
     }
 }
