@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.calls.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,11 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.PhoneCallback
-import androidx.compose.material.icons.automirrored.filled.PhoneMissed
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,6 +32,7 @@ import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.model.enums.color
 import com.example.chatease.domain.model.enums.toScreenName
 import com.example.chatease.presentation.ui.model.CallHistoryUiModel
+import com.example.chatease.presentation.ui.screens.shared.calls.CallDirectionIcon
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toChatDateLabel
@@ -96,11 +93,6 @@ fun CallsListItem(
     val callDirection = callHistoryUiModel.callDirection
     val callHistory = callHistoryUiModel.callHistory
 
-    val icon = when (callDirection) {
-        CallDirection.MISSED -> Icons.AutoMirrored.Filled.PhoneMissed
-        CallDirection.INCOMING -> Icons.AutoMirrored.Filled.PhoneCallback
-        CallDirection.OUTGOING -> Icons.Filled.Call
-    }
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -141,15 +133,13 @@ fun CallsListItem(
                 }
             }
         }
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = callDirection.color()
-        )
+        CallDirectionIcon(callDirection = callDirection)
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true,
+         uiMode = Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 private fun CallsListPreview() {
     val now = System.currentTimeMillis()
@@ -174,7 +164,7 @@ private fun CallsListPreview() {
                 ).random(),
                 callerId = "user_1",
                 receiverId = "user_2",
-                callDuration = listOf(15_000L, 42_000L, 75_000L).random(),
+                callDuration = (1000L..75_000L).random(),
                 callType = CallType.AUDIO
             ),
             user = user,
