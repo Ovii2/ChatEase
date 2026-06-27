@@ -12,5 +12,6 @@ data class CallHistoryDto(
     val callType: CallType = CallType.AUDIO,
     val status: CallStatus = CallStatus.CALLING,
     val timestamp: Long = 0L,
-    val callDuration: Long? = null
+    val callDuration: Long? = null,
+    val seen: Boolean = false
 )

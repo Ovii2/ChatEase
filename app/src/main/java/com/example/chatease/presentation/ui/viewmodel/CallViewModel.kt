@@ -58,6 +58,9 @@ class CallViewModel @Inject constructor(
     private val _isMuted = MutableStateFlow(false)
     val isMuted = _isMuted.asStateFlow()
 
+    private val _missedCallsCount = MutableStateFlow(0)
+    val missedCallsCount = _missedCallsCount.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -278,6 +281,25 @@ class CallViewModel @Inject constructor(
         webRtcClient.endCall()
     }
 
+    fun observeMissedCallsCount() {
+        viewModelScope.launch {
+            callRepository.observeMissedCallsCount(currentUserId)
+                .collect { count ->
+                    _missedCallsCount.value = count
+                }
+        }
+    }
+
+    fun markMissedCallsAsSeen() {
+        viewModelScope.launch {
+            try {
+                callRepository.markMissedCallsAsSeen(currentUserId)
+            } catch (e: Exception) {
+                Log.v("CallsViewModel", e.message ?: "Failed to mark calls as seen")
+            }
+        }
+    }
+
     private fun createCallHistory(
         call: Call,
         status: CallStatus,
@@ -287,6 +309,7 @@ class CallViewModel @Inject constructor(
             try {
                 val callHistory = CallHistory(
                     id = UUID.randomUUID().toString(),
+                    ownerId = call.receiverId,
                     callerId = call.callerId,
                     receiverId = call.receiverId,
                     participantIds = listOf(call.callerId, call.receiverId),

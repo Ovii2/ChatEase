@@ -33,6 +33,8 @@ class CallRepositoryImpl(
         private const val ANSWER = "answer"
         private const val ICE_CANDIDATES = "ice_candidates"
         private const val CONNECTED_AT = "connectedAt"
+        private const val SEEN = "seen"
+        private const val OWNER_ID = "ownerId"
     }
 
     override suspend fun createCall(call: Call) {
@@ -136,6 +138,7 @@ class CallRepositoryImpl(
             createCallHistory(
                 CallHistory(
                     id = UUID.randomUUID().toString(),
+                    ownerId = call.receiverId,
                     callerId = call.callerId,
                     receiverId = call.receiverId,
                     participantIds = listOf(call.callerId, call.receiverId),
@@ -254,6 +257,41 @@ class CallRepositoryImpl(
             .document(callId)
             .update(CONNECTED_AT, connectedAt)
             .await()
+    }
+
+    override fun observeMissedCallsCount(userId: String): Flow<Int> = callbackFlow {
+        val listener = firestore
+            .collection(CALL_HISTORY)
+            .whereEqualTo(OWNER_ID, userId)
+            .whereEqualTo(STATUS, CallStatus.CANCELED.name)
+            .whereEqualTo(SEEN, false)
+            .addSnapshotListener { snapshots, exception ->
+                if (exception != null) {
+                    close(exception)
+                    return@addSnapshotListener
+                }
+
+                val count = snapshots?.size() ?: 0
+                trySend(count)
+            }
+
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+    override suspend fun markMissedCallsAsSeen(userId: String) {
+        val snapshot = firestore
+            .collection(CALL_HISTORY)
+            .whereEqualTo(OWNER_ID, userId)
+            .whereEqualTo(STATUS, CallStatus.CANCELED.name)
+            .whereEqualTo(SEEN, false)
+            .get()
+            .await()
+
+        snapshot.documents.forEach { document ->
+            document.reference.update(SEEN, true).await()
+        }
     }
 
 }

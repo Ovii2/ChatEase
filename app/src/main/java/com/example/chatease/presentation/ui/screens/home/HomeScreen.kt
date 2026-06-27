@@ -42,6 +42,7 @@ import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftP
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
+import com.example.chatease.presentation.ui.viewmodel.CallViewModel
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
@@ -62,6 +63,7 @@ fun HomeScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     contactsViewModel: ContactsViewModel = hiltViewModel(),
     chatViewModel: ChatViewModel = hiltViewModel(),
+    callViewModel: CallViewModel = hiltViewModel(),
     onNavigateToLoginScreen: () -> Unit,
     onStartNewChat: () -> Unit,
     currentRoute: String,
@@ -91,13 +93,16 @@ fun HomeScreen(
     val isConversationCreator by chatViewModel.isConversationCreator.collectAsState()
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
 
+    val missedCalls by callViewModel.missedCallsCount.collectAsState()
+
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
         onLoadConversation = chatViewModel::loadConversation,
         messages = messages,
         windowSizeClass = windowSizeClass,
         focusManager = focusManager,
-        keyboardController = keyboardController
+        keyboardController = keyboardController,
+        onObserveMissedCallsCount = callViewModel::observeMissedCallsCount
     )
 
     ChatNavigationScaffold(
@@ -105,7 +110,7 @@ fun HomeScreen(
         currentRoute = currentRoute,
         unreadMessages = unreadMessages,
         pendingRequests = pendingRequests.size,
-        missedCalls = 1,
+        missedCalls = missedCalls,
         onNavigateToHome = onNavigateToHome,
         onNavigateToContacts = onNavigateToContacts,
         onNavigateToCalls = onNavigateToCalls,

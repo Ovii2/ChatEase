@@ -18,7 +18,8 @@ fun HomeScreenEffects(
     messages: List<Message>,
     windowSizeClass: WindowSizeClass,
     focusManager: FocusManager,
-    keyboardController: SoftwareKeyboardController?
+    keyboardController: SoftwareKeyboardController?,
+    onObserveMissedCallsCount: () -> Unit
 ) {
 
     LaunchedEffect(selectedConversationId) {
@@ -36,5 +37,9 @@ fun HomeScreenEffects(
         delay(100.milliseconds)
         focusManager.clearFocus(force = true)
         keyboardController?.hide()
+    }
+
+    LaunchedEffect(Unit) {
+        onObserveMissedCallsCount()
     }
 }

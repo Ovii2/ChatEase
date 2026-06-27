@@ -6,25 +6,29 @@ import com.example.chatease.domain.model.CallHistory
 fun CallHistoryDto.toDomain(): CallHistory {
     return CallHistory(
         id = id,
+        ownerId = ownerId,
         callerId = callerId,
         receiverId = receiverId,
         participantIds = participantIds,
         callType = callType,
         status = status,
         timestamp = timestamp,
-        callDuration = callDuration
+        callDuration = callDuration,
+        seen = seen
     )
 }
 
 fun CallHistory.toDto(): CallHistoryDto {
     return CallHistoryDto(
         id = id,
+        ownerId = ownerId,
         callerId = callerId,
         receiverId = receiverId,
         participantIds = participantIds,
         callType = callType,
         status = status,
         timestamp = timestamp,
-        callDuration = callDuration
+        callDuration = callDuration,
+        seen = seen
     )
 }
