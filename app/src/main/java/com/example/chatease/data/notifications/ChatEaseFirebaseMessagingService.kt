@@ -1,7 +1,9 @@
 package com.example.chatease.data.notifications
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -55,16 +57,15 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
 
     private suspend fun showConnectionNotification(remoteMessage: RemoteMessage) {
         val title = getString(R.string.new_connection_request)
-
         val senderName = remoteMessage.data["senderName"] ?: getString(R.string.app_name)
-
         val body = getString(
             R.string.connection_request,
             senderName
         )
-
         val senderAvatar = remoteMessage.data["senderAvatar"]
         val fallbackAvatar = createInitialBitmap(senderName.firstOrNull()?.uppercase() ?: "?")
+        val requestId = remoteMessage.data["requestId"] ?: return
+        val notificationId = requestId.hashCode()
 
         val bitmap = senderAvatar?.takeIf { it.isNotBlank() }?.let { url ->
             imageLoader.execute(
@@ -74,6 +75,25 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
                     .build()
             ).image?.toBitmap()
         } ?: fallbackAvatar
+
+        val acceptPendingRequestIntent = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(),
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val declineIntent = Intent(this, ContactRequestActionReceiver::class.java).apply {
+            putExtra(ContactRequestActionReceiver.EXTRA_REQUEST_ID, requestId)
+            putExtra(ContactRequestActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+        }
+
+        val declinePendingRequestIntent = PendingIntent.getBroadcast(
+            this,
+            requestId.hashCode(),
+            declineIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         val notification = NotificationCompat.Builder(this, CONNECTIONS_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -88,12 +108,14 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
+            .addAction(0, getString(R.string.accept), acceptPendingRequestIntent)
+            .addAction(0, getString(R.string.decline), declinePendingRequestIntent)
             .build()
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+        notificationManager.notify(notificationId, notification)
     }
 
     private fun createInitialBitmap(
@@ -139,4 +161,5 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
 
         return bitmap
     }
+
 }
