@@ -76,23 +76,16 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
             ).image?.toBitmap()
         } ?: fallbackAvatar
 
-        val acceptPendingRequestIntent = PendingIntent.getActivity(
-            this,
-            0,
-            Intent(),
-            PendingIntent.FLAG_IMMUTABLE
+        val acceptPendingIntent = createActionPendingIntent(
+            requestId = requestId,
+            notificationId = notificationId,
+            action = ContactRequestActionReceiver.ACTION_ACCEPT
         )
 
-        val declineIntent = Intent(this, ContactRequestActionReceiver::class.java).apply {
-            putExtra(ContactRequestActionReceiver.EXTRA_REQUEST_ID, requestId)
-            putExtra(ContactRequestActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
-        }
-
-        val declinePendingRequestIntent = PendingIntent.getBroadcast(
-            this,
-            requestId.hashCode(),
-            declineIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val declinePendingIntent = createActionPendingIntent(
+            requestId = requestId,
+            notificationId = notificationId,
+            action = ContactRequestActionReceiver.ACTION_DECLINE
         )
 
         val notification = NotificationCompat.Builder(this, CONNECTIONS_CHANNEL_ID)
@@ -108,8 +101,8 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .addAction(0, getString(R.string.accept), acceptPendingRequestIntent)
-            .addAction(0, getString(R.string.decline), declinePendingRequestIntent)
+            .addAction(0, getString(R.string.accept), acceptPendingIntent)
+            .addAction(0, getString(R.string.decline), declinePendingIntent)
             .build()
 
         val notificationManager =
@@ -160,6 +153,25 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
         )
 
         return bitmap
+    }
+
+    private fun createActionPendingIntent(
+        requestId: String,
+        notificationId: Int,
+        action: String
+    ): PendingIntent {
+        val intent = Intent(this, ContactRequestActionReceiver::class.java).apply {
+            putExtra(ContactRequestActionReceiver.EXTRA_REQUEST_ID, requestId)
+            putExtra(ContactRequestActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+            putExtra(ContactRequestActionReceiver.EXTRA_ACTION, action)
+        }
+
+        return PendingIntent.getBroadcast(
+            this,
+            "${requestId}_$action".hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
     }
 
 }
