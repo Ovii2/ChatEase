@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.shared.chat
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,14 +18,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.chatease.R
+import coil3.compose.AsyncImage
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.model.enums.statusColor
@@ -77,22 +75,22 @@ fun UserAvatar(
                 )
             }
         } else {
-//            AsyncImage(
-//                modifier = Modifier
-//                    .size(avatarSize)
-//                    .clip(CircleShape),
-//                contentScale = ContentScale.Crop,
-//                model = user.imageUrl,
-//                contentDescription = null
-//            )
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .size(avatarSize)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop,
-                painter = painterResource(R.drawable.person),
+                model = user.imageUrl,
                 contentDescription = null
             )
+//            Image(
+//                modifier = Modifier
+//                    .size(avatarSize)
+//                    .clip(CircleShape),
+//                contentScale = ContentScale.Crop,
+//                painter = painterResource(R.drawable.person),
+//                contentDescription = null
+//            )
         }
         if (user.status != UserPresenceStatus.OFFLINE && showStatus) {
             Box(

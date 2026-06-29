@@ -2,8 +2,13 @@ package com.example.chatease.data.notifications
 
 import android.app.NotificationManager
 import android.content.Context
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Typeface
 import androidx.core.app.NotificationCompat
+import androidx.core.graphics.createBitmap
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
@@ -17,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
@@ -58,7 +64,8 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
         )
 
         val senderAvatar = remoteMessage.data["senderAvatar"]
-        Log.d("FCM", "Sender avatar url: $senderAvatar")
+        val fallbackAvatar = createInitialBitmap(senderName.firstOrNull()?.uppercase() ?: "?")
+
         val bitmap = senderAvatar?.takeIf { it.isNotBlank() }?.let { url ->
             imageLoader.execute(
                 ImageRequest.Builder(this)
@@ -66,7 +73,7 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
                     .allowHardware(false)
                     .build()
             ).image?.toBitmap()
-        }
+        } ?: fallbackAvatar
 
         val notification = NotificationCompat.Builder(this, CONNECTIONS_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -87,5 +94,49 @@ class ChatEaseFirebaseMessagingService : FirebaseMessagingService() {
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+    }
+
+    private fun createInitialBitmap(
+        letter: String
+    ): Bitmap {
+        val size = 128
+
+        val bitmap = createBitmap(size, size)
+        val canvas = Canvas(bitmap)
+
+        val avatarColor = Color.rgb(
+            Random.nextInt(256),
+            Random.nextInt(256),
+            Random.nextInt(256)
+        )
+
+        val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = avatarColor
+        }
+
+        canvas.drawCircle(
+            size / 2f,
+            size / 2f,
+            size / 2f,
+            circlePaint
+        )
+
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.WHITE
+            textSize = 56f
+            textAlign = Paint.Align.CENTER
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        }
+
+        val y = size / 2f - (textPaint.descent() + textPaint.ascent()) / 2
+
+        canvas.drawText(
+            letter,
+            size / 2f,
+            y,
+            textPaint
+        )
+
+        return bitmap
     }
 }
