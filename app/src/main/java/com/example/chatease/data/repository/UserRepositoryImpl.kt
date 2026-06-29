@@ -9,6 +9,7 @@ import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -26,6 +27,7 @@ class UserRepositoryImpl(
         private const val CONTACTS = "contacts"
         private const val BLOCKED_USER_IDS = "blockedUserIds"
         private const val USER_IDS = "userIds"
+        private const val FCM_TOKEN = "fcmToken"
     }
 
     override suspend fun updateUserStatus(
@@ -223,6 +225,18 @@ class UserRepositoryImpl(
         awaitClose {
             listener.remove()
         }
+    }
+
+    override suspend fun saveFcmToken(token: String) {
+        val userId = auth.currentUser?.uid ?: return
+
+        firestore
+            .collection(USERS)
+            .document(userId)
+            .set(
+                mapOf(FCM_TOKEN to token),
+                SetOptions.merge()
+            ).await()
     }
 
 }

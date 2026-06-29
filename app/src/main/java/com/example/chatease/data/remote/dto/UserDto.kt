@@ -8,5 +8,6 @@ data class UserDto(
     val email: String = "",
     val imageUrl: String? = null,
     val status: String = UserPresenceStatus.ONLINE.name,
-    val blockedUserIds: List<String> = emptyList()
+    val blockedUserIds: List<String> = emptyList(),
+    val fcmToken: String = ""
 )

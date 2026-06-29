@@ -31,4 +31,6 @@ interface UserRepository {
 
     fun observeIsBlockedByUser(otherUserId: String): Flow<Boolean>
 
+    suspend fun saveFcmToken(token: String)
+
 }

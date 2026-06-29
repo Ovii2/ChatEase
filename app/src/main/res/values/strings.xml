@@ -204,4 +204,7 @@
     <string name="incoming_call_screen">Incoming call</string>
     <string name="outgoing_call">Outgoing call</string>
     <string name="connected_call">Connected call</string>
+
+    <string name="new_connection_request">New connection request</string>
+    <string name="connection_request">%1$s sent you a connection request</string>
 </resources>

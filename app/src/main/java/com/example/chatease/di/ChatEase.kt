@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.example.chatease.data.notifications.NotificationHelper
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -32,6 +33,8 @@ class ChatEase : Application(), DefaultLifecycleObserver {
 
     override fun onCreate() {
         super<Application>.onCreate()
+
+        NotificationHelper(this).createNotificationChannels()
 
         ProcessLifecycleOwner.get()
             .lifecycle
