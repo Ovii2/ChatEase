@@ -227,4 +227,7 @@
     <string name="active_sessions">Active sessions</string>
     <string name="manage_active_sessions">See or manage active sessions</string>
 
+    <string name="no_contacts">You have no contacts</string>
+    <string name="all_contacts_shown_here">All of your contacts will be shown here</string>
+
 </resources>
