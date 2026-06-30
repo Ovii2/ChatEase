@@ -37,7 +37,7 @@ fun PrivacyAndSecurityScreenContent(
     modifier: Modifier = Modifier,
     onNavigateToBlockedUsers: () -> Unit
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.padding(vertical = 8.dp)) {
         PrivacyAndSecuritySectionLayout(
             title = R.string.privacy_controls
         ) {
