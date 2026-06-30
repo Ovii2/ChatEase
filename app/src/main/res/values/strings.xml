@@ -111,7 +111,7 @@
 
     <string name="accept">Accept</string>
 
-    <string name="fail_load_received_requests">"Failed to load received requests"</string>
+    <string name="fail_load_received_requests">Failed to load received requests</string>
 
     <string name="request_accepted">You have accepted request</string>
     <string name="request_declined">You have declined request</string>
