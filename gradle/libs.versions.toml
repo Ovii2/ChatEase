@@ -1,73 +1,113 @@
 [versions]
+# Android
 agp = "9.2.1"
-coilCompose = "3.5.0"
+kotlin = "2.4.0"
+ksp = "2.3.5"
+googleServices = "4.5.0"
+
+# Compose
+composeBom = "2026.06.00"
+activityCompose = "1.13.0"
+material3WindowSizeClass = "1.4.0"
+materialIconsExtended = "1.7.8"
+uiTextGoogleFonts = "1.11.3"
 composeShimmer = "1.4.0"
+
+# AndroidX
 coreKtx = "1.19.0"
+lifecycleRuntimeKtx = "2.11.0"
+lifecycleProcess = "2.11.0"
+navigationCompose = "2.9.8"
+datastoreCore = "1.2.1"
 datastorePreferences = "1.2.1"
+
+# Dependency Injection
+hiltAndroid = "2.60"
+hiltNavigationCompose = "1.3.0"
+
+# Firebase
 firebaseBom = "34.15.0"
 firebaseMessaging = "25.1.0"
+
+# Networking / Images
+coilCompose = "3.5.0"
+
+# Concurrency
+kotlinxCoroutinesAndroid = "1.11.0"
+
+# Serialization
 gson = "2.14.0"
+
+# WebRTC
+streamWebrtcAndroid = "1.3.10"
+
+# Testing
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleProcess = "2.11.0"
-lifecycleRuntimeKtx = "2.11.0"
-activityCompose = "1.13.0"
-kotlin = "2.4.0"
-composeBom = "2026.06.00"
-material3WindowSizeClass = "1.4.0"
-materialIconsExtended = "1.7.8"
-navigationCompose = "2.9.8"
-streamWebrtcAndroid = "1.3.10"
-uiTextGoogleFonts = "1.11.3"
-ksp = "2.3.5"
-hiltAndroid = "2.60"
-hiltNavigationCompose = "1.3.0"
-kotlinxCoroutinesAndroid = "1.11.0"
-googleServices = "4.5.0"
-datastoreCore = "1.2.1"
 
 [libraries]
-androidx-compose-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
-androidx-compose-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout" }
-androidx-compose-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation" }
-androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
-androidx-compose-material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite" }
-androidx-compose-material3-window-size-class1 = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3WindowSizeClass" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferences" }
-androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
-androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
-compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+# Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+androidx-compose-material3-window-size-class1 = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3WindowSizeClass" }
+androidx-compose-material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite" }
+androidx-compose-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
+androidx-compose-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout" }
+androidx-compose-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation" }
 androidx-compose-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+
+# AndroidX
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
+# DataStore
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferences" }
+androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+
+# Hilt
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+# Coroutines
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+
+# Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
-androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
+
+# Images
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+
+# UI
+compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
+
+# Serialization
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+
+# WebRTC
 stream-webrtc-android = { module = "io.getstream:stream-webrtc-android", version.ref = "streamWebrtcAndroid" }
+
+# Testing
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
