@@ -3,6 +3,8 @@ package com.example.chatease.presentation.ui.screens.privacy_security
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +31,9 @@ fun PrivacyAndSecurityScreen(
             )
         }) { paddingValues ->
         PrivacyAndSecurityScreenContent(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState()),
             onNavigateToBlockedUsers = onNavigateToBlockedUsers
         )
     }
