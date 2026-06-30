@@ -3,11 +3,16 @@ package com.example.chatease.presentation.ui.screens.privacy_security.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountCircle
@@ -37,62 +42,74 @@ fun PrivacyAndSecurityScreenContent(
     modifier: Modifier = Modifier,
     onNavigateToBlockedUsers: () -> Unit
 ) {
-    Column(modifier = modifier.padding(vertical = 8.dp)) {
-        PrivacyAndSecuritySectionLayout(
-            title = R.string.privacy_controls
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Column(
+            modifier = Modifier
+                .widthIn(max = 600.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            PrivacyAndSecurityItem(
-                icon = Icons.Filled.Block,
-                title = R.string.blocked_users,
-                label = R.string.people_you_have_blocked,
-                onClick = onNavigateToBlockedUsers
-            )
-            PrivacyAndSecurityItem(
-                icon = Icons.Filled.Group,
-                title = R.string.who_can_contact_me,
-                label = R.string.manage_incoming_messages,
-                onClick = {}
-            )
-            PrivacyAndSecurityItem(
-                icon = Icons.Outlined.Circle,
-                title = R.string.online_status,
-                label = R.string.control_online_visibility,
-                onClick = {}
-            )
-            PrivacyAndSecurityItem(
-                icon = Icons.Filled.Visibility,
-                title = R.string.read_receipts,
-                label = R.string.control_read_receipts,
-                onClick = {}
-            )
-            PrivacyAndSecurityItem(
-                icon = Icons.Filled.AccountCircle,
-                title = R.string.profile_visibility,
-                label = R.string.control_who_sees_info,
-                onClick = {}
-            )
-        }
-        PrivacyAndSecuritySectionLayout(
-            title = R.string.security
-        ) {
-            PrivacyAndSecurityItem(
-                icon = Icons.Filled.Lock,
-                title = R.string.app_lock,
-                label = R.string.lock_app_with_pin_or,
-                onClick = {}
-            )
-            PrivacyAndSecurityItem(
-                icon = Icons.Outlined.Shield,
-                title = R.string.two_step,
-                label = R.string.extra_security_layer,
-                onClick = {}
-            )
-            PrivacyAndSecurityItem(
-                icon = Icons.Filled.Monitor,
-                title = R.string.active_sessions,
-                label = R.string.manage_active_sessions,
-                onClick = {}
-            )
+            PrivacyAndSecuritySectionLayout(
+                title = R.string.privacy_controls
+            ) {
+                PrivacyAndSecurityItem(
+                    icon = Icons.Filled.Block,
+                    title = R.string.blocked_users,
+                    label = R.string.people_you_have_blocked,
+                    onClick = onNavigateToBlockedUsers
+                )
+                PrivacyAndSecurityItem(
+                    icon = Icons.Filled.Group,
+                    title = R.string.who_can_contact_me,
+                    label = R.string.manage_incoming_messages,
+                    onClick = {}
+                )
+                PrivacyAndSecurityItem(
+                    icon = Icons.Outlined.Circle,
+                    title = R.string.online_status,
+                    label = R.string.control_online_visibility,
+                    onClick = {}
+                )
+                PrivacyAndSecurityItem(
+                    icon = Icons.Filled.Visibility,
+                    title = R.string.read_receipts,
+                    label = R.string.control_read_receipts,
+                    onClick = {}
+                )
+                PrivacyAndSecurityItem(
+                    icon = Icons.Filled.AccountCircle,
+                    title = R.string.profile_visibility,
+                    label = R.string.control_who_sees_info,
+                    onClick = {}
+                )
+            }
+            PrivacyAndSecuritySectionLayout(
+                title = R.string.security
+            ) {
+                PrivacyAndSecurityItem(
+                    icon = Icons.Filled.Lock,
+                    title = R.string.app_lock,
+                    label = R.string.lock_app_with_pin_or,
+                    onClick = {}
+                )
+                PrivacyAndSecurityItem(
+                    icon = Icons.Outlined.Shield,
+                    title = R.string.two_step,
+                    label = R.string.extra_security_layer,
+                    onClick = {}
+                )
+                PrivacyAndSecurityItem(
+                    icon = Icons.Filled.Monitor,
+                    title = R.string.active_sessions,
+                    label = R.string.manage_active_sessions,
+                    onClick = {}
+                )
+            }
         }
     }
 }
