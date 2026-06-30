@@ -7,5 +7,6 @@ data class ConversationDto(
     val typingUserIds: List<String> = emptyList(),
     val lastMessage: String = "",
     val timestamp: Long = 0L,
-    val unreadCounts: Map<String, Int> = emptyMap()
+    val unreadCounts: Map<String, Int> = emptyMap(),
+    val deletedFor: List<String> = emptyList()
 )

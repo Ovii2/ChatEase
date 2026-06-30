@@ -33,6 +33,7 @@ class ConversationRepositoryImpl(
         private const val REACTIONS = "reactions"
         private const val UNREAD_COUNTS = "unreadCounts"
         private const val TYPING_USER_IDS = "typingUserIds"
+        private const val DELETED_FOR = "deletedFor"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -97,6 +98,7 @@ class ConversationRepositoryImpl(
     }
 
     override suspend fun getExistingConversationId(participantIds: List<String>): String? {
+        val currentUserId = auth.currentUser?.uid ?: return null
         val sortedParticipantIds = participantIds.sorted()
 
         val snapshot = firestore
@@ -109,6 +111,10 @@ class ConversationRepositoryImpl(
             val conversation = document.toObject(ConversationDto::class.java)
             conversation?.participantIds?.sorted() == sortedParticipantIds
         }
+
+        existingConversation?.reference
+            ?.update(DELETED_FOR, FieldValue.arrayRemove(currentUserId))
+            ?.await()
 
         return existingConversation?.id
     }
@@ -125,7 +131,7 @@ class ConversationRepositoryImpl(
                 val conversations = snapshot?.documents?.mapNotNull { document ->
                     document.toObject(ConversationDto::class.java)?.toDomain()
                 }?.filter { conversation ->
-                    conversation.lastMessage.isNotBlank()
+                    conversation.lastMessage.isNotBlank() && userId !in conversation.deletedFor
                 } ?: emptyList()
 
                 trySend(conversations)
@@ -176,9 +182,10 @@ class ConversationRepositoryImpl(
             participantId != message.senderId
         }
 
-        val updates = mutableMapOf<String, Any>(
+        val updates = mutableMapOf(
             LAST_MESSAGE to message.text,
-            TIMESTAMP to message.timeStamp
+            TIMESTAMP to message.timeStamp,
+            DELETED_FOR to FieldValue.arrayRemove(*receiverIds.toTypedArray())
         )
 
         receiverIds.forEach { receiverId ->
@@ -283,16 +290,11 @@ class ConversationRepositoryImpl(
 
     override suspend fun deleteConversation(conversationId: String) {
         val currentUserId = auth.currentUser?.uid ?: return
-        val conversation = getConversation(conversationId)
-
-        if (conversation.creatorId != currentUserId) {
-            return
-        }
 
         firestore
             .collection(CONVERSATIONS)
             .document(conversationId)
-            .delete()
+            .update(DELETED_FOR, FieldValue.arrayUnion(currentUserId))
             .await()
     }
 

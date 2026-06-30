@@ -158,7 +158,7 @@
     <string name="unmute_notifications">Unmute notifications</string>
 
     <string name="confirm_chat_delete_title">Delete conversation</string>
-    <string name="confirm_chat_delete_body">Are you sure you want to delete this conversation?</string>
+    <string name="confirm_chat_delete_body">This action will delete conversation only for you.</string>
 
     <string name="one_is_typing">%1$s is typing…</string>
     <string name="two_are_typing">%1$s and %2$s are typing…</string>
