@@ -19,6 +19,7 @@ import com.example.chatease.presentation.ui.screens.login.LoginScreen
 import com.example.chatease.presentation.ui.screens.my_profile.MyProfileScreen
 import com.example.chatease.presentation.ui.screens.new_chat.NewChatScreen
 import com.example.chatease.presentation.ui.screens.other_user_profile.OtherUserProfileScreen
+import com.example.chatease.presentation.ui.screens.privacy_security.PrivacyAndSecurityScreen
 import com.example.chatease.presentation.ui.screens.sent_requests.SentRequestsScreen
 import com.example.chatease.presentation.ui.screens.sign_up.SignUpScreen
 import com.google.firebase.Firebase
@@ -193,8 +194,8 @@ fun AppNavHost(
                     }
                 },
                 onThemeToggleClick = onThemeToggleClick,
-                onNavigateToBlockedUsers = {
-                    navController.navigate(Screens.BlockedUsers.route) {
+                onNavigateToPrivacyAndSecurity = {
+                    navController.navigate(Screens.PrivacyAndSecurity.route) {
                         launchSingleTop = true
                     }
                 },
@@ -262,6 +263,16 @@ fun AppNavHost(
                 callId = callId,
                 onNavigateBack = { navController.popBackStack() },
                 currentRoute = currentRoute
+            )
+        }
+        composable(route = Screens.PrivacyAndSecurity.route) {
+            PrivacyAndSecurityScreen(
+                onBackClick = { navController.popBackStack() },
+                onNavigateToBlockedUsers = {
+                    navController.navigate(Screens.BlockedUsers.route) {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     }

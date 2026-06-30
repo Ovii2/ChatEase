@@ -35,6 +35,8 @@ sealed class Screens(val route: String) {
     data object AudioCall : Screens("audio_call/{callId}") {
         fun createRoute(callId: String) = "audio_call/$callId"
     }
+
+    data object PrivacyAndSecurity : Screens("privacy_and_security")
 }
 
 @StringRes
@@ -54,5 +56,6 @@ fun Screens.toScreenName(): Int {
         Screens.OtherUserProfile -> R.string.profile
         Screens.BlockedUsers -> R.string.blocked_users
         Screens.AudioCall -> R.string.audio_call
+        Screens.PrivacyAndSecurity -> R.string.privacy_security
     }
 }

@@ -41,7 +41,7 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun MyProfileSettingsSection(
     modifier: Modifier = Modifier,
-    onNavigateToBlockedUsers: () -> Unit
+    onNavigateToPrivacyAndSecurity : () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -59,7 +59,7 @@ fun MyProfileSettingsSection(
             text = R.string.account_settings
         )
         MyProfileSettingsItem(
-            onClick = {},
+            onClick = onNavigateToPrivacyAndSecurity,
             imageVector = Icons.Outlined.Lock,
             text = R.string.privacy_security
         )
@@ -67,11 +67,6 @@ fun MyProfileSettingsSection(
             onClick = {},
             imageVector = Icons.Outlined.Notifications,
             text = R.string.notifications
-        )
-        MyProfileSettingsItem(
-            onClick = onNavigateToBlockedUsers,
-            imageVector = Icons.Outlined.Block,
-            text = R.string.blocked_users
         )
         MyProfileSettingsItem(
             onClick = {},
@@ -150,7 +145,7 @@ private fun MyProfileSettingsSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyProfileSettingsSection(
-                    onNavigateToBlockedUsers = {}
+                    onNavigateToPrivacyAndSecurity = {}
                 )
             }
         }

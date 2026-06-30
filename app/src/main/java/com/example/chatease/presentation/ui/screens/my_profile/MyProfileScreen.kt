@@ -17,21 +17,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.example.chatease.R
-import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.ThemeMode
-import com.example.chatease.domain.model.enums.UserPresenceStatus
-import com.example.chatease.presentation.ui.model.ProfileStatUiModel
 import com.example.chatease.presentation.ui.screens.contacts.components.ContactsScreenTopBar
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileLogoutButton
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileSettingsSection
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileStatsRow
 import com.example.chatease.presentation.ui.screens.my_profile.components.MyProfileTopSection
 import com.example.chatease.presentation.ui.state.MyProfileUiState
-import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AppSettingsViewModel
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
 import com.example.chatease.presentation.ui.viewmodel.MyProfileViewModel
@@ -45,8 +39,9 @@ fun MyProfileScreen(
     appSettingsViewModel: AppSettingsViewModel = hiltViewModel(),
     onNavigateToLoginScreen: () -> Unit,
     onThemeToggleClick: () -> Unit,
-    onNavigateToBlockedUsers: () -> Unit
-) {
+    onNavigateToPrivacyAndSecurity: () -> Unit,
+
+    ) {
     val themeMode by appSettingsViewModel.themeMode.collectAsState()
     val actionIcon =
         when (themeMode) {
@@ -84,7 +79,7 @@ fun MyProfileScreen(
                         authViewModel.logout()
                         onNavigateToLoginScreen()
                     },
-                    onNavigateToBlockedUsers = onNavigateToBlockedUsers,
+                    onNavigateToBlockedUsers = onNavigateToPrivacyAndSecurity,
                 )
             }
         }
@@ -110,7 +105,7 @@ fun MyProfileScreenContent(
                 stats = uiState.stats
             )
             MyProfileSettingsSection(
-                onNavigateToBlockedUsers = onNavigateToBlockedUsers
+                onNavigateToPrivacyAndSecurity = onNavigateToBlockedUsers
             )
             MyProfileLogoutButton(
                 onLogoutClick = onLogoutClick

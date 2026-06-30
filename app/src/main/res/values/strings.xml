@@ -207,4 +207,24 @@
 
     <string name="new_connection_request">New connection request</string>
     <string name="connection_request">%1$s sent you a connection request</string>
+
+    <string name="privacy_controls">Privacy controls</string>
+    <string name="people_you_have_blocked">People you\'ve blocked</string>
+    <string name="who_can_contact_me">Who can contact me</string>
+    <string name="manage_incoming_messages">Manage incoming messages</string>
+    <string name="online_status">Online status</string>
+    <string name="control_online_visibility">Control your online visibility</string>
+    <string name="read_receipts">Read receipts</string>
+    <string name="control_read_receipts">Control read receipts</string>
+    <string name="profile_visibility">Profile visibility</string>
+    <string name="control_who_sees_info">Control who sees your info</string>
+
+    <string name="security">Security</string>
+    <string name="app_lock">App lock</string>
+    <string name="lock_app_with_pin_or">Lock app with PIN or fingerprint</string>
+    <string name="two_step">Two-step verification</string>
+    <string name="extra_security_layer">Add and extra layer of security</string>
+    <string name="active_sessions">Active sessions</string>
+    <string name="manage_active_sessions">See or manage active sessions</string>
+
 </resources>
