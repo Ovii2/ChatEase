@@ -21,7 +21,7 @@ class AppSettingsViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(timeout),
-            initialValue = ThemeMode.LIGHT
+            initialValue = ThemeMode.SYSTEM_DEFAULT
         )
 
     fun setThemeMode(mode: ThemeMode) {

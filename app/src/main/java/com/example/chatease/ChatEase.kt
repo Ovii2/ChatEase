@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
@@ -32,14 +33,16 @@ fun ChatEase(
     val incomingCall by appViewModel.incomingCall.collectAsState()
 
     val darkTheme = when (themeMode) {
+        ThemeMode.SYSTEM_DEFAULT -> isSystemInDarkTheme()
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
     }
 
     fun setTheme() = appSettingsViewModel.setThemeMode(
         when (themeMode) {
+            ThemeMode.SYSTEM_DEFAULT -> ThemeMode.LIGHT
             ThemeMode.LIGHT -> ThemeMode.DARK
-            ThemeMode.DARK -> ThemeMode.LIGHT
+            ThemeMode.DARK -> ThemeMode.SYSTEM_DEFAULT
         }
     )
 

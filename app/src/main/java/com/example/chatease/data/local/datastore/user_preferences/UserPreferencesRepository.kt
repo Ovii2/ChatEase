@@ -17,8 +17,8 @@ class UserPreferencesRepository(private val context: Context) {
         return context.userPreferencesDataStore.data.map { preferences ->
             val value = preferences[Keys.THEME_MODE]
             value?.let {
-                runCatching { ThemeMode.valueOf(it) }.getOrDefault(ThemeMode.LIGHT)
-            } ?: ThemeMode.LIGHT
+                runCatching { ThemeMode.valueOf(it) }.getOrDefault(ThemeMode.SYSTEM_DEFAULT)
+            } ?: ThemeMode.SYSTEM_DEFAULT
         }
     }
 

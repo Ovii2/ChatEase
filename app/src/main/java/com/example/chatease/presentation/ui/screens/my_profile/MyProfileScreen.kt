@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BrightnessAuto
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material3.Scaffold
@@ -45,6 +46,7 @@ fun MyProfileScreen(
     val themeMode by appSettingsViewModel.themeMode.collectAsState()
     val actionIcon =
         when (themeMode) {
+            ThemeMode.SYSTEM_DEFAULT -> Icons.Outlined.BrightnessAuto
             ThemeMode.LIGHT -> Icons.Outlined.DarkMode
             ThemeMode.DARK -> Icons.Outlined.LightMode
         }
