@@ -36,7 +36,8 @@ fun NewChatScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onNavigateToChatScreen: (String) -> Unit,
-    newChatViewModel: NewChatViewModel = hiltViewModel()
+    newChatViewModel: NewChatViewModel = hiltViewModel(),
+    onNavigateToNewGroupScreen: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val contacts by newChatViewModel.contacts.collectAsState()
@@ -45,7 +46,6 @@ fun NewChatScreen(
     var selectedUserIds by rememberSaveable {
         mutableStateOf(setOf<String>())
     }
-
 
     Scaffold(
         modifier = modifier.padding(
@@ -98,10 +98,10 @@ fun NewChatScreen(
                                 selectedUserId = selectedUserIds.first(),
                                 onConversationCreated = {
                                     onNavigateToChatScreen(it)
-
                                 }
                             )
                         },
+                        onNavigateToNewChatGroupScreen = onNavigateToNewGroupScreen,
                     )
                 }
             }
@@ -120,6 +120,7 @@ private fun NewChatScreenPreview() {
         NewChatScreen(
             onBackClick = {},
             onNavigateToChatScreen = {},
+            onNavigateToNewGroupScreen = {},
         )
     }
 }

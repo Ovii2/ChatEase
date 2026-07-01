@@ -5,11 +5,18 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
@@ -30,7 +38,10 @@ import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun NewChatGroupScreen(modifier: Modifier = Modifier) {
+fun NewChatGroupScreen(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit
+) {
     val focusManager = LocalFocusManager.current
     var groupName by rememberSaveable { mutableStateOf("") }
     val maxMembers = 50
@@ -49,39 +60,63 @@ fun NewChatGroupScreen(modifier: Modifier = Modifier) {
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
         topBar = {
             CommonTopBar(
-                onBackClick = {},
+                onBackClick = onBackClick,
                 title = R.string.new_chat_group
             )
         }) { paddingValues ->
         Box(
-            modifier = Modifier.clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) {
-                focusManager.clearFocus()
-            }) {
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    focusManager.clearFocus()
+                }, contentAlignment = Alignment.TopCenter
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-                    .widthIn(max = 600.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .fillMaxHeight()
+                    .widthIn(max = 600.dp)
+                    .padding(bottom = 28.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                NewChatGroupTopSection(
-                    groupName = groupName,
-                    onGroupNameTextChange = {}
-                )
-                NewChatGroupMembersList(
-                    onRemoveMember = {},
-                    maxMembers = maxMembers,
-                    members = members
-                )
+                Column(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    NewChatGroupTopSection(
+                        groupName = groupName,
+                        onGroupNameTextChange = { groupName = it }
+                    )
+                    NewChatGroupMembersList(
+                        onRemoveMember = {},
+                        maxMembers = maxMembers,
+                        members = members
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    onClick = {},
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Text(text = stringResource(R.string.create_group))
+                }
             }
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(
+    showBackground = true, showSystemUi = true,
+    device = "id:pixel_5"
+)
 @Composable
 private fun NewChatGroupScreenPreview() {
     ChatEaseTheme {
@@ -91,7 +126,9 @@ private fun NewChatGroupScreenPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                NewChatGroupScreen()
+                NewChatGroupScreen(
+                    onBackClick = {}
+                )
             }
         }
     }

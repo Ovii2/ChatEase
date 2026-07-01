@@ -37,7 +37,8 @@ fun AllContactsSection(
     selectedCount: Int,
     selectedUserIds: Set<String>,
     onChecked: (String) -> Unit,
-    onStartChatClick: () -> Unit
+    onStartChatClick: () -> Unit,
+    onNavigateToNewChatGroupScreen: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Column(
@@ -68,7 +69,7 @@ fun AllContactsSection(
             modifier = Modifier
                 .height(50.dp),
             shape = RoundedCornerShape(10.dp),
-            onClick = onStartChatClick
+            onClick = if (selectedCount > 1) onNavigateToNewChatGroupScreen else onStartChatClick
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -144,7 +145,8 @@ private fun AllContactsSectionPreview() {
                 selectedCount = 3,
                 selectedUserIds = setOf("1", "2"),
                 onChecked = {},
-                onStartChatClick = {}
+                onStartChatClick = {},
+                onNavigateToNewChatGroupScreen = {},
             )
         }
     }
