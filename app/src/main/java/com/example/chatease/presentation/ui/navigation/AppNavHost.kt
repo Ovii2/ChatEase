@@ -151,6 +151,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToNewGroupScreen = {
+                    navController.navigate(Screens.NewChatGroup.route) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.Contacts.route) {
@@ -277,7 +282,9 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.NewChatGroup.route) {
-            NewChatGroupScreen()
+            NewChatGroupScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }
