@@ -18,6 +18,7 @@ import com.example.chatease.presentation.ui.screens.home.HomeScreen
 import com.example.chatease.presentation.ui.screens.login.LoginScreen
 import com.example.chatease.presentation.ui.screens.my_profile.MyProfileScreen
 import com.example.chatease.presentation.ui.screens.new_chat.NewChatScreen
+import com.example.chatease.presentation.ui.screens.new_chat_group.NewChatGroupScreen
 import com.example.chatease.presentation.ui.screens.other_user_profile.OtherUserProfileScreen
 import com.example.chatease.presentation.ui.screens.privacy_security.PrivacyAndSecurityScreen
 import com.example.chatease.presentation.ui.screens.sent_requests.SentRequestsScreen
@@ -274,6 +275,9 @@ fun AppNavHost(
                     }
                 }
             )
+        }
+        composable(route = Screens.NewChatGroup.route) {
+            NewChatGroupScreen()
         }
     }
 }

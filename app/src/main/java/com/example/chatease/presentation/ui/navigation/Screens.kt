@@ -37,6 +37,7 @@ sealed class Screens(val route: String) {
     }
 
     data object PrivacyAndSecurity : Screens("privacy_and_security")
+    data object NewChatGroup : Screens("new_chat_group")
 }
 
 @StringRes
@@ -57,5 +58,6 @@ fun Screens.toScreenName(): Int {
         Screens.BlockedUsers -> R.string.blocked_users
         Screens.AudioCall -> R.string.audio_call
         Screens.PrivacyAndSecurity -> R.string.privacy_security
+        Screens.NewChatGroup -> R.string.new_chat_group
     }
 }
