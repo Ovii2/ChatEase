@@ -40,9 +40,8 @@ fun MyProfileScreen(
     appSettingsViewModel: AppSettingsViewModel = hiltViewModel(),
     onNavigateToLoginScreen: () -> Unit,
     onThemeToggleClick: () -> Unit,
-    onNavigateToPrivacyAndSecurity: () -> Unit,
-
-    ) {
+    onNavigateToPrivacyAndSecurity: () -> Unit
+) {
     val themeMode by appSettingsViewModel.themeMode.collectAsState()
     val actionIcon =
         when (themeMode) {
