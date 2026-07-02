@@ -5,6 +5,7 @@ import com.example.chatease.data.remote.dto.ConversationDto
 import com.example.chatease.data.remote.dto.MessageDto
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.Message
+import com.example.chatease.domain.model.enums.ConversationType
 import com.example.chatease.domain.repository.ConversationRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -81,6 +82,7 @@ class ConversationRepositoryImpl(
 
         val conversationDto = ConversationDto(
             id = conversationId,
+            type = ConversationType.DIRECT,
             creatorId = creatorId,
             participantIds = participantIds,
             lastMessage = "",
