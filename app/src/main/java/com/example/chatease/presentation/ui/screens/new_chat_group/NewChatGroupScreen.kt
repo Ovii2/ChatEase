@@ -40,7 +40,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun NewChatGroupScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToGroupChat: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var groupName by rememberSaveable { mutableStateOf("") }
@@ -103,7 +104,7 @@ fun NewChatGroupScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    onClick = {},
+                    onClick = onNavigateToGroupChat,
                     shape = RoundedCornerShape(15.dp)
                 ) {
                     Text(text = stringResource(R.string.create_group))
@@ -127,7 +128,8 @@ private fun NewChatGroupScreenPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 NewChatGroupScreen(
-                    onBackClick = {}
+                    onBackClick = {},
+                    onNavigateToGroupChat = {},
                 )
             }
         }
