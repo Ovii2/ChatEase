@@ -14,6 +14,7 @@ import com.example.chatease.presentation.ui.screens.calls.CallsScreen
 import com.example.chatease.presentation.ui.screens.chat.ChatScreen
 import com.example.chatease.presentation.ui.screens.chat_info.ChatInfoScreen
 import com.example.chatease.presentation.ui.screens.contacts.ContactsScreen
+import com.example.chatease.presentation.ui.screens.group_chat.GroupChatScreen
 import com.example.chatease.presentation.ui.screens.home.HomeScreen
 import com.example.chatease.presentation.ui.screens.login.LoginScreen
 import com.example.chatease.presentation.ui.screens.my_profile.MyProfileScreen
@@ -283,7 +284,22 @@ fun AppNavHost(
         }
         composable(route = Screens.NewChatGroup.route) {
             NewChatGroupScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onNavigateToGroupChat = {
+                    navController.navigate(Screens.GroupChat.createRoute("")) {
+                        popUpTo(Screens.NewChatGroup.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+            )
+        }
+        composable(route = Screens.GroupChat.route) {
+            GroupChatScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
             )
         }
     }
