@@ -6,6 +6,7 @@ import com.example.chatease.domain.model.Conversation
 fun ConversationDto.toDomain(): Conversation {
     return Conversation(
         id = id,
+        type = type,
         creatorId = creatorId,
         participantIds = participantIds,
         typingUserIds = typingUserIds,
@@ -19,6 +20,7 @@ fun ConversationDto.toDomain(): Conversation {
 fun Conversation.toDto(): ConversationDto {
     return ConversationDto(
         id = id,
+        type = type,
         creatorId = creatorId,
         participantIds = participantIds,
         typingUserIds = typingUserIds,
