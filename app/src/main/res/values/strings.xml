@@ -236,5 +236,7 @@
     <string name="members_count">Members (%1$d/%2$d)</string>
     <string name="create_group">Create Group</string>
     <string name="add_members">Add</string>
+    <string name="total_members">%1$d members</string>
+    <string name="group_chat">Group chat</string>
 
 </resources>
