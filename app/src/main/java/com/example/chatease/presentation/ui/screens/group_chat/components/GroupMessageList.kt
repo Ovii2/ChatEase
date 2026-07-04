@@ -35,7 +35,7 @@ fun GroupMessageList(
     modifier: Modifier = Modifier,
     user: User,
     messages: List<Message>,
-    isSentByCurrentUser: Boolean,
+    currentUserId: String,
     listState: LazyListState,
     groupMembers: List<User>
 ) {
@@ -54,7 +54,7 @@ fun GroupMessageList(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 40.dp, top = 4.dp),
+                        .padding(end = 10.dp, top = 4.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     SeenByRow(
@@ -62,6 +62,7 @@ fun GroupMessageList(
                     )
                 }
             }
+            val isSentByCurrentUser = message.senderId == currentUserId
             GroupMessageListItem(
                 user = user,
                 message = message,
@@ -82,18 +83,21 @@ fun GroupMessageListItem(
     val name = fullName.split(" ")[0]
     val lastname = fullName.split(" ")[1]
     val lastnameInitial = lastname.first()
+    val arrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
 
     Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = arrangement,
         verticalAlignment = Alignment.Bottom
     ) {
-        UserAvatar(
-            user = user,
-            avatarSize = 50.dp,
-            statusBubbleSize = 14.dp,
-            initialsFontSize = 20.sp,
-        )
+        if (!isSentByCurrentUser) {
+            UserAvatar(
+                user = user,
+                avatarSize = 50.dp,
+                statusBubbleSize = 14.dp,
+                initialsFontSize = 20.sp,
+            )
+        }
         Column {
             if (!isSentByCurrentUser) {
                 Text(
@@ -172,15 +176,21 @@ private fun GroupMessageListPreview() {
         blockedUserIds = emptyList()
     )
 
-    val number = (1..10).random()
+    fun generateRandomUserIds(count: Int): List<String> {
+        return (1..10)
+            .shuffled()
+            .take(count)
+            .map { "user_$it" }
+    }
+
     val message = List(3) {
         Message(
             messageId = it.toString(),
             conversationId = "1",
             senderId = listOf("user_1", "user_2").random(),
-            text = LoremIpsum(10).values.first(),
+            text = LoremIpsum(1).values.first(),
             timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1", "user_2", "user_3", "user_4", "user_%"),
+            seenBy = generateRandomUserIds(10),
             reactions = emptyMap(),
             messageType = MessageType.TEXT
         )
@@ -195,9 +205,9 @@ private fun GroupMessageListPreview() {
                 GroupMessageList(
                     user = user,
                     messages = message,
-                    isSentByCurrentUser = true,
+                    currentUserId = "user_1",
                     listState = rememberLazyListState(),
-                    groupMembers = List(5) {
+                    groupMembers = List(10) {
                         User(
                             uid = "user_$it",
                             fullName = "Test Test",
