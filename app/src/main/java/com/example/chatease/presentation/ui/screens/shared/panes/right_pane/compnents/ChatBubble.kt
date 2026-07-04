@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.example.chatease.domain.model.Message
+import com.example.chatease.domain.model.enums.ConversationType
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.successGreenDark
 import com.example.chatease.presentation.ui.theme.successGreenLight
@@ -44,7 +45,8 @@ fun ChatBubble(
     isLastInGroup: Boolean,
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
-    onReactionClick: (String, String) -> Unit
+    onReactionClick: (String, String) -> Unit,
+    conversationType : ConversationType = ConversationType.DIRECT
 ) {
     val backgroundColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
@@ -147,7 +149,7 @@ fun ChatBubble(
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                             }
                         )
-                        if (isSentByCurrentUser) {
+                        if (isSentByCurrentUser && conversationType == ConversationType.DIRECT) {
                             Icon(
                                 modifier = Modifier.size(16.dp),
                                 imageVector = if (isSeenByOtherUser) {
@@ -229,6 +231,7 @@ private fun ChatBubblePreview() {
                 isFirstInGroup = true,
                 isMiddleInGroup = true,
                 isLastInGroup = true,
+                conversationType = ConversationType.DIRECT
             )
         }
     }
