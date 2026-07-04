@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.ConversationType
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
@@ -35,18 +36,9 @@ fun GroupMessageList(
     user: User,
     messages: List<Message>,
     isSentByCurrentUser: Boolean,
-    listState: LazyListState
+    listState: LazyListState,
+    groupMembers: List<User>
 ) {
-    val users = List(49) {
-        User(
-            uid = it.toString(),
-            fullName = "Test Test",
-            email = "email@test.com",
-            imageUrl = null,
-            status = UserPresenceStatus.ONLINE,
-            blockedUserIds = emptyList()
-        )
-    }
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
         state = listState,
@@ -54,24 +46,27 @@ fun GroupMessageList(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(bottom = 16.dp),
     ) {
-        itemsIndexed(messages) { index, message ->
+        items(messages) { message ->
+            val seenUsers = groupMembers.filter { member ->
+                member.uid in message.seenBy
+            }
+            if (seenUsers.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 40.dp, top = 4.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    SeenByRow(
+                        users = seenUsers
+                    )
+                }
+            }
             GroupMessageListItem(
                 user = user,
                 message = message,
                 isSentByCurrentUser = isSentByCurrentUser
             )
-            if (index == 0) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 40.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    SeenByRow(
-                        users = users
-                    )
-                }
-            }
         }
     }
 }
@@ -118,7 +113,8 @@ fun GroupMessageListItem(
                 isLastInGroup = false,
                 onLongClick = {},
                 onDismissReactions = {},
-                onReactionClick = { _, _ -> }
+                onReactionClick = { _, _ -> },
+                conversationType = ConversationType.GROUP
             )
         }
     }
@@ -176,14 +172,15 @@ private fun GroupMessageListPreview() {
         blockedUserIds = emptyList()
     )
 
-    val message = List(10) {
+    val number = (1..10).random()
+    val message = List(3) {
         Message(
             messageId = it.toString(),
             conversationId = "1",
-            senderId = listOf("1", "2").random(),
-            text = LoremIpsum(20).values.first(),
+            senderId = listOf("user_1", "user_2").random(),
+            text = LoremIpsum(10).values.first(),
             timeStamp = System.currentTimeMillis(),
-            seenBy = listOf(""),
+            seenBy = listOf("user_1", "user_2", "user_3", "user_4", "user_%"),
             reactions = emptyMap(),
             messageType = MessageType.TEXT
         )
@@ -198,8 +195,18 @@ private fun GroupMessageListPreview() {
                 GroupMessageList(
                     user = user,
                     messages = message,
-                    isSentByCurrentUser = false,
+                    isSentByCurrentUser = true,
                     listState = rememberLazyListState(),
+                    groupMembers = List(5) {
+                        User(
+                            uid = "user_$it",
+                            fullName = "Test Test",
+                            email = "",
+                            imageUrl = null,
+                            status = UserPresenceStatus.ONLINE,
+                            blockedUserIds = emptyList()
+                        )
+                    }
                 )
             }
         }

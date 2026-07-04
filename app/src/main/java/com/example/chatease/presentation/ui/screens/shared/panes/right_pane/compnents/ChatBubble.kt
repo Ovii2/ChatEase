@@ -222,7 +222,7 @@ private fun ChatBubblePreview() {
         ) {
             ChatBubble(
                 message = message,
-                isSentByCurrentUser = false,
+                isSentByCurrentUser = true,
                 currentUserId = "1",
                 showReactions = true,
                 onLongClick = {},

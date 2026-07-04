@@ -43,24 +43,6 @@ fun SeenByRow(
         horizontalArrangement = Arrangement.spacedBy(1.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        visibleUsers.forEach { user ->
-//            AsyncImage(
-//                modifier = Modifier
-//                    .size(imageSize)
-//                    .clip(CircleShape),
-//                model = user.imageUrl,
-//                contentDescription = null,
-//                contentScale = ContentScale.Crop
-//            )
-            Image(
-                modifier = Modifier
-                    .size(imageSize)
-                    .clip(CircleShape),
-                painter = painterResource(R.drawable.person),
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
-        }
         if (remainingCount > 0) {
             Box(
                 modifier = Modifier
@@ -79,6 +61,24 @@ fun SeenByRow(
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = fontSize)
                 )
             }
+        }
+        visibleUsers.forEach { user ->
+//            AsyncImage(
+//                modifier = Modifier
+//                    .size(imageSize)
+//                    .clip(CircleShape),
+//                model = user.imageUrl,
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop
+//            )
+            Image(
+                modifier = Modifier
+                    .size(imageSize)
+                    .clip(CircleShape),
+                painter = painterResource(R.drawable.person),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
         }
     }
 }
