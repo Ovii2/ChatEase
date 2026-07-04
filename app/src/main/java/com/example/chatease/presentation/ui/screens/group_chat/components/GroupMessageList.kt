@@ -37,7 +37,7 @@ fun GroupMessageList(
     listState: LazyListState,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         state = listState,
         reverseLayout = true,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -77,12 +77,14 @@ fun GroupMessageListItem(
             initialsFontSize = 20.sp,
         )
         Column {
-            Text(
-                modifier = Modifier.padding(start = 12.dp),
-                text = "$name $lastnameInitial.",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-            )
+            if (!isSentByCurrentUser) {
+                Text(
+                    modifier = Modifier.padding(start = 12.dp),
+                    text = "$name $lastnameInitial.",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                )
+            }
             ChatBubble(
                 message = message,
                 isSentByCurrentUser = isSentByCurrentUser,
@@ -132,9 +134,8 @@ private fun GroupMessageListItemPreview() {
                 GroupMessageListItem(
                     user = user,
                     message = message,
-                    isSentByCurrentUser = true,
+                    isSentByCurrentUser = false,
                 )
-
             }
         }
     }
