@@ -1,6 +1,7 @@
 package com.example.chatease.presentation.ui.screens.group_chat.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,21 +35,43 @@ fun GroupMessageList(
     user: User,
     messages: List<Message>,
     isSentByCurrentUser: Boolean,
-    listState: LazyListState,
+    listState: LazyListState
 ) {
+    val users = List(49) {
+        User(
+            uid = it.toString(),
+            fullName = "Test Test",
+            email = "email@test.com",
+            imageUrl = null,
+            status = UserPresenceStatus.ONLINE,
+            blockedUserIds = emptyList()
+        )
+    }
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
         state = listState,
         reverseLayout = true,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(bottom = 16.dp)
+        contentPadding = PaddingValues(bottom = 16.dp),
     ) {
-        items(messages) { message ->
+        itemsIndexed(messages) { index, message ->
             GroupMessageListItem(
                 user = user,
                 message = message,
                 isSentByCurrentUser = isSentByCurrentUser
             )
+            if (index == 0) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 40.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    SeenByRow(
+                        users = users
+                    )
+                }
+            }
         }
     }
 }
