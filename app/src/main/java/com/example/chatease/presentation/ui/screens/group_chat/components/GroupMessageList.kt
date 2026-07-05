@@ -28,6 +28,7 @@ import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ChatBubble
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.UnreadMessagesDivider
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -37,7 +38,8 @@ fun GroupMessageList(
     messages: List<Message>,
     currentUserId: String,
     listState: LazyListState,
-    groupMembers: List<User>
+    groupMembers: List<User>,
+    firstUnreadMessageId: String?
 ) {
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
@@ -47,6 +49,9 @@ fun GroupMessageList(
         contentPadding = PaddingValues(bottom = 16.dp),
     ) {
         items(messages) { message ->
+            if (firstUnreadMessageId != null && message.messageId == firstUnreadMessageId) {
+                UnreadMessagesDivider()
+            }
             val seenUsers = groupMembers.filter { member ->
                 member.uid in message.seenBy
             }
@@ -157,7 +162,7 @@ private fun GroupMessageListItemPreview() {
                 GroupMessageListItem(
                     user = user,
                     message = message,
-                    isSentByCurrentUser = false,
+                    isSentByCurrentUser = false
                 )
             }
         }
@@ -214,9 +219,11 @@ private fun GroupMessageListPreview() {
                             email = "",
                             imageUrl = null,
                             status = UserPresenceStatus.ONLINE,
-                            blockedUserIds = emptyList()
-                        )
-                    }
+                            blockedUserIds = emptyList(),
+
+                            )
+                    },
+                    firstUnreadMessageId = "1"
                 )
             }
         }
