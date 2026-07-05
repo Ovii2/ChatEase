@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
@@ -26,10 +27,13 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.ConversationType
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.screens.shared.chat.CommonChip
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ChatBubble
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.UnreadMessagesDivider
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.utils.isSameDay
+import com.example.chatease.utils.toChatDateLabel
 
 @Composable
 fun GroupMessageList(
@@ -41,16 +45,38 @@ fun GroupMessageList(
     groupMembers: List<User>,
     firstUnreadMessageId: String?
 ) {
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
         state = listState,
         reverseLayout = true,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(bottom = 16.dp),
+        contentPadding = PaddingValues(bottom = 16.dp)
     ) {
-        items(messages) { message ->
+        itemsIndexed(messages) { index, message ->
+            val previousVisibleMessage = messages.getOrNull(index + 1)
             if (firstUnreadMessageId != null && message.messageId == firstUnreadMessageId) {
                 UnreadMessagesDivider()
+            }
+            if (previousVisibleMessage == null || !isSameDay(
+                    message.timeStamp,
+                    previousVisibleMessage.timeStamp
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CommonChip(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        text = message.timeStamp.toChatDateLabel(context),
+                        selected = false,
+                        enabled = false
+                    )
+                }
             }
             val seenUsers = groupMembers.filter { member ->
                 member.uid in message.seenBy
