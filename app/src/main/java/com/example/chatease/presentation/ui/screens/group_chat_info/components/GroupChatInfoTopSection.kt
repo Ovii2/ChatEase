@@ -1,7 +1,6 @@
 package com.example.chatease.presentation.ui.screens.group_chat_info.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -96,16 +95,13 @@ fun GroupChatInfoTopSection(
             Surface(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .background(
-                        color = MaterialTheme.colorScheme.surface,
-                        shape = CircleShape
-                    )
                     .offset(x = (-5).dp, y = (-6).dp),
                 border = BorderStroke(
                     width = 0.5.dp,
                     color = MaterialTheme.colorScheme.outline
-                ), shape = CircleShape,
-                shadowElevation = 6.dp
+                ),
+                shape = CircleShape,
+                shadowElevation = 4.dp
             ) {
                 Icon(
                     modifier = Modifier.padding(8.dp),
