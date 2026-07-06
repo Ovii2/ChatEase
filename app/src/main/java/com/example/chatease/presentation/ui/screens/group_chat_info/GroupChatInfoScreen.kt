@@ -75,8 +75,7 @@ fun GroupChatInfoScreen(
                     title = R.string.group_info,
                     transparent = true
                 )
-            },
-            contentWindowInsets = WindowInsets(0)
+            }
         ) { paddingValues ->
             Column(
                 modifier = Modifier
