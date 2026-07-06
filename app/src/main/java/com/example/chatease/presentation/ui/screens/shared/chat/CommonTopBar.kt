@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
@@ -20,7 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 fun CommonTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    @StringRes title: Int? = null
+    @StringRes title: Int? = null,
+    transparent: Boolean = false
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -41,7 +43,7 @@ fun CommonTopBar(
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = if (transparent) Color.Transparent else MaterialTheme.colorScheme.surface
         )
     )
 }
