@@ -239,4 +239,11 @@
     <string name="total_members">%1$d members</string>
     <string name="group_chat">Group chat</string>
 
+    <string name="group_info">Group info</string>
+    <string name="total_online">%1$s online</string>
+    <string name="about_label">Collect moments, not things.</string>
+    <string name="notifications_label">All messages</string>
+    <string name="members">Members</string>
+    <string name="leave_group">Leave Group</string>
+
 </resources>
