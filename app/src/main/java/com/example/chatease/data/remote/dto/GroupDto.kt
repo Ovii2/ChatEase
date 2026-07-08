@@ -1,6 +1,6 @@
-package com.example.chatease.domain.model
+package com.example.chatease.data.remote.dto
 
-data class Group(
+data class GroupDto(
     val conversationId: String = "",
     val ownerId: String = "",
     val name: String = "",
