@@ -15,15 +15,16 @@ class GroupRepositoryImpl(
 
     override suspend fun createGroup(
         name: String,
+        ownerId: String,
         memberIds: List<String>,
         imageUrl: String?
     ): String {
-
         val groupRef = firestore.collection(GROUP).document()
         val groupId = groupRef.id
 
         val group = Group(
             conversationId = groupId,
+            ownerId = ownerId,
             name = name,
             imageUrl = imageUrl
         )

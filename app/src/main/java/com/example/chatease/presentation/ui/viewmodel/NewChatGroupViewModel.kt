@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NewChatGroupViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
     private val _groupName = MutableStateFlow("")
@@ -25,12 +27,16 @@ class NewChatGroupViewModel @Inject constructor(
     private val _members = MutableStateFlow<List<User>>(emptyList())
     val members = _members.asStateFlow()
 
+    val currentUserId: String
+        get() = auth.currentUser?.uid ?: ""
+
     fun createGroup() {
         viewModelScope.launch {
             try {
                 groupRepository.createGroup(
                     name = groupName.value,
-                    memberIds = members.value.map { it.uid },
+                    ownerId = currentUserId,
+                    memberIds = (members.value.map { it.uid } + currentUserId).distinct(),
                     imageUrl = null
                 )
             } catch (e: Exception) {
