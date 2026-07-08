@@ -18,44 +18,40 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
-import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.new_chat_group.components.NewChatGroupMembersList
 import com.example.chatease.presentation.ui.screens.new_chat_group.components.NewChatGroupTopSection
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.NewChatGroupViewModel
 
 @Composable
 fun NewChatGroupScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onNavigateToGroupChat: () -> Unit
+    onNavigateToGroupChat: () -> Unit,
+    selectedUserIds: List<String>,
+    newChatGroupViewModel: NewChatGroupViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-    var groupName by rememberSaveable { mutableStateOf("") }
+    val groupName by newChatGroupViewModel.groupName.collectAsState()
     val maxMembers = 50
+    val members by newChatGroupViewModel.members.collectAsState()
 
-    val user = User(
-        uid = "",
-        fullName = "Test Test",
-        email = "email@test.com",
-        imageUrl = null,
-        status = UserPresenceStatus.ONLINE,
-        blockedUserIds = emptyList()
-    )
-    val members = List(10) { user }
+    LaunchedEffect(selectedUserIds) {
+        newChatGroupViewModel.observeMembers(selectedUserIds)
+    }
 
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
@@ -92,7 +88,7 @@ fun NewChatGroupScreen(
                 ) {
                     NewChatGroupTopSection(
                         groupName = groupName,
-                        onGroupNameTextChange = { groupName = it }
+                        onGroupNameTextChange = newChatGroupViewModel::onGroupNameChange
                     )
                     NewChatGroupMembersList(
                         onRemoveMember = {},
@@ -105,9 +101,13 @@ fun NewChatGroupScreen(
                         .fillMaxWidth()
                         .height(50.dp),
                     onClick = onNavigateToGroupChat,
-                    shape = RoundedCornerShape(15.dp)
+                    shape = RoundedCornerShape(15.dp),
+                    enabled = members.size > 1
                 ) {
-                    Text(text = stringResource(R.string.create_group))
+                    Text(
+                        modifier = Modifier.clickable {},
+                        text = stringResource(R.string.create_group)
+                    )
                 }
             }
         }
@@ -130,6 +130,7 @@ private fun NewChatGroupScreenPreview() {
                 NewChatGroupScreen(
                     onBackClick = {},
                     onNavigateToGroupChat = {},
+                    selectedUserIds = emptyList(),
                 )
             }
         }
