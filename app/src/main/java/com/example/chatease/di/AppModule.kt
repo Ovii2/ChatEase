@@ -8,6 +8,7 @@ import com.example.chatease.data.repository.CategoryRepositoryImpl
 import com.example.chatease.data.repository.ContactRequestRepositoryImpl
 import com.example.chatease.data.repository.ContactsRepositoryImpl
 import com.example.chatease.data.repository.ConversationRepositoryImpl
+import com.example.chatease.data.repository.GroupRepositoryImpl
 import com.example.chatease.data.repository.UserRepositoryImpl
 import com.example.chatease.data.webrtc.WebRtcClient
 import com.example.chatease.domain.repository.CallRepository
@@ -15,6 +16,7 @@ import com.example.chatease.domain.repository.CategoryRepository
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.example.chatease.domain.repository.ContactsRepository
 import com.example.chatease.domain.repository.ConversationRepository
+import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -80,10 +82,15 @@ object AppModule {
     fun provideCallRepository(firestore: FirebaseFirestore): CallRepository =
         CallRepositoryImpl(firestore)
 
-
     @Provides
     @Singleton
     fun provideWebRtcClient(@ApplicationContext context: Context): WebRtcClient =
         WebRtcClient(context)
+
+    @Provides
+    @Singleton
+    fun provideGroupRepository(
+        firestore: FirebaseFirestore
+    ): GroupRepository = GroupRepositoryImpl(firestore)
 
 }
