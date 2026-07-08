@@ -37,7 +37,7 @@ fun NewChatScreen(
     onBackClick: () -> Unit,
     onNavigateToChatScreen: (String) -> Unit,
     newChatViewModel: NewChatViewModel = hiltViewModel(),
-    onNavigateToNewGroupScreen: () -> Unit
+    onNavigateToNewGroupScreen: (Set<String>) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val contacts by newChatViewModel.contacts.collectAsState()
@@ -101,7 +101,11 @@ fun NewChatScreen(
                                 }
                             )
                         },
-                        onNavigateToNewChatGroupScreen = onNavigateToNewGroupScreen,
+                        onNavigateToNewChatGroupScreen = {
+                            onNavigateToNewGroupScreen(
+                                selectedUserIds
+                            )
+                        },
                     )
                 }
             }
