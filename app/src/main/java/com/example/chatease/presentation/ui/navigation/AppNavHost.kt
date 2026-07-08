@@ -153,8 +153,9 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
-                onNavigateToNewGroupScreen = {
-                    navController.navigate(Screens.NewChatGroup.route) {
+                onNavigateToNewGroupScreen = { selectedUserIds ->
+                    val selectedIds = selectedUserIds.joinToString(",")
+                    navController.navigate(Screens.NewChatGroup.createRoute(selectedIds)) {
                         launchSingleTop = true
                     }
                 },
@@ -283,7 +284,13 @@ fun AppNavHost(
                 }
             )
         }
-        composable(route = Screens.NewChatGroup.route) {
+        composable(route = Screens.NewChatGroup.route) { backStackEntry ->
+            val selectedUserIds = backStackEntry.arguments
+                ?.getString("selectedUserIds")
+                ?.split(",")
+                ?.filter { it.isNotBlank() }
+                .orEmpty()
+
             NewChatGroupScreen(
                 onBackClick = { navController.popBackStack() },
                 onNavigateToGroupChat = {
@@ -294,6 +301,7 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                selectedUserIds = selectedUserIds,
             )
         }
         composable(route = Screens.GroupChat.route) {
