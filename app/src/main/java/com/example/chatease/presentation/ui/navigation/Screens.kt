@@ -37,7 +37,10 @@ sealed class Screens(val route: String) {
     }
 
     data object PrivacyAndSecurity : Screens("privacy_and_security")
-    data object NewChatGroup : Screens("new_chat_group")
+    data object NewChatGroup : Screens("new_chat_group/{selectedUserIds}") {
+        fun createRoute(selectedUserIds: String) = "new_chat_group/${selectedUserIds}"
+    }
+
     data object GroupChat : Screens("group_chat/{conversationId}") {
         fun createRoute(conversationId: String) = "group_chat/${conversationId}"
     }
