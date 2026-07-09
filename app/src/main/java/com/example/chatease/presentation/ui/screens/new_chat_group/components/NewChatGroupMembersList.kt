@@ -2,8 +2,10 @@ package com.example.chatease.presentation.ui.screens.new_chat_group.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -35,20 +37,42 @@ fun NewChatGroupMembersList(
     maxMembers: Int,
     members: List<User>
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.members_count, members.size, maxMembers),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.W600
-        )
-        members.forEach { user ->
-            NewChatGroupMemberItem(
-                user = user,
-                onRemoveMember = onRemoveMember,
+    if (members.isEmpty()) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    stringResource(R.string.add_more_members),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.W500
+                )
+                Text(
+                    text = stringResource(R.string.at_least_2_members_required),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    } else {
+        Column(
+            modifier = modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.members_count, members.size, maxMembers),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.W600
             )
+
+            members.forEach { user ->
+                NewChatGroupMemberItem(
+                    user = user,
+                    onRemoveMember = onRemoveMember
+                )
+            }
         }
     }
 }
@@ -100,7 +124,7 @@ private fun NewChatGroupMembersListPreview() {
         status = UserPresenceStatus.ONLINE,
         blockedUserIds = emptyList()
     )
-    val members = List(10) { user }
+    val members = List(0) { user }
 
     ChatEaseTheme {
         Scaffold { paddingValues ->
