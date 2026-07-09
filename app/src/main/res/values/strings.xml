@@ -245,5 +245,7 @@
     <string name="notifications_label">All messages</string>
     <string name="members">Members</string>
     <string name="leave_group">Leave Group</string>
+    <string name="add_more_members">Add more members</string>
+    <string name="at_least_2_members_required">At least 2 members are required to create group</string>
 
 </resources>
