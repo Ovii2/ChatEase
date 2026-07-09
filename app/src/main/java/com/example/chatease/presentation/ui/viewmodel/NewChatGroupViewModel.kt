@@ -27,6 +27,9 @@ class NewChatGroupViewModel @Inject constructor(
     private val _members = MutableStateFlow<List<User>>(emptyList())
     val members = _members.asStateFlow()
 
+    private val _removedMemberIds = MutableStateFlow<Set<String>>(emptySet())
+    val removedMemberIds = _removedMemberIds.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -55,7 +58,9 @@ class NewChatGroupViewModel @Inject constructor(
                 ) { users ->
                     users.toList()
                 }.collect { users ->
-                    _members.value = users
+                    _members.value = users.filterNot { user ->
+                        user.uid in _removedMemberIds.value
+                    }
                 }
             } catch (e: Exception) {
                 Log.v("NewChatGroupViewModel", e.message ?: "Failed to observe members", e)
@@ -72,6 +77,7 @@ class NewChatGroupViewModel @Inject constructor(
     }
 
     fun removeMember(userId: String) {
+        _removedMemberIds.value += userId
         _members.value = _members.value.filterNot { it.uid == userId }
     }
 
