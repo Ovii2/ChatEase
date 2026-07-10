@@ -51,7 +51,8 @@ fun NewChatGroupTopSection(
     onFocusChanged: (Boolean) -> Unit,
     onAcceptGroupNameSuggestion: (String) -> Unit,
     onRefreshGroupNameSuggestion: () -> Unit,
-    suggestedGroupName: String
+    suggestedGroupName: String,
+    groupNameError: Boolean
 ) {
     val checkColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
     val bottomEndCornerRadius = if (isSuggestGroupNameVisible) 0.dp else 15.dp
@@ -125,7 +126,8 @@ fun NewChatGroupTopSection(
                     topEnd = 15.dp,
                     bottomEnd = bottomEndCornerRadius,
                     bottomStart = bottomEndCornerRadius
-                )
+                ),
+                isError = groupNameError
             )
             AnimatedVisibility(
                 visible = isSuggestGroupNameVisible,
@@ -197,7 +199,8 @@ private fun NewChatGroupTopSectionPreview() {
                     onFocusChanged = {},
                     onAcceptGroupNameSuggestion = {},
                     onRefreshGroupNameSuggestion = {},
-                    suggestedGroupName = "Test"
+                    suggestedGroupName = "Test",
+                    groupNameError = false,
                 )
             }
         }

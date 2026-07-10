@@ -25,6 +25,7 @@ import com.example.chatease.presentation.ui.screens.new_chat_group.components.Ne
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.NewChatGroupViewModel
+import com.example.chatease.presentation.validation.NewGroupValidator
 
 @Composable
 fun NewChatGroupScreen(
@@ -40,6 +41,8 @@ fun NewChatGroupScreen(
     val members by newChatGroupViewModel.members.collectAsState()
     var isSuggestGroupNameVisible by rememberSaveable { mutableStateOf(false) }
     val suggestedGroupName by newChatGroupViewModel.suggestedGroupName.collectAsState()
+    var isFieldTouched by rememberSaveable { mutableStateOf(false) }
+    val groupNameError = NewGroupValidator.validateNewGroupName(groupName) && isFieldTouched
 
     LaunchedEffect(selectedUserIds) {
         newChatGroupViewModel.observeMembers(selectedUserIds)
@@ -72,8 +75,14 @@ fun NewChatGroupScreen(
                 focusManager.clearFocus()
             },
             onRefreshGroupNameSuggestion = newChatGroupViewModel::refreshSuggestGroupName,
-            onFocusChanged = { isFocused -> isSuggestGroupNameVisible = isFocused },
+            onFocusChanged = { isFocused ->
+                isSuggestGroupNameVisible = isFocused
+                if (isFocused) {
+                    isFieldTouched = true
+                }
+            },
             suggestedGroupName = suggestedGroupName,
+            groupNameError = groupNameError,
         )
     }
 }
@@ -114,6 +123,7 @@ private fun NewChatGroupScreenPreview() {
                     onRefreshGroupNameSuggestion = {},
                     onFocusChanged = {},
                     suggestedGroupName = "Test",
+                    groupNameError = false,
                 )
             }
         }
