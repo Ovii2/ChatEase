@@ -56,6 +56,7 @@ fun NewChatGroupTopSection(
 ) {
     val checkColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
     val bottomEndCornerRadius = if (isSuggestGroupNameVisible) 0.dp else 15.dp
+    val maxSymbols = 50
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -103,7 +104,11 @@ fun NewChatGroupTopSection(
                         onFocusChanged(focusState.isFocused)
                     },
                 value = groupName,
-                onValueChange = onGroupNameTextChange,
+                onValueChange = {
+                    if (it.length <= maxSymbols) {
+                        onGroupNameTextChange(it)
+                    }
+                },
                 placeholder = { Text(text = stringResource(R.string.group_name)) },
                 leadingIcon = {
                     Icon(
@@ -113,7 +118,7 @@ fun NewChatGroupTopSection(
                 },
                 trailingIcon = {
                     Text(
-                        text = "0/50",
+                        text = "${groupName.length}/${maxSymbols}",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -127,7 +132,8 @@ fun NewChatGroupTopSection(
                     bottomEnd = bottomEndCornerRadius,
                     bottomStart = bottomEndCornerRadius
                 ),
-                isError = groupNameError
+                isError = groupNameError,
+                maxLines = 3
             )
             AnimatedVisibility(
                 visible = isSuggestGroupNameVisible,
