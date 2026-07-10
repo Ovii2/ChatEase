@@ -41,7 +41,12 @@ fun NewChatGroupScreenContent(
     members: List<User>,
     onRemoveMember: (String) -> Unit,
     maxMembers: Int,
-    onNavigateToGroupChat: () -> Unit
+    onNavigateToGroupChat: () -> Unit,
+    isSuggestGroupNameVisible: Boolean,
+    onFocusChanged: (Boolean) -> Unit,
+    onAcceptGroupNameSuggestion: (String) -> Unit,
+    onRefreshGroupNameSuggestion: () -> Unit,
+    suggestedGroupName: String
 ) {
     val scrollState = rememberScrollState()
     val isScrollable = scrollState.maxValue > 0
@@ -66,7 +71,12 @@ fun NewChatGroupScreenContent(
         ) {
             NewChatGroupTopSection(
                 groupName = groupName,
-                onGroupNameTextChange = onGroupNameChange
+                onGroupNameTextChange = onGroupNameChange,
+                isSuggestGroupNameVisible = isSuggestGroupNameVisible,
+                onAcceptGroupNameSuggestion = onAcceptGroupNameSuggestion,
+                onRefreshGroupNameSuggestion = onRefreshGroupNameSuggestion,
+                onFocusChanged = onFocusChanged,
+                suggestedGroupName = suggestedGroupName,
             )
             NewChatGroupMembersList(
                 modifier = Modifier
@@ -93,7 +103,7 @@ fun NewChatGroupScreenContent(
 
 @Preview(
     showBackground = true, showSystemUi = true,
-    device = "spec:parent=pixel_5,orientation=landscape"
+    device = "id:pixel_5"
 )
 @Composable
 private fun NewChatGroupScreenContentPreview() {
@@ -122,9 +132,13 @@ private fun NewChatGroupScreenContentPreview() {
                     members = members,
                     onRemoveMember = {},
                     maxMembers = 50,
-                    onNavigateToGroupChat = {}
+                    onNavigateToGroupChat = {},
+                    isSuggestGroupNameVisible = true,
+                    onAcceptGroupNameSuggestion = {},
+                    onRefreshGroupNameSuggestion = {},
+                    onFocusChanged = {},
+                    suggestedGroupName = "Test",
                 )
-
             }
         }
     }

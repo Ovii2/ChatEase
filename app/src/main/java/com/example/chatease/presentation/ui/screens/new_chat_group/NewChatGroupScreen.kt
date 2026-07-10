@@ -9,6 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -35,9 +38,15 @@ fun NewChatGroupScreen(
     val groupName by newChatGroupViewModel.groupName.collectAsState()
     val maxMembers = 50
     val members by newChatGroupViewModel.members.collectAsState()
+    var isSuggestGroupNameVisible by rememberSaveable { mutableStateOf(false) }
+    val suggestedGroupName by newChatGroupViewModel.suggestedGroupName.collectAsState()
 
     LaunchedEffect(selectedUserIds) {
         newChatGroupViewModel.observeMembers(selectedUserIds)
+    }
+
+    LaunchedEffect(Unit) {
+        newChatGroupViewModel.suggestGroupName()
     }
 
     Scaffold(
@@ -56,7 +65,15 @@ fun NewChatGroupScreen(
             members = members,
             onRemoveMember = newChatGroupViewModel::removeMember,
             maxMembers = maxMembers,
-            onNavigateToGroupChat = onNavigateToGroupChat
+            onNavigateToGroupChat = onNavigateToGroupChat,
+            isSuggestGroupNameVisible = isSuggestGroupNameVisible,
+            onAcceptGroupNameSuggestion = {
+                newChatGroupViewModel.acceptSuggestedGroupName(suggestedGroupName)
+                focusManager.clearFocus()
+            },
+            onRefreshGroupNameSuggestion = newChatGroupViewModel::refreshSuggestGroupName,
+            onFocusChanged = { isFocused -> isSuggestGroupNameVisible = isFocused },
+            suggestedGroupName = suggestedGroupName,
         )
     }
 }
@@ -91,7 +108,12 @@ private fun NewChatGroupScreenPreview() {
                     members = members,
                     onRemoveMember = {},
                     maxMembers = 50,
-                    onNavigateToGroupChat = {}
+                    onNavigateToGroupChat = {},
+                    isSuggestGroupNameVisible = false,
+                    onAcceptGroupNameSuggestion = {},
+                    onRefreshGroupNameSuggestion = {},
+                    onFocusChanged = {},
+                    suggestedGroupName = "Test",
                 )
             }
         }

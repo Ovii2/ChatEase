@@ -30,6 +30,9 @@ class NewChatGroupViewModel @Inject constructor(
     private val _removedMemberIds = MutableStateFlow<Set<String>>(emptySet())
     val removedMemberIds = _removedMemberIds.asStateFlow()
 
+    private val _suggestedGroupName = MutableStateFlow("")
+    val suggestedGroupName = _suggestedGroupName.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -79,6 +82,31 @@ class NewChatGroupViewModel @Inject constructor(
     fun removeMember(userId: String) {
         _removedMemberIds.value += userId
         _members.value = _members.value.filterNot { it.uid == userId }
+    }
+
+    fun suggestGroupName() {
+        val prefixes = listOf(
+            "The", "Alpha", "Apex", "Global", "Elite",
+            "Cyber", "Quantum", "Nexus", "Pixel", "Vibe",
+            "Chill", "Secret", "Daily", "Digital", "United",
+            "BBQ", "Arctic", "Banana", "Cake", "Curry"
+        )
+        val suffixes = listOf(
+            "Squad", "Hub", "Network", "Lounge", "Zone",
+            "Circle", "Clan", "HQ", "Crew", "Lab",
+            "Collective", "Alliance", "Chamber", "Guild", "Syndicate",
+            "Team", "Gang", "Dorm", "Pool", "Alley"
+        )
+        val randomWord = "${prefixes.random()} ${suffixes.random()}"
+        _suggestedGroupName.value = randomWord
+    }
+
+    fun refreshSuggestGroupName() {
+        suggestGroupName()
+    }
+
+    fun acceptSuggestedGroupName(name: String) {
+        onGroupNameChange(name)
     }
 
 }
