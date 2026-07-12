@@ -94,7 +94,7 @@ fun NewChatGroupScreenContent(
                     .height(50.dp),
                 onClick = onNavigateToGroupChat,
                 shape = RoundedCornerShape(15.dp),
-                enabled = members.size > 1 && !groupNameError
+                enabled = members.size > 1 && !groupNameError && groupName.isNotEmpty()
             ) {
                 Text(text = stringResource(R.string.create_group))
             }
