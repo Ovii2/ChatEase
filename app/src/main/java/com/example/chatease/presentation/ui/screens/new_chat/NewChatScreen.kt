@@ -41,11 +41,12 @@ fun NewChatScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val contacts by newChatViewModel.contacts.collectAsState()
-    val users by newChatViewModel.users.collectAsState()
     val frequentlyContactedUsers = emptyList<User>()
     var selectedUserIds by rememberSaveable {
         mutableStateOf(setOf<String>())
     }
+    var searchText by rememberSaveable { mutableStateOf("") }
+    val filteredUsers by newChatViewModel.filteredUsers.collectAsState()
 
     Scaffold(
         modifier = modifier.padding(
@@ -70,9 +71,15 @@ fun NewChatScreen(
         {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 ChatSearchBar(
-                    value = "",
-                    onValueChange = {},
-                    onClearSearch = {},
+                    value = searchText,
+                    onValueChange = {
+                        searchText = it
+                        newChatViewModel.filterUsers(searchText)
+                    },
+                    onClearSearch = {
+                        searchText = ""
+                        newChatViewModel.loadContacts()
+                    },
                     placeholder = R.string.search_contacts
                 )
                 if (frequentlyContactedUsers.isNotEmpty()) {
@@ -83,7 +90,7 @@ fun NewChatScreen(
 
                 if (contacts.isNotEmpty()) {
                     AllContactsSection(
-                        users = users,
+                        users = filteredUsers,
                         selectedCount = selectedUserIds.size,
                         selectedUserIds = selectedUserIds,
                         onChecked = { userId ->

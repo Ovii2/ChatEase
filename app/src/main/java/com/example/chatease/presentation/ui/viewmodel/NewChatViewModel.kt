@@ -29,6 +29,9 @@ class NewChatViewModel @Inject constructor(
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users = _users.asStateFlow()
 
+    private val _filteredUsers = MutableStateFlow<List<User>>(emptyList())
+    val filteredUsers = _filteredUsers.asStateFlow()
+
     init {
         loadContacts()
     }
@@ -45,6 +48,7 @@ class NewChatViewModel @Inject constructor(
                     userRepository.getUserById(otherUserId)
                 }
                 _users.value = users
+                _filteredUsers.value = users
                 _contacts.value = contacts
             } catch (e: Exception) {
                 Log.e("NewChatViewModel", e.message ?: "Failed to load contacts")
@@ -67,5 +71,11 @@ class NewChatViewModel @Inject constructor(
                 Log.e("NewChatViewModel", e.message ?: "Failed to start conversation")
             }
         }
+    }
+
+    fun filterUsers(query: String) {
+        _filteredUsers.value =
+            _users.value.filter { user -> user.fullName.contains(query, ignoreCase = true) }
+
     }
 }
