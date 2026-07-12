@@ -1,6 +1,7 @@
 package com.example.chatease.presentation.ui.screens.new_chat_group.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -31,8 +32,14 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +48,8 @@ import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.successGreenDark
 import com.example.chatease.presentation.ui.theme.successGreenLight
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun NewChatGroupTopSection(
@@ -57,6 +66,13 @@ fun NewChatGroupTopSection(
     val checkColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
     val bottomEndCornerRadius = if (isSuggestGroupNameVisible) 0.dp else 15.dp
     val maxSymbols = 50
+    var isClicked by rememberSaveable { mutableStateOf(false) }
+    val rotation by animateFloatAsState(if (isClicked) -180f else 0f)
+
+    LaunchedEffect(isClicked) {
+        delay(500.milliseconds)
+        isClicked = false
+    }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -176,7 +192,12 @@ fun NewChatGroupTopSection(
                             tint = checkColor
                         )
                         Icon(
-                            modifier = Modifier.clickable { onRefreshGroupNameSuggestion() },
+                            modifier = Modifier
+                                .clickable {
+                                    isClicked = true
+                                    onRefreshGroupNameSuggestion()
+                                }
+                                .rotate(rotation),
                             imageVector = Icons.Filled.Replay,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
