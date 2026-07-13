@@ -1,5 +1,7 @@
 package com.example.chatease.data.repository
 
+import com.example.chatease.data.mapper.toDomain
+import com.example.chatease.data.remote.dto.GroupDto
 import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.repository.GroupRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,16 +16,18 @@ class GroupRepositoryImpl(
     }
 
     override suspend fun createGroup(
+        conversationId: String,
         name: String,
         ownerId: String,
         memberIds: List<String>,
         imageUrl: String?
     ): String {
-        val groupRef = firestore.collection(GROUP).document()
-        val groupId = groupRef.id
+        val groupRef = firestore
+            .collection(GROUP)
+            .document(conversationId)
 
         val group = Group(
-            conversationId = groupId,
+            conversationId = conversationId,
             ownerId = ownerId,
             name = name,
             imageUrl = imageUrl
@@ -31,7 +35,18 @@ class GroupRepositoryImpl(
 
         groupRef.set(group).await()
 
-        return groupId
+        return conversationId
+    }
+
+    override suspend fun getGroupByConversationId(conversationId: String): Group {
+        val snapshot = firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .get()
+            .await()
+
+        return snapshot.toObject(GroupDto::class.java)?.toDomain()
+            ?: throw IllegalStateException("Group not found")
     }
 
 

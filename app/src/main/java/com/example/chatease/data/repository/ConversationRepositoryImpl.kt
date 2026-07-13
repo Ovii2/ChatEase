@@ -73,7 +73,10 @@ class ConversationRepositoryImpl(
         }
     }
 
-    override suspend fun createConversation(participantIds: List<String>): String {
+    override suspend fun createConversation(
+        participantIds: List<String>,
+        type: ConversationType
+    ): String {
         val creatorId = auth.currentUser?.uid ?: ""
         val conversationId = firestore
             .collection(CONVERSATIONS)
@@ -82,7 +85,7 @@ class ConversationRepositoryImpl(
 
         val conversationDto = ConversationDto(
             id = conversationId,
-            type = ConversationType.DIRECT,
+            type = type,
             creatorId = creatorId,
             participantIds = participantIds,
             lastMessage = "",
@@ -97,6 +100,10 @@ class ConversationRepositoryImpl(
             .await()
 
         return conversationId
+    }
+
+    override suspend fun createGroupConversation(participantIds: List<String>): String {
+        return createConversation(participantIds, ConversationType.GROUP)
     }
 
     override suspend fun getExistingConversationId(participantIds: List<String>): String? {

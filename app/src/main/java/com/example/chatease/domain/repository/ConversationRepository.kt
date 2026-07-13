@@ -2,6 +2,7 @@ package com.example.chatease.domain.repository
 
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.Message
+import com.example.chatease.domain.model.enums.ConversationType
 import kotlinx.coroutines.flow.Flow
 
 interface ConversationRepository {
@@ -12,7 +13,9 @@ interface ConversationRepository {
 
     suspend fun getMessages(conversationId: String): List<Message>
 
-    suspend fun createConversation(participantIds: List<String>): String
+    suspend fun createConversation(participantIds: List<String>, type: ConversationType): String
+
+    suspend fun createGroupConversation(participantIds: List<String>): String
 
     suspend fun getExistingConversationId(participantIds: List<String>): String?
 
