@@ -41,7 +41,6 @@ fun NewChatGroupScreenContent(
     members: List<User>,
     onRemoveMember: (String) -> Unit,
     maxMembers: Int,
-    onNavigateToGroupChat: () -> Unit,
     isSuggestGroupNameVisible: Boolean,
     onFocusChanged: (Boolean) -> Unit,
     onAcceptGroupNameSuggestion: (String) -> Unit,
@@ -95,7 +94,6 @@ fun NewChatGroupScreenContent(
                     .height(50.dp),
                 onClick = {
                     onCreateGroup()
-                    onNavigateToGroupChat()
                 },
                 shape = RoundedCornerShape(15.dp),
                 enabled = members.size > 1 && !groupNameError && groupName.isNotEmpty()
@@ -138,7 +136,6 @@ private fun NewChatGroupScreenContentPreview() {
                     members = members,
                     onRemoveMember = {},
                     maxMembers = 50,
-                    onNavigateToGroupChat = {},
                     isSuggestGroupNameVisible = true,
                     onAcceptGroupNameSuggestion = {},
                     onRefreshGroupNameSuggestion = {},

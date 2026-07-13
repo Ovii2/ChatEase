@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.Contact
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.ConversationType
 import com.example.chatease.domain.repository.ContactsRepository
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.UserRepository
@@ -64,7 +65,10 @@ class NewChatViewModel @Inject constructor(
 
                 val conversationId =
                     conversationRepository.getExistingConversationId(participantIds)
-                        ?: conversationRepository.createConversation(participantIds)
+                        ?: conversationRepository.createConversation(
+                            participantIds,
+                            ConversationType.DIRECT
+                        )
 
                 onConversationCreated(conversationId)
             } catch (e: Exception) {
