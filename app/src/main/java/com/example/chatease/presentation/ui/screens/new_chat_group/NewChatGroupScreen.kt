@@ -31,7 +31,7 @@ import com.example.chatease.presentation.validation.NewGroupValidator
 fun NewChatGroupScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onNavigateToGroupChat: () -> Unit,
+    onNavigateToGroupChat: (String) -> Unit,
     selectedUserIds: List<String>,
     newChatGroupViewModel: NewChatGroupViewModel = hiltViewModel()
 ) {
@@ -68,7 +68,6 @@ fun NewChatGroupScreen(
             members = members,
             onRemoveMember = newChatGroupViewModel::removeMember,
             maxMembers = maxMembers,
-            onNavigateToGroupChat = onNavigateToGroupChat,
             isSuggestGroupNameVisible = isSuggestGroupNameVisible,
             onAcceptGroupNameSuggestion = {
                 newChatGroupViewModel.acceptSuggestedGroupName(suggestedGroupName)
@@ -83,7 +82,13 @@ fun NewChatGroupScreen(
             },
             suggestedGroupName = suggestedGroupName,
             groupNameError = groupNameError,
-            onCreateGroup = newChatGroupViewModel::createGroup,
+            onCreateGroup = {
+                newChatGroupViewModel.createGroup { conversationId ->
+                    onNavigateToGroupChat(
+                        conversationId
+                    )
+                }
+            },
         )
     }
 }
@@ -118,14 +123,13 @@ private fun NewChatGroupScreenPreview() {
                     members = members,
                     onRemoveMember = {},
                     maxMembers = 50,
-                    onNavigateToGroupChat = {},
                     isSuggestGroupNameVisible = false,
                     onAcceptGroupNameSuggestion = {},
                     onRefreshGroupNameSuggestion = {},
                     onFocusChanged = {},
                     suggestedGroupName = "Test",
                     groupNameError = false,
-                    onCreateGroup = {},
+                    onCreateGroup = {}
                 )
             }
         }
