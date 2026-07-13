@@ -294,21 +294,24 @@ fun AppNavHost(
             NewChatGroupScreen(
                 onBackClick = { navController.popBackStack() },
                 onNavigateToGroupChat = {
-                    navController.navigate(Screens.GroupChat.createRoute("")) {
-                        popUpTo(Screens.NewChatGroup.route) {
+                    navController.navigate(Screens.GroupChat.createRoute(it)) {
+                        popUpTo(Screens.NewChat.route) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 },
-                selectedUserIds = selectedUserIds,
+                selectedUserIds = selectedUserIds
             )
         }
         composable(route = Screens.GroupChat.route) {
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+
             GroupChatScreen(
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
+                conversationId = conversationId
             )
         }
         composable(route = Screens.GroupChatInfo.route) {
