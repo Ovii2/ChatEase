@@ -47,7 +47,8 @@ fun NewChatGroupScreenContent(
     onAcceptGroupNameSuggestion: (String) -> Unit,
     onRefreshGroupNameSuggestion: () -> Unit,
     suggestedGroupName: String,
-    groupNameError: Boolean
+    groupNameError: Boolean,
+    onCreateGroup: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val isScrollable = scrollState.maxValue > 0
@@ -92,7 +93,10 @@ fun NewChatGroupScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                onClick = onNavigateToGroupChat,
+                onClick = {
+                    onCreateGroup()
+                    onNavigateToGroupChat()
+                },
                 shape = RoundedCornerShape(15.dp),
                 enabled = members.size > 1 && !groupNameError && groupName.isNotEmpty()
             ) {
@@ -141,6 +145,7 @@ private fun NewChatGroupScreenContentPreview() {
                     onFocusChanged = {},
                     suggestedGroupName = "Test",
                     groupNameError = false,
+                    onCreateGroup = {},
                 )
             }
         }

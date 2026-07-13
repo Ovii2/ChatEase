@@ -76,6 +76,6 @@ class NewChatViewModel @Inject constructor(
     fun filterUsers(query: String) {
         _filteredUsers.value =
             _users.value.filter { user -> user.fullName.contains(query, ignoreCase = true) }
-
     }
+
 }

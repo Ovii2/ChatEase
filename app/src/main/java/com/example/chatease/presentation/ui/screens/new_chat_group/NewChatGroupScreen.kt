@@ -83,6 +83,7 @@ fun NewChatGroupScreen(
             },
             suggestedGroupName = suggestedGroupName,
             groupNameError = groupNameError,
+            onCreateGroup = newChatGroupViewModel::createGroup,
         )
     }
 }
@@ -124,6 +125,7 @@ private fun NewChatGroupScreenPreview() {
                     onFocusChanged = {},
                     suggestedGroupName = "Test",
                     groupNameError = false,
+                    onCreateGroup = {},
                 )
             }
         }
