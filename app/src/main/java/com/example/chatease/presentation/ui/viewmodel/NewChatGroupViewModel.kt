@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class NewChatGroupViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
     private val userRepository: UserRepository,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val conversationRepository: ConversationRepository
 ) : ViewModel() {
 
     private val _groupName = MutableStateFlow("")
@@ -36,15 +38,19 @@ class NewChatGroupViewModel @Inject constructor(
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
-    fun createGroup() {
+    fun createGroup(onGroupCreated: (String) -> Unit) {
         viewModelScope.launch {
+            val participantIds = (members.value.map { it.uid } + currentUserId).distinct()
             try {
+                val conversationId = createGroupConversation(participantIds)
                 groupRepository.createGroup(
+                    conversationId = conversationId,
                     name = groupName.value,
                     ownerId = currentUserId,
-                    memberIds = (members.value.map { it.uid } + currentUserId).distinct(),
+                    memberIds = participantIds,
                     imageUrl = null
                 )
+                onGroupCreated(conversationId)
             } catch (e: Exception) {
                 Log.v("NewChatGroupViewModel", e.message ?: "Failed to create group", e)
             }
@@ -107,6 +113,10 @@ class NewChatGroupViewModel @Inject constructor(
 
     fun acceptSuggestedGroupName(name: String) {
         onGroupNameChange(name)
+    }
+
+    private suspend fun createGroupConversation(participantIds: List<String>): String {
+        return conversationRepository.createGroupConversation(participantIds)
     }
 
 }
