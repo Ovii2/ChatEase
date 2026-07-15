@@ -18,19 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
-import com.example.chatease.domain.model.Message
-import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.MessageType
-import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.group_chat.components.GroupChatScreenContent
 import com.example.chatease.presentation.ui.screens.group_chat.components.GroupChatTopBar
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
 import com.example.chatease.presentation.ui.state.GroupChatUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 import com.example.chatease.presentation.ui.viewmodel.GroupChatViewModel
 
 @Composable
@@ -38,7 +34,8 @@ fun GroupChatScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     conversationId: String,
-    groupChatViewModel: GroupChatViewModel = hiltViewModel()
+    groupChatViewModel: GroupChatViewModel = hiltViewModel(),
+    chatViewModel: ChatViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
@@ -46,44 +43,18 @@ fun GroupChatScreen(
     val typingUserIds = listOf("user_1", "user_2")
     val isBlockedByOtherUser = false
     val firstIndex = 0
-    val members = 2
     val uiState by groupChatViewModel.uiState.collectAsState()
 
     LaunchedEffect(conversationId) {
         groupChatViewModel.loadGroupConversation(conversationId)
+        chatViewModel.loadConversation(conversationId)
     }
 
-    val user = User(
-        uid = "",
-        fullName = "Test Test",
-        email = "email@test.com",
-        imageUrl = null,
-        status = UserPresenceStatus.ONLINE,
-        blockedUserIds = emptyList()
-    )
-    val currentUserId = "1"
-
-    fun generateRandomUserIds(count: Int): List<String> {
-        return (1..10)
-            .shuffled()
-            .take(count)
-            .map { "user_$it" }
-    }
-
-    val messages = List(10) {
-        Message(
-            messageId = it.toString(),
-            conversationId = "1",
-            senderId = listOf("user_1", "user_2").random(),
-            text = LoremIpsum(1).values.first(),
-            timeStamp = System.currentTimeMillis(),
-            seenBy = generateRandomUserIds(10),
-            reactions = emptyMap(),
-            messageType = MessageType.TEXT
-        )
-    }
+    val user by chatViewModel.user.collectAsState()
+    val currentUserId = chatViewModel.currentUserId
+    val messages by chatViewModel.messages.collectAsState()
     val listState = rememberLazyListState()
-    val firstUnreadMessageId = "1"
+    val firstUnreadMessageId = chatViewModel.firstUnreadMessageId ?: ""
     val firstUserName = user.fullName.substringBefore(" ")
     val secondUsername = user.fullName.substringBefore(" ")
 
@@ -100,7 +71,7 @@ fun GroupChatScreen(
                 topBar = {
                     GroupChatTopBar(
                         onBackClick = onBackClick,
-                        members = members,
+                        members = state.members.size,
                         group = state.group
                     )
                 }) { paddingValues ->
@@ -118,7 +89,8 @@ fun GroupChatScreen(
                     scope = scope,
                     firstIndex = firstIndex,
                     isPeekEnabled = isPeekEnabled,
-                    isBlockedByOtherUser = isBlockedByOtherUser
+                    isBlockedByOtherUser = isBlockedByOtherUser,
+                    onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
                 )
             }
         }

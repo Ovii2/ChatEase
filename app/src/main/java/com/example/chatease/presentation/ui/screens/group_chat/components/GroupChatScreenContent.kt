@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.group_chat.components
 
-import android.app.LocaleManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -45,8 +44,9 @@ fun GroupChatScreenContent(
     typingText: String,
     scope: CoroutineScope,
     firstIndex: Int,
-    isPeekEnabled : Boolean,
-    isBlockedByOtherUser: Boolean
+    isPeekEnabled: Boolean,
+    isBlockedByOtherUser: Boolean,
+    onSendMessageClick: (String) -> Unit
 ) {
     var messageText by rememberSaveable { mutableStateOf("") }
     var shouldShowUnreadDivider by remember { mutableStateOf(false) }
@@ -83,6 +83,8 @@ fun GroupChatScreenContent(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
             )
+        } else {
+            Unit
         }
         if (messages.isEmpty()) {
             ConversationStarterRow(
@@ -93,7 +95,7 @@ fun GroupChatScreenContent(
             modifier = Modifier,
             onMicrophoneClick = {},
             onSendMessageClick = {
-//                    onSendMessageClick(it)
+                onSendMessageClick(it)
                 messageText = ""
 
                 scope.launch {

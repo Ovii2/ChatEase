@@ -162,7 +162,7 @@ fun RecentChatListItem(
                     modifier = Modifier.widthIn(max = 200.dp)
                 ) {
                     Text(
-                        text = if (conversation.isGroup) group.name else conversation.title,
+                        text = conversation.title,
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
