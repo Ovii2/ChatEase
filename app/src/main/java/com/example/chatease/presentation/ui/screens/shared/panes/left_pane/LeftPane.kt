@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Category
+import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
@@ -35,7 +36,8 @@ fun LeftPane(
     conversations: List<ConversationUiModel>,
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    group: Group
 ) {
     Box(
         modifier = modifier.clickable(
@@ -60,7 +62,8 @@ fun LeftPane(
             RecentChatsList(
                 conversations = conversations,
                 onConversationClick = onConversationClick,
-                onClickToSeeAll = onClickToSeeAll
+                onClickToSeeAll = onClickToSeeAll,
+                group = group,
             )
         }
     }
@@ -96,6 +99,12 @@ private fun LeftPanePreview() {
         unreadCount = 0,
         isGroup = false
     )
+    val group = Group(
+        conversationId = "1",
+        ownerId = "1",
+        name = "Group conversation",
+        imageUrl = null
+    )
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             LeftPane(
@@ -109,6 +118,7 @@ private fun LeftPanePreview() {
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
                 onNavigateToProfile = {},
+                group = group,
             )
         }
     }

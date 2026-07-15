@@ -34,10 +34,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
+import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
+import com.example.chatease.presentation.ui.screens.shared.group.GroupAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toChatTimeStamp
 
@@ -46,7 +48,8 @@ fun RecentChatsList(
     modifier: Modifier = Modifier,
     conversations: List<ConversationUiModel>,
     onConversationClick: (String) -> Unit,
-    onClickToSeeAll: () -> Unit
+    onClickToSeeAll: () -> Unit,
+    group: Group
 ) {
     val cornerShape = RoundedCornerShape(24.dp)
 
@@ -97,7 +100,8 @@ fun RecentChatsList(
                     RecentChatListItem(
                         conversation = conversation,
                         onNavigateToChatDetails = onConversationClick,
-                        cornerShape = cornerShape
+                        cornerShape = cornerShape,
+                        group = group
                     )
                 }
             }
@@ -110,7 +114,8 @@ fun RecentChatListItem(
     modifier: Modifier = Modifier,
     conversation: ConversationUiModel,
     onNavigateToChatDetails: (String) -> Unit,
-    cornerShape: RoundedCornerShape
+    cornerShape: RoundedCornerShape,
+    group: Group
 ) {
     val user = conversation.participants.firstOrNull() ?: return
     val backgroundColor =
@@ -140,17 +145,24 @@ fun RecentChatListItem(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                UserAvatar(
-                    user = user,
-                    showStatus = !conversation.isBlockedByOtherUser
-                )
+                if (conversation.isGroup) {
+                    GroupAvatar(
+                        group = group,
+                        imageSize = 60.dp
+                    )
+                } else {
+                    UserAvatar(
+                        user = user,
+                        showStatus = !conversation.isBlockedByOtherUser
+                    )
+                }
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column(
                     modifier = Modifier.widthIn(max = 200.dp)
                 ) {
                     Text(
-                        text = conversation.title,
+                        text = if (conversation.isGroup) group.name else conversation.title,
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
@@ -212,22 +224,31 @@ private fun RecentChatsListPreview() {
         imageUrl = null,
         status = UserPresenceStatus.AWAY
     )
-    val conversation = ConversationUiModel(
+
+    val group = Group(
         conversationId = "1",
-        title = "Test Test",
-        imageUrl = null,
-        participants = listOf(user),
-        lastMessage = "",
-        timestamp = System.currentTimeMillis(),
-        unreadCount = 0,
-        isGroup = false
+        ownerId = "1",
+        name = "Group conversation",
+        imageUrl = null
     )
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             RecentChatsList(
-                conversations = List(4) { conversation },
+                conversations = List(4) {
+                    ConversationUiModel(
+                        conversationId = "1",
+                        title = "Test Test",
+                        imageUrl = null,
+                        participants = listOf(user),
+                        lastMessage = "Test message",
+                        timestamp = System.currentTimeMillis(),
+                        unreadCount = 1,
+                        isGroup = it % 2 == 0
+                    )
+                },
                 onConversationClick = {},
                 onClickToSeeAll = {},
+                group = group
             )
         }
     }

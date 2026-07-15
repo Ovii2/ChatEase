@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.unit.dp
+import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
@@ -47,7 +48,8 @@ fun HomeTabletLayout(
     onReactionClick: (String, String) -> Unit,
     onNavigateToChatInfo: () -> Unit,
     isBlockedByOtherUser: Boolean,
-    isBlockedByMe: Boolean
+    isBlockedByMe: Boolean,
+    group: Group
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -76,7 +78,8 @@ fun HomeTabletLayout(
                     conversations = state.conversations,
                     focusManager = focusManager,
                     onLogoutClick = onLogoutClick,
-                    onNavigateToProfile = onNavigateToProfile
+                    onNavigateToProfile = onNavigateToProfile,
+                    group = group,
                 )
             }
         },

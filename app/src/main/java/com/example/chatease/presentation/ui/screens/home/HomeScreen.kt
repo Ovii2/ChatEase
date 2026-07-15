@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.Category
+import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
@@ -94,6 +95,12 @@ fun HomeScreen(
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
 
     val missedCalls by callViewModel.missedCallsCount.collectAsState()
+    val group = Group(
+        conversationId = "1",
+        ownerId = "1",
+        name = "Group conversation",
+        imageUrl = null
+    )
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -160,7 +167,8 @@ fun HomeScreen(
                                     authViewModel.logout()
                                     onNavigateToLoginScreen()
                                 },
-                                onNavigateToProfile = onNavigateToProfile
+                                onNavigateToProfile = onNavigateToProfile,
+                                group = group
                             )
                         }
 
@@ -220,6 +228,7 @@ fun HomeScreen(
                                 },
                                 isBlockedByOtherUser = isBlockedByOtherUser,
                                 isBlockedByMe = false,
+                                group = group
                             )
                         }
                     }
@@ -276,6 +285,12 @@ private fun HomeScreenCompactLayoutPreview() {
         unreadCount = 0,
         isGroup = false
     )
+    val group = Group(
+        conversationId = "1",
+        ownerId = "1",
+        name = "Group conversation",
+        imageUrl = null
+    )
     ChatEaseTheme {
         Scaffold { paddingValues ->
             LeftPane(
@@ -289,7 +304,8 @@ private fun HomeScreenCompactLayoutPreview() {
                 conversations = List(3) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
-                onNavigateToProfile = {}
+                onNavigateToProfile = {},
+                group = group
             )
         }
     }
