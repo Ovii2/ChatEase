@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
+import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 
@@ -51,7 +52,6 @@ fun ChatScreen(
     }
 
     RightPane(
-        user = user,
         messages = messages,
         currentUserId = chatViewModel.currentUserId,
         onBackClick = {
@@ -97,5 +97,8 @@ fun ChatScreen(
                 conversationId = conversationId
             )
         },
+        chatPaneUiState = ChatPaneUiState.DirectChat(
+            user = user
+        ),
     )
 }

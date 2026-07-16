@@ -39,6 +39,7 @@ import com.example.chatease.presentation.ui.screens.home.layouts.HomeTabletLayou
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
+import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
@@ -175,7 +176,6 @@ fun HomeScreen(
                                 state = state,
                                 selectedCategory = selectedCategory,
                                 focusManager = focusManager,
-                                user = user,
                                 messages = messages,
                                 isConversationCreator = isConversationCreator,
                                 onSelectCategory = homeViewModel::selectCategory,
@@ -218,7 +218,10 @@ fun HomeScreen(
                                     }
                                 },
                                 isBlockedByOtherUser = isBlockedByOtherUser,
-                                isBlockedByMe = false
+                                isBlockedByMe = false,
+                                chatPaneUiState = ChatPaneUiState.DirectChat(
+                                    user = user
+                                )
                             )
                         }
                     }

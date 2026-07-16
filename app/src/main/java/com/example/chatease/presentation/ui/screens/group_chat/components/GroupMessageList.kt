@@ -38,7 +38,6 @@ import com.example.chatease.utils.toChatDateLabel
 @Composable
 fun GroupMessageList(
     modifier: Modifier = Modifier,
-    user: User,
     messages: List<Message>,
     currentUserId: String,
     listState: LazyListState,
@@ -72,6 +71,10 @@ fun GroupMessageList(
                 }
             }
             val isSentByCurrentUser = message.senderId == currentUserId
+            val user = groupMembers.firstOrNull { member ->
+                member.uid == message.senderId
+            } ?: return@itemsIndexed
+
             GroupMessageListItem(
                 user = user,
                 message = message,
@@ -234,7 +237,6 @@ private fun GroupMessageListPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GroupMessageList(
-                    user = user,
                     messages = message,
                     currentUserId = "user_1",
                     listState = rememberLazyListState(),

@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Message
-import com.example.chatease.domain.model.User
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
+import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.state.HomeUiState
 import kotlinx.coroutines.launch
 
@@ -32,7 +32,6 @@ fun HomeTabletLayout(
     state: HomeUiState.Success,
     selectedCategory: String,
     focusManager: FocusManager,
-    user: User,
     messages: List<Message>,
     isConversationCreator: Boolean,
     onSelectCategory: (String) -> Unit,
@@ -47,7 +46,8 @@ fun HomeTabletLayout(
     onReactionClick: (String, String) -> Unit,
     onNavigateToChatInfo: () -> Unit,
     isBlockedByOtherUser: Boolean,
-    isBlockedByMe: Boolean
+    isBlockedByMe: Boolean,
+    chatPaneUiState: ChatPaneUiState
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -83,7 +83,6 @@ fun HomeTabletLayout(
         detailPane = {
             AnimatedPane {
                 RightPane(
-                    user = user,
                     messages = messages,
                     currentUserId = currentUserId,
                     onBackClick = onBackClick,
@@ -98,6 +97,7 @@ fun HomeTabletLayout(
                     updateTypingStatus = { },
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     onStartAudioCall = {},
+                    chatPaneUiState = chatPaneUiState,
                 )
             }
         },

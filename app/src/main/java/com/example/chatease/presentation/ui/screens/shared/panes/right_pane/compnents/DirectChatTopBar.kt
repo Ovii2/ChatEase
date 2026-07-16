@@ -41,7 +41,7 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RightPaneTopBar(
+fun DirectChatTopBar(
     modifier: Modifier = Modifier,
     user: User,
     onBackClick: () -> Unit,
@@ -141,7 +141,7 @@ fun RightPaneTopBar(
     uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
-private fun RightPaneTopBarPreview() {
+private fun DirectChatTopBarPreview() {
     val user = User(
         uid = "1",
         fullName = "Test test",
@@ -158,7 +158,7 @@ private fun RightPaneTopBarPreview() {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                RightPaneTopBar(
+                DirectChatTopBar(
                     user = user,
                     onBackClick = {},
                     onNavigateToChatInfo = {},

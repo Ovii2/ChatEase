@@ -33,15 +33,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
+import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.screens.group_chat.components.GroupChatTopBar
+import com.example.chatease.presentation.ui.screens.group_chat.components.GroupMessageList
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationStarterRow
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.DirectChatTopBar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageInputBar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesList
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.NewMessagesButton
-import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.RightPaneTopBar
+import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import kotlinx.coroutines.launch
 
@@ -49,7 +53,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun RightPane(
     modifier: Modifier = Modifier,
-    user: User,
     messages: List<Message>,
     currentUserId: String,
     onBackClick: () -> Unit,
@@ -63,7 +66,8 @@ fun RightPane(
     typingUserIds: List<String>,
     updateTypingStatus: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
-    onStartAudioCall: (String) -> Unit
+    onStartAudioCall: (String) -> Unit,
+    chatPaneUiState: ChatPaneUiState
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -83,12 +87,27 @@ fun RightPane(
     var shouldShowUnreadDivider by remember { mutableStateOf(false) }
     var initialUnreadMessageId by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val firstUserName = user.fullName.substringBefore(" ")
-    val secondUsername = user.fullName.substringBefore(" ")
+    val typingUsers = when (chatPaneUiState) {
+        is ChatPaneUiState.DirectChat -> {
+            listOf(chatPaneUiState.user).filter { user ->
+                user.uid in typingUserIds
+            }
+        }
+
+        is ChatPaneUiState.GroupChat -> {
+            chatPaneUiState.members.filter { user ->
+                user.uid in typingUserIds
+            }
+        }
+    }
+
+    val typingNames = typingUsers.map { user ->
+        user.fullName.substringBefore(" ")
+    }
 
     val typingText = when (typingUserIds.size) {
-        1 -> stringResource(R.string.one_is_typing, firstUserName)
-        2 -> stringResource(R.string.two_are_typing, firstUserName, secondUsername)
+        1 -> stringResource(R.string.one_is_typing, typingNames[0])
+        2 -> stringResource(R.string.two_are_typing, typingNames[0], typingNames[1])
         else -> stringResource(R.string.many_are_typing, typingUserIds.size)
     }
 
@@ -126,13 +145,51 @@ fun RightPane(
             },
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        RightPaneTopBar(
-            user = user,
-            onBackClick = onBackClick,
-            onNavigateToChatInfo = onNavigateToChatInfo,
-            isBlockedByOtherUser = isBlockedByOtherUser,
-            onStartAudioCall = onStartAudioCall,
-        )
+        when (chatPaneUiState) {
+            is ChatPaneUiState.DirectChat -> {
+                DirectChatTopBar(
+                    user = chatPaneUiState.user,
+                    onBackClick = onBackClick,
+                    onNavigateToChatInfo = onNavigateToChatInfo,
+                    isBlockedByOtherUser = isBlockedByOtherUser,
+                    onStartAudioCall = onStartAudioCall,
+                )
+
+                MessagesList(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .weight(1f),
+                    messages = messages,
+                    currentUserId = currentUserId,
+                    user = chatPaneUiState.user,
+                    listState = listState,
+                    firstUnreadMessageId = if (shouldShowUnreadDivider) initialUnreadMessageId else null,
+                    onReactionClick = { messageId, reaction ->
+                        onReactionClick(messageId, reaction)
+                    },
+                    isBlockedByOtherUser = isBlockedByOtherUser,
+                )
+            }
+
+            is ChatPaneUiState.GroupChat -> {
+                GroupChatTopBar(
+                    onBackClick = onBackClick,
+                    members = chatPaneUiState.members.size,
+                    group = chatPaneUiState.group
+                )
+
+                GroupMessageList(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .weight(1f),
+                    messages = messages,
+                    currentUserId = currentUserId,
+                    listState = listState,
+                    groupMembers = chatPaneUiState.members,
+                    firstUnreadMessageId = firstUnreadMessageId
+                )
+            }
+        }
         if (showNewMessagesButton) {
             NewMessagesButton(
                 onClick = {
@@ -145,20 +202,7 @@ fun RightPane(
                 newMessages = newMessageCount
             )
         }
-        MessagesList(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .weight(1f),
-            messages = messages,
-            currentUserId = currentUserId,
-            user = user,
-            listState = listState,
-            firstUnreadMessageId = if (shouldShowUnreadDivider) initialUnreadMessageId else null,
-            onReactionClick = { messageId, reaction ->
-                onReactionClick(messageId, reaction)
-            },
-            isBlockedByOtherUser = isBlockedByOtherUser,
-        )
+
         if (typingUserIds.isNotEmpty()) {
             Text(
                 modifier = Modifier
@@ -229,11 +273,25 @@ private fun RightPanePreview() {
             messageType = MessageType.TEXT
         )
     }
+
+    val directUiState = ChatPaneUiState.DirectChat(
+        user = user
+    )
+
+    val groupUiState = ChatPaneUiState.GroupChat(
+        group = Group(
+            conversationId = "1",
+            ownerId = "1",
+            name = "Test Group",
+            imageUrl = null
+        ),
+        members = List(5) { user }
+    )
+
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
                 RightPane(
-                    user = user,
                     messages = messages,
                     currentUserId = "user_2",
                     onBackClick = {},
@@ -248,6 +306,7 @@ private fun RightPanePreview() {
                     updateTypingStatus = {},
                     isBlockedByOtherUser = false,
                     onStartAudioCall = {},
+                    chatPaneUiState = groupUiState,
                 )
             }
         }
