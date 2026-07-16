@@ -46,7 +46,9 @@ fun GroupChatScreenContent(
     firstIndex: Int,
     isPeekEnabled: Boolean,
     isBlockedByOtherUser: Boolean,
-    onSendMessageClick: (String) -> Unit
+    onSendMessageClick: (String) -> Unit,
+    updateTypingStatus: (String) -> Unit,
+    onMessagesVisible: () -> Unit
 ) {
     var messageText by rememberSaveable { mutableStateOf("") }
     var shouldShowUnreadDivider by remember { mutableStateOf(false) }
@@ -105,13 +107,13 @@ fun GroupChatScreenContent(
             messageText = messageText,
             onMessageTextChange = {
                 messageText = it
-//                    updateTypingStatus(it)
+                updateTypingStatus(it)
             },
             isPeekEnabled = isPeekEnabled,
             onPeekClick = {},
             onInputFocused = {
                 shouldShowUnreadDivider = false
-//                    onMessagesVisible()
+                onMessagesVisible()
             },
             isBlockedByOtherUser = isBlockedByOtherUser,
         )

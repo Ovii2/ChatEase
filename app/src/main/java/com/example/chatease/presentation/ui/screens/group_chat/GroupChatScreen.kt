@@ -91,6 +91,15 @@ fun GroupChatScreen(
                     isPeekEnabled = isPeekEnabled,
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
+                    updateTypingStatus = {
+                        chatViewModel.updateTypingStatus(
+                            conversationId = conversationId,
+                            isTyping = it.isNotBlank()
+                        )
+                    },
+                    onMessagesVisible = {
+                        //Todo()
+                    },
                 )
             }
         }
