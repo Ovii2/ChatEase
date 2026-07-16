@@ -114,7 +114,7 @@ fun RightPane(
     )
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .imePadding()
             .systemBarsPadding()
@@ -217,7 +217,7 @@ private fun RightPanePreview() {
         status = UserPresenceStatus.ONLINE
     )
     val senders = listOf("user_1", "user_2")
-    val messages = List(10) {
+    val messages = List(5) {
         Message(
             messageId = it.toString(),
             conversationId = "conversation_1",

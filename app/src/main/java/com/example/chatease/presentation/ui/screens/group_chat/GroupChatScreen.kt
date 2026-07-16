@@ -67,7 +67,7 @@ fun GroupChatScreen(
     when (val state = uiState) {
         is GroupChatUiState.Success -> {
             Scaffold(
-                modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+                modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
                 topBar = {
                     GroupChatTopBar(
                         onBackClick = onBackClick,
