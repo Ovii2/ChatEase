@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Category
-import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
@@ -31,13 +30,12 @@ fun LeftPane(
     categories: List<Category>,
     selectedCategory: String,
     onSelectCategory: (String) -> Unit,
-    onConversationClick: (String) -> Unit,
+    onConversationClick: (String, Boolean) -> Unit,
     onClickToSeeAll: () -> Unit,
     conversations: List<ConversationUiModel>,
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
-    onNavigateToProfile: () -> Unit,
-    group: Group
+    onNavigateToProfile: () -> Unit
 ) {
     Box(
         modifier = modifier.clickable(
@@ -62,8 +60,7 @@ fun LeftPane(
             RecentChatsList(
                 conversations = conversations,
                 onConversationClick = onConversationClick,
-                onClickToSeeAll = onClickToSeeAll,
-                group = group,
+                onClickToSeeAll = onClickToSeeAll
             )
         }
     }
@@ -99,12 +96,6 @@ private fun LeftPanePreview() {
         unreadCount = 0,
         isGroup = false
     )
-    val group = Group(
-        conversationId = "1",
-        ownerId = "1",
-        name = "Group conversation",
-        imageUrl = null
-    )
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             LeftPane(
@@ -112,13 +103,12 @@ private fun LeftPanePreview() {
                 categories = categories,
                 selectedCategory = "All",
                 onSelectCategory = {},
-                onConversationClick = {},
+                onConversationClick = { _, _ -> },
                 onClickToSeeAll = {},
                 conversations = List(4) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
-                onNavigateToProfile = {},
-                group = group,
+                onNavigateToProfile = {}
             )
         }
     }

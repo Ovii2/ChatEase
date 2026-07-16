@@ -34,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
-import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
@@ -47,9 +46,8 @@ import com.example.chatease.utils.toChatTimeStamp
 fun RecentChatsList(
     modifier: Modifier = Modifier,
     conversations: List<ConversationUiModel>,
-    onConversationClick: (String) -> Unit,
-    onClickToSeeAll: () -> Unit,
-    group: Group
+    onConversationClick: (String, Boolean) -> Unit,
+    onClickToSeeAll: () -> Unit
 ) {
     val cornerShape = RoundedCornerShape(24.dp)
 
@@ -100,8 +98,7 @@ fun RecentChatsList(
                     RecentChatListItem(
                         conversation = conversation,
                         onNavigateToChatDetails = onConversationClick,
-                        cornerShape = cornerShape,
-                        group = group
+                        cornerShape = cornerShape
                     )
                 }
             }
@@ -113,9 +110,8 @@ fun RecentChatsList(
 fun RecentChatListItem(
     modifier: Modifier = Modifier,
     conversation: ConversationUiModel,
-    onNavigateToChatDetails: (String) -> Unit,
-    cornerShape: RoundedCornerShape,
-    group: Group
+    onNavigateToChatDetails: (String, Boolean) -> Unit,
+    cornerShape: RoundedCornerShape
 ) {
     val user = conversation.participants.firstOrNull() ?: return
     val backgroundColor =
@@ -135,7 +131,8 @@ fun RecentChatListItem(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }) {
                     onNavigateToChatDetails(
-                        conversation.conversationId
+                        conversation.conversationId,
+                        conversation.isGroup
                     )
                 },
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -147,7 +144,7 @@ fun RecentChatListItem(
             ) {
                 if (conversation.isGroup) {
                     GroupAvatar(
-                        group = group,
+                        imageUrl = conversation.imageUrl,
                         imageSize = 60.dp
                     )
                 } else {
@@ -224,13 +221,6 @@ private fun RecentChatsListPreview() {
         imageUrl = null,
         status = UserPresenceStatus.AWAY
     )
-
-    val group = Group(
-        conversationId = "1",
-        ownerId = "1",
-        name = "Group conversation",
-        imageUrl = null
-    )
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             RecentChatsList(
@@ -246,9 +236,8 @@ private fun RecentChatsListPreview() {
                         isGroup = it % 2 == 0
                     )
                 },
-                onConversationClick = {},
-                onClickToSeeAll = {},
-                group = group
+                onConversationClick = { _, _ -> },
+                onClickToSeeAll = {}
             )
         }
     }

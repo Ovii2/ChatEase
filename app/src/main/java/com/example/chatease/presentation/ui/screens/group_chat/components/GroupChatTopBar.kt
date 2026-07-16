@@ -51,8 +51,9 @@ fun GroupChatTopBar(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-
-                    GroupAvatar(group = group)
+                    GroupAvatar(
+                        imageUrl = group.imageUrl
+                    )
                     Column(modifier = Modifier.widthIn(max = 150.dp)) {
                         Text(
                             text = group.name,

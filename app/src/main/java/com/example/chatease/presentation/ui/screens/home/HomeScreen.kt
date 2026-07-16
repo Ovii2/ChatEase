@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.Category
-import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
@@ -59,7 +58,7 @@ fun HomeScreen(
     onNavigateToContacts: () -> Unit,
     onNavigateToCalls: () -> Unit,
     onNavigateToProfile: () -> Unit,
-    onConversationClick: (String) -> Unit,
+    onConversationClick: (String, Boolean) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
     contactsViewModel: ContactsViewModel = hiltViewModel(),
@@ -71,7 +70,6 @@ fun HomeScreen(
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
 ) {
-
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
     val focusManager = LocalFocusManager.current
@@ -95,12 +93,6 @@ fun HomeScreen(
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
 
     val missedCalls by callViewModel.missedCallsCount.collectAsState()
-    val group = Group(
-        conversationId = "1",
-        ownerId = "1",
-        name = "Group conversation",
-        imageUrl = null
-    )
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -167,8 +159,7 @@ fun HomeScreen(
                                     authViewModel.logout()
                                     onNavigateToLoginScreen()
                                 },
-                                onNavigateToProfile = onNavigateToProfile,
-                                group = group
+                                onNavigateToProfile = onNavigateToProfile
                             )
                         }
 
@@ -188,7 +179,7 @@ fun HomeScreen(
                                 messages = messages,
                                 isConversationCreator = isConversationCreator,
                                 onSelectCategory = homeViewModel::selectCategory,
-                                onConversationClick = { conversationId ->
+                                onConversationClick = { conversationId, _ ->
                                     selectedConversationId = conversationId
                                 },
                                 onLogoutClick = {
@@ -227,8 +218,7 @@ fun HomeScreen(
                                     }
                                 },
                                 isBlockedByOtherUser = isBlockedByOtherUser,
-                                isBlockedByMe = false,
-                                group = group
+                                isBlockedByMe = false
                             )
                         }
                     }
@@ -285,12 +275,6 @@ private fun HomeScreenCompactLayoutPreview() {
         unreadCount = 0,
         isGroup = false
     )
-    val group = Group(
-        conversationId = "1",
-        ownerId = "1",
-        name = "Group conversation",
-        imageUrl = null
-    )
     ChatEaseTheme {
         Scaffold { paddingValues ->
             LeftPane(
@@ -299,13 +283,12 @@ private fun HomeScreenCompactLayoutPreview() {
                 categories = categories,
                 selectedCategory = "All",
                 onSelectCategory = {},
-                onConversationClick = { },
+                onConversationClick = { _, _ -> },
                 onClickToSeeAll = {},
                 conversations = List(3) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
-                onNavigateToProfile = {},
-                group = group
+                onNavigateToProfile = {}
             )
         }
     }

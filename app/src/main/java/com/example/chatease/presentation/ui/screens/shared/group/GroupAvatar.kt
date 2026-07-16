@@ -21,15 +21,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.example.chatease.di.ChatEase
-import com.example.chatease.domain.model.Group
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun GroupAvatar(
     modifier: Modifier = Modifier,
-    group: Group,
-    imageSize : Dp = 44.dp
+    imageUrl: String?,
+    imageSize: Dp = 44.dp
 ) {
     Box(
         modifier = modifier
@@ -41,7 +39,7 @@ fun GroupAvatar(
             .size(imageSize),
         contentAlignment = Alignment.Center
     ) {
-        if (group.imageUrl == null) {
+        if (imageUrl == null) {
             Icon(
                 imageVector = Icons.Filled.Group,
                 contentDescription = null
@@ -59,7 +57,7 @@ fun GroupAvatar(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(imageSize),
-                model = group.imageUrl,
+                model = imageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
@@ -70,12 +68,6 @@ fun GroupAvatar(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun GroupAvatarPreview() {
-    val group = Group(
-        conversationId = "1",
-        ownerId = "1",
-        name = "Test Test",
-        imageUrl = null
-    )
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -84,7 +76,7 @@ private fun GroupAvatarPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GroupAvatar(
-                    group = group
+                    imageUrl = null
                 )
             }
         }

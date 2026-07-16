@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.unit.dp
-import com.example.chatease.domain.model.Group
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.state.HomeUiState
 
@@ -17,11 +16,10 @@ fun HomeCompactLayout(
     state: HomeUiState.Success,
     selectedCategory: String,
     onSelectCategory: (String) -> Unit,
-    onConversationClick: (String) -> Unit,
+    onConversationClick: (String, Boolean) -> Unit,
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
-    onNavigateToProfile: () -> Unit,
-    group: Group
+    onNavigateToProfile: () -> Unit
 ) {
     LeftPane(
         modifier = modifier
@@ -36,7 +34,6 @@ fun HomeCompactLayout(
         conversations = state.conversations,
         focusManager = focusManager,
         onLogoutClick = onLogoutClick,
-        onNavigateToProfile = onNavigateToProfile,
-        group = group
+        onNavigateToProfile = onNavigateToProfile
     )
 }

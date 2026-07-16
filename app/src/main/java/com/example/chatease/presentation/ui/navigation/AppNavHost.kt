@@ -94,8 +94,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
-                onConversationClick = { conversationId ->
-                    navController.navigate(Screens.Chat.createRoute(conversationId))
+                onConversationClick = { conversationId, isGroup ->
+                    if (isGroup) {
+                        navController.navigate(Screens.GroupChat.createRoute(conversationId))
+                    } else
+                        navController.navigate(Screens.Chat.createRoute(conversationId))
                 },
                 onNavigateToLoginScreen = {
                     navController.navigate(Screens.Login.route) {

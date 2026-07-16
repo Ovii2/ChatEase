@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.unit.dp
-import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
@@ -37,7 +36,7 @@ fun HomeTabletLayout(
     messages: List<Message>,
     isConversationCreator: Boolean,
     onSelectCategory: (String) -> Unit,
-    onConversationClick: (String) -> Unit,
+    onConversationClick: (String, Boolean) -> Unit,
     onLogoutClick: () -> Unit,
     onNavigateToProfile: () -> Unit,
     currentUserId: String,
@@ -48,8 +47,7 @@ fun HomeTabletLayout(
     onReactionClick: (String, String) -> Unit,
     onNavigateToChatInfo: () -> Unit,
     isBlockedByOtherUser: Boolean,
-    isBlockedByMe: Boolean,
-    group: Group
+    isBlockedByMe: Boolean
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -67,8 +65,8 @@ fun HomeTabletLayout(
                     categories = state.categories,
                     selectedCategory = selectedCategory,
                     onSelectCategory = onSelectCategory,
-                    onConversationClick = {
-                        onConversationClick(it)
+                    onConversationClick = { conversationId, isGroup ->
+                        onConversationClick(conversationId, isGroup)
 
                         scope.launch {
                             navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
@@ -78,8 +76,7 @@ fun HomeTabletLayout(
                     conversations = state.conversations,
                     focusManager = focusManager,
                     onLogoutClick = onLogoutClick,
-                    onNavigateToProfile = onNavigateToProfile,
-                    group = group,
+                    onNavigateToProfile = onNavigateToProfile
                 )
             }
         },
