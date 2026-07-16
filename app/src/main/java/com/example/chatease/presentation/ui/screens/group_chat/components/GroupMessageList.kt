@@ -56,9 +56,6 @@ fun GroupMessageList(
     ) {
         itemsIndexed(messages) { index, message ->
             val previousVisibleMessage = messages.getOrNull(index + 1)
-            if (firstUnreadMessageId != null && message.messageId == firstUnreadMessageId) {
-                UnreadMessagesDivider()
-            }
             val seenUsers = groupMembers.filter { member ->
                 member.uid in message.seenBy
             }
@@ -80,6 +77,9 @@ fun GroupMessageList(
                 message = message,
                 isSentByCurrentUser = isSentByCurrentUser
             )
+            if (firstUnreadMessageId != null && message.messageId == firstUnreadMessageId) {
+                UnreadMessagesDivider()
+            }
             if (previousVisibleMessage == null || !isSameDay(
                     message.timeStamp,
                     previousVisibleMessage.timeStamp
