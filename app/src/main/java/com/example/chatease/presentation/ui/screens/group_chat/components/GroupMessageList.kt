@@ -59,25 +59,6 @@ fun GroupMessageList(
             if (firstUnreadMessageId != null && message.messageId == firstUnreadMessageId) {
                 UnreadMessagesDivider()
             }
-            if (previousVisibleMessage == null || !isSameDay(
-                    message.timeStamp,
-                    previousVisibleMessage.timeStamp
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    CommonChip(
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        text = message.timeStamp.toChatDateLabel(context),
-                        selected = false,
-                        enabled = false
-                    )
-                }
-            }
             val seenUsers = groupMembers.filter { member ->
                 member.uid in message.seenBy
             }
@@ -99,6 +80,25 @@ fun GroupMessageList(
                 message = message,
                 isSentByCurrentUser = isSentByCurrentUser
             )
+            if (previousVisibleMessage == null || !isSameDay(
+                    message.timeStamp,
+                    previousVisibleMessage.timeStamp
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CommonChip(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        text = message.timeStamp.toChatDateLabel(context),
+                        selected = false,
+                        enabled = false
+                    )
+                }
+            }
         }
     }
 }
