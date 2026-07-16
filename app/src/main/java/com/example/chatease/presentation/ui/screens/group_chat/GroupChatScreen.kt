@@ -40,7 +40,7 @@ fun GroupChatScreen(
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
-    val typingUserIds = listOf("user_1", "user_2")
+    val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     val isBlockedByOtherUser = false
     val firstIndex = 0
     val uiState by groupChatViewModel.uiState.collectAsState()
