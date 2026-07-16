@@ -80,7 +80,6 @@ fun MessagesList(
 
                 val isSentByCurrentUser = message.senderId == currentUserId
 
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

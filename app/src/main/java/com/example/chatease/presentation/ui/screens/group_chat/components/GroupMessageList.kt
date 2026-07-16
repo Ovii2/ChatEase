@@ -57,7 +57,7 @@ fun GroupMessageList(
         itemsIndexed(messages) { index, message ->
             val previousVisibleMessage = messages.getOrNull(index + 1)
             val seenUsers = groupMembers.filter { member ->
-                member.uid in message.seenBy
+                member.uid != currentUserId && member.uid in message.seenBy
             }
             if (seenUsers.isNotEmpty()) {
                 Box(
