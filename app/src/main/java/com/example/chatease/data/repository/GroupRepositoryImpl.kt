@@ -13,13 +13,14 @@ class GroupRepositoryImpl(
 
     companion object {
         private const val GROUP = "group"
+        const val USER_IDS = "userIds"
     }
 
     override suspend fun createGroup(
         conversationId: String,
+        userIds: List<String>,
         name: String,
         ownerId: String,
-        memberIds: List<String>,
         imageUrl: String?
     ): String {
         val groupRef = firestore
@@ -28,6 +29,7 @@ class GroupRepositoryImpl(
 
         val group = Group(
             conversationId = conversationId,
+            userIds = userIds,
             ownerId = ownerId,
             name = name,
             imageUrl = imageUrl
@@ -49,5 +51,13 @@ class GroupRepositoryImpl(
             ?: throw IllegalStateException("Group not found")
     }
 
+    override suspend fun getGroups(currentUserId: String): List<Group> {
+        val snapshot = firestore
+            .collection(GROUP)
+            .whereArrayContains(USER_IDS, currentUserId)
+            .get()
+            .await()
 
+        return snapshot.toObjects(GroupDto::class.java).map { it.toDomain() }
+    }
 }

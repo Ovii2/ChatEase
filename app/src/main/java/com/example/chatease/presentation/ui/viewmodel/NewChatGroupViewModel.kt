@@ -45,9 +45,9 @@ class NewChatGroupViewModel @Inject constructor(
                 val conversationId = createGroupConversation(participantIds)
                 groupRepository.createGroup(
                     conversationId = conversationId,
+                    userIds = participantIds,
                     name = groupName.value,
                     ownerId = currentUserId,
-                    memberIds = participantIds,
                     imageUrl = null
                 )
                 onGroupCreated(conversationId)

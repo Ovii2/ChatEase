@@ -6,11 +6,13 @@ interface GroupRepository {
 
     suspend fun createGroup(
         conversationId: String,
+        userIds: List<String>,
         name: String,
         ownerId: String,
-        memberIds: List<String>,
         imageUrl: String?
     ): String
 
     suspend fun getGroupByConversationId(conversationId: String): Group
+
+    suspend fun getGroups(currentUserId: String): List<Group>
 }

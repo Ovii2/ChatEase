@@ -6,6 +6,7 @@ import com.example.chatease.domain.model.Group
 fun GroupDto.toDomain(): Group {
     return Group(
         conversationId = conversationId,
+        userIds = userIds,
         ownerId = ownerId,
         name = name,
         imageUrl = imageUrl
@@ -15,6 +16,7 @@ fun GroupDto.toDomain(): Group {
 fun Group.toDto(): GroupDto {
     return GroupDto(
         conversationId = conversationId,
+        userIds = userIds,
         ownerId = ownerId,
         name = name,
         imageUrl = imageUrl

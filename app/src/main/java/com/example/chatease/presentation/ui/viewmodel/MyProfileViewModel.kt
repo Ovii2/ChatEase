@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatease.R
 import com.example.chatease.domain.model.Contact
 import com.example.chatease.domain.model.Conversation
+import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.repository.ContactsRepository
 import com.example.chatease.domain.repository.ConversationRepository
+import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.model.ProfileStatUiModel
 import com.example.chatease.presentation.ui.state.MyProfileUiState
@@ -23,7 +25,8 @@ class MyProfileViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val userRepository: UserRepository,
     private val contactsRepository: ContactsRepository,
-    private val conversationRepository: ConversationRepository
+    private val conversationRepository: ConversationRepository,
+    private val groupRepository: GroupRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MyProfileUiState>(MyProfileUiState.Loading)
@@ -35,6 +38,9 @@ class MyProfileViewModel @Inject constructor(
     private val _conversations = MutableStateFlow<List<Conversation>>(emptyList())
     val conversations = _conversations.asStateFlow()
 
+    private val _groups = MutableStateFlow<List<Group>>(emptyList())
+    val groups = _groups.asStateFlow()
+
     private val currentUserId: String?
         get() = auth.currentUser?.uid
 
@@ -42,6 +48,7 @@ class MyProfileViewModel @Inject constructor(
         loadCurrentUser()
         loadContacts()
         loadConversations()
+        loadGroups()
     }
 
     private fun buildStats() = listOf(
@@ -50,7 +57,7 @@ class MyProfileViewModel @Inject constructor(
             label = R.string.chats
         ),
         ProfileStatUiModel(
-            value = "1",
+            value = _groups.value.size.toString(),
             label = R.string.groups
         ),
         ProfileStatUiModel(
@@ -105,6 +112,21 @@ class MyProfileViewModel @Inject constructor(
                 Log.v(
                     "MyProfileViewModel",
                     e.message ?: "Failed to load conversations for $currentUserId"
+                )
+            }
+        }
+    }
+
+    fun loadGroups() {
+        viewModelScope.launch {
+            val currentUserId = currentUserId ?: return@launch
+            try {
+                _groups.value = groupRepository.getGroups(currentUserId)
+                refreshStats()
+            } catch (e: Exception) {
+                Log.v(
+                    "MyProfileViewModel",
+                    e.message ?: "Failed to load group for $currentUserId"
                 )
             }
         }
