@@ -33,7 +33,7 @@ fun NewChatGroupScreen(
     onBackClick: () -> Unit,
     onNavigateToGroupChat: (String) -> Unit,
     selectedUserIds: List<String>,
-    newChatGroupViewModel: NewChatGroupViewModel = hiltViewModel()
+    newChatGroupViewModel: NewChatGroupViewModel = hiltViewModel(),
 ) {
     val focusManager = LocalFocusManager.current
     val groupName by newChatGroupViewModel.groupName.collectAsState()

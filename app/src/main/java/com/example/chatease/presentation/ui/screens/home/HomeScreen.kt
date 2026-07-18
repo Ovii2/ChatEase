@@ -221,7 +221,8 @@ fun HomeScreen(
                                 isBlockedByMe = false,
                                 chatPaneUiState = ChatPaneUiState.DirectChat(
                                     user = user
-                                )
+                                ),
+                                onNavigateToGroupChatInfo = {}
                             )
                         }
                     }

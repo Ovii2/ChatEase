@@ -66,7 +66,8 @@ fun RightPane(
     updateTypingStatus: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     onStartAudioCall: (String) -> Unit,
-    chatPaneUiState: ChatPaneUiState
+    chatPaneUiState: ChatPaneUiState,
+    onNavigateToGroupChatInfo: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -159,7 +160,8 @@ fun RightPane(
                 GroupChatTopBar(
                     onBackClick = onBackClick,
                     members = chatPaneUiState.members.size,
-                    group = chatPaneUiState.group
+                    group = chatPaneUiState.group,
+                    onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
                 )
             }
         }
@@ -296,6 +298,7 @@ private fun RightPanePreview() {
                     isBlockedByOtherUser = false,
                     onStartAudioCall = {},
                     chatPaneUiState = groupUiState,
+                    onNavigateToGroupChatInfo = {},
                 )
             }
         }

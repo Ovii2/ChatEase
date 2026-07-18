@@ -37,7 +37,8 @@ fun GroupChatTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     members: Int,
-    group: Group
+    group: Group,
+    onNavigateToGroupChatInfo: (String) -> Unit
 ) {
     TopAppBar(
         title = {
@@ -84,6 +85,7 @@ fun GroupChatTopBar(
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Icon(
+                        modifier = Modifier.clickable { onNavigateToGroupChatInfo(group.conversationId) },
                         imageVector = Icons.Filled.Info,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
@@ -119,7 +121,8 @@ private fun GroupChatTopBarPreview() {
                 GroupChatTopBar(
                     onBackClick = {},
                     members = 2,
-                    group = group
+                    group = group,
+                    onNavigateToGroupChatInfo = {},
                 )
             }
         }

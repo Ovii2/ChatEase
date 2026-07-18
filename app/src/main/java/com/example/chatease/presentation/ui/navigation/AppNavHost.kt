@@ -314,7 +314,12 @@ fun AppNavHost(
                 onBackClick = {
                     navController.popBackStack()
                 },
-                conversationId = conversationId
+                conversationId = conversationId,
+                onNavigateToGroupChatInfo = {
+                    navController.navigate(
+                        Screens.GroupChatInfo.createRoute(conversationId)
+                    ) { launchSingleTop = true }
+                },
             )
         }
         composable(route = Screens.GroupChatInfo.route) {

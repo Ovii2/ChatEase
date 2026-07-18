@@ -47,7 +47,8 @@ fun HomeTabletLayout(
     onNavigateToChatInfo: () -> Unit,
     isBlockedByOtherUser: Boolean,
     isBlockedByMe: Boolean,
-    chatPaneUiState: ChatPaneUiState
+    chatPaneUiState: ChatPaneUiState,
+    onNavigateToGroupChatInfo: (String) -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -98,6 +99,7 @@ fun HomeTabletLayout(
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     onStartAudioCall = {},
                     chatPaneUiState = chatPaneUiState,
+                    onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
                 )
             }
         },

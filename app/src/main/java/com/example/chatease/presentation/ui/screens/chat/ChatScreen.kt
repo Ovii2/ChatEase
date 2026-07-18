@@ -100,5 +100,6 @@ fun ChatScreen(
         chatPaneUiState = ChatPaneUiState.DirectChat(
             user = user
         ),
+        onNavigateToGroupChatInfo = {},
     )
 }

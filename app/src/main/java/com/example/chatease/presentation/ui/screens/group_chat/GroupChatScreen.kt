@@ -30,7 +30,8 @@ fun GroupChatScreen(
     onBackClick: () -> Unit,
     conversationId: String,
     groupChatViewModel: GroupChatViewModel = hiltViewModel(),
-    chatViewModel: ChatViewModel = hiltViewModel()
+    chatViewModel: ChatViewModel = hiltViewModel(),
+    onNavigateToGroupChatInfo: (String) -> Unit
 ) {
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
     val isBlockedByOtherUser = false
@@ -80,6 +81,7 @@ fun GroupChatScreen(
                         group = state.group,
                         members = state.members
                     ),
+                    onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
                 )
             }
         }
@@ -104,6 +106,7 @@ private fun GroupChatScreenPreview() {
                 GroupChatScreen(
                     onBackClick = {},
                     conversationId = "1",
+                    onNavigateToGroupChatInfo = {},
                 )
             }
         }
