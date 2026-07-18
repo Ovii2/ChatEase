@@ -7,6 +7,7 @@ import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -23,12 +24,24 @@ class GroupChatInfoViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<GroupChatInfoUiState>(GroupChatInfoUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private var loadGroupJob: Job? = null
     fun loadGroup(conversationId: String) {
-        viewModelScope.launch {
+        loadGroupJob?.cancel()
+        _uiState.value = GroupChatInfoUiState.Loading
+
+        loadGroupJob = viewModelScope.launch {
             try {
                 val group = groupRepository.getGroupByConversationId(conversationId)
                 val memberFlows = group.userIds.map { userId ->
                     userRepository.observeUser(userId)
+                }
+
+                if (memberFlows.isEmpty()) {
+                    _uiState.value = GroupChatInfoUiState.Success(
+                        group = group,
+                        members = emptyList()
+                    )
+                    return@launch
                 }
 
                 combine(memberFlows) { users ->

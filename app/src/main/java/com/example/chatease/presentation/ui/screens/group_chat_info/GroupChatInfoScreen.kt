@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.chatease.R
 import com.example.chatease.presentation.ui.screens.group_chat_info.components.GroupChatInfoScreenContent
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
@@ -34,7 +34,7 @@ fun GroupChatInfoScreen(
     groupChatInfoViewModel: GroupChatInfoViewModel = hiltViewModel(),
     conversationId: String
 ) {
-    val uiState by groupChatInfoViewModel.uiState.collectAsState()
+    val uiState by groupChatInfoViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(conversationId) {
         groupChatInfoViewModel.loadGroup(conversationId)
