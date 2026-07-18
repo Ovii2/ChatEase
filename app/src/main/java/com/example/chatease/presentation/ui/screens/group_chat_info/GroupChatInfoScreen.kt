@@ -4,54 +4,40 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
-import com.example.chatease.domain.model.Group
-import com.example.chatease.domain.model.User
-import com.example.chatease.domain.model.enums.UserPresenceStatus
-import com.example.chatease.presentation.ui.screens.group_chat_info.components.GroupChatInfoDetailsSection
-import com.example.chatease.presentation.ui.screens.group_chat_info.components.GroupChatInfoTopSection
+import com.example.chatease.presentation.ui.screens.group_chat_info.components.GroupChatInfoScreenContent
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
+import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.GroupChatInfoViewModel
 
 @Composable
 fun GroupChatInfoScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    groupChatInfoViewModel: GroupChatInfoViewModel = hiltViewModel(),
+    conversationId: String
 ) {
-    val group = Group(
-        conversationId = "1",
-        name = "Test Group",
-        imageUrl = null
-    )
-    val members = List(12) {
-        User(
-            uid = it.toString(),
-            fullName = "",
-            email = "",
-            imageUrl = null,
-            status = UserPresenceStatus.ONLINE,
-            blockedUserIds = emptyList()
-        )
+    val uiState by groupChatInfoViewModel.uiState.collectAsState()
+
+    LaunchedEffect(conversationId) {
+        groupChatInfoViewModel.loadGroup(conversationId)
     }
     Box(
         modifier = Modifier
@@ -77,31 +63,17 @@ fun GroupChatInfoScreen(
                 )
             }
         ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .widthIn(max = 600.dp),
-                verticalArrangement = Arrangement.spacedBy(32.dp)
-            ) {
-                GroupChatInfoTopSection(
-                    group = group,
-                    membersCount = members
-                )
+            when (val state = uiState) {
+                is GroupChatInfoUiState.Error -> {}
+                GroupChatInfoUiState.Loading -> {
+                    CommonCircularLoader()
+                }
 
-                GroupChatInfoDetailsSection(
-                    membersCount = members
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                    Text(
-                        text = stringResource(R.string.leave_group),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.W600
+                is GroupChatInfoUiState.Success -> {
+                    GroupChatInfoScreenContent(
+                        paddingValues = paddingValues,
+                        group = state.group,
+                        members = state.members
                     )
                 }
             }
@@ -109,7 +81,10 @@ fun GroupChatInfoScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(
+    showBackground = true, showSystemUi = true,
+    device = "id:pixel_5"
+)
 @Composable
 private fun GroupChatInfoScreenPreview() {
     ChatEaseTheme {
@@ -120,7 +95,8 @@ private fun GroupChatInfoScreenPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GroupChatInfoScreen(
-                    onBackClick = {}
+                    onBackClick = {},
+                    conversationId = "1",
                 )
             }
         }

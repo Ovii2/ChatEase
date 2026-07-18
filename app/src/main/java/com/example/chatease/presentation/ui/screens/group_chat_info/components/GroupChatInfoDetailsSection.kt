@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
@@ -33,6 +34,7 @@ fun GroupChatInfoDetailsSection(
     modifier: Modifier = Modifier,
     membersCount: List<User>
 ) {
+    val borderWidth = 1.dp
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
@@ -40,36 +42,40 @@ fun GroupChatInfoDetailsSection(
     ) {
         Column(
             modifier = Modifier.border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                width = borderWidth,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(10.dp)
             )
         ) {
             GroupChatInfoDetailsItem(
                 title = R.string.about,
-                label = R.string.about_label
+                label = R.string.about_label,
+                borderWidth = borderWidth
             )
             GroupChatInfoDetailsItem(
                 title = R.string.notifications,
-                label = R.string.notifications_label
+                label = R.string.notifications_label,
+                borderWidth = borderWidth
             )
             GroupChatInfoDetailsItem(
                 title = R.string.media_links_more,
                 showDivider = false,
-                count = 30
+                count = 30,
+                borderWidth = borderWidth,
             )
         }
         Column(
             modifier = Modifier.border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                width = borderWidth,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(10.dp)
             )
         ) {
             GroupChatInfoDetailsItem(
                 title = R.string.members,
                 showDivider = false,
-                count = membersCount.size
+                count = membersCount.size,
+                borderWidth = borderWidth,
             )
         }
     }
@@ -81,7 +87,8 @@ fun GroupChatInfoDetailsItem(
     @StringRes title: Int,
     @StringRes label: Int? = null,
     showDivider: Boolean = true,
-    count: Int? = null
+    count: Int? = null,
+    borderWidth: Dp
 ) {
     Row(
         modifier = modifier
@@ -126,8 +133,8 @@ fun GroupChatInfoDetailsItem(
     if (showDivider) {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.surfaceVariant
+            thickness = borderWidth,
+            color = MaterialTheme.colorScheme.outlineVariant
         )
     }
 }

@@ -323,8 +323,11 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.GroupChatInfo.route) {
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+
             GroupChatInfoScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                conversationId = conversationId,
             )
         }
     }

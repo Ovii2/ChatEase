@@ -42,9 +42,9 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun GroupChatInfoTopSection(
     modifier: Modifier = Modifier,
     group: Group,
-    membersCount: List<User>
+    members: List<User>
 ) {
-    val onlineMembersCount = membersCount.count { it.status == UserPresenceStatus.ONLINE }
+    val onlineMembersCount = members.count { it.status == UserPresenceStatus.ONLINE }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -126,7 +126,7 @@ fun GroupChatInfoTopSection(
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
-                text = stringResource(R.string.total_members, membersCount.size),
+                text = stringResource(R.string.total_members, members.size),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -169,7 +169,7 @@ private fun GroupChatInfoTopSectionPreview() {
             ) {
                 GroupChatInfoTopSection(
                     group = group,
-                    membersCount = members
+                    members = members
                 )
             }
         }
