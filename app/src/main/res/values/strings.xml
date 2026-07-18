@@ -248,4 +248,8 @@
     <string name="add_more_members">Add more members</string>
     <string name="at_least_2_members_required">At least 2 members are required to create group</string>
 
+    <string name="leave_group_confirmation">Are you sure you want to leave this group?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>

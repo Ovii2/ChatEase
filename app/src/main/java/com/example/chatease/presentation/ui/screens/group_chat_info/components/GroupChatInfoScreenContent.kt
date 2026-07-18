@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.group_chat_info.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,8 @@ fun GroupChatInfoScreenContent(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     group: Group,
-    members: List<User>
+    members: List<User>,
+    onLeaveGroup: (String) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -70,6 +72,7 @@ fun GroupChatInfoScreenContent(
                     tint = MaterialTheme.colorScheme.error
                 )
                 Text(
+                    modifier = Modifier.clickable { onLeaveGroup(group.conversationId) },
                     text = stringResource(R.string.leave_group),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error,
@@ -111,7 +114,8 @@ private fun GroupChatInfoScreenContentPreview() {
                 GroupChatInfoScreenContent(
                     paddingValues = PaddingValues(),
                     group = group,
-                    members = members
+                    members = members,
+                    onLeaveGroup = {},
                 )
             }
         }
