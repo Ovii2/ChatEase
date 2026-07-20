@@ -13,6 +13,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
@@ -22,7 +23,9 @@ fun CommonTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     @StringRes title: Int? = null,
-    transparent: Boolean = false
+    transparent: Boolean = false,
+    actionIcon: ImageVector? = null,
+    onActionIconClick: () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -41,6 +44,14 @@ fun CommonTopBar(
                 imageVector = Icons.Outlined.ArrowBackIosNew,
                 contentDescription = null
             )
+        },
+        actions = {
+            actionIcon?.let {
+                Icon(
+                    modifier = modifier.clickable { onActionIconClick() },
+                    imageVector = actionIcon, contentDescription = null
+                )
+            }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = if (transparent) Color.Transparent else MaterialTheme.colorScheme.surface
