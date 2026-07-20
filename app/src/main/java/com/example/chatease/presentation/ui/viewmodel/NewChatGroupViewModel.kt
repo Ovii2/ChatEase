@@ -46,6 +46,7 @@ class NewChatGroupViewModel @Inject constructor(
                 groupRepository.createGroup(
                     conversationId = conversationId,
                     userIds = participantIds,
+                    adminIds = listOf(currentUserId),
                     name = groupName.value,
                     ownerId = currentUserId,
                     imageUrl = null
