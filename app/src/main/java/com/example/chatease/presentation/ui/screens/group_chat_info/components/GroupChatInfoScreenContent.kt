@@ -37,7 +37,8 @@ fun GroupChatInfoScreenContent(
     paddingValues: PaddingValues,
     group: Group,
     members: List<User>,
-    onLeaveGroup: (String) -> Unit
+    onLeaveGroup: (String) -> Unit,
+    onNavigateToMembersScreen: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -58,7 +59,8 @@ fun GroupChatInfoScreenContent(
             )
 
             GroupChatInfoDetailsSection(
-                membersCount = members
+                membersCount = members,
+                onNavigateToMembersScreen = onNavigateToMembersScreen,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -116,6 +118,7 @@ private fun GroupChatInfoScreenContentPreview() {
                     group = group,
                     members = members,
                     onLeaveGroup = {},
+                    onNavigateToMembersScreen = {},
                 )
             }
         }

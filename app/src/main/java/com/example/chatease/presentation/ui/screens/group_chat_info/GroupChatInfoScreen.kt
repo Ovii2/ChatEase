@@ -53,7 +53,8 @@ fun GroupChatInfoScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     groupChatInfoViewModel: GroupChatInfoViewModel = hiltViewModel(),
-    conversationId: String
+    conversationId: String,
+    onNavigateToMembersScreen: () -> Unit
 ) {
     val uiState by groupChatInfoViewModel.uiState.collectAsStateWithLifecycle()
     var isLeavingGroup by rememberSaveable { mutableStateOf(false) }
@@ -102,6 +103,7 @@ fun GroupChatInfoScreen(
                         onLeaveGroup = {
                             isLeavingGroup = true
                         },
+                        onNavigateToMembersScreen = onNavigateToMembersScreen,
                     )
                     if (isLeavingGroup) {
                         LeaveGroupBottomSheet(
@@ -206,7 +208,8 @@ private fun GroupChatInfoScreenPreview() {
                     paddingValues = PaddingValues(),
                     group = group,
                     members = members,
-                    onLeaveGroup = { isLeavingGroup = true }
+                    onLeaveGroup = { isLeavingGroup = true },
+                    onNavigateToMembersScreen = {},
                 )
                 if (isLeavingGroup) {
                     LeaveGroupBottomSheet(

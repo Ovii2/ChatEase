@@ -2,6 +2,7 @@ package com.example.chatease.presentation.ui.screens.group_chat_info.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun GroupChatInfoDetailsSection(
     modifier: Modifier = Modifier,
-    membersCount: List<User>
+    membersCount: List<User>,
+    onNavigateToMembersScreen: () -> Unit
 ) {
     val borderWidth = 1.dp
     Column(
@@ -72,6 +74,7 @@ fun GroupChatInfoDetailsSection(
             )
         ) {
             GroupChatInfoDetailsItem(
+                modifier = Modifier.clickable { onNavigateToMembersScreen() },
                 title = R.string.members,
                 showDivider = false,
                 count = membersCount.size,
@@ -160,7 +163,8 @@ private fun GroupChatInfoDetailsSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GroupChatInfoDetailsSection(
-                    membersCount = members
+                    membersCount = members,
+                    onNavigateToMembersScreen = {},
                 )
             }
         }
