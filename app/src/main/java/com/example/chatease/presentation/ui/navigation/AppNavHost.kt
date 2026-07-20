@@ -330,15 +330,18 @@ fun AppNavHost(
                 onBackClick = { navController.popBackStack() },
                 conversationId = conversationId,
                 onNavigateToMembersScreen = {
-                    navController.navigate(Screens.GroupChatMembers.route) {
+                    navController.navigate(Screens.GroupChatMembers.createRoute(conversationId)) {
                         launchSingleTop = true
                     }
                 },
             )
         }
         composable(route = Screens.GroupChatMembers.route) {
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+
             GroupChatMembersScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                conversationId = conversationId,
             )
         }
     }
