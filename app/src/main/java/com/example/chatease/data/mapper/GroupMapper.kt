@@ -7,6 +7,7 @@ fun GroupDto.toDomain(): Group {
     return Group(
         conversationId = conversationId,
         userIds = userIds,
+        adminIds = adminIds,
         ownerId = ownerId,
         name = name,
         imageUrl = imageUrl
@@ -17,6 +18,7 @@ fun Group.toDto(): GroupDto {
     return GroupDto(
         conversationId = conversationId,
         userIds = userIds,
+        adminIds = adminIds,
         ownerId = ownerId,
         name = name,
         imageUrl = imageUrl
