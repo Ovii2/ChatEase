@@ -7,6 +7,7 @@ interface GroupRepository {
     suspend fun createGroup(
         conversationId: String,
         userIds: List<String>,
+        adminIds: List<String>,
         name: String,
         ownerId: String,
         imageUrl: String?

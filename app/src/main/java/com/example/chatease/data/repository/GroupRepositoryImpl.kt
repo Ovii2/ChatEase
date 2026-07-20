@@ -19,6 +19,7 @@ class GroupRepositoryImpl(
     override suspend fun createGroup(
         conversationId: String,
         userIds: List<String>,
+        adminIds: List<String>,
         name: String,
         ownerId: String,
         imageUrl: String?
@@ -30,6 +31,7 @@ class GroupRepositoryImpl(
         val group = Group(
             conversationId = conversationId,
             userIds = userIds,
+            adminIds = adminIds,
             ownerId = ownerId,
             name = name,
             imageUrl = imageUrl
