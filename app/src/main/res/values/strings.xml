@@ -256,6 +256,7 @@
     <string name="block_member">Block member</string>
     <string name="promote_admin">Promote to admin</string>
     <string name="admins">Admins</string>
+    <string name="fail_load_members">Failed to load group members</string>
 
 
 </resources>
