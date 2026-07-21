@@ -1,6 +1,7 @@
 package com.example.chatease.presentation.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
@@ -33,7 +34,8 @@ import com.google.firebase.auth.auth
 fun AppNavHost(
     paddingValues: PaddingValues,
     navController: NavHostController,
-    onThemeToggleClick: () -> Unit
+    onThemeToggleClick: () -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val auth = Firebase.auth
     val startDestination = if (auth.currentUser != null) Screens.Home.route else Screens.Login.route
@@ -342,6 +344,7 @@ fun AppNavHost(
             GroupChatMembersScreen(
                 onBackClick = { navController.popBackStack() },
                 conversationId = conversationId,
+                snackbarHostState = snackbarHostState,
             )
         }
     }
