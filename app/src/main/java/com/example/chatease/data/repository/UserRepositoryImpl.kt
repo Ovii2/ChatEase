@@ -104,6 +104,21 @@ class UserRepositoryImpl(
         }
     }
 
+    override suspend fun isUserInContacts(otherUserId: String): Boolean {
+        val currentUserId = auth.currentUser?.uid ?: return false
+
+        val snapshot = firestore
+            .collection(CONTACTS)
+            .whereArrayContains(USER_IDS, currentUserId)
+            .get()
+            .await()
+
+        return snapshot.documents.any { document ->
+            val contactDto = document.toObject(ContactDto::class.java)
+            contactDto?.userIds?.contains(otherUserId) == true
+        }
+    }
+
     override suspend fun blockUser(userId: String) {
         val currentUserId = auth.currentUser?.uid ?: return
 

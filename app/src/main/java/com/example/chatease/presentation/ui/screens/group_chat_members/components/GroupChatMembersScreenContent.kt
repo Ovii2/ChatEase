@@ -20,7 +20,8 @@ fun GroupChatMembersScreenContent(
     paddingValues: PaddingValues,
     currentUserId: String,
     adminIds: List<String>,
-    members: List<User>
+    members: List<User>,
+    isMemberInContacts: (String) -> Boolean
 ) {
     Column(
         modifier = modifier
@@ -32,7 +33,8 @@ fun GroupChatMembersScreenContent(
         GroupMembersList(
             currentUserId = currentUserId,
             adminIds = adminIds,
-            members = members
+            members = members,
+            isMemberInContacts = isMemberInContacts,
         )
     }
 }
@@ -61,7 +63,8 @@ private fun GroupChatMembersScreenContentPreview() {
                             status = UserPresenceStatus.ONLINE,
                             blockedUserIds = emptyList()
                         )
-                    }
+                    },
+                    isMemberInContacts = { false }
                 )
             }
         }

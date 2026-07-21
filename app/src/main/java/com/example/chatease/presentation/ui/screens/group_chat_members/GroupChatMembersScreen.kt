@@ -42,6 +42,10 @@ fun GroupChatMembersScreen(
     val errorMessage = stringResource(R.string.fail_load_members)
     val errorActionLabel = stringResource(R.string.retry)
 
+    val usersInContacts by groupChatMembersViewModel.usersInContacts.collectAsState()
+
+    val state = uiState as? GroupChatMembersUiState.Success
+
     LaunchedEffect(conversationId) {
         groupChatMembersViewModel.loadMembers(conversationId)
     }
@@ -55,6 +59,14 @@ fun GroupChatMembersScreen(
             )
             if (result == SnackbarResult.ActionPerformed) {
                 groupChatMembersViewModel.loadMembers(conversationId)
+            }
+        }
+    }
+
+    LaunchedEffect(state?.members?.map { it.uid }) {
+        state?.members?.forEach { member ->
+            if (member.uid != currentUserId) {
+                groupChatMembersViewModel.checkIfMemberIsInContacts(member.uid)
             }
         }
     }
@@ -79,7 +91,10 @@ fun GroupChatMembersScreen(
                     paddingValues = paddingValues,
                     currentUserId = currentUserId,
                     adminIds = state.adminIds,
-                    members = state.members
+                    members = state.members,
+                    isMemberInContacts = { memberId ->
+                        usersInContacts[memberId] ?: false
+                    },
                 )
             }
 

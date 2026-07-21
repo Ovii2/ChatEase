@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.repository.GroupRepository
@@ -25,6 +26,9 @@ class GroupChatMembersViewModel @Inject constructor(
         MutableStateFlow<GroupChatMembersUiState>(GroupChatMembersUiState.Loading)
 
     val uiState = _uiState.asStateFlow()
+
+    private val _usersInContacts = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val usersInContacts = _usersInContacts.asStateFlow()
 
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
@@ -63,6 +67,23 @@ class GroupChatMembersViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = GroupChatMembersUiState.Error(
                     message = e.message ?: "Failed to load group members"
+                )
+            }
+        }
+    }
+
+    fun checkIfMemberIsInContacts(memberId: String) {
+        if (memberId in _usersInContacts.value) return
+
+        viewModelScope.launch {
+            try {
+                val isUserInContacts = userRepository.isUserInContacts(memberId)
+                _usersInContacts.value += (memberId to isUserInContacts)
+            } catch (e: Exception) {
+                Log.v(
+                    "GroupChatMembersViewModel",
+                    e.message ?: "Failed to check if user is in contacts",
+                    e
                 )
             }
         }

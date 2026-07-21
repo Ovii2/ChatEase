@@ -45,7 +45,8 @@ fun GroupMembersList(
     modifier: Modifier = Modifier,
     currentUserId: String,
     adminIds: List<String>,
-    members: List<User>
+    members: List<User>,
+    isMemberInContacts: (String) -> Boolean
 ) {
     val admins = members.filter { user ->
         user.uid in adminIds
@@ -81,7 +82,7 @@ fun GroupMembersList(
                     onBlockMember = {},
                     isCurrentUser = user.uid == currentUserId,
                     currentUserIsAdmin = currentUserIsAdmin,
-                    memberIsInContacts = false,
+                    isMemberInContacts = isMemberInContacts(user.uid),
                     memberIsAdmin = user.uid in adminIds,
                 )
             }
@@ -98,7 +99,7 @@ fun GroupMembersList(
                     onBlockMember = {},
                     isCurrentUser = user.uid == currentUserId,
                     currentUserIsAdmin = currentUserIsAdmin,
-                    memberIsInContacts = false,
+                    isMemberInContacts = isMemberInContacts(user.uid),
                     memberIsAdmin = user.uid in adminIds,
                 )
             }
@@ -115,7 +116,7 @@ fun GroupMembersListItem(
     onBlockMember: (String) -> Unit,
     isCurrentUser: Boolean,
     currentUserIsAdmin: Boolean,
-    memberIsInContacts: Boolean,
+    isMemberInContacts: Boolean,
     memberIsAdmin: Boolean
 ) {
     var isMoreOptionsClicked by rememberSaveable { mutableStateOf(false) }
@@ -167,7 +168,7 @@ fun GroupMembersListItem(
                     onDismissRequest = { isMoreOptionsClicked = false },
                     offset = DpOffset(x = (-8).dp, y = (1).dp)
                 ) {
-                    if (!memberIsInContacts) {
+                    if (!isMemberInContacts) {
                         DropdownMenuItem(
                             text = { Text(text = stringResource(R.string.add_to_contacts)) },
                             onClick = { onAddToContacts(user.uid) }
@@ -224,7 +225,7 @@ private fun GroupMembersListItemPreview() {
                     onPromoteMemberToAdmin = {},
                     onBlockMember = {},
                     isCurrentUser = false,
-                    memberIsInContacts = false,
+                    isMemberInContacts = false,
                     currentUserIsAdmin = true,
                     memberIsAdmin = false,
                 )
@@ -256,7 +257,8 @@ private fun GroupMembersListPreview() {
                 GroupMembersList(
                     currentUserId = "1",
                     adminIds = listOf("user_1", "user_2", "user_3"),
-                    members = members
+                    members = members,
+                    isMemberInContacts = { false },
                 )
             }
         }
