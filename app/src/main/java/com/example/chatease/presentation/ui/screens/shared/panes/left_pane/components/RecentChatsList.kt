@@ -92,7 +92,7 @@ fun RecentChatsList(
             LazyColumn(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 items(conversations) { conversation ->
                     RecentChatListItem(
