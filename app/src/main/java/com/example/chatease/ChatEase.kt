@@ -8,10 +8,12 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
@@ -31,6 +33,7 @@ fun ChatEase(
     val themeMode by appSettingsViewModel.themeMode.collectAsState()
     val navController = rememberNavController()
     val incomingCall by appViewModel.incomingCall.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val darkTheme = when (themeMode) {
         ThemeMode.SYSTEM_DEFAULT -> isSystemInDarkTheme()
@@ -78,7 +81,8 @@ fun ChatEase(
             AppNavHost(
                 paddingValues = innerPadding,
                 navController = navController,
-                onThemeToggleClick = ::setTheme
+                onThemeToggleClick = ::setTheme,
+                snackbarHostState = snackbarHostState,
             )
         }
     }
