@@ -69,7 +69,7 @@ fun GroupMembersList(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = stringResource(R.string.admins),
+                text = stringResource(R.string.admins_with_count, admins.size),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.W600
             )
@@ -86,7 +86,7 @@ fun GroupMembersList(
                 )
             }
             Text(
-                text = stringResource(R.string.members),
+                text = stringResource(R.string.members_with_count, regularMembers.size),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.W600
             )

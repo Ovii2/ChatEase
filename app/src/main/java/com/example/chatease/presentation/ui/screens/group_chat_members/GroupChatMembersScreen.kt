@@ -43,7 +43,7 @@ fun GroupChatMembersScreen(
     val errorActionLabel = stringResource(R.string.retry)
 
     LaunchedEffect(conversationId) {
-        groupChatMembersViewModel.loadMembers("10")
+        groupChatMembersViewModel.loadMembers(conversationId)
     }
 
     LaunchedEffect(uiState) {
