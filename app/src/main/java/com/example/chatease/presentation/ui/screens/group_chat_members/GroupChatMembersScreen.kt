@@ -7,13 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,7 +28,6 @@ import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircula
 import com.example.chatease.presentation.ui.state.GroupChatMembersUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.GroupChatMembersViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun GroupChatMembersScreen(
@@ -40,7 +39,6 @@ fun GroupChatMembersScreen(
 ) {
     val uiState by groupChatMembersViewModel.uiState.collectAsState()
     val currentUserId = groupChatMembersViewModel.currentUserId
-    val scope = rememberCoroutineScope()
 
     val errorMessage = stringResource(R.string.fail_load_members)
     val errorActionLabel = stringResource(R.string.retry)
@@ -51,15 +49,13 @@ fun GroupChatMembersScreen(
 
     LaunchedEffect(uiState) {
         if (uiState is GroupChatMembersUiState.Error) {
-            scope.launch {
-                val result = snackbarHostState.showSnackbar(
-                    message = errorMessage,
-                    actionLabel = errorActionLabel,
-                    duration = SnackbarDuration.Short
-                )
-                if (result == SnackbarResult.ActionPerformed) {
-                    groupChatMembersViewModel.loadMembers(conversationId)
-                }
+            val result = snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = errorActionLabel,
+                duration = SnackbarDuration.Short
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                groupChatMembersViewModel.loadMembers(conversationId)
             }
         }
     }
@@ -72,6 +68,11 @@ fun GroupChatMembersScreen(
                 title = R.string.members,
                 actionIcon = Icons.Outlined.PersonAdd,
                 onActionIconClick = {}
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
             )
         }) { paddingValues ->
         when (val state = uiState) {
