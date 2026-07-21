@@ -7,7 +7,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.chatease.domain.model.enums.ThemeMode
@@ -76,7 +79,13 @@ fun ChatEase(
     ChatEaseTheme(darkTheme = darkTheme) {
         Scaffold(
             modifier = modifier.fillMaxSize(),
-            contentWindowInsets = WindowInsets(0)
+            contentWindowInsets = WindowInsets(0),
+            snackbarHost = {
+                SnackbarHost(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    hostState = snackbarHostState
+                )
+            }
         ) { innerPadding ->
             AppNavHost(
                 paddingValues = innerPadding,
