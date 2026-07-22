@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.chatease.presentation.ui.screens.add_members.AddMembersScreen
 import com.example.chatease.presentation.ui.screens.all_requests.AllRequestsScreen
 import com.example.chatease.presentation.ui.screens.audio_call.AudioCallScreen
 import com.example.chatease.presentation.ui.screens.blocked_users.BlockedUsersScreen
@@ -345,6 +346,14 @@ fun AppNavHost(
                 onBackClick = { navController.popBackStack() },
                 conversationId = conversationId,
                 snackbarHostState = snackbarHostState,
+            )
+        }
+        composable(route = Screens.AddMembers.route) {
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+
+            AddMembersScreen(
+                onBackClick = { navController.popBackStack() },
+                conversationId = conversationId,
             )
         }
     }
