@@ -346,6 +346,11 @@ fun AppNavHost(
                 onBackClick = { navController.popBackStack() },
                 conversationId = conversationId,
                 snackbarHostState = snackbarHostState,
+                onNavigateToAddMembersScreen = {
+                    navController.navigate(Screens.AddMembers.createRoute(conversationId)) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.AddMembers.route) {

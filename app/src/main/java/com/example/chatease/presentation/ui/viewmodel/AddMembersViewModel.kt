@@ -29,22 +29,24 @@ class AddMembersViewModel @Inject constructor(
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
-    private var loadMembers: Job? = null
+    private var loadMembersJob: Job? = null
 
     fun loadMembers(conversationId: String) {
-        loadMembers?.cancel()
+        loadMembersJob?.cancel()
         _uiState.value = AddMembersUiState.Loading
 
-        loadMembers = viewModelScope.launch {
+        loadMembersJob = viewModelScope.launch {
             try {
                 val group = groupRepository.getGroupByConversationId(conversationId)
                 val contacts = contactsRepository.getContacts(currentUserId)
                 val filteredContacts = contacts.filterNot { contact ->
-                    contact.id in group.userIds
+                    val otherUserId = contact.userIds.first { it != currentUserId }
+                    otherUserId in group.userIds
                 }
 
                 val usersFlows = filteredContacts.map { contact ->
-                    userRepository.observeUser(contact.id)
+                    val otherUserId = contact.userIds.first { it != currentUserId }
+                    userRepository.observeUser(otherUserId)
                 }
 
                 if (usersFlows.isEmpty()) {

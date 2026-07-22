@@ -34,7 +34,8 @@ fun GroupChatMembersScreen(
     onBackClick: () -> Unit,
     conversationId: String,
     groupChatMembersViewModel: GroupChatMembersViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    onNavigateToAddMembersScreen: (String) -> Unit
 ) {
     val uiState by groupChatMembersViewModel.uiState.collectAsState()
     val currentUserId = groupChatMembersViewModel.currentUserId
@@ -78,7 +79,7 @@ fun GroupChatMembersScreen(
                 onBackClick = onBackClick,
                 title = R.string.members,
                 actionIcon = Icons.Outlined.PersonAdd,
-                onActionIconClick = {}
+                onActionIconClick = { onNavigateToAddMembersScreen(conversationId) }
             )
         }) { paddingValues ->
         when (val state = uiState) {
@@ -119,6 +120,7 @@ private fun GroupChatMembersScreenPreview() {
                     onBackClick = {},
                     conversationId = "1",
                     snackbarHostState = SnackbarHostState(),
+                    onNavigateToAddMembersScreen = {},
                 )
             }
         }
