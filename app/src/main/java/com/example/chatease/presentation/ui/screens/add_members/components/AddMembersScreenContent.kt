@@ -13,10 +13,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,10 +29,11 @@ fun AddMembersScreenContent(
     modifier: Modifier = Modifier,
     members: List<User>,
     onToggleMemberSelection: (String) -> Unit,
-    selectedMemberIds: Set<String>
+    selectedMemberIds: Set<String>,
+    searchValue: String,
+    onSearchValueChange: (String) -> Unit,
+    onClearSearch: () -> Unit
 ) {
-    var searchValue by rememberSaveable { mutableStateOf("") }
-
     val buttonText = when (selectedMemberIds.size) {
         0 -> stringResource(R.string.add_members)
         1 -> stringResource(R.string.add_one_member, selectedMemberIds.size)
@@ -59,8 +56,8 @@ fun AddMembersScreenContent(
         ) {
             ChatSearchBar(
                 value = searchValue,
-                onValueChange = { searchValue = it },
-                onClearSearch = { searchValue = "" },
+                onValueChange = onSearchValueChange,
+                onClearSearch = onClearSearch,
                 placeholder = R.string.search_contacts
             )
             AddMembersList(
@@ -107,7 +104,10 @@ private fun AddMembersScreenContentPreview() {
                 AddMembersScreenContent(
                     members = users,
                     selectedMemberIds = emptySet(),
-                    onToggleMemberSelection = {}
+                    onToggleMemberSelection = {},
+                    onSearchValueChange = {},
+                    searchValue = "Test",
+                    onClearSearch = {},
                 )
             }
         }

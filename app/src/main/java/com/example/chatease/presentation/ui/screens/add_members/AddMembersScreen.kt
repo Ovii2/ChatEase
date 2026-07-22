@@ -35,6 +35,7 @@ fun AddMembersScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val uiState by addMembersViewModel.uiState.collectAsState()
+    val searchValue by addMembersViewModel.searchValue.collectAsState()
 
     LaunchedEffect(conversationId) {
         addMembersViewModel.loadMembers(conversationId)
@@ -67,7 +68,10 @@ fun AddMembersScreen(
                         modifier = Modifier.padding(paddingValues),
                         members = state.members,
                         onToggleMemberSelection = addMembersViewModel::toggleMemberSelection,
-                        selectedMemberIds = state.selectedMemberIds
+                        selectedMemberIds = state.selectedMemberIds,
+                        onSearchValueChange = addMembersViewModel::onSearchValueChange,
+                        searchValue = searchValue,
+                        onClearSearch = addMembersViewModel::clearSearch,
                     )
                 }
 
