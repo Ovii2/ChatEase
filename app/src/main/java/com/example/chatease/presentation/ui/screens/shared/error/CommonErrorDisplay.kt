@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,7 +25,9 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun CommonErrorDisplay(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showActionButton: Boolean = false,
+    onRetryClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -39,6 +44,16 @@ fun CommonErrorDisplay(
             text = stringResource(R.string.error_text),
             style = MaterialTheme.typography.titleMedium
         )
+        if (showActionButton) {
+            Button(
+                onClick = onRetryClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                )
+            ) {
+                Text(text = stringResource(R.string.retry))
+            }
+        }
     }
 }
 
@@ -52,7 +67,9 @@ private fun CommonErrorDisplayPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CommonErrorDisplay()
+                CommonErrorDisplay(
+                    showActionButton = false
+                )
             }
         }
     }
