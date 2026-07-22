@@ -63,7 +63,7 @@ fun AddMembersListItem(
             .height(80.dp)
             .background(
                 color = if (isChecked) {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
                 } else {
                     MaterialTheme.colorScheme.surfaceContainerHighest
                 },
