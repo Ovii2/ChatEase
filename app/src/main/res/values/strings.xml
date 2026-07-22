@@ -261,5 +261,9 @@
     <string name="error_text">Oops, something went wrong…</string>
     <string name="retry">Retry</string>
 
+    <string name="add_members_group">Add members</string>
+    <string name="add_one_member">Add %1$d member</string>
+    <string name="add_multiple_members">Add %1$d members</string>
+
 
 </resources>
