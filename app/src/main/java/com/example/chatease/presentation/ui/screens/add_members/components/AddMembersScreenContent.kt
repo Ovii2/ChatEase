@@ -78,8 +78,9 @@ fun AddMembersScreenContent(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true,
-         device = "id:pixel_5"
+@Preview(
+    showBackground = true, showSystemUi = true,
+    device = "id:pixel_5"
 )
 @Composable
 private fun AddMembersScreenContentPreview() {
