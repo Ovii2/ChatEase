@@ -6,7 +6,8 @@ sealed class AddMembersUiState {
 
     data object Loading : AddMembersUiState()
     data class Success(
-        val members: List<User>
+        val members: List<User>,
+        val selectedMemberIds: Set<String>
     ) : AddMembersUiState()
 
     data class Error(

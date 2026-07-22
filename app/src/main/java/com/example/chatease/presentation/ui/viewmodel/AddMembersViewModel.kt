@@ -51,7 +51,8 @@ class AddMembersViewModel @Inject constructor(
 
                 if (usersFlows.isEmpty()) {
                     _uiState.value = AddMembersUiState.Success(
-                        members = emptyList()
+                        members = emptyList(),
+                        selectedMemberIds = emptySet(),
                     )
                     return@launch
                 }
@@ -59,8 +60,12 @@ class AddMembersViewModel @Inject constructor(
                 combine(usersFlows) { users ->
                     users.toList()
                 }.collect { members ->
+                    val selectedMemberIds =
+                        (_uiState.value as? AddMembersUiState.Success)?.selectedMemberIds
+                            ?: emptySet()
                     _uiState.value = AddMembersUiState.Success(
-                        members = members
+                        members = members,
+                        selectedMemberIds = selectedMemberIds,
                     )
                 }
 
@@ -71,5 +76,15 @@ class AddMembersViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun toggleMemberSelection(userId: String) {
+        val state = _uiState.value as? AddMembersUiState.Success ?: return
+        val updatedSelection: Set<String> = if (userId !in state.selectedMemberIds) {
+            state.selectedMemberIds + userId
+        } else {
+            state.selectedMemberIds - userId
+        }
+        _uiState.value = state.copy(selectedMemberIds = updatedSelection)
     }
 }

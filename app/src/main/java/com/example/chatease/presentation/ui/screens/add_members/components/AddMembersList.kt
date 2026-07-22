@@ -17,10 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +33,9 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun AddMembersList(
     modifier: Modifier = Modifier,
-    members: List<User>
+    members: List<User>,
+    selectedMemberIds: Set<String>,
+    onToggleMemberSelection: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -45,7 +43,11 @@ fun AddMembersList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         members.forEach { user ->
-            AddMembersListItem(member = user)
+            AddMembersListItem(
+                member = user,
+                onToggleUserSelection = { onToggleMemberSelection(user.uid) },
+                isChecked = user.uid in selectedMemberIds,
+            )
         }
     }
 }
@@ -53,9 +55,10 @@ fun AddMembersList(
 @Composable
 fun AddMembersListItem(
     modifier: Modifier = Modifier,
-    member: User
+    member: User,
+    onToggleUserSelection: () -> Unit,
+    isChecked: Boolean
 ) {
-    var isChecked by rememberSaveable { mutableStateOf(false) }
     val textColor = if (isChecked) Color.White else MaterialTheme.colorScheme.onSurface
 
     Row(
@@ -100,7 +103,9 @@ fun AddMembersListItem(
         }
         Checkbox(
             checked = isChecked,
-            onCheckedChange = { isChecked = it }
+            onCheckedChange = {
+                onToggleUserSelection()
+            }
         )
     }
 }
@@ -127,7 +132,9 @@ private fun AddMembersListItemPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AddMembersListItem(
-                    member = user
+                    member = user,
+                    onToggleUserSelection = {},
+                    isChecked = false,
                 )
             }
         }
@@ -147,7 +154,7 @@ private fun AddMembersListPreview() {
             blockedUserIds = emptyList()
         )
     }
-    ChatEaseTheme() {
+    ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
                 modifier = Modifier.padding(paddingValues),
@@ -155,7 +162,9 @@ private fun AddMembersListPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AddMembersList(
-                    members = users
+                    members = users,
+                    selectedMemberIds = emptySet(),
+                    onToggleMemberSelection = {},
                 )
             }
         }

@@ -65,7 +65,9 @@ fun AddMembersScreen(
                 is AddMembersUiState.Success -> {
                     AddMembersScreenContent(
                         modifier = Modifier.padding(paddingValues),
-                        members = state.members
+                        members = state.members,
+                        onToggleMemberSelection = addMembersViewModel::toggleMemberSelection,
+                        selectedMemberIds = state.selectedMemberIds
                     )
                 }
 

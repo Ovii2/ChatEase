@@ -31,21 +31,22 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun AddMembersScreenContent(
     modifier: Modifier = Modifier,
-    members: List<User>
+    members: List<User>,
+    onToggleMemberSelection: (String) -> Unit,
+    selectedMemberIds: Set<String>
 ) {
     var searchValue by rememberSaveable { mutableStateOf("") }
-    val buttonText =
-        if (members.size == 1) stringResource(
-            R.string.add_one_member,
-            members.size
-        ) else stringResource(
-            R.string.add_multiple_members,
-            members.size
-        )
+
+    val buttonText = when (selectedMemberIds.size) {
+        0 -> stringResource(R.string.add_members)
+        1 -> stringResource(R.string.add_one_member, selectedMemberIds.size)
+        else -> stringResource(R.string.add_multiple_members, selectedMemberIds.size)
+    }
 
     Box(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(vertical = 8.dp),
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
@@ -64,7 +65,9 @@ fun AddMembersScreenContent(
             )
             AddMembersList(
                 modifier = Modifier.weight(1f),
-                members = members
+                members = members,
+                selectedMemberIds = selectedMemberIds,
+                onToggleMemberSelection = onToggleMemberSelection,
             )
             Button(
                 modifier = Modifier
@@ -102,7 +105,9 @@ private fun AddMembersScreenContentPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AddMembersScreenContent(
-                    members = users
+                    members = users,
+                    selectedMemberIds = emptySet(),
+                    onToggleMemberSelection = {}
                 )
             }
         }
