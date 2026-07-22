@@ -4,9 +4,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -25,11 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.example.chatease.R
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
@@ -38,6 +34,7 @@ import com.example.chatease.presentation.ui.screens.home.layouts.HomeCompactLayo
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeTabletLayout
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
+import com.example.chatease.presentation.ui.screens.shared.loading.CommonLinearLoader
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.state.HomeUiState
@@ -136,14 +133,7 @@ fun HomeScreen(
                 }
 
                 HomeUiState.Loading -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        LinearProgressIndicator(modifier = Modifier.height(8.dp))
-                        Text(text = stringResource(R.string.loading))
-                    }
+                    CommonLinearLoader()
                 }
 
                 is HomeUiState.Success -> {
