@@ -62,6 +62,7 @@ fun GroupMembersList(
     }
 
     val currentUserIsOwner = currentUserId == ownerId
+    val currentUserIsAdmin = currentUserId in adminIds
 
     Box(
         modifier = modifier
@@ -90,7 +91,8 @@ fun GroupMembersList(
                     isCurrentUser = user.uid == currentUserId,
                     currentUserIsOwner = currentUserIsOwner,
                     isMemberInContacts = isMemberInContacts(user.uid),
-                    memberIsAdmin = user.uid in adminIds
+                    memberIsAdmin = user.uid in adminIds,
+                    currentUserIsAdmin = currentUserIsAdmin
                 )
             }
             Text(
@@ -110,6 +112,7 @@ fun GroupMembersList(
                     currentUserIsOwner = currentUserIsOwner,
                     isMemberInContacts = isMemberInContacts(user.uid),
                     memberIsAdmin = user.uid in adminIds,
+                    currentUserIsAdmin = currentUserIsAdmin,
                 )
             }
         }
@@ -128,9 +131,12 @@ fun GroupMembersListItem(
     isCurrentUser: Boolean,
     currentUserIsOwner: Boolean,
     isMemberInContacts: Boolean,
-    memberIsAdmin: Boolean
+    memberIsAdmin: Boolean,
+    currentUserIsAdmin: Boolean
 ) {
     var isMoreOptionsClicked by rememberSaveable { mutableStateOf(false) }
+    val canRemoveMember =
+        !isCurrentUser && (currentUserIsOwner || currentUserIsAdmin && !memberIsAdmin)
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -174,6 +180,7 @@ fun GroupMembersListItem(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = null
                 )
+
                 DropdownMenu(
                     expanded = isMoreOptionsClicked,
                     onDismissRequest = { isMoreOptionsClicked = false },
@@ -212,7 +219,7 @@ fun GroupMembersListItem(
                             onClick = { onRemoveAdmin(user.uid) }
                         )
                     }
-                    if (currentUserIsOwner && !isCurrentUser) {
+                    if (canRemoveMember) {
                         DropdownMenuItem(
                             text = {
                                 Text(
@@ -258,6 +265,7 @@ private fun GroupMembersListItemPreview() {
                     isMemberInContacts = false,
                     currentUserIsOwner = true,
                     memberIsAdmin = false,
+                    currentUserIsAdmin = true,
                 )
             }
         }

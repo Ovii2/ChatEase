@@ -88,10 +88,25 @@ class GroupRepositoryImpl(
     }
 
     override suspend fun removeMember(conversationId: String, userId: String) {
-        val group = checkIfUserIsGroupOwner(conversationId, "Only group owner can remove members")
+        val currentUserId =
+            auth.currentUser?.uid ?: throw IllegalStateException("User is not authenticated")
 
-        check(userId != group.ownerId) {
+        val group = getGroupByConversationId(conversationId)
+        val currentUserIsOwner = currentUserId == group.ownerId
+        val currentUserIsAdmin = currentUserId in group.adminIds
+        val targetUserIsOwner = userId == group.ownerId
+        val targetUserIsAdmin = userId in group.adminIds
+
+        check(!targetUserIsOwner) {
             "Owner cannot be removed"
+        }
+
+        check(currentUserIsOwner || currentUserIsAdmin) {
+            "Only owner or admins can remove members"
+        }
+
+        check(currentUserIsOwner || !targetUserIsAdmin) {
+            "Admins cannot remove other admins"
         }
 
         firestore
