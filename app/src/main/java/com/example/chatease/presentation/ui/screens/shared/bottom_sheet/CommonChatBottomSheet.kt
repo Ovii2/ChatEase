@@ -1,6 +1,7 @@
-package com.example.chatease.presentation.ui.screens.shared.user
+package com.example.chatease.presentation.ui.screens.shared.bottom_sheet
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,10 +28,13 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BlockUserBottomSheet(
+fun CommonChatBottomSheet(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
-    onBlockClick: () -> Unit
+    onClick: () -> Unit,
+    @StringRes title: Int,
+    @StringRes text: Int,
+    @StringRes actionButtonText: Int
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -47,12 +51,12 @@ fun BlockUserBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.block_user_title),
+                    text = stringResource(title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.W600
                 )
                 Text(
-                    text = stringResource(R.string.block_user_message),
+                    text = stringResource(text),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Row(
@@ -74,8 +78,8 @@ fun BlockUserBottomSheet(
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                    Button(onClick = onBlockClick) {
-                        Text(text = stringResource(R.string.block))
+                    Button(onClick = onClick) {
+                        Text(text = stringResource(actionButtonText))
                     }
                 }
             }
@@ -88,7 +92,7 @@ fun BlockUserBottomSheet(
     uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
-private fun BlockUserBottomSheetPreview() {
+private fun CommonChatBottomSheetPreview() {
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -96,9 +100,12 @@ private fun BlockUserBottomSheetPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                BlockUserBottomSheet(
+                CommonChatBottomSheet(
                     onDismiss = {},
-                    onBlockClick = {}
+                    onClick = {},
+                    title = R.string.block_user_title,
+                    text = R.string.block_user_message,
+                    actionButtonText = R.string.block,
                 )
             }
         }
