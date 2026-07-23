@@ -24,7 +24,8 @@ fun GroupChatMembersScreenContent(
     members: List<User>,
     isMemberInContacts: (String) -> Boolean,
     onAddAdmin: (String) -> Unit,
-    onRemoveAdmin: (String) -> Unit
+    onRemoveAdmin: (String) -> Unit,
+    onNavigateToProfile: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -40,7 +41,8 @@ fun GroupChatMembersScreenContent(
             members = members,
             isMemberInContacts = isMemberInContacts,
             onAddAdmin = onAddAdmin,
-            onRemoveAdmin = onRemoveAdmin
+            onRemoveAdmin = onRemoveAdmin,
+            onNavigateToProfile = onNavigateToProfile,
         )
     }
 }
@@ -73,7 +75,8 @@ private fun GroupChatMembersScreenContentPreview() {
                     },
                     isMemberInContacts = { false },
                     onAddAdmin = {},
-                    onRemoveAdmin = {}
+                    onRemoveAdmin = {},
+                    onNavigateToProfile = {},
                 )
             }
         }

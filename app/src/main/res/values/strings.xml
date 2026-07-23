@@ -253,7 +253,7 @@
     <string name="no">No</string>
 
     <string name="add_to_contacts">Add to contacts</string>
-    <string name="block_member">Block member</string>
+    <string name="remove_member">Remove member</string>
     <string name="promote_admin">Promote to admin</string>
     <string name="demote_admin">Demote from admin</string>
     <string name="admins_with_count">Admins (%1$d)</string>

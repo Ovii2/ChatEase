@@ -35,7 +35,8 @@ fun GroupChatMembersScreen(
     conversationId: String,
     groupChatMembersViewModel: GroupChatMembersViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
-    onNavigateToAddMembersScreen: (String) -> Unit
+    onNavigateToAddMembersScreen: (String) -> Unit,
+    onNavigateToProfileScreen: (String) -> Unit
 ) {
     val uiState by groupChatMembersViewModel.uiState.collectAsState()
     val currentUserId = groupChatMembersViewModel.currentUserId
@@ -99,6 +100,7 @@ fun GroupChatMembersScreen(
                     },
                     onAddAdmin = { groupChatMembersViewModel.addAdmin(conversationId, it) },
                     onRemoveAdmin = { groupChatMembersViewModel.removeAdmin(conversationId, it) },
+                    onNavigateToProfile = onNavigateToProfileScreen
                 )
             }
 
@@ -124,6 +126,7 @@ private fun GroupChatMembersScreenPreview() {
                     conversationId = "1",
                     snackbarHostState = SnackbarHostState(),
                     onNavigateToAddMembersScreen = {},
+                    onNavigateToProfileScreen = {},
                 )
             }
         }

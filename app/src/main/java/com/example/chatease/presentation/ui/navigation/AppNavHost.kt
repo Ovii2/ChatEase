@@ -351,6 +351,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToProfileScreen = { userId ->
+                    navController.navigate(Screens.OtherUserProfile.createRoute(userId)) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.AddMembers.route) {

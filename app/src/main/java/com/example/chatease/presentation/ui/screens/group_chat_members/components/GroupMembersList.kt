@@ -49,7 +49,8 @@ fun GroupMembersList(
     members: List<User>,
     isMemberInContacts: (String) -> Boolean,
     onAddAdmin: (String) -> Unit,
-    onRemoveAdmin: (String) -> Unit
+    onRemoveAdmin: (String) -> Unit,
+    onNavigateToProfile: (String) -> Unit
 ) {
     val admins = members.filter { user ->
         user.uid in adminIds
@@ -83,11 +84,12 @@ fun GroupMembersList(
                     onAddToContacts = {},
                     onAddAdmin = {},
                     onRemoveAdmin = onRemoveAdmin,
-                    onBlockMember = {},
+                    onRemoveMember = {},
+                    onNavigateToProfile = { onNavigateToProfile(user.uid) },
                     isCurrentUser = user.uid == currentUserId,
                     currentUserIsOwner = currentUserIsOwner,
                     isMemberInContacts = isMemberInContacts(user.uid),
-                    memberIsAdmin = user.uid in adminIds,
+                    memberIsAdmin = user.uid in adminIds
                 )
             }
             Text(
@@ -101,7 +103,8 @@ fun GroupMembersList(
                     onAddToContacts = {},
                     onAddAdmin = onAddAdmin,
                     onRemoveAdmin = {},
-                    onBlockMember = {},
+                    onRemoveMember = {},
+                    onNavigateToProfile = { onNavigateToProfile(user.uid) },
                     isCurrentUser = user.uid == currentUserId,
                     currentUserIsOwner = currentUserIsOwner,
                     isMemberInContacts = isMemberInContacts(user.uid),
@@ -119,7 +122,8 @@ fun GroupMembersListItem(
     onAddToContacts: (String) -> Unit,
     onAddAdmin: (String) -> Unit,
     onRemoveAdmin: (String) -> Unit,
-    onBlockMember: (String) -> Unit,
+    onRemoveMember: (String) -> Unit,
+    onNavigateToProfile: () -> Unit,
     isCurrentUser: Boolean,
     currentUserIsOwner: Boolean,
     isMemberInContacts: Boolean,
@@ -174,6 +178,13 @@ fun GroupMembersListItem(
                     onDismissRequest = { isMoreOptionsClicked = false },
                     offset = DpOffset(x = (-8).dp, y = (1).dp)
                 ) {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.view_profile)) },
+                        onClick = {
+                            isMoreOptionsClicked = false
+                            onNavigateToProfile()
+                        }
+                    )
                     if (!isMemberInContacts) {
                         DropdownMenuItem(
                             text = { Text(text = stringResource(R.string.add_to_contacts)) },
@@ -200,22 +211,22 @@ fun GroupMembersListItem(
                             onClick = { onRemoveAdmin(user.uid) }
                         )
                     }
-
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = stringResource(R.string.block_member),
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        },
-                        onClick = { onBlockMember(user.uid) }
-                    )
+                    if (currentUserIsOwner) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = stringResource(R.string.remove_member),
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            },
+                            onClick = { onRemoveMember(user.uid) }
+                        )
+                    }
                 }
             }
         }
     }
 }
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -240,7 +251,8 @@ private fun GroupMembersListItemPreview() {
                     onAddToContacts = {},
                     onAddAdmin = {},
                     onRemoveAdmin = {},
-                    onBlockMember = {},
+                    onRemoveMember = {},
+                    onNavigateToProfile = {},
                     isCurrentUser = false,
                     isMemberInContacts = false,
                     currentUserIsOwner = true,
@@ -279,6 +291,7 @@ private fun GroupMembersListPreview() {
                     isMemberInContacts = { false },
                     onAddAdmin = {},
                     onRemoveAdmin = {},
+                    onNavigateToProfile = {},
                 )
             }
         }
