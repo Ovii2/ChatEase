@@ -265,6 +265,9 @@
     <string name="add_members_group">Add members</string>
     <string name="add_one_member">Add %1$d member</string>
     <string name="add_multiple_members">Add %1$d members</string>
+    <string name="remove_member_title">Remove member</string>
+    <string name="remove_member_text"> This member will no longer be able to send or receive messages in this group chat.</string>
+    <string name="remove">Remove</string>
 
 
 </resources>

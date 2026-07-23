@@ -110,4 +110,15 @@ class GroupChatMembersViewModel @Inject constructor(
             }
         }
     }
+
+    fun removeMember(conversationId: String, userId: String) {
+        viewModelScope.launch {
+            try {
+                groupRepository.removeMember(conversationId, userId)
+                loadMembers(conversationId)
+            } catch (e: Exception) {
+                Log.v("AddMembersViewModel", e.message ?: "Failed to remove member")
+            }
+        }
+    }
 }

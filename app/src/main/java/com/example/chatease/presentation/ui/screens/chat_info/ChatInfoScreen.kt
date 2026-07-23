@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.enums.AlertDialogType
+import com.example.chatease.presentation.ui.screens.shared.bottom_sheet.CommonChatBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonAlertDialog
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
-import com.example.chatease.presentation.ui.screens.shared.user.BlockUserBottomSheet
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.ChatInfoViewModel
 
@@ -85,12 +85,15 @@ fun ChatInfoScreen(
         }
     }
     if (showBlockUserBottomSheet) {
-        BlockUserBottomSheet(
+        CommonChatBottomSheet(
             onDismiss = { showBlockUserBottomSheet = false },
-            onBlockClick = {
+            onClick = {
                 chatInfoViewModel.blockUser(user.uid)
                 showBlockUserBottomSheet = false
             },
+            title = R.string.block_user_title,
+            text = R.string.block_user_message,
+            actionButtonText = R.string.block,
         )
     }
 }

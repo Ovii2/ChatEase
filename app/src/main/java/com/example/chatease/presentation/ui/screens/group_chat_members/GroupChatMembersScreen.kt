@@ -13,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.presentation.ui.screens.group_chat_members.components.GroupChatMembersScreenContent
+import com.example.chatease.presentation.ui.screens.shared.bottom_sheet.CommonChatBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
@@ -47,6 +51,8 @@ fun GroupChatMembersScreen(
     val usersInContacts by groupChatMembersViewModel.usersInContacts.collectAsState()
 
     val state = uiState as? GroupChatMembersUiState.Success
+
+    var memberToRemove by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(conversationId) {
         groupChatMembersViewModel.loadMembers(conversationId)
@@ -100,8 +106,23 @@ fun GroupChatMembersScreen(
                     },
                     onAddAdmin = { groupChatMembersViewModel.addAdmin(conversationId, it) },
                     onRemoveAdmin = { groupChatMembersViewModel.removeAdmin(conversationId, it) },
+                    onRemoveMember = { userId ->
+                        memberToRemove = userId
+                    },
                     onNavigateToProfile = onNavigateToProfileScreen
                 )
+                if (memberToRemove != null) {
+                    CommonChatBottomSheet(
+                        onDismiss = { memberToRemove = null },
+                        onClick = {
+                            groupChatMembersViewModel.removeMember(conversationId, memberToRemove!!)
+                            memberToRemove = null
+                        },
+                        title = R.string.remove_member_title,
+                        text = R.string.remove_member_text,
+                        actionButtonText = R.string.remove
+                    )
+                }
             }
 
             is GroupChatMembersUiState.Error -> {

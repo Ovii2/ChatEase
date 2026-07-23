@@ -19,4 +19,6 @@ interface GroupRepository {
 
     suspend fun addAdmin(conversationId: String, userId: String)
     suspend fun removeAdmin(conversationId: String, userId: String)
+
+    suspend fun removeMember(conversationId: String, userId: String)
 }

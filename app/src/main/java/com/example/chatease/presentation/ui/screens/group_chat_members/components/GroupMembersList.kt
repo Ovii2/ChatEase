@@ -50,6 +50,7 @@ fun GroupMembersList(
     isMemberInContacts: (String) -> Boolean,
     onAddAdmin: (String) -> Unit,
     onRemoveAdmin: (String) -> Unit,
+    onRemoveMember: (String) -> Unit,
     onNavigateToProfile: (String) -> Unit
 ) {
     val admins = members.filter { user ->
@@ -84,7 +85,7 @@ fun GroupMembersList(
                     onAddToContacts = {},
                     onAddAdmin = {},
                     onRemoveAdmin = onRemoveAdmin,
-                    onRemoveMember = {},
+                    onRemoveMember = onRemoveMember,
                     onNavigateToProfile = { onNavigateToProfile(user.uid) },
                     isCurrentUser = user.uid == currentUserId,
                     currentUserIsOwner = currentUserIsOwner,
@@ -103,7 +104,7 @@ fun GroupMembersList(
                     onAddToContacts = {},
                     onAddAdmin = onAddAdmin,
                     onRemoveAdmin = {},
-                    onRemoveMember = {},
+                    onRemoveMember = onRemoveMember,
                     onNavigateToProfile = { onNavigateToProfile(user.uid) },
                     isCurrentUser = user.uid == currentUserId,
                     currentUserIsOwner = currentUserIsOwner,
@@ -211,7 +212,7 @@ fun GroupMembersListItem(
                             onClick = { onRemoveAdmin(user.uid) }
                         )
                     }
-                    if (currentUserIsOwner) {
+                    if (currentUserIsOwner && !isCurrentUser) {
                         DropdownMenuItem(
                             text = {
                                 Text(
@@ -291,6 +292,7 @@ private fun GroupMembersListPreview() {
                     isMemberInContacts = { false },
                     onAddAdmin = {},
                     onRemoveAdmin = {},
+                    onRemoveMember = {},
                     onNavigateToProfile = {},
                 )
             }

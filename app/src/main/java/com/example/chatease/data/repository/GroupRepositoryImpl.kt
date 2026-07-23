@@ -87,7 +87,26 @@ class GroupRepositoryImpl(
             .await()
     }
 
-    private suspend fun checkIfUserIsGroupOwner(conversationId: String, message: String) {
+    override suspend fun removeMember(conversationId: String, userId: String) {
+        val group = checkIfUserIsGroupOwner(conversationId, "Only group owner can remove members")
+
+        check(userId != group.ownerId) {
+            "Owner cannot be removed"
+        }
+
+        firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .update(
+                mapOf(
+                    USER_IDS to FieldValue.arrayRemove(userId),
+                    ADMIN_IDS to FieldValue.arrayRemove(userId)
+                )
+            )
+            .await()
+    }
+
+    private suspend fun checkIfUserIsGroupOwner(conversationId: String, message: String): Group {
         val currentUserId =
             auth.currentUser?.uid ?: throw IllegalStateException("User is not authenticated")
 
@@ -96,5 +115,7 @@ class GroupRepositoryImpl(
         check(group.ownerId == currentUserId) {
             message
         }
+
+        return group
     }
 }

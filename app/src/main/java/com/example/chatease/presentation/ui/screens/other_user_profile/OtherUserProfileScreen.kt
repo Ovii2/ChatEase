@@ -20,11 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.chatease.R
 import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfileAboutSection
 import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfileActionsSection
 import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfileTopSection
+import com.example.chatease.presentation.ui.screens.shared.bottom_sheet.CommonChatBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
-import com.example.chatease.presentation.ui.screens.shared.user.BlockUserBottomSheet
 import com.example.chatease.presentation.ui.viewmodel.OtherUserProfileViewModel
 
 @Composable
@@ -93,12 +94,15 @@ fun OtherUserProfileScreen(
         }
     }
     if (showBottomSheet) {
-        BlockUserBottomSheet(
+        CommonChatBottomSheet(
             onDismiss = { showBottomSheet = false },
-            onBlockClick = {
+            onClick = {
                 otherUserProfileViewModel.blockUser(userId)
                 showBottomSheet = false
             },
+            title = R.string.block_user_title,
+            text = R.string.block_user_message,
+            actionButtonText = R.string.block,
         )
     }
 }
