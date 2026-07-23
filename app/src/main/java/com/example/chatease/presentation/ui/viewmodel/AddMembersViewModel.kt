@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.User
@@ -132,6 +133,24 @@ class AddMembersViewModel @Inject constructor(
 
     fun onSearchValueChange(value: String) {
         _searchValue.value = value
+    }
+
+    fun addMembers(conversationId: String) {
+        val state = _uiState.value as? AddMembersUiState.Success ?: return
+        val memberIds = state.selectedMemberIds.toList()
+
+        if (memberIds.isEmpty()) {
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                groupRepository.addMembers(conversationId, memberIds)
+                loadMembers(conversationId)
+            } catch (e: Exception) {
+                Log.v("AddMembersViewModel", e.message ?: "Failed to add members", e)
+            }
+        }
     }
 
 }

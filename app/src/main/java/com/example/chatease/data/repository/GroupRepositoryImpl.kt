@@ -106,6 +106,17 @@ class GroupRepositoryImpl(
             .await()
     }
 
+    override suspend fun addMembers(
+        conversationId: String,
+        memberIds: List<String>
+    ) {
+        firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .update(USER_IDS, FieldValue.arrayUnion(*memberIds.toTypedArray()))
+            .await()
+    }
+
     private suspend fun checkIfUserIsGroupOwner(conversationId: String, message: String): Group {
         val currentUserId =
             auth.currentUser?.uid ?: throw IllegalStateException("User is not authenticated")

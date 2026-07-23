@@ -72,6 +72,7 @@ fun AddMembersScreen(
                         onSearchValueChange = addMembersViewModel::onSearchValueChange,
                         searchValue = searchValue,
                         onClearSearch = addMembersViewModel::clearSearch,
+                        onAddMembersClick = { addMembersViewModel.addMembers(conversationId) },
                     )
                 }
 

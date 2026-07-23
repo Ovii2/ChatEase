@@ -32,7 +32,8 @@ fun AddMembersScreenContent(
     selectedMemberIds: Set<String>,
     searchValue: String,
     onSearchValueChange: (String) -> Unit,
-    onClearSearch: () -> Unit
+    onClearSearch: () -> Unit,
+    onAddMembersClick: () -> Unit
 ) {
     val buttonText = when (selectedMemberIds.size) {
         0 -> stringResource(R.string.add_members)
@@ -70,7 +71,7 @@ fun AddMembersScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                onClick = {}
+                onClick = onAddMembersClick
             ) {
                 Text(text = buttonText)
             }
@@ -108,6 +109,7 @@ private fun AddMembersScreenContentPreview() {
                     onSearchValueChange = {},
                     searchValue = "Test",
                     onClearSearch = {},
+                    onAddMembersClick = {},
                 )
             }
         }
