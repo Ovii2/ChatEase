@@ -59,7 +59,7 @@ fun GroupMembersList(
         user.uid in adminIds
     }
 
-    val currentUserIsAdmin = currentUserId in adminIds
+    val currentUserIsOwner = currentUserId == ownerId
 
     Box(
         modifier = modifier
@@ -85,7 +85,7 @@ fun GroupMembersList(
                     onRemoveAdmin = onRemoveAdmin,
                     onBlockMember = {},
                     isCurrentUser = user.uid == currentUserId,
-                    currentUserIsOwner = currentUserIsAdmin,
+                    currentUserIsOwner = currentUserIsOwner,
                     isMemberInContacts = isMemberInContacts(user.uid),
                     memberIsAdmin = user.uid in adminIds,
                 )
@@ -103,7 +103,7 @@ fun GroupMembersList(
                     onRemoveAdmin = {},
                     onBlockMember = {},
                     isCurrentUser = user.uid == currentUserId,
-                    currentUserIsOwner = currentUserId == ownerId,
+                    currentUserIsOwner = currentUserIsOwner,
                     isMemberInContacts = isMemberInContacts(user.uid),
                     memberIsAdmin = user.uid in adminIds,
                 )

@@ -98,7 +98,7 @@ fun GroupChatMembersScreen(
                         usersInContacts[memberId] ?: false
                     },
                     onAddAdmin = { groupChatMembersViewModel.addAdmin(conversationId, it) },
-                    onRemoveAdmin = {},
+                    onRemoveAdmin = { groupChatMembersViewModel.removeAdmin(conversationId, it) },
                 )
             }
 

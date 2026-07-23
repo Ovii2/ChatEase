@@ -68,19 +68,33 @@ class GroupRepositoryImpl(
     }
 
     override suspend fun addAdmin(conversationId: String, userId: String) {
-        val currentUserId =
-            auth.currentUser?.uid ?: throw IllegalStateException("User is not authenticated")
-
-        val group = getGroupByConversationId(conversationId)
-
-        check(group.ownerId == currentUserId) {
-            "Only group owner can add admin"
-        }
+        checkIfUserIsGroupOwner(conversationId, "Only group owner can add admin")
 
         firestore
             .collection(GROUP)
             .document(conversationId)
             .update(ADMIN_IDS, FieldValue.arrayUnion(userId))
             .await()
+    }
+
+    override suspend fun removeAdmin(conversationId: String, userId: String) {
+        checkIfUserIsGroupOwner(conversationId, "Only group owner can remove admin")
+
+        firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .update(ADMIN_IDS, FieldValue.arrayRemove(userId))
+            .await()
+    }
+
+    private suspend fun checkIfUserIsGroupOwner(conversationId: String, message: String) {
+        val currentUserId =
+            auth.currentUser?.uid ?: throw IllegalStateException("User is not authenticated")
+
+        val group = getGroupByConversationId(conversationId)
+
+        check(group.ownerId == currentUserId) {
+            message
+        }
     }
 }
