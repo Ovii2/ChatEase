@@ -88,4 +88,15 @@ class GroupChatMembersViewModel @Inject constructor(
             }
         }
     }
+
+    fun addAdmin(conversationId: String, userId: String) {
+        viewModelScope.launch {
+            try {
+                groupRepository.addAdmin(conversationId, userId)
+                loadMembers(conversationId)
+            } catch (e: Exception) {
+                Log.v("AddMembersViewModel", e.message ?: "Failed to add admin")
+            }
+        }
+    }
 }

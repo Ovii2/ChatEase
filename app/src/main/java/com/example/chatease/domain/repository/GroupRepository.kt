@@ -16,4 +16,6 @@ interface GroupRepository {
     suspend fun getGroupByConversationId(conversationId: String): Group
 
     suspend fun getGroups(currentUserId: String): List<Group>
+
+    suspend fun addAdmin(conversationId: String, userId: String)
 }

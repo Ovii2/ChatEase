@@ -91,11 +91,14 @@ fun GroupChatMembersScreen(
                 GroupChatMembersScreenContent(
                     paddingValues = paddingValues,
                     currentUserId = currentUserId,
+                    ownerId = state.ownerId,
                     adminIds = state.adminIds,
                     members = state.members,
                     isMemberInContacts = { memberId ->
                         usersInContacts[memberId] ?: false
                     },
+                    onAddAdmin = { groupChatMembersViewModel.addAdmin(conversationId, it) },
+                    onRemoveAdmin = {},
                 )
             }
 

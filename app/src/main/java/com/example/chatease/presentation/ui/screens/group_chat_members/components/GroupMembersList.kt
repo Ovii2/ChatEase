@@ -44,9 +44,12 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun GroupMembersList(
     modifier: Modifier = Modifier,
     currentUserId: String,
+    ownerId: String,
     adminIds: List<String>,
     members: List<User>,
-    isMemberInContacts: (String) -> Boolean
+    isMemberInContacts: (String) -> Boolean,
+    onAddAdmin: (String) -> Unit,
+    onRemoveAdmin: (String) -> Unit
 ) {
     val admins = members.filter { user ->
         user.uid in adminIds
@@ -78,10 +81,11 @@ fun GroupMembersList(
                 GroupMembersListItem(
                     user = user,
                     onAddToContacts = {},
-                    onPromoteMemberToAdmin = {},
+                    onAddAdmin = {},
+                    onRemoveAdmin = onRemoveAdmin,
                     onBlockMember = {},
                     isCurrentUser = user.uid == currentUserId,
-                    currentUserIsAdmin = currentUserIsAdmin,
+                    currentUserIsOwner = currentUserIsAdmin,
                     isMemberInContacts = isMemberInContacts(user.uid),
                     memberIsAdmin = user.uid in adminIds,
                 )
@@ -95,10 +99,11 @@ fun GroupMembersList(
                 GroupMembersListItem(
                     user = user,
                     onAddToContacts = {},
-                    onPromoteMemberToAdmin = {},
+                    onAddAdmin = onAddAdmin,
+                    onRemoveAdmin = {},
                     onBlockMember = {},
                     isCurrentUser = user.uid == currentUserId,
-                    currentUserIsAdmin = currentUserIsAdmin,
+                    currentUserIsOwner = currentUserId == ownerId,
                     isMemberInContacts = isMemberInContacts(user.uid),
                     memberIsAdmin = user.uid in adminIds,
                 )
@@ -112,10 +117,11 @@ fun GroupMembersListItem(
     modifier: Modifier = Modifier,
     user: User,
     onAddToContacts: (String) -> Unit,
-    onPromoteMemberToAdmin: (String) -> Unit,
+    onAddAdmin: (String) -> Unit,
+    onRemoveAdmin: (String) -> Unit,
     onBlockMember: (String) -> Unit,
     isCurrentUser: Boolean,
-    currentUserIsAdmin: Boolean,
+    currentUserIsOwner: Boolean,
     isMemberInContacts: Boolean,
     memberIsAdmin: Boolean
 ) {
@@ -174,14 +180,24 @@ fun GroupMembersListItem(
                             onClick = { onAddToContacts(user.uid) }
                         )
                     }
-                    if (currentUserIsAdmin && !memberIsAdmin) {
+                    if (currentUserIsOwner && !memberIsAdmin) {
                         DropdownMenuItem(
                             text = {
                                 Text(
                                     text = stringResource(R.string.promote_admin)
                                 )
                             },
-                            onClick = { onPromoteMemberToAdmin(user.uid) }
+                            onClick = { onAddAdmin(user.uid) }
+                        )
+                    }
+                    if (currentUserIsOwner && memberIsAdmin) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = stringResource(R.string.demote_admin)
+                                )
+                            },
+                            onClick = { onRemoveAdmin(user.uid) }
                         )
                     }
 
@@ -222,11 +238,12 @@ private fun GroupMembersListItemPreview() {
                 GroupMembersListItem(
                     user = user,
                     onAddToContacts = {},
-                    onPromoteMemberToAdmin = {},
+                    onAddAdmin = {},
+                    onRemoveAdmin = {},
                     onBlockMember = {},
                     isCurrentUser = false,
                     isMemberInContacts = false,
-                    currentUserIsAdmin = true,
+                    currentUserIsOwner = true,
                     memberIsAdmin = false,
                 )
             }
@@ -256,9 +273,12 @@ private fun GroupMembersListPreview() {
             ) {
                 GroupMembersList(
                     currentUserId = "1",
+                    ownerId = "1",
                     adminIds = listOf("user_1", "user_2", "user_3"),
                     members = members,
                     isMemberInContacts = { false },
+                    onAddAdmin = {},
+                    onRemoveAdmin = {},
                 )
             }
         }

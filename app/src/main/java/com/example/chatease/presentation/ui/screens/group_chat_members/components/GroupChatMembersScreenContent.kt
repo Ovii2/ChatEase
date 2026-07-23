@@ -19,9 +19,12 @@ fun GroupChatMembersScreenContent(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     currentUserId: String,
+    ownerId: String,
     adminIds: List<String>,
     members: List<User>,
-    isMemberInContacts: (String) -> Boolean
+    isMemberInContacts: (String) -> Boolean,
+    onAddAdmin: (String) -> Unit,
+    onRemoveAdmin: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -32,9 +35,12 @@ fun GroupChatMembersScreenContent(
     ) {
         GroupMembersList(
             currentUserId = currentUserId,
+            ownerId = ownerId,
             adminIds = adminIds,
             members = members,
             isMemberInContacts = isMemberInContacts,
+            onAddAdmin = onAddAdmin,
+            onRemoveAdmin = onRemoveAdmin
         )
     }
 }
@@ -53,6 +59,7 @@ private fun GroupChatMembersScreenContentPreview() {
                 GroupChatMembersScreenContent(
                     paddingValues = PaddingValues(),
                     currentUserId = "!",
+                    ownerId = "1",
                     adminIds = listOf("1", "2"),
                     members = List(10) {
                         User(
@@ -64,7 +71,9 @@ private fun GroupChatMembersScreenContentPreview() {
                             blockedUserIds = emptyList()
                         )
                     },
-                    isMemberInContacts = { false }
+                    isMemberInContacts = { false },
+                    onAddAdmin = {},
+                    onRemoveAdmin = {}
                 )
             }
         }
