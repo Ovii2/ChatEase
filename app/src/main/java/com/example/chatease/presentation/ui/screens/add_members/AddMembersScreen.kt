@@ -21,6 +21,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.presentation.ui.screens.add_members.components.AddMembersScreenContent
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
 import com.example.chatease.presentation.ui.state.AddMembersUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -76,7 +77,14 @@ fun AddMembersScreen(
                     )
                 }
 
-                is AddMembersUiState.Error -> {}
+                is AddMembersUiState.Error -> {
+                    CommonErrorDisplay(
+                        showActionButton = true,
+                        onRetryClick = {
+                            addMembersViewModel.loadMembers(conversationId)
+                        }
+                    )
+                }
             }
         }
     }
