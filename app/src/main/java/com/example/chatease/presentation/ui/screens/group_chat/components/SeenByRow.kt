@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.group_chat.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,13 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.chatease.R
+import coil3.compose.AsyncImage
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.screens.shared.user.UserEmptyAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -44,22 +43,22 @@ fun SeenByRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         visibleUsers.forEach { user ->
-//            AsyncImage(
-//                modifier = Modifier
-//                    .size(imageSize)
-//                    .clip(CircleShape),
-//                model = user.imageUrl,
-//                contentDescription = null,
-//                contentScale = ContentScale.Crop
-//            )
-            Image(
-                modifier = Modifier
-                    .size(imageSize)
-                    .clip(CircleShape),
-                painter = painterResource(R.drawable.person),
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
+            if (user.imageUrl == null) {
+                UserEmptyAvatar(
+                    user = user,
+                    avatarSize = imageSize,
+                    initialsFontSize = 9.sp
+                )
+            } else {
+                AsyncImage(
+                    modifier = Modifier
+                        .size(imageSize)
+                        .clip(CircleShape),
+                    model = user.imageUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
         if (remainingCount > 0) {
             Box(

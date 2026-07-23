@@ -10,15 +10,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -28,9 +24,8 @@ import coil3.compose.AsyncImage
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.model.enums.statusColor
+import com.example.chatease.presentation.ui.screens.shared.user.UserEmptyAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
-import com.example.chatease.presentation.ui.theme.avatarGradients
-import kotlin.math.absoluteValue
 
 @Composable
 fun UserAvatar(
@@ -43,37 +38,14 @@ fun UserAvatar(
     statusBubbleOffsetY: Dp = (-1).dp,
     showStatus: Boolean = true
 ) {
-    val initials = user.fullName
-        .trim()
-        .split(" ")
-        .filter { it.isNotBlank() }
-        .take(2)
-        .map { it.first().uppercaseChar() }
-        .joinToString("")
 
-    val gradients = avatarGradients()
-    val avatarGradient = gradients[user.uid.hashCode().absoluteValue % gradients.size]
-
-    Box {
+    Box(modifier = modifier) {
         if (user.imageUrl == null) {
-            Box(
-                modifier = modifier
-                    .size(avatarSize)
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = avatarGradient
-                        ),
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = initials,
-                    style = MaterialTheme.typography.headlineSmall.copy(fontSize = initialsFontSize),
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-            }
+            UserEmptyAvatar(
+                user = user,
+                avatarSize = avatarSize,
+                initialsFontSize = initialsFontSize
+            )
         } else {
             AsyncImage(
                 modifier = Modifier
@@ -83,14 +55,6 @@ fun UserAvatar(
                 model = user.imageUrl,
                 contentDescription = null
             )
-//            Image(
-//                modifier = Modifier
-//                    .size(avatarSize)
-//                    .clip(CircleShape),
-//                contentScale = ContentScale.Crop,
-//                painter = painterResource(R.drawable.person),
-//                contentDescription = null
-//            )
         }
         if (user.status != UserPresenceStatus.OFFLINE && showStatus) {
             Box(
@@ -109,6 +73,7 @@ fun UserAvatar(
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

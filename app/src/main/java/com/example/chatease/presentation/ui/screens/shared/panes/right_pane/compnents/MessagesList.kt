@@ -236,7 +236,7 @@ fun GroupMessageListItem(
     val arrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         horizontalArrangement = arrangement,
         verticalAlignment = Alignment.Bottom
     ) {
@@ -273,8 +273,8 @@ fun GroupMessageListItem(
             if (seenUsers.isNotEmpty()) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 10.dp, top = 4.dp),
+                        .align(Alignment.End)
+                        .padding(end = 2.dp, top = 5.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     SeenByRow(
