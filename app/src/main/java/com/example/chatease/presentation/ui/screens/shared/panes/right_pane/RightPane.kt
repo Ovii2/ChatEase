@@ -105,10 +105,10 @@ fun RightPane(
         user.fullName.substringBefore(" ")
     }
 
-    val typingText = when (typingNames.size) {
+    val typingText = when (typingUsers.size) {
         1 -> stringResource(R.string.one_is_typing, typingNames[0])
         2 -> stringResource(R.string.two_are_typing, typingNames[0], typingNames[1])
-        else -> stringResource(R.string.many_are_typing, typingUserIds.size)
+        else -> stringResource(R.string.many_are_typing, typingUsers.size)
     }
 
     RightPaneEffects(
@@ -195,7 +195,7 @@ fun RightPane(
             )
         }
 
-        if (typingUserIds.isNotEmpty()) {
+        if (typingUsers.isNotEmpty()) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -45,5 +45,4 @@ interface ConversationRepository {
         userId: String,
         isTyping: Boolean
     )
-
 }

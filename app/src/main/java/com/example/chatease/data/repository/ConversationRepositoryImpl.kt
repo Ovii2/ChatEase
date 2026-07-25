@@ -333,7 +333,6 @@ class ConversationRepositoryImpl(
             .await()
     }
 
-
     private fun <T> mapDocuments(
         snapshot: QuerySnapshot,
         mapper: (DocumentSnapshot) -> T?

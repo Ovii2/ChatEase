@@ -80,6 +80,7 @@ class ChatViewModel @Inject constructor(
                     messageType = MessageType.TEXT
                 )
                 conversationRepository.sendMessage(message)
+                conversationRepository.updateTypingStatus(conversationId, currentUserId, false)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", e.message ?: "Failed to send message")
             }
