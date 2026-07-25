@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.ConversationType
@@ -84,6 +85,7 @@ fun MessagesList(
                 val isMiddleInGroup = !isFirstInGroup && !isLastInGroup
 
                 val isSentByCurrentUser = message.senderId == currentUserId
+                val showSeenBy = index == 0
 
                 Row(
                     modifier = Modifier
@@ -136,7 +138,8 @@ fun MessagesList(
                                     onReactionClick(messageId, reaction)
                                     selectedReactionMessageId = null
                                 },
-                                seenUsers = seenUsers
+                                seenUsers = seenUsers,
+                                showSeenBy = showSeenBy,
                             )
                         }
                     }
@@ -227,7 +230,8 @@ fun GroupMessageListItem(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
-    seenUsers: List<User>
+    seenUsers: List<User>,
+    showSeenBy: Boolean
 ) {
     val fullName = user.fullName
     val name = fullName.split(" ")[0]
@@ -270,7 +274,7 @@ fun GroupMessageListItem(
                 onReactionClick = onReactionClick,
                 conversationType = ConversationType.GROUP
             )
-            if (seenUsers.isNotEmpty()) {
+            if (showSeenBy && seenUsers.isNotEmpty()) {
                 Box(
                     modifier = Modifier
                         .align(Alignment.End)
@@ -292,20 +296,20 @@ private fun MessagesListPreview() {
     val messages = List(5) {
         Message(
             messageId = it.toString(),
-            conversationId = "conversation_1",
-            senderId = listOf("user_1", "user_2").random(),
+            conversationId = "1",
+            senderId = listOf("1", "2").random(),
             text = LoremIpsum((5..20).random()).values.first(),
             timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("user_1"),
+            seenBy = listOf("1", "2", "3"),
             reactions = mapOf(
-                "user_1" to "\uD83E\uDD70",
-                "user_2" to "\uD83E\uDD70"
+                "1" to "\uD83E\uDD70",
+                "2" to "\uD83E\uDD70"
             )
         )
     }
 
     val user = User(
-        uid = "",
+        uid = "1",
         fullName = "Test Test",
         email = "test@email.com",
         imageUrl = null,
@@ -316,16 +320,36 @@ private fun MessagesListPreview() {
         user = user
     )
 
+    val groupChatPaneUiState = ChatPaneUiState.GroupChat(
+        group = Group(
+            conversationId = "1",
+            userIds = listOf("1", "2", "3"),
+            adminIds = listOf("1"),
+            ownerId = "1",
+            name = "Group Chat",
+            imageUrl = null
+        ),
+        members = List(5) {
+            User(
+                uid = it.toString(),
+                fullName = "Test Test",
+                email = "test@email.com",
+                imageUrl = null,
+                status = UserPresenceStatus.ONLINE
+            )
+        }
+    )
+
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             MessagesList(
                 messages = messages,
-                currentUserId = "user_2",
+                currentUserId = "1",
                 listState = rememberLazyListState(),
                 firstUnreadMessageId = "1",
                 onReactionClick = { _, _ -> },
                 isBlockedByOtherUser = true,
-                chatPaneUiState = directChatPaneUiState,
+                chatPaneUiState = groupChatPaneUiState,
             )
         }
     }
