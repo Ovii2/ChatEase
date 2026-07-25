@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.group_chat
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -41,6 +42,13 @@ fun GroupChatScreen(
         groupChatViewModel.loadGroupConversation(conversationId)
         chatViewModel.loadConversation(conversationId)
     }
+
+    BackHandler {
+        chatViewModel.markMessagesAsSeen(conversationId)
+        chatViewModel.updateTypingStatus(conversationId, false)
+        chatViewModel.deleteConversationIfEmpty(conversationId)
+        onBackClick()
+    }
     val currentUserId = chatViewModel.currentUserId
     val messages by chatViewModel.messages.collectAsState()
     val firstUnreadMessageId = chatViewModel.firstUnreadMessageId ?: ""
@@ -54,7 +62,12 @@ fun GroupChatScreen(
                 RightPane(
                     messages = messages,
                     currentUserId = currentUserId,
-                    onBackClick = onBackClick,
+                    onBackClick = {
+                        chatViewModel.markMessagesAsSeen(conversationId)
+                        chatViewModel.updateTypingStatus(conversationId, false)
+                        chatViewModel.deleteConversationIfEmpty(conversationId)
+                        onBackClick()
+                    },
                     onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
                     firstUnreadMessageId = firstUnreadMessageId,
                     onMessagesVisible = { chatViewModel.markMessagesAsSeen(conversationId) },
