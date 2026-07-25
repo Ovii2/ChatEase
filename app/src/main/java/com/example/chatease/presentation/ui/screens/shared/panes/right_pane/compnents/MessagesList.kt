@@ -72,7 +72,7 @@ fun MessagesList(
             modifier = Modifier.fillMaxWidth(),
             state = listState,
             reverseLayout = true,
-            verticalArrangement = Arrangement.spacedBy(0.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             itemsIndexed(reversedMessages) { index, message ->
@@ -131,7 +131,6 @@ fun MessagesList(
                                     .fillMaxWidth()
                                     .padding(bottom = messageBottomPadding),
                                 horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
-
                             ) {
                                 GroupMessageListItem(
                                     user = sender,
