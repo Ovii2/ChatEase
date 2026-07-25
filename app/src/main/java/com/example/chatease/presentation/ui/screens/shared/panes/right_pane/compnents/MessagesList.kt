@@ -57,6 +57,7 @@ fun MessagesList(
     var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val reversedMessages = messages.reversed()
 
     Box(
         modifier = modifier.clickable(
@@ -67,8 +68,6 @@ fun MessagesList(
             focusManager.clearFocus()
         }
     ) {
-        val reversedMessages = messages.reversed()
-
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             state = listState,
@@ -83,25 +82,25 @@ fun MessagesList(
                 val isFirstInGroup = previousVisibleMessage?.senderId != message.senderId
                 val isLastInGroup = nextVisibleMessage?.senderId != message.senderId
                 val isMiddleInGroup = !isFirstInGroup && !isLastInGroup
-
                 val isSentByCurrentUser = message.senderId == currentUserId
-                val showSeenBy = index == 0
+                val messageBottomPadding = if (message.reactions.isNotEmpty()) 18.dp else 2.dp
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = if (message.reactions.isNotEmpty()) 18.dp else 2.dp),
-                    horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
-                ) {
-                    when (chatPaneUiState) {
-                        is ChatPaneUiState.DirectChat -> {
+
+                when (chatPaneUiState) {
+                    is ChatPaneUiState.DirectChat -> {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = messageBottomPadding),
+                            horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
+                        ) {
                             DirectMessageListItem(
                                 isSentByCurrentUser = isSentByCurrentUser,
                                 user = chatPaneUiState.user,
                                 isBlockedByOtherUser = isBlockedByOtherUser,
                                 message = message,
                                 currentUserId = currentUserId,
-                                selectedReactionMessageId = selectedReactionMessageId ?: "",
+                                selectedReactionMessageId = selectedReactionMessageId.orEmpty(),
                                 isFirstInGroup = isFirstInGroup,
                                 isMiddleInGroup = isMiddleInGroup,
                                 isLastInGroup = isLastInGroup,
@@ -113,41 +112,63 @@ fun MessagesList(
                                 }
                             )
                         }
-
-                        is ChatPaneUiState.GroupChat -> {
-                            val seenUsers = chatPaneUiState.members.filter { member ->
-                                member.uid != currentUserId && member.uid in message.seenBy
-                            }
-
-                            val sender = chatPaneUiState.members.firstOrNull { user ->
-                                user.uid == message.senderId
-                            } ?: return@itemsIndexed
-
-                            GroupMessageListItem(
-                                user = sender,
-                                message = message,
-                                currentUserId = currentUserId,
-                                isSentByCurrentUser = isSentByCurrentUser,
-                                selectedReactionMessageId = selectedReactionMessageId ?: "",
-                                isFirstInGroup = isFirstInGroup,
-                                isMiddleInGroup = isMiddleInGroup,
-                                isLastInGroup = isLastInGroup,
-                                onLongClick = { selectedReactionMessageId = message.messageId },
-                                onDismissReactions = { selectedReactionMessageId = null },
-                                onReactionClick = { messageId, reaction ->
-                                    onReactionClick(messageId, reaction)
-                                    selectedReactionMessageId = null
-                                },
-                                seenUsers = seenUsers,
-                                showSeenBy = showSeenBy,
-                            )
-                        }
                     }
 
+                    is ChatPaneUiState.GroupChat -> {
+                        val sender = chatPaneUiState.members.firstOrNull { user ->
+                            user.uid == message.senderId
+                        } ?: return@itemsIndexed
+
+                        val seenUsers = chatPaneUiState.members.filter { member ->
+                            member.uid != currentUserId && member.uid in message.seenBy
+                        }
+
+                        val showSeenBy = index == 0 && seenUsers.isNotEmpty()
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = messageBottomPadding),
+                                horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
+
+                            ) {
+                                GroupMessageListItem(
+                                    user = sender,
+                                    message = message,
+                                    currentUserId = currentUserId,
+                                    isSentByCurrentUser = isSentByCurrentUser,
+                                    selectedReactionMessageId = selectedReactionMessageId.orEmpty(),
+                                    isFirstInGroup = isFirstInGroup,
+                                    isMiddleInGroup = isMiddleInGroup,
+                                    isLastInGroup = isLastInGroup,
+                                    onLongClick = { selectedReactionMessageId = message.messageId },
+                                    onDismissReactions = { selectedReactionMessageId = null },
+                                    onReactionClick = { messageId, reaction ->
+                                        onReactionClick(messageId, reaction)
+                                        selectedReactionMessageId = null
+                                    }
+                                )
+                            }
+
+                            if (showSeenBy) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 3.dp, end = 2.dp, bottom = 2.dp),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    SeenByRow(users = seenUsers)
+                                }
+                            }
+                        }
+                    }
                 }
+
                 if (firstUnreadMessageId != null && message.messageId == firstUnreadMessageId) {
                     UnreadMessagesDivider()
                 }
+
                 if (previousVisibleMessage == null || !isSameDay(
                         message.timeStamp,
                         previousVisibleMessage.timeStamp
@@ -189,6 +210,7 @@ fun DirectMessageListItem(
     onReactionClick: (String, String) -> Unit
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
@@ -200,7 +222,8 @@ fun DirectMessageListItem(
                 initialsFontSize = 20.sp,
                 showStatus = !isBlockedByOtherUser
             )
-        } else Unit
+        }
+
         ChatBubble(
             message = message,
             isSentByCurrentUser = isSentByCurrentUser,
@@ -229,38 +252,44 @@ fun GroupMessageListItem(
     isLastInGroup: Boolean,
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
-    onReactionClick: (String, String) -> Unit,
-    seenUsers: List<User>,
-    showSeenBy: Boolean
+    onReactionClick: (String, String) -> Unit
 ) {
-    val fullName = user.fullName
-    val name = fullName.split(" ")[0]
-    val lastname = fullName.split(" ")[1]
-    val lastnameInitial = lastname.first()
-    val arrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start
+    val nameParts = user.fullName
+        .trim()
+        .split(" ")
+        .filter { it.isNotBlank() }
+
+    val firstName = nameParts.firstOrNull().orEmpty()
+    val lastNameInitial = nameParts
+        .getOrNull(1)
+        ?.firstOrNull()
+
+    val displayedName = if (lastNameInitial != null) "$firstName $lastNameInitial." else firstName
 
     Row(
         modifier = modifier,
-        horizontalArrangement = arrangement,
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         if (!isSentByCurrentUser) {
             UserAvatar(
                 user = user,
                 avatarSize = 50.dp,
                 statusBubbleSize = 14.dp,
-                initialsFontSize = 20.sp,
+                initialsFontSize = 20.sp
             )
         }
+
         Column {
             if (!isSentByCurrentUser) {
                 Text(
                     modifier = Modifier.padding(start = 12.dp),
-                    text = "$name $lastnameInitial.",
+                    text = displayedName,
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
             }
+
             ChatBubble(
                 message = message,
                 isSentByCurrentUser = isSentByCurrentUser,
@@ -274,18 +303,6 @@ fun GroupMessageListItem(
                 onReactionClick = onReactionClick,
                 conversationType = ConversationType.GROUP
             )
-            if (showSeenBy && seenUsers.isNotEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = 2.dp, top = 5.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    SeenByRow(
-                        users = seenUsers
-                    )
-                }
-            }
         }
     }
 }
@@ -314,10 +331,6 @@ private fun MessagesListPreview() {
         email = "test@email.com",
         imageUrl = null,
         status = UserPresenceStatus.ONLINE
-    )
-
-    val directChatPaneUiState = ChatPaneUiState.DirectChat(
-        user = user
     )
 
     val groupChatPaneUiState = ChatPaneUiState.GroupChat(
@@ -349,9 +362,8 @@ private fun MessagesListPreview() {
                 firstUnreadMessageId = "1",
                 onReactionClick = { _, _ -> },
                 isBlockedByOtherUser = true,
-                chatPaneUiState = groupChatPaneUiState,
+                chatPaneUiState = groupChatPaneUiState
             )
         }
     }
 }
-
