@@ -87,6 +87,12 @@ class GroupRepositoryImpl(
             .document(conversationId)
             .update(ADMIN_IDS, FieldValue.arrayRemove(userId))
             .await()
+
+        firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .update(PARTICIPANT_IDS, FieldValue.arrayRemove(userId))
+            .await()
     }
 
     override suspend fun removeMember(conversationId: String, userId: String) {
@@ -120,6 +126,12 @@ class GroupRepositoryImpl(
                     ADMIN_IDS to FieldValue.arrayRemove(userId)
                 )
             )
+            .await()
+
+        firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .update(PARTICIPANT_IDS, FieldValue.arrayRemove(userId))
             .await()
     }
 
