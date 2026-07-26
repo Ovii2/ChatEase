@@ -160,7 +160,7 @@ fun RightPane(
             is ChatPaneUiState.GroupChat -> {
                 GroupChatTopBar(
                     onBackClick = onBackClick,
-                    members = chatPaneUiState.members.size,
+                    members = chatPaneUiState.group.userIds.size,
                     group = chatPaneUiState.group,
                     onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
                 )
