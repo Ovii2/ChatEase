@@ -2,6 +2,7 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.com
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -173,7 +175,14 @@ fun ChatBubble(
             if (message.reactions.isNotEmpty()) {
                 ReactionBadge(
                     modifier = Modifier
-                        .clickable { onShowUsersReactionsClick(message.messageId) }
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            onShowUsersReactionsClick(
+                                message.messageId
+                            )
+                        }
                         .align(reactionBadgeAlignment)
                         .offset { reactionBadgeOffset }
                         .padding(bottom = 6.dp),
