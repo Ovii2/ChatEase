@@ -18,6 +18,8 @@ class GroupRepositoryImpl(
         private const val GROUP = "group"
         const val USER_IDS = "userIds"
         const val ADMIN_IDS = "adminIds"
+        const val CONVERSATIONS = "conversations"
+        const val PARTICIPANT_IDS = "participantIds"
     }
 
     override suspend fun createGroup(
@@ -129,6 +131,12 @@ class GroupRepositoryImpl(
             .collection(GROUP)
             .document(conversationId)
             .update(USER_IDS, FieldValue.arrayUnion(*memberIds.toTypedArray()))
+            .await()
+
+        firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .update(PARTICIPANT_IDS, FieldValue.arrayUnion(*memberIds.toTypedArray()))
             .await()
     }
 
