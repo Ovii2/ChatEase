@@ -101,5 +101,6 @@ fun ChatScreen(
             user = user
         ),
         onNavigateToGroupChatInfo = {},
+        onShowUsersReactionsClick = {},
     )
 }

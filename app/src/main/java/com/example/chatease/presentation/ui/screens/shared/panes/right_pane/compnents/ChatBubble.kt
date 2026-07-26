@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +47,8 @@ fun ChatBubble(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
-    conversationType : ConversationType = ConversationType.DIRECT
+    conversationType: ConversationType = ConversationType.DIRECT,
+    onShowUsersReactionsClick: (String) -> Unit
 ) {
     val backgroundColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
@@ -171,6 +173,7 @@ fun ChatBubble(
             if (message.reactions.isNotEmpty()) {
                 ReactionBadge(
                     modifier = Modifier
+                        .clickable { onShowUsersReactionsClick(message.messageId) }
                         .align(reactionBadgeAlignment)
                         .offset { reactionBadgeOffset }
                         .padding(bottom = 6.dp),
@@ -231,7 +234,8 @@ private fun ChatBubblePreview() {
                 isFirstInGroup = true,
                 isMiddleInGroup = true,
                 isLastInGroup = true,
-                conversationType = ConversationType.DIRECT
+                conversationType = ConversationType.DIRECT,
+                onShowUsersReactionsClick = {},
             )
         }
     }

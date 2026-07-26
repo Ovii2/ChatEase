@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.chatease.presentation.ui.screens.shared.chat.ReactionsDetailsBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
@@ -53,6 +54,9 @@ fun GroupChatScreen(
     val messages by chatViewModel.messages.collectAsState()
     val firstUnreadMessageId = chatViewModel.firstUnreadMessageId ?: ""
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
+    var selectedReactionsMessageId by rememberSaveable { mutableStateOf<String?>(null) }
+    val selectedMessage =
+        messages.firstOrNull { message -> message.messageId == selectedReactionsMessageId }
 
     when (val state = uiState) {
         is GroupChatUiState.Success -> {
@@ -95,7 +99,19 @@ fun GroupChatScreen(
                         members = state.members
                     ),
                     onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
+                    onShowUsersReactionsClick = { messageId ->
+                        selectedReactionsMessageId = messageId
+                    },
                 )
+                selectedMessage?.let { message ->
+                    ReactionsDetailsBottomSheet(
+                        onDismissRequest = { selectedReactionsMessageId = null },
+                        users = state.members.filter { user ->
+                            user.uid in message.reactions.keys
+                        },
+                        reactions = message.reactions
+                    )
+                }
             }
         }
 

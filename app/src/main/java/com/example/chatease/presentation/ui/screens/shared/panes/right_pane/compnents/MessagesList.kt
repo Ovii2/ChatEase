@@ -52,7 +52,8 @@ fun MessagesList(
     firstUnreadMessageId: String?,
     onReactionClick: (String, String) -> Unit,
     isBlockedByOtherUser: Boolean,
-    chatPaneUiState: ChatPaneUiState
+    chatPaneUiState: ChatPaneUiState,
+    onShowUsersReactionsClick: (String) -> Unit
 ) {
     var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     val focusManager = LocalFocusManager.current
@@ -109,7 +110,8 @@ fun MessagesList(
                                 onReactionClick = { messageId, reaction ->
                                     onReactionClick(messageId, reaction)
                                     selectedReactionMessageId = null
-                                }
+                                },
+                                onShowUsersReactionsClick = onShowUsersReactionsClick
                             )
                         }
                     }
@@ -146,7 +148,8 @@ fun MessagesList(
                                     onReactionClick = { messageId, reaction ->
                                         onReactionClick(messageId, reaction)
                                         selectedReactionMessageId = null
-                                    }
+                                    },
+                                    onShowUsersReactionsClick = onShowUsersReactionsClick
                                 )
                             }
 
@@ -206,7 +209,8 @@ fun DirectMessageListItem(
     isLastInGroup: Boolean,
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
-    onReactionClick: (String, String) -> Unit
+    onReactionClick: (String, String) -> Unit,
+    onShowUsersReactionsClick: (String) -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -233,7 +237,8 @@ fun DirectMessageListItem(
             isLastInGroup = isLastInGroup,
             onLongClick = onLongClick,
             onDismissReactions = onDismissReactions,
-            onReactionClick = onReactionClick
+            onReactionClick = onReactionClick,
+            onShowUsersReactionsClick = onShowUsersReactionsClick,
         )
     }
 }
@@ -251,7 +256,8 @@ fun GroupMessageListItem(
     isLastInGroup: Boolean,
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
-    onReactionClick: (String, String) -> Unit
+    onReactionClick: (String, String) -> Unit,
+    onShowUsersReactionsClick: (String) -> Unit
 ) {
     val nameParts = user.fullName
         .trim()
@@ -300,7 +306,8 @@ fun GroupMessageListItem(
                 onLongClick = onLongClick,
                 onDismissReactions = onDismissReactions,
                 onReactionClick = onReactionClick,
-                conversationType = ConversationType.GROUP
+                conversationType = ConversationType.GROUP,
+                onShowUsersReactionsClick = onShowUsersReactionsClick,
             )
         }
     }
@@ -361,7 +368,8 @@ private fun MessagesListPreview() {
                 firstUnreadMessageId = "1",
                 onReactionClick = { _, _ -> },
                 isBlockedByOtherUser = true,
-                chatPaneUiState = groupChatPaneUiState
+                chatPaneUiState = groupChatPaneUiState,
+                onShowUsersReactionsClick = {},
             )
         }
     }

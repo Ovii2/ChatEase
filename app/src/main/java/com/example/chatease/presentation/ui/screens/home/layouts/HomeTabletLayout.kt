@@ -100,6 +100,7 @@ fun HomeTabletLayout(
                     onStartAudioCall = {},
                     chatPaneUiState = chatPaneUiState,
                     onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
+                    onShowUsersReactionsClick = {},
                 )
             }
         },
