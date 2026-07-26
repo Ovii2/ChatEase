@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.shared.chat
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -15,13 +17,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -35,13 +43,39 @@ fun ReactionsDetailsBottomSheet(
     reactions: Map<String, String>
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val availableReactions = reactions.values.distinct()
+    var selectedReaction by rememberSaveable { mutableStateOf<String?>(null) }
+    val filteredUsers = users.filter { user ->
+        val userReaction = reactions[user.uid]
+        if (selectedReaction == null) userReaction != null else userReaction == selectedReaction
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState
     ) {
-        LazyColumn(modifier = modifier) {
-            items(users) { user ->
+
+        LazyColumn(modifier = modifier.padding(horizontal = 12.dp)) {
+            item {
+                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                    CommonChip(
+                        text = stringResource(R.string.all),
+                        selected = selectedReaction == null,
+                        onClick = {
+                            selectedReaction = null
+                        }
+                    )
+                    availableReactions.forEach { reaction ->
+                        val count = reactions.values.count { it == reaction }
+                        CommonChip(
+                            text = "$reaction $count",
+                            selected = selectedReaction == reaction,
+                            onClick = { selectedReaction = reaction }
+                        )
+                    }
+                }
+            }
+            items(filteredUsers) { user ->
                 val reaction = reactions[user.uid] ?: return@items
 
                 ReactionsDetailsItem(
@@ -62,7 +96,7 @@ fun ReactionsDetailsItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 16.dp),
+            .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -123,7 +157,7 @@ private fun ReactionsDetailsItemPreview() {
 )
 @Composable
 private fun ReactionsDetailsBottomSheetPreview() {
-    val users = List(20) {
+    val users = List(30) {
         User(
             uid = it.toString(),
             fullName = "Test Test",
@@ -134,8 +168,16 @@ private fun ReactionsDetailsBottomSheetPreview() {
         )
     }
 
-    val reactions = (0..20).associate {
-        it.toString() to "\uD83E\uDD70"
+    val emojis = listOf(
+        "\uD83E\uDD70",
+        "😊",
+        "\uD83D\uDC4B",
+        "\uD83D\uDE09",
+        "\uD83D\uDC4D",
+        "❤️"
+    )
+    val reactions = users.indices.associate { index ->
+        index.toString() to emojis[index % emojis.size]
     }
     ChatEaseTheme {
         Scaffold { paddingValues ->

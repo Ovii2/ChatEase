@@ -269,5 +269,7 @@
     <string name="remove_member_text"> This member will no longer be able to send or receive messages in this group chat.</string>
     <string name="remove">Remove</string>
 
+    <string name="all">All</string>
+
 
 </resources>
