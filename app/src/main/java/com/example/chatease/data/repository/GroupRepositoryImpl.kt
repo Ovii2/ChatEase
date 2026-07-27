@@ -7,6 +7,9 @@ import com.example.chatease.domain.repository.GroupRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class GroupRepositoryImpl(
@@ -146,6 +149,25 @@ class GroupRepositoryImpl(
             .document(conversationId)
             .update(USER_IDS, FieldValue.arrayUnion(*memberIds.toTypedArray()))
             .await()
+    }
+
+    override fun observeGroup(conversationId: String): Flow<Group> = callbackFlow {
+        val listener = firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    close(exception)
+                    return@addSnapshotListener
+                }
+                val group = snapshot?.toObject(GroupDto::class.java)?.toDomain()
+                    ?: return@addSnapshotListener
+
+                trySend(group)
+            }
+        awaitClose {
+            listener.remove()
+        }
     }
 
     private suspend fun checkIfUserIsGroupOwner(conversationId: String, message: String): Group {

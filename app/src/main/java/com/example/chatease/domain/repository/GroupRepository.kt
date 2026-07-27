@@ -1,6 +1,7 @@
 package com.example.chatease.domain.repository
 
 import com.example.chatease.domain.model.Group
+import kotlinx.coroutines.flow.Flow
 
 interface GroupRepository {
 
@@ -25,4 +26,6 @@ interface GroupRepository {
     suspend fun removeMember(conversationId: String, userId: String)
 
     suspend fun addMembers(conversationId: String, memberIds: List<String>)
+
+    fun observeGroup(conversationId: String): Flow<Group>
 }
