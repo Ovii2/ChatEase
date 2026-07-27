@@ -62,7 +62,7 @@ fun GroupChatScreen(
     when (val state = uiState) {
         is GroupChatUiState.Success -> {
             Scaffold(
-                modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                modifier = modifier.padding(vertical = 8.dp),
             ) { paddingValues ->
                 RightPane(
                     messages = messages,

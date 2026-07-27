@@ -2,16 +2,13 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -28,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -178,7 +174,7 @@ fun RightPane(
 
         MessagesList(
             modifier = Modifier
-                .padding(horizontal = 8.dp)
+                .padding(vertical = 4.dp, horizontal = 8.dp)
                 .weight(1f),
             messages = messages,
             currentUserId = currentUserId,
@@ -223,48 +219,34 @@ fun RightPane(
             )
         }
 
-        if (!isUserGroupMember) {
-            Box(
-                modifier = modifier
-                    .background(color = MaterialTheme.colorScheme.primary)
-                    .height(56.dp)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.user_is_not_group_member),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.surface,
-                )
-            }
-        } else {
-            MessageInputBar(
-                modifier = Modifier,
-                onMicrophoneClick = {},
-                onSendMessageClick = {
-                    onSendMessageClick(it)
-                    messageText = ""
+        MessageInputBar(
+            modifier = Modifier,
+            onMicrophoneClick = {},
+            onSendMessageClick = {
+                onSendMessageClick(it)
+                messageText = ""
 
-                    scope.launch {
-                        listState.animateScrollToItem(firstIndex)
-                    }
-                },
-                messageText = messageText,
-                onMessageTextChange = {
-                    messageText = it
-                    updateTypingStatus(it)
-                },
-                isPeekEnabled = isPeekEnabled,
-                onPeekClick = onPeekClick,
-                onInputFocused = {
-                    shouldShowUnreadDivider = false
-                    onMessagesVisible()
-                },
-                isBlockedByOtherUser = isBlockedByOtherUser,
-            )
-        }
+                scope.launch {
+                    listState.animateScrollToItem(firstIndex)
+                }
+            },
+            messageText = messageText,
+            onMessageTextChange = {
+                messageText = it
+                updateTypingStatus(it)
+            },
+            isPeekEnabled = isPeekEnabled,
+            onPeekClick = onPeekClick,
+            onInputFocused = {
+                shouldShowUnreadDivider = false
+                onMessagesVisible()
+            },
+            isBlockedByOtherUser = isBlockedByOtherUser,
+            isUserGroupMember = isUserGroupMember,
+        )
     }
 }
+
 
 @Preview(
     showBackground = true, showSystemUi = true,

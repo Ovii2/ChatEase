@@ -54,10 +54,29 @@ fun MessageInputBar(
     isPeekEnabled: Boolean,
     onPeekClick: () -> Unit,
     onInputFocused: () -> Unit,
-    isBlockedByOtherUser: Boolean
+    isBlockedByOtherUser: Boolean,
+    isUserGroupMember: Boolean
 ) {
+    if (isBlockedByOtherUser || !isUserGroupMember) {
+        val message = when {
+            isBlockedByOtherUser -> R.string.cannot_reply
+            else -> R.string.user_is_not_group_member
+        }
 
-    if (!isBlockedByOtherUser) {
+        Box(
+            modifier = modifier
+                .background(color = MaterialTheme.colorScheme.primary)
+                .height(56.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(message),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.surface,
+            )
+        }
+    } else {
         OutlinedTextField(
             modifier = modifier
                 .padding(horizontal = 8.dp)
@@ -125,20 +144,6 @@ fun MessageInputBar(
             },
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
         )
-    } else {
-        Box(
-            modifier = modifier
-                .background(color = MaterialTheme.colorScheme.primary)
-                .height(56.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(R.string.cannot_reply),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.surface,
-            )
-        }
     }
 }
 
@@ -166,6 +171,7 @@ private fun MessageInputBarPreview() {
                     onPeekClick = {},
                     onInputFocused = {},
                     isBlockedByOtherUser = false,
+                    isUserGroupMember = true,
                 )
             }
         }
