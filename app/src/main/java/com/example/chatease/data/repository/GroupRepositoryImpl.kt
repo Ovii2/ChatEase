@@ -20,6 +20,7 @@ class GroupRepositoryImpl(
         const val ADMIN_IDS = "adminIds"
         const val CONVERSATIONS = "conversations"
         const val PARTICIPANT_IDS = "participantIds"
+        const val VISIBLE_TO_USER_IDS = "visibleToUserIds"
     }
 
     override suspend fun createGroup(
@@ -38,6 +39,7 @@ class GroupRepositoryImpl(
             conversationId = conversationId,
             userIds = userIds,
             adminIds = adminIds,
+            visibleToUserIds = emptyList(),
             ownerId = ownerId,
             name = name,
             imageUrl = imageUrl
@@ -69,7 +71,17 @@ class GroupRepositoryImpl(
         return snapshot.toObjects(GroupDto::class.java).map { it.toDomain() }
     }
 
-    override suspend fun addAdmin(conversationId: String, userId: String) {
+    override suspend fun getGroupsVisibleToFormerMember(currentUserId: String): List<Group> {
+        val snapshot = firestore
+            .collection(GROUP)
+            .whereArrayContains(VISIBLE_TO_USER_IDS, currentUserId)
+            .get()
+            .await()
+
+        return snapshot.toObjects(GroupDto::class.java).map { it.toDomain() }
+    }
+
+    override suspend fun promoteToAdmin(conversationId: String, userId: String) {
         checkIfUserIsGroupOwner(conversationId, "Only group owner can add admin")
 
         firestore
@@ -79,7 +91,7 @@ class GroupRepositoryImpl(
             .await()
     }
 
-    override suspend fun removeAdmin(conversationId: String, userId: String) {
+    override suspend fun demoteFromAdmin(conversationId: String, userId: String) {
         checkIfUserIsGroupOwner(conversationId, "Only group owner can remove admin")
 
         firestore
@@ -88,11 +100,6 @@ class GroupRepositoryImpl(
             .update(ADMIN_IDS, FieldValue.arrayRemove(userId))
             .await()
 
-        firestore
-            .collection(CONVERSATIONS)
-            .document(conversationId)
-            .update(PARTICIPANT_IDS, FieldValue.arrayRemove(userId))
-            .await()
     }
 
     override suspend fun removeMember(conversationId: String, userId: String) {
@@ -123,15 +130,10 @@ class GroupRepositoryImpl(
             .update(
                 mapOf(
                     USER_IDS to FieldValue.arrayRemove(userId),
-                    ADMIN_IDS to FieldValue.arrayRemove(userId)
+                    ADMIN_IDS to FieldValue.arrayRemove(userId),
+                    VISIBLE_TO_USER_IDS to FieldValue.arrayUnion(userId)
                 )
             )
-            .await()
-
-        firestore
-            .collection(CONVERSATIONS)
-            .document(conversationId)
-            .update(PARTICIPANT_IDS, FieldValue.arrayRemove(userId))
             .await()
     }
 
@@ -143,12 +145,6 @@ class GroupRepositoryImpl(
             .collection(GROUP)
             .document(conversationId)
             .update(USER_IDS, FieldValue.arrayUnion(*memberIds.toTypedArray()))
-            .await()
-
-        firestore
-            .collection(CONVERSATIONS)
-            .document(conversationId)
-            .update(PARTICIPANT_IDS, FieldValue.arrayUnion(*memberIds.toTypedArray()))
             .await()
     }
 

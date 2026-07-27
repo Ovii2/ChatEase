@@ -17,8 +17,10 @@ interface GroupRepository {
 
     suspend fun getGroups(currentUserId: String): List<Group>
 
-    suspend fun addAdmin(conversationId: String, userId: String)
-    suspend fun removeAdmin(conversationId: String, userId: String)
+    suspend fun getGroupsVisibleToFormerMember(currentUserId: String): List<Group>
+
+    suspend fun promoteToAdmin(conversationId: String, userId: String)
+    suspend fun demoteFromAdmin(conversationId: String, userId: String)
 
     suspend fun removeMember(conversationId: String, userId: String)
 
