@@ -273,17 +273,17 @@ fun RightPane(
 @Composable
 private fun RightPanePreview() {
     val user = User(
-        uid = "",
+        uid = "1",
         fullName = "Test Test",
         email = "test@email.com",
         imageUrl = null,
         status = UserPresenceStatus.ONLINE
     )
-    val senders = listOf("user_1", "user_2")
+    val senders = listOf("1", "2")
     val messages = List(5) {
         Message(
             messageId = it.toString(),
-            conversationId = "conversation_1",
+            conversationId = "1",
             senderId = senders.random(),
             text = LoremIpsum((10..50).random()).values.first(),
             timeStamp = System.currentTimeMillis(),
@@ -301,6 +301,7 @@ private fun RightPanePreview() {
         group = Group(
             conversationId = "1",
             ownerId = "1",
+            visibleToUserIds = listOf("1"),
             name = "Test Group",
             imageUrl = null
         ),
@@ -312,7 +313,7 @@ private fun RightPanePreview() {
             Column(modifier = Modifier.padding(paddingValues)) {
                 RightPane(
                     messages = messages,
-                    currentUserId = "user_2",
+                    currentUserId = "2",
                     onBackClick = {},
                     onSendMessageClick = {},
                     firstUnreadMessageId = "1",
@@ -321,7 +322,7 @@ private fun RightPanePreview() {
                     onNavigateToChatInfo = {},
                     isPeekEnabled = false,
                     onPeekClick = {},
-                    typingUserIds = listOf("user_1", "user_2"),
+                    typingUserIds = listOf("1", "2"),
                     updateTypingStatus = {},
                     isBlockedByOtherUser = false,
                     onStartAudioCall = {},

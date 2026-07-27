@@ -45,7 +45,7 @@ fun ExtraPaneTopSection(
                 avatarSize = 140.dp,
                 statusBubbleSize = 35.dp,
                 statusBubbleOffsetX = (-3).dp,
-                statusBubbleOffsetY = (-20).dp,
+                statusBubbleOffsetY = (-5).dp,
                 initialsFontSize = 70.sp,
                 showStatus = showStatus
             )
