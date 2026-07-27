@@ -50,7 +50,9 @@ fun ChatBubble(
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
     conversationType: ConversationType = ConversationType.DIRECT,
-    onShowUsersReactionsClick: (String) -> Unit
+    onShowUsersReactionsClick: (String) -> Unit,
+    isBlockedByOtherUser: Boolean,
+    isUserMemberOfGroup: Boolean
 ) {
     val backgroundColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
@@ -191,7 +193,7 @@ fun ChatBubble(
                     textColor = textColor,
                 )
             }
-            if (showReactions) {
+            if (showReactions && !isBlockedByOtherUser && isUserMemberOfGroup) {
                 Popup(
                     alignment = popUpAlignment,
                     offset = IntOffset(0, -160)
@@ -245,6 +247,8 @@ private fun ChatBubblePreview() {
                 isLastInGroup = true,
                 conversationType = ConversationType.DIRECT,
                 onShowUsersReactionsClick = {},
+                isBlockedByOtherUser = false,
+                isUserMemberOfGroup = true,
             )
         }
     }

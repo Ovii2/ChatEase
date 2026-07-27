@@ -126,6 +126,7 @@ fun MessagesList(
                         }
 
                         val showSeenBy = index == 0 && seenUsers.isNotEmpty()
+                        val isUserMemberOfGroup = currentUserId in chatPaneUiState.group.userIds
 
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Row(
@@ -143,13 +144,18 @@ fun MessagesList(
                                     isFirstInGroup = isFirstInGroup,
                                     isMiddleInGroup = isMiddleInGroup,
                                     isLastInGroup = isLastInGroup,
-                                    onLongClick = { selectedReactionMessageId = message.messageId },
-                                    onDismissReactions = { selectedReactionMessageId = null },
+                                    onLongClick = {
+                                        selectedReactionMessageId = message.messageId
+                                    },
+                                    onDismissReactions = {
+                                        selectedReactionMessageId = null
+                                    },
                                     onReactionClick = { messageId, reaction ->
                                         onReactionClick(messageId, reaction)
                                         selectedReactionMessageId = null
                                     },
-                                    onShowUsersReactionsClick = onShowUsersReactionsClick
+                                    onShowUsersReactionsClick = onShowUsersReactionsClick,
+                                    isUserMemberOfGroup = isUserMemberOfGroup,
                                 )
                             }
 
@@ -239,6 +245,8 @@ fun DirectMessageListItem(
             onDismissReactions = onDismissReactions,
             onReactionClick = onReactionClick,
             onShowUsersReactionsClick = onShowUsersReactionsClick,
+            isBlockedByOtherUser = isBlockedByOtherUser,
+            isUserMemberOfGroup = true,
         )
     }
 }
@@ -257,7 +265,8 @@ fun GroupMessageListItem(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
-    onShowUsersReactionsClick: (String) -> Unit
+    onShowUsersReactionsClick: (String) -> Unit,
+    isUserMemberOfGroup: Boolean
 ) {
     val nameParts = user.fullName
         .trim()
@@ -308,6 +317,8 @@ fun GroupMessageListItem(
                 onReactionClick = onReactionClick,
                 conversationType = ConversationType.GROUP,
                 onShowUsersReactionsClick = onShowUsersReactionsClick,
+                isBlockedByOtherUser = false,
+                isUserMemberOfGroup = isUserMemberOfGroup,
             )
         }
     }
