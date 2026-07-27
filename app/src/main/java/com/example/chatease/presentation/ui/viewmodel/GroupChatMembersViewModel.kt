@@ -92,7 +92,7 @@ class GroupChatMembersViewModel @Inject constructor(
     fun addAdmin(conversationId: String, userId: String) {
         viewModelScope.launch {
             try {
-                groupRepository.addAdmin(conversationId, userId)
+                groupRepository.promoteToAdmin(conversationId, userId)
                 loadMembers(conversationId)
             } catch (e: Exception) {
                 Log.v("AddMembersViewModel", e.message ?: "Failed to add admin")
@@ -103,7 +103,7 @@ class GroupChatMembersViewModel @Inject constructor(
     fun removeAdmin(conversationId: String, userId: String) {
         viewModelScope.launch {
             try {
-                groupRepository.removeAdmin(conversationId, userId)
+                groupRepository.demoteFromAdmin(conversationId, userId)
                 loadMembers(conversationId)
             } catch (e: Exception) {
                 Log.v("AddMembersViewModel", e.message ?: "Failed to remove admin")
