@@ -50,6 +50,7 @@ fun GroupChatScreen(
         chatViewModel.deleteConversationIfEmpty(conversationId)
         onBackClick()
     }
+
     val currentUserId = chatViewModel.currentUserId
     val messages by chatViewModel.messages.collectAsState()
     val firstUnreadMessageId = chatViewModel.firstUnreadMessageId ?: ""

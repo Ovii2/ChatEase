@@ -15,6 +15,7 @@ import com.example.chatease.presentation.ui.state.HomeUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -48,128 +49,244 @@ class HomeViewModel @Inject constructor(
             _uiState.value = HomeUiState.Loading
 
             try {
-                val currentUserId = auth.currentUser?.uid ?: run {
-                    _uiState.value = HomeUiState.Error("User not logged in")
-                    return@launch
-                }
-
+                val currentUserId = getCurrentUserId() ?: return@launch
                 val categories = categoryRepository.getCategories()
-
-                val conversationsFlow = conversationRepository
-                    .observeUserConversations(currentUserId)
-                    .flatMapLatest { rawConversations ->
-                        if (rawConversations.isEmpty()) {
-                            return@flatMapLatest flowOf(emptyList())
-                        }
-
-                        val directConversation =
-                            rawConversations.filter { conversation -> conversation.type == ConversationType.DIRECT }
-
-                        val groupConversation =
-                            rawConversations.filter { conversation -> conversation.type == ConversationType.GROUP }
-
-                        val otherUserFlows = directConversation.map { conversation ->
-                            val otherUserId = conversation.participantIds.first {
-                                it != currentUserId
-                            }
-                            userRepository.observeUser(otherUserId)
-                        }
-
-                        val groupsByConversationId =
-                            groupConversation.associate { conversation ->
-                                conversation.id to groupRepository.getGroupByConversationId(
-                                    conversation.id
-                                )
-                            }
-
-                        val groupParticipantsByConversationId =
-                            groupConversation.associate { conversation ->
-                                val participants =
-                                    conversation.participantIds.map { userId ->
-                                        userRepository.getUserById(userId)
-                                    }
-
-                                conversation.id to participants
-                            }
-
-                        if (otherUserFlows.isEmpty()) {
-                            return@flatMapLatest flowOf(
-                                mapToConversationUiModels(
-                                    rawConversations = rawConversations,
-                                    otherUserByConversationId = emptyMap(),
-                                    currentUserId = currentUserId,
-                                    groupsByConversationId = groupsByConversationId,
-                                    groupParticipantsByConversationId = groupParticipantsByConversationId
-                                )
-                            )
-                        } else {
-                            combine(otherUserFlows) { otherUsers ->
-                                val otherUserByConversationId =
-                                    otherUsers.mapIndexed { index, user ->
-                                        directConversation[index].id to user
-                                    }.toMap()
-
-                                mapToConversationUiModels(
-                                    rawConversations = rawConversations,
-                                    otherUserByConversationId = otherUserByConversationId,
-                                    currentUserId = currentUserId,
-                                    groupsByConversationId = groupsByConversationId,
-                                    groupParticipantsByConversationId = groupParticipantsByConversationId
-                                )
-                            }
-                        }
-                    }
-
+                val conversationsFlow = createConversationsFlow(currentUserId)
 
                 combine(
                     userRepository.observeUser(currentUserId),
                     conversationsFlow
                 ) { user, conversations ->
-
                     HomeUiState.Success(
                         user = user,
                         categories = categories,
                         conversations = conversations,
-                        unreadMessages = conversations.sumOf { it.unreadCount }
+                        unreadMessages = conversations.sumOf { conversation ->
+                            conversation.unreadCount
+                        }
                     )
                 }.collect { state ->
                     _uiState.value = state
                 }
-            } catch (e: Exception) {
+            } catch (exception: Exception) {
                 _uiState.value = HomeUiState.Error(
-                    message = e.message ?: ""
+                    message = exception.message.orEmpty()
                 )
             }
         }
     }
 
+    private fun getCurrentUserId(): String? {
+        val currentUserId = auth.currentUser?.uid
+
+        if (currentUserId == null) {
+            _uiState.value = HomeUiState.Error("User not logged in")
+        }
+
+        return currentUserId
+    }
+
+    private fun createConversationsFlow(
+        currentUserId: String
+    ): Flow<List<ConversationUiModel>> {
+        return conversationRepository
+            .observeUserConversations(currentUserId)
+            .flatMapLatest { rawConversations ->
+                val allConversations = getAllConversations(
+                    currentUserId = currentUserId,
+                    rawConversations = rawConversations
+                )
+
+                if (allConversations.isEmpty()) {
+                    return@flatMapLatest flowOf(emptyList())
+                }
+
+                createConversationUiModelsFlow(
+                    conversations = allConversations,
+                    currentUserId = currentUserId
+                )
+            }
+    }
+
+    private suspend fun getAllConversations(
+        currentUserId: String,
+        rawConversations: List<Conversation>
+    ): List<Conversation> {
+        val formerMemberGroups =
+            groupRepository.getGroupsVisibleToFormerMember(currentUserId)
+
+        val formerMemberConversations = formerMemberGroups.map { group ->
+            conversationRepository.getConversation(group.conversationId)
+        }
+
+        return (rawConversations + formerMemberConversations)
+            .distinctBy { conversation ->
+                conversation.id
+            }
+    }
+
+    private suspend fun createConversationUiModelsFlow(
+        conversations: List<Conversation>,
+        currentUserId: String
+    ): Flow<List<ConversationUiModel>> {
+        val directConversations = conversations.filter { conversation ->
+            conversation.type == ConversationType.DIRECT
+        }
+
+        val groupConversations = conversations.filter { conversation ->
+            conversation.type == ConversationType.GROUP
+        }
+
+        val directUserFlows = createDirectUserFlows(
+            conversations = directConversations,
+            currentUserId = currentUserId
+        )
+
+        val groupsByConversationId =
+            getGroupsByConversationId(groupConversations)
+
+        val groupMembersByConversationId =
+            getGroupMembersByConversationId(groupsByConversationId)
+
+        if (directUserFlows.isEmpty()) {
+            return flowOf(
+                mapToConversationUiModels(
+                    conversations = conversations,
+                    otherUserByConversationId = emptyMap(),
+                    currentUserId = currentUserId,
+                    groupsByConversationId = groupsByConversationId,
+                    groupMembersByConversationId = groupMembersByConversationId
+                )
+            )
+        }
+
+        return combine(directUserFlows) { users ->
+            val otherUserByConversationId =
+                directConversations.zip(users).associate { (conversation, user) ->
+                    conversation.id to user
+                }
+
+            mapToConversationUiModels(
+                conversations = conversations,
+                otherUserByConversationId = otherUserByConversationId,
+                currentUserId = currentUserId,
+                groupsByConversationId = groupsByConversationId,
+                groupMembersByConversationId = groupMembersByConversationId
+            )
+        }
+    }
+
+    private fun createDirectUserFlows(
+        conversations: List<Conversation>,
+        currentUserId: String
+    ): List<Flow<User>> {
+        return conversations.mapNotNull { conversation ->
+            val otherUserId = conversation.participantIds.firstOrNull { userId ->
+                userId != currentUserId
+            } ?: return@mapNotNull null
+
+            userRepository.observeUser(otherUserId)
+        }
+    }
+
+    private suspend fun getGroupsByConversationId(
+        conversations: List<Conversation>
+    ): Map<String, Group> {
+        return conversations.associate { conversation ->
+            conversation.id to groupRepository.getGroupByConversationId(
+                conversation.id
+            )
+        }
+    }
+
+    private suspend fun getGroupMembersByConversationId(
+        groupsByConversationId: Map<String, Group>
+    ): Map<String, List<User>> {
+        return groupsByConversationId.mapValues { (_, group) ->
+            group.userIds.map { userId ->
+                userRepository.getUserById(userId)
+            }
+        }
+    }
+
     private fun mapToConversationUiModels(
-        rawConversations: List<Conversation>,
+        conversations: List<Conversation>,
         otherUserByConversationId: Map<String, User>,
         currentUserId: String,
         groupsByConversationId: Map<String, Group>,
-        groupParticipantsByConversationId: Map<String, List<User>>
-    ): List<ConversationUiModel> = rawConversations.mapIndexed { index, conversation ->
-        val otherUser = otherUserByConversationId[conversation.id]
-        val isGroupConversation = conversation.type == ConversationType.GROUP
-        val group = groupsByConversationId[conversation.id]
+        groupMembersByConversationId: Map<String, List<User>>
+    ): List<ConversationUiModel> {
+        return conversations.map { conversation ->
+            val isGroupConversation =
+                conversation.type == ConversationType.GROUP
 
-        val participants =
-            if (isGroupConversation) groupParticipantsByConversationId[conversation.id].orEmpty() else otherUser?.let {
-                listOf(it)
-            } ?: emptyList()
+            val otherUser = otherUserByConversationId[conversation.id]
+            val group = groupsByConversationId[conversation.id]
 
-        ConversationUiModel(
-            conversationId = conversation.id,
-            title = if (isGroupConversation) group?.name ?: "" else otherUser?.fullName ?: "",
-            imageUrl = if (isGroupConversation) group?.imageUrl else otherUser?.imageUrl ?: "",
-            participants = participants,
-            lastMessage = conversation.lastMessage,
-            timestamp = conversation.timestamp,
-            unreadCount = conversation.unreadCounts[currentUserId] ?: 0,
-            isGroup = isGroupConversation,
-            isBlockedByOtherUser = otherUser?.blockedUserIds?.contains(currentUserId) ?: false
-        )
+            ConversationUiModel(
+                conversationId = conversation.id,
+                title = getConversationTitle(
+                    isGroupConversation = isGroupConversation,
+                    group = group,
+                    otherUser = otherUser
+                ),
+                imageUrl = getConversationImageUrl(
+                    isGroupConversation = isGroupConversation,
+                    group = group,
+                    otherUser = otherUser
+                ),
+                participants = getConversationParticipants(
+                    conversationId = conversation.id,
+                    isGroupConversation = isGroupConversation,
+                    otherUser = otherUser,
+                    groupMembersByConversationId =
+                        groupMembersByConversationId
+                ),
+                lastMessage = conversation.lastMessage,
+                timestamp = conversation.timestamp,
+                unreadCount = conversation.unreadCounts[currentUserId] ?: 0,
+                isGroup = isGroupConversation,
+                isBlockedByOtherUser =
+                    otherUser?.blockedUserIds?.contains(currentUserId) ?: false
+            )
+        }
+    }
+
+    private fun getConversationTitle(
+        isGroupConversation: Boolean,
+        group: Group?,
+        otherUser: User?
+    ): String {
+        return if (isGroupConversation) {
+            group?.name.orEmpty()
+        } else {
+            otherUser?.fullName.orEmpty()
+        }
+    }
+
+    private fun getConversationImageUrl(
+        isGroupConversation: Boolean,
+        group: Group?,
+        otherUser: User?
+    ): String? {
+        return if (isGroupConversation) {
+            group?.imageUrl
+        } else {
+            otherUser?.imageUrl
+        }
+    }
+
+    private fun getConversationParticipants(
+        conversationId: String,
+        isGroupConversation: Boolean,
+        otherUser: User?,
+        groupMembersByConversationId: Map<String, List<User>>
+    ): List<User> {
+        return if (isGroupConversation) {
+            groupMembersByConversationId[conversationId].orEmpty()
+        } else {
+            listOfNotNull(otherUser)
+        }
     }
 
     fun selectCategory(categoryName: String) {
