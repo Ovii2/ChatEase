@@ -120,7 +120,10 @@ fun HomeScreen(
             }) { paddingValues ->
             when (val state = uiState) {
                 is HomeUiState.Error -> {
-                    CommonErrorDisplay()
+                    CommonErrorDisplay(
+                        showActionButton = true,
+                        onRetryClick = homeViewModel::loadHomeData
+                    )
                 }
 
                 HomeUiState.Loading -> {
