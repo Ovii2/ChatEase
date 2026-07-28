@@ -24,9 +24,6 @@ class GroupRepositoryImpl(
         const val VISIBLE_TO_USER_IDS = "visibleToUserIds"
         const val REMOVED_AT_USER_ID = "removedAtByUserId"
         const val OWNER_ID = "ownerId"
-        const val CONVERSATIONS = "conversations"
-        const val MESSAGES = "messages"
-        const val MESSAGE_ID = "messageId"
     }
 
     override suspend fun createGroup(
@@ -37,6 +34,9 @@ class GroupRepositoryImpl(
         ownerId: String,
         imageUrl: String?
     ): String {
+        require(userIds.size <= 50) {
+            "A group can have at most 50 members"
+        }
         val groupRef = firestore
             .collection(GROUP)
             .document(conversationId)
@@ -148,6 +148,12 @@ class GroupRepositoryImpl(
         conversationId: String,
         memberIds: List<String>
     ) {
+        val group = getGroupByConversationId(conversationId)
+        val finalMemberCount = (group.userIds + memberIds).distinct().size
+        require(finalMemberCount <= 50) {
+            "A group can have at most 50 members"
+        }
+
         val updates = mutableMapOf<String, Any>(
             USER_IDS to FieldValue.arrayUnion(*memberIds.toTypedArray()),
             VISIBLE_TO_USER_IDS to FieldValue.arrayRemove(*memberIds.toTypedArray())
