@@ -6,6 +6,7 @@ import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.state.GroupChatUiState
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GroupChatViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
     private val userRepository: UserRepository,
     private val groupRepository: GroupRepository,
     private val conversationRepository: ConversationRepository
@@ -25,34 +27,8 @@ class GroupChatViewModel @Inject constructor(
 
     fun loadGroupConversation(conversationId: String) {
         _uiState.value = GroupChatUiState.Loading
-        observeGroup(conversationId)
+        observeGroupMessages(conversationId)
         observeUsers(conversationId)
-    }
-
-    private fun observeGroup(conversationId: String) {
-        viewModelScope.launch {
-            try {
-                groupRepository.observeGroup(conversationId)
-                    .collect { group ->
-                        val currentState = _uiState.value
-
-                        _uiState.value =
-                            if (currentState is GroupChatUiState.Success) {
-                                currentState.copy(group = group)
-                            } else {
-                                GroupChatUiState.Success(
-                                    group = group,
-                                    members = emptyList(),
-                                    messages = emptyList()
-                                )
-                            }
-                    }
-            } catch (e: Exception) {
-                _uiState.value = GroupChatUiState.Error(
-                    message = e.message.orEmpty()
-                )
-            }
-        }
     }
 
     private fun observeUsers(conversationId: String) {
@@ -73,6 +49,48 @@ class GroupChatViewModel @Inject constructor(
                     if (currentState is GroupChatUiState.Success) {
                         _uiState.value =
                             currentState.copy(members = members)
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.value = GroupChatUiState.Error(
+                    message = e.message.orEmpty()
+                )
+            }
+        }
+    }
+
+    private fun observeGroupMessages(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                val groupFlow = groupRepository.observeGroup(conversationId)
+                val messagesFlow = conversationRepository.observeMessages(conversationId)
+
+                combine(groupFlow, messagesFlow) { group, messages ->
+                    val currentUserId = auth.currentUser?.uid.orEmpty()
+                    val removedAt = group.removedAtByUserId[currentUserId]
+
+                    val visibleMessages = if (currentUserId in group.userIds) {
+                        messages
+                    } else {
+                        messages.filter { message ->
+                            removedAt != null && message.timeStamp <= removedAt
+                        }
+                    }
+                    group to visibleMessages
+
+                }.collect { (group, messages) ->
+                    val currentState = _uiState.value
+                    _uiState.value = if (currentState is GroupChatUiState.Success) {
+                        currentState.copy(
+                            group = group,
+                            messages = messages
+                        )
+                    } else {
+                        GroupChatUiState.Success(
+                            group = group,
+                            members = emptyList(),
+                            messages = messages
+                        )
                     }
                 }
             } catch (e: Exception) {

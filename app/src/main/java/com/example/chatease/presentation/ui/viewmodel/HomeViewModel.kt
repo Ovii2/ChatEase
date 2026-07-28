@@ -222,6 +222,8 @@ class HomeViewModel @Inject constructor(
 
             val otherUser = otherUserByConversationId[conversation.id]
             val group = groupsByConversationId[conversation.id]
+            val isCurrentUserGroupMember =
+                !isGroupConversation || currentUserId in group?.userIds.orEmpty()
 
             ConversationUiModel(
                 conversationId = conversation.id,
@@ -242,12 +244,13 @@ class HomeViewModel @Inject constructor(
                     groupMembersByConversationId =
                         groupMembersByConversationId
                 ),
-                lastMessage = conversation.lastMessage,
-                timestamp = conversation.timestamp,
-                unreadCount = conversation.unreadCounts[currentUserId] ?: 0,
+                lastMessage = if (isCurrentUserGroupMember) conversation.lastMessage else "",
+                timestamp = if (isCurrentUserGroupMember) conversation.timestamp else 0L,
+                unreadCount = if (isCurrentUserGroupMember) conversation.unreadCounts[currentUserId]
+                    ?: 0 else 0,
                 isGroup = isGroupConversation,
-                isBlockedByOtherUser =
-                    otherUser?.blockedUserIds?.contains(currentUserId) ?: false
+                isBlockedByOtherUser = otherUser?.blockedUserIds?.contains(currentUserId) ?: false,
+                isCurrentUserGroupMember = isCurrentUserGroupMember,
             )
         }
     }

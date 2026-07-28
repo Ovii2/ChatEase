@@ -94,7 +94,8 @@ private fun LeftPanePreview() {
         lastMessage = "",
         timestamp = System.currentTimeMillis(),
         unreadCount = 0,
-        isGroup = false
+        isGroup = false,
+        isCurrentUserGroupMember = true
     )
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {

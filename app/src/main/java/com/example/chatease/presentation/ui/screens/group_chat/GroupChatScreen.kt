@@ -38,6 +38,13 @@ fun GroupChatScreen(
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
     val isBlockedByOtherUser = false
     val uiState by groupChatViewModel.uiState.collectAsState()
+    val currentUserId = chatViewModel.currentUserId
+    val isUserGroupMember =
+        (uiState as? GroupChatUiState.Success)
+            ?.group
+            ?.userIds
+            ?.contains(currentUserId)
+            ?: false
 
     LaunchedEffect(conversationId) {
         groupChatViewModel.loadGroupConversation(conversationId)
@@ -45,30 +52,36 @@ fun GroupChatScreen(
     }
 
     BackHandler {
-        chatViewModel.markMessagesAsSeen(conversationId)
+        if (isUserGroupMember) {
+            chatViewModel.markMessagesAsSeen(conversationId)
+        }
+
         chatViewModel.updateTypingStatus(conversationId, false)
         chatViewModel.deleteConversationIfEmpty(conversationId)
         onBackClick()
     }
 
-    val currentUserId = chatViewModel.currentUserId
-    val messages by chatViewModel.messages.collectAsState()
     val firstUnreadMessageId = chatViewModel.firstUnreadMessageId ?: ""
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     var selectedReactionsMessageId by rememberSaveable { mutableStateOf<String?>(null) }
-    val selectedMessage =
-        messages.firstOrNull { message -> message.messageId == selectedReactionsMessageId }
 
     when (val state = uiState) {
         is GroupChatUiState.Success -> {
+            val selectedMessage = state.messages.firstOrNull { message ->
+                message.messageId == selectedReactionsMessageId
+            }
+
             Scaffold(
                 modifier = modifier.padding(vertical = 8.dp),
             ) { paddingValues ->
                 RightPane(
-                    messages = messages,
+                    messages = state.messages,
                     currentUserId = currentUserId,
                     onBackClick = {
-                        chatViewModel.markMessagesAsSeen(conversationId)
+                        if (isUserGroupMember) {
+                            chatViewModel.markMessagesAsSeen(conversationId)
+                        }
+
                         chatViewModel.updateTypingStatus(conversationId, false)
                         chatViewModel.deleteConversationIfEmpty(conversationId)
                         onBackClick()

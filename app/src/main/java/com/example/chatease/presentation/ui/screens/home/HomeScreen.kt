@@ -261,7 +261,8 @@ private fun HomeScreenCompactLayoutPreview() {
         lastMessage = "",
         timestamp = System.currentTimeMillis(),
         unreadCount = 0,
-        isGroup = false
+        isGroup = false,
+        isCurrentUserGroupMember = true,
     )
     ChatEaseTheme {
         Scaffold { paddingValues ->

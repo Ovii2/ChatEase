@@ -21,9 +21,8 @@ class GroupRepositoryImpl(
         private const val GROUP = "group"
         const val USER_IDS = "userIds"
         const val ADMIN_IDS = "adminIds"
-        const val CONVERSATIONS = "conversations"
-        const val PARTICIPANT_IDS = "participantIds"
         const val VISIBLE_TO_USER_IDS = "visibleToUserIds"
+        const val REMOVED_AT_USER_ID = "removedAtByUserId"
     }
 
     override suspend fun createGroup(
@@ -134,7 +133,8 @@ class GroupRepositoryImpl(
                 mapOf(
                     USER_IDS to FieldValue.arrayRemove(userId),
                     ADMIN_IDS to FieldValue.arrayRemove(userId),
-                    VISIBLE_TO_USER_IDS to FieldValue.arrayUnion(userId)
+                    VISIBLE_TO_USER_IDS to FieldValue.arrayUnion(userId),
+                    "$REMOVED_AT_USER_ID.$userId" to System.currentTimeMillis()
                 )
             )
             .await()
@@ -144,10 +144,19 @@ class GroupRepositoryImpl(
         conversationId: String,
         memberIds: List<String>
     ) {
+        val updates = mutableMapOf<String, Any>(
+            USER_IDS to FieldValue.arrayUnion(*memberIds.toTypedArray()),
+            VISIBLE_TO_USER_IDS to FieldValue.arrayRemove(*memberIds.toTypedArray())
+        )
+
+        memberIds.forEach { memberId ->
+            updates["$REMOVED_AT_USER_ID.$memberId"] = FieldValue.delete()
+        }
+
         firestore
             .collection(GROUP)
             .document(conversationId)
-            .update(USER_IDS, FieldValue.arrayUnion(*memberIds.toTypedArray()))
+            .update(updates)
             .await()
     }
 

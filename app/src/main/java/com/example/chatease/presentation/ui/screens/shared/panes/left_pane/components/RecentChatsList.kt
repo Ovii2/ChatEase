@@ -115,7 +115,9 @@ fun RecentChatListItem(
 ) {
     val user = conversation.participants.firstOrNull() ?: return
     val backgroundColor =
-        if (conversation.unreadCount > 0) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else
+        if (conversation.unreadCount > 0 && conversation.isCurrentUserGroupMember) MaterialTheme.colorScheme.primary.copy(
+            alpha = 0.15f
+        ) else
             MaterialTheme.colorScheme.surface
 
     Box(
@@ -184,7 +186,7 @@ fun RecentChatListItem(
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                if (conversation.unreadCount > 0) {
+                if (conversation.unreadCount > 0 && conversation.isCurrentUserGroupMember) {
                     Box(
                         modifier = Modifier
                             .size(25.dp)
@@ -233,7 +235,8 @@ private fun RecentChatsListPreview() {
                         lastMessage = "Test message",
                         timestamp = System.currentTimeMillis(),
                         unreadCount = 1,
-                        isGroup = it % 2 == 0
+                        isGroup = it % 2 == 0,
+                        isCurrentUserGroupMember = true,
                     )
                 },
                 onConversationClick = { _, _ -> },
