@@ -45,4 +45,6 @@ interface ConversationRepository {
         userId: String,
         isTyping: Boolean
     )
+
+    suspend fun deleteConversationWithMessages(conversationId: String)
 }

@@ -24,6 +24,9 @@ class GroupRepositoryImpl(
         const val VISIBLE_TO_USER_IDS = "visibleToUserIds"
         const val REMOVED_AT_USER_ID = "removedAtByUserId"
         const val OWNER_ID = "ownerId"
+        const val CONVERSATIONS = "conversations"
+        const val MESSAGES = "messages"
+        const val MESSAGE_ID = "messageId"
     }
 
     override suspend fun createGroup(
@@ -194,7 +197,7 @@ class GroupRepositoryImpl(
             ).await()
     }
 
-    override suspend fun leaveGroupAsOwner(conversationId: String, currentUserId: String) {
+    override suspend fun leaveGroupAsOwner(conversationId: String, currentUserId: String): Boolean {
         val group = getGroupByConversationId(conversationId)
 
         check(group.ownerId == currentUserId) {
@@ -210,7 +213,7 @@ class GroupRepositoryImpl(
                 .delete()
                 .await()
 
-            return
+            return true
         }
 
         val newOwnerId =
@@ -234,6 +237,8 @@ class GroupRepositoryImpl(
                 )
             )
             .await()
+
+        return false
     }
 
     private suspend fun checkIfUserIsGroupOwner(conversationId: String, message: String): Group {

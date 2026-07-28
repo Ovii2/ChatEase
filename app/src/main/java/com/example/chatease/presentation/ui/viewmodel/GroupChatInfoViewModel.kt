@@ -2,6 +2,7 @@ package com.example.chatease.presentation.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class GroupChatInfoViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val groupRepository: GroupRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val conversationRepository: ConversationRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<GroupChatInfoUiState>(GroupChatInfoUiState.Loading)
@@ -78,7 +80,11 @@ class GroupChatInfoViewModel @Inject constructor(
     fun leaveGroupAsOwner(conversationId: String) {
         viewModelScope.launch {
             try {
-                groupRepository.leaveGroupAsOwner(conversationId, currentUserId)
+                val shouldDeleteConversation =
+                    groupRepository.leaveGroupAsOwner(conversationId, currentUserId)
+                if (shouldDeleteConversation) {
+                    conversationRepository.deleteConversationWithMessages(conversationId)
+                }
             } catch (e: Exception) {
                 _uiState.value = GroupChatInfoUiState.Error(
                     error = e.message ?: "Failed to leave the group as owner"

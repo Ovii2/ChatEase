@@ -333,6 +333,26 @@ class ConversationRepositoryImpl(
             .await()
     }
 
+    override suspend fun deleteConversationWithMessages(conversationId: String) {
+        val conversationRef = firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+
+        val messagesSnapshot = conversationRef
+            .collection(MESSAGES)
+            .get()
+            .await()
+
+        val batch = firestore.batch()
+
+        messagesSnapshot.documents.forEach { document ->
+            batch.delete(document.reference)
+        }
+
+        batch.delete(conversationRef)
+        batch.commit().await()
+    }
+
     private fun <T> mapDocuments(
         snapshot: QuerySnapshot,
         mapper: (DocumentSnapshot) -> T?
