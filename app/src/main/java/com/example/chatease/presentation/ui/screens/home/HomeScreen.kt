@@ -29,6 +29,7 @@ import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeCompactLayout
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeTabletLayout
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
+import com.example.chatease.presentation.ui.screens.shared.chat.ConversationOptionsBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonLinearLoader
@@ -89,6 +90,8 @@ fun HomeScreen(
 
     val missedCalls by callViewModel.missedCallsCount.collectAsState()
 
+    var showConversationOptionsBottomSheet by rememberSaveable { mutableStateOf(false) }
+
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
         onLoadConversation = chatViewModel::loadConversation,
@@ -144,7 +147,10 @@ fun HomeScreen(
                                     authViewModel.logout()
                                     onNavigateToLoginScreen()
                                 },
-                                onNavigateToProfile = onNavigateToProfile
+                                onNavigateToProfile = onNavigateToProfile,
+                                onLongClick = {
+                                    showConversationOptionsBottomSheet = true
+                                },
                             )
                         }
 
@@ -206,9 +212,17 @@ fun HomeScreen(
                                 chatPaneUiState = ChatPaneUiState.DirectChat(
                                     user = user
                                 ),
-                                onNavigateToGroupChatInfo = {}
+                                onNavigateToGroupChatInfo = {},
+                                onLongClick = {
+                                    showConversationOptionsBottomSheet = true
+                                },
                             )
                         }
+                    }
+                    if (showConversationOptionsBottomSheet) {
+                        ConversationOptionsBottomSheet(
+                            onDismiss = { showConversationOptionsBottomSheet = false }
+                        )
                     }
                 }
             }
@@ -277,7 +291,8 @@ private fun HomeScreenCompactLayoutPreview() {
                 conversations = List(3) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
-                onNavigateToProfile = {}
+                onNavigateToProfile = {},
+                onLongClick = {},
             )
         }
     }

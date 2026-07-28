@@ -272,5 +272,7 @@
     <string name="all">All</string>
     <string name="user_is_not_group_member">You are not a part of this group.</string>
 
+    <string name="delete_conversation">Delete Conversation</string>
+
 
 </resources>

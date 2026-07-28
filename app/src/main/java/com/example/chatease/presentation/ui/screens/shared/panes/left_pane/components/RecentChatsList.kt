@@ -3,6 +3,7 @@ package com.example.chatease.presentation.ui.screens.shared.panes.left_pane.comp
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,7 +48,8 @@ fun RecentChatsList(
     modifier: Modifier = Modifier,
     conversations: List<ConversationUiModel>,
     onConversationClick: (String, Boolean) -> Unit,
-    onClickToSeeAll: () -> Unit
+    onClickToSeeAll: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     val cornerShape = RoundedCornerShape(24.dp)
 
@@ -98,7 +100,8 @@ fun RecentChatsList(
                     RecentChatListItem(
                         conversation = conversation,
                         onNavigateToChatDetails = onConversationClick,
-                        cornerShape = cornerShape
+                        cornerShape = cornerShape,
+                        onLongClick = onLongClick,
                     )
                 }
             }
@@ -111,7 +114,8 @@ fun RecentChatListItem(
     modifier: Modifier = Modifier,
     conversation: ConversationUiModel,
     onNavigateToChatDetails: (String, Boolean) -> Unit,
-    cornerShape: RoundedCornerShape
+    cornerShape: RoundedCornerShape,
+    onLongClick: () -> Unit
 ) {
     val user = conversation.participants.firstOrNull() ?: return
     val backgroundColor =
@@ -128,15 +132,18 @@ fun RecentChatListItem(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .clickable(
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() }) {
-                    onNavigateToChatDetails(
-                        conversation.conversationId,
-                        conversation.isGroup
-                    )
-                },
+                    onClick = {
+                        onNavigateToChatDetails(
+                            conversation.conversationId,
+                            conversation.isGroup
+                        )
+                    },
+                    onLongClick = onLongClick
+                )
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -240,7 +247,8 @@ private fun RecentChatsListPreview() {
                     )
                 },
                 onConversationClick = { _, _ -> },
-                onClickToSeeAll = {}
+                onClickToSeeAll = {},
+                onLongClick = {},
             )
         }
     }

@@ -48,7 +48,8 @@ fun HomeTabletLayout(
     isBlockedByOtherUser: Boolean,
     isBlockedByMe: Boolean,
     chatPaneUiState: ChatPaneUiState,
-    onNavigateToGroupChatInfo: (String) -> Unit
+    onNavigateToGroupChatInfo: (String) -> Unit,
+    onLongClick: () -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -77,7 +78,8 @@ fun HomeTabletLayout(
                     conversations = state.conversations,
                     focusManager = focusManager,
                     onLogoutClick = onLogoutClick,
-                    onNavigateToProfile = onNavigateToProfile
+                    onNavigateToProfile = onNavigateToProfile,
+                    onLongClick = onLongClick
                 )
             }
         },

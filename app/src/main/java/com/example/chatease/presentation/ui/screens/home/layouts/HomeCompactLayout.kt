@@ -19,7 +19,8 @@ fun HomeCompactLayout(
     onConversationClick: (String, Boolean) -> Unit,
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     LeftPane(
         modifier = modifier
@@ -34,6 +35,7 @@ fun HomeCompactLayout(
         conversations = state.conversations,
         focusManager = focusManager,
         onLogoutClick = onLogoutClick,
-        onNavigateToProfile = onNavigateToProfile
+        onNavigateToProfile = onNavigateToProfile,
+        onLongClick = onLongClick,
     )
 }
