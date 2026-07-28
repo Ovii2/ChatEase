@@ -54,16 +54,18 @@ fun GroupChatInfoScreen(
     onBackClick: () -> Unit,
     groupChatInfoViewModel: GroupChatInfoViewModel = hiltViewModel(),
     conversationId: String,
-    onNavigateToMembersScreen: () -> Unit
+    onNavigateToMembersScreen: () -> Unit,
+    onNavigateHomeScreen: () -> Unit
 ) {
     val uiState by groupChatInfoViewModel.uiState.collectAsStateWithLifecycle()
     var isLeavingGroup by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
+    val currentUserId = groupChatInfoViewModel.currentUserId
+
 
     LaunchedEffect(conversationId) {
         groupChatInfoViewModel.loadGroup(conversationId)
     }
-
 
     Box(
         modifier = Modifier
@@ -109,6 +111,17 @@ fun GroupChatInfoScreen(
                         LeaveGroupBottomSheet(
                             sheetState = sheetState,
                             onDismissRequest = { isLeavingGroup = false },
+                            isCurrentUserOwner = state.group.ownerId == currentUserId,
+                            onLeaveGroup = {
+                                isLeavingGroup = false
+                                groupChatInfoViewModel.leaveGroup(conversationId)
+                                onNavigateHomeScreen()
+                            },
+                            onLeaveGroupAsOwner = {
+                                isLeavingGroup = false
+                                groupChatInfoViewModel.leaveGroupAsOwner(conversationId)
+                                onNavigateHomeScreen()
+                            },
                         )
                     }
                 }
@@ -122,7 +135,10 @@ fun GroupChatInfoScreen(
 fun LeaveGroupBottomSheet(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    isCurrentUserOwner: Boolean,
+    onLeaveGroup: () -> Unit,
+    onLeaveGroupAsOwner: () -> Unit
 ) {
     ModalBottomSheet(
         sheetState = sheetState,
@@ -161,7 +177,13 @@ fun LeaveGroupBottomSheet(
                 }
                 Button(
                     modifier = Modifier.width(100.dp),
-                    onClick = {}
+                    onClick = {
+                        if (isCurrentUserOwner) {
+                            onLeaveGroupAsOwner()
+                        } else {
+                            onLeaveGroup()
+                        }
+                    }
                 ) {
                     Text(text = stringResource(R.string.yes))
                 }
@@ -215,6 +237,9 @@ private fun GroupChatInfoScreenPreview() {
                     LeaveGroupBottomSheet(
                         sheetState = sheetState,
                         onDismissRequest = { isLeavingGroup = false },
+                        isCurrentUserOwner = false,
+                        onLeaveGroup = {},
+                        onLeaveGroupAsOwner = {},
                     )
                 }
             }

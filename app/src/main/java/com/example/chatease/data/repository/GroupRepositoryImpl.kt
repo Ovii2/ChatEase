@@ -23,6 +23,7 @@ class GroupRepositoryImpl(
         const val ADMIN_IDS = "adminIds"
         const val VISIBLE_TO_USER_IDS = "visibleToUserIds"
         const val REMOVED_AT_USER_ID = "removedAtByUserId"
+        const val OWNER_ID = "ownerId"
     }
 
     override suspend fun createGroup(
@@ -177,6 +178,62 @@ class GroupRepositoryImpl(
         awaitClose {
             listener.remove()
         }
+    }
+
+    override suspend fun leaveGroup(conversationId: String, currentUserId: String) {
+        firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .update(
+                mapOf(
+                    ADMIN_IDS to FieldValue.arrayRemove(currentUserId),
+                    USER_IDS to FieldValue.arrayRemove(currentUserId),
+                    VISIBLE_TO_USER_IDS to FieldValue.arrayUnion(currentUserId),
+                    "$REMOVED_AT_USER_ID.$currentUserId" to System.currentTimeMillis()
+                )
+            ).await()
+    }
+
+    override suspend fun leaveGroupAsOwner(conversationId: String, currentUserId: String) {
+        val group = getGroupByConversationId(conversationId)
+
+        check(group.ownerId == currentUserId) {
+            "Only the group owner can use this function"
+        }
+
+        val remainingMemberIds = group.userIds - currentUserId
+
+        if (remainingMemberIds.isEmpty()) {
+            firestore
+                .collection(GROUP)
+                .document(conversationId)
+                .delete()
+                .await()
+
+            return
+        }
+
+        val newOwnerId =
+            group.adminIds.firstOrNull { adminId ->
+                adminId != currentUserId
+            } ?: remainingMemberIds.random()
+
+        val updatedAdminIds =
+            (group.adminIds - currentUserId + newOwnerId).distinct()
+
+        firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .update(
+                mapOf(
+                    OWNER_ID to newOwnerId,
+                    ADMIN_IDS to updatedAdminIds,
+                    USER_IDS to FieldValue.arrayRemove(currentUserId),
+                    VISIBLE_TO_USER_IDS to FieldValue.arrayUnion(currentUserId),
+                    "$REMOVED_AT_USER_ID.$currentUserId" to System.currentTimeMillis()
+                )
+            )
+            .await()
     }
 
     private suspend fun checkIfUserIsGroupOwner(conversationId: String, message: String): Group {

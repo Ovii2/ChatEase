@@ -24,6 +24,9 @@ class GroupChatInfoViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<GroupChatInfoUiState>(GroupChatInfoUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    val currentUserId: String
+        get() = auth.currentUser?.uid ?: ""
+
     private var loadGroupJob: Job? = null
     fun loadGroup(conversationId: String) {
         loadGroupJob?.cancel()
@@ -55,6 +58,30 @@ class GroupChatInfoViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = GroupChatInfoUiState.Error(
                     error = e.message ?: "Failed to load group"
+                )
+            }
+        }
+    }
+
+    fun leaveGroup(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                groupRepository.leaveGroup(conversationId, currentUserId)
+            } catch (e: Exception) {
+                _uiState.value = GroupChatInfoUiState.Error(
+                    error = e.message ?: "Failed to leave the group"
+                )
+            }
+        }
+    }
+
+    fun leaveGroupAsOwner(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                groupRepository.leaveGroupAsOwner(conversationId, currentUserId)
+            } catch (e: Exception) {
+                _uiState.value = GroupChatInfoUiState.Error(
+                    error = e.message ?: "Failed to leave the group as owner"
                 )
             }
         }

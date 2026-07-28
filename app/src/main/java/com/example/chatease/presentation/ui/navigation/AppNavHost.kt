@@ -337,6 +337,14 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateHomeScreen = {
+                    navController.navigate(Screens.Home.route) {
+                        popUpTo(Screens.Home.route) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.GroupChatMembers.route) {
