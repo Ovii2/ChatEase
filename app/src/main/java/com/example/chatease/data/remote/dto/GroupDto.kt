@@ -7,5 +7,6 @@ data class GroupDto(
     val visibleToUserIds: List<String> = emptyList(),
     val ownerId: String = "",
     val name: String = "",
-    val imageUrl: String? = null
+    val imageUrl: String? = null,
+    val removedAtByUserId: Map<String, Long> = emptyMap()
 )
