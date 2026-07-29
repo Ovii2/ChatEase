@@ -10,11 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DeleteOutline
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.sharp.Delete
-import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +31,10 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun ConversationOptionsBottomSheet(
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onLeaveGroup: () -> Unit,
+    onDeleteConversation: () -> Unit,
+    isGroup: Boolean
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -52,17 +50,19 @@ fun ConversationOptionsBottomSheet(
             horizontalAlignment = Alignment.Start
         ) {
             ConversationOptionsItem(
-                onClick = {},
+                onClick = onDeleteConversation,
                 icon = Icons.Filled.Delete,
                 text = R.string.delete_conversation,
                 isDestructive = true,
             )
-            ConversationOptionsItem(
-                onClick = {},
-                icon = Icons.AutoMirrored.Default.ExitToApp,
-                text = R.string.leave_group,
-                isDestructive = true,
-            )
+            if (isGroup) {
+                ConversationOptionsItem(
+                    onClick = onLeaveGroup,
+                    icon = Icons.AutoMirrored.Default.ExitToApp,
+                    text = R.string.leave_group,
+                    isDestructive = true,
+                )
+            }
         }
     }
 }
@@ -109,7 +109,10 @@ private fun ConversationOptionsBottomSheetPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ConversationOptionsBottomSheet(
-                    onDismiss = {}
+                    onDismiss = {},
+                    onLeaveGroup = {},
+                    onDeleteConversation = {},
+                    isGroup = false,
                 )
             }
         }

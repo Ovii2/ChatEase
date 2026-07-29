@@ -49,7 +49,7 @@ fun HomeTabletLayout(
     isBlockedByMe: Boolean,
     chatPaneUiState: ChatPaneUiState,
     onNavigateToGroupChatInfo: (String) -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: (String, Boolean) -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()

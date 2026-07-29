@@ -20,7 +20,7 @@ fun HomeCompactLayout(
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
     onNavigateToProfile: () -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: (String, Boolean) -> Unit
 ) {
     LeftPane(
         modifier = modifier

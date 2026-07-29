@@ -157,8 +157,8 @@
     <string name="mute_notifications">Mute notifications</string>
     <string name="unmute_notifications">Unmute notifications</string>
 
-    <string name="confirm_chat_delete_title">Delete conversation</string>
-    <string name="confirm_chat_delete_body">This action will delete conversation only for you.</string>
+    <string name="confirm_conversation_delete_title">Delete conversation</string>
+    <string name="confirm_conversation_delete_body">This action will delete conversation only for you.</string>
 
     <string name="one_is_typing">%1$s is typing…</string>
     <string name="two_are_typing">%1$s and %2$s are typing…</string>
@@ -273,6 +273,10 @@
     <string name="user_is_not_group_member">You are not a part of this group.</string>
 
     <string name="delete_conversation">Delete Conversation</string>
+    <string name="leave_group_title">Confirm leave group</string>
+    <string name="leave_group_text">This action will remove you from the group</string>
+    <string name="leave">Leave</string>
+    <string name="delete">Delete</string>
 
 
 </resources>

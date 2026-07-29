@@ -71,8 +71,8 @@ fun ChatInfoScreen(
         )
         if (showDeleteDialog) {
             CommonAlertDialog(
-                title = R.string.confirm_chat_delete_title,
-                bodyText = R.string.confirm_chat_delete_body,
+                title = R.string.confirm_conversation_delete_title,
+                bodyText = R.string.confirm_conversation_delete_body,
                 dismissButtonText = R.string.dismiss_btn,
                 acceptButtonText = R.string.delete_chat,
                 onDismiss = { showDeleteDialog = false },

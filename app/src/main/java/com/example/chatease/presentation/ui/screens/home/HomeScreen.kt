@@ -22,13 +22,16 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.chatease.R
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.AlertDialogType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeCompactLayout
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeTabletLayout
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
+import com.example.chatease.presentation.ui.screens.shared.chat.CommonAlertDialog
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationOptionsBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
@@ -91,6 +94,9 @@ fun HomeScreen(
     val missedCalls by callViewModel.missedCallsCount.collectAsState()
 
     var showConversationOptionsBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showLeaveGroupDialog by rememberSaveable { mutableStateOf(false) }
+    var showDeleteConversationDialog by rememberSaveable { mutableStateOf(false) }
+    var selectedConversationIsGroup by rememberSaveable { mutableStateOf(false) }
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -148,7 +154,9 @@ fun HomeScreen(
                                     onNavigateToLoginScreen()
                                 },
                                 onNavigateToProfile = onNavigateToProfile,
-                                onLongClick = {
+                                onLongClick = { conversationId, isGroup ->
+                                    selectedConversationId = conversationId
+                                    selectedConversationIsGroup = isGroup
                                     showConversationOptionsBottomSheet = true
                                 },
                             )
@@ -213,7 +221,9 @@ fun HomeScreen(
                                     user = user
                                 ),
                                 onNavigateToGroupChatInfo = {},
-                                onLongClick = {
+                                onLongClick = { conversationId, isGroup ->
+                                    selectedConversationId = conversationId
+                                    selectedConversationIsGroup = isGroup
                                     showConversationOptionsBottomSheet = true
                                 },
                             )
@@ -221,7 +231,38 @@ fun HomeScreen(
                     }
                     if (showConversationOptionsBottomSheet) {
                         ConversationOptionsBottomSheet(
-                            onDismiss = { showConversationOptionsBottomSheet = false }
+                            onDismiss = { showConversationOptionsBottomSheet = false },
+                            onLeaveGroup = { showLeaveGroupDialog = true },
+                            onDeleteConversation = { showDeleteConversationDialog = true },
+                            isGroup = selectedConversationIsGroup,
+                        )
+                    }
+                    if (showLeaveGroupDialog) {
+                        CommonAlertDialog(
+                            title = R.string.leave_group,
+                            bodyText = R.string.leave_group_text,
+                            dismissButtonText = R.string.dismiss_btn,
+                            acceptButtonText = R.string.leave,
+                            onDismiss = {
+                                showLeaveGroupDialog = false
+                                showConversationOptionsBottomSheet = false
+                            },
+                            onAccept = {},
+                            alertDialogType = AlertDialogType.CONFIRMATION
+                        )
+                    }
+                    if (showDeleteConversationDialog) {
+                        CommonAlertDialog(
+                            title = R.string.confirm_conversation_delete_title,
+                            bodyText = R.string.confirm_conversation_delete_body,
+                            dismissButtonText = R.string.dismiss_btn,
+                            acceptButtonText = R.string.delete,
+                            onDismiss = {
+                                showDeleteConversationDialog = false
+                                showConversationOptionsBottomSheet = false
+                            },
+                            onAccept = {},
+                            alertDialogType = AlertDialogType.CONFIRMATION
                         )
                     }
                 }
@@ -292,7 +333,7 @@ private fun HomeScreenCompactLayoutPreview() {
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
                 onNavigateToProfile = {},
-                onLongClick = {},
+                onLongClick = { _, _ -> },
             )
         }
     }

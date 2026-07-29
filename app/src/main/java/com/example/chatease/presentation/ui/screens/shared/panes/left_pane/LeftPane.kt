@@ -36,7 +36,7 @@ fun LeftPane(
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
     onNavigateToProfile: () -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: (String, Boolean) -> Unit
 ) {
     Box(
         modifier = modifier.clickable(
@@ -112,7 +112,7 @@ private fun LeftPanePreview() {
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
                 onNavigateToProfile = {},
-                onLongClick = {},
+                onLongClick = { _, _ -> },
             )
         }
     }

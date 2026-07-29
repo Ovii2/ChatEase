@@ -49,7 +49,7 @@ fun RecentChatsList(
     conversations: List<ConversationUiModel>,
     onConversationClick: (String, Boolean) -> Unit,
     onClickToSeeAll: () -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: (String, Boolean) -> Unit
 ) {
     val cornerShape = RoundedCornerShape(24.dp)
 
@@ -115,7 +115,7 @@ fun RecentChatListItem(
     conversation: ConversationUiModel,
     onNavigateToChatDetails: (String, Boolean) -> Unit,
     cornerShape: RoundedCornerShape,
-    onLongClick: () -> Unit
+    onLongClick: (String, Boolean) -> Unit
 ) {
     val user = conversation.participants.firstOrNull() ?: return
     val backgroundColor =
@@ -141,7 +141,12 @@ fun RecentChatListItem(
                             conversation.isGroup
                         )
                     },
-                    onLongClick = onLongClick
+                    onLongClick = {
+                        onLongClick(
+                            conversation.conversationId,
+                            conversation.isGroup
+                        )
+                    }
                 )
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,7 +253,7 @@ private fun RecentChatsListPreview() {
                 },
                 onConversationClick = { _, _ -> },
                 onClickToSeeAll = {},
-                onLongClick = {},
+                onLongClick = { _, _ -> },
             )
         }
     }
