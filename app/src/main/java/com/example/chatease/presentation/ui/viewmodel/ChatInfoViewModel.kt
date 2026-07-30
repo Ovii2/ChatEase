@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.ConversationRepository
+import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class ChatInfoViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val userRepository: UserRepository,
-    private val conversationRepository: ConversationRepository
+    private val conversationRepository: ConversationRepository,
+    private val groupRepository: GroupRepository
 ) : ViewModel() {
 
     private val _user = MutableStateFlow(User())
@@ -86,6 +88,22 @@ class ChatInfoViewModel @Inject constructor(
                 _isConversationDeleted.value = true
             } catch (e: Exception) {
                 Log.e("ChatInfoViewModel", e.message ?: "Failed to delete conversation")
+            }
+        }
+    }
+
+    fun deleteGroupConversation(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                conversationRepository.deleteConversation(conversationId)
+                groupRepository.removeFormerMemberVisibility(
+                    conversationId = conversationId,
+                    currentUserId = currentUserId
+                )
+                _isConversationDeleted.value = true
+            } catch (e: Exception) {
+                _isConversationDeleted.value = false
+                Log.e("ChatInfoViewModel", e.message ?: "Failed to delete group conversation")
             }
         }
     }

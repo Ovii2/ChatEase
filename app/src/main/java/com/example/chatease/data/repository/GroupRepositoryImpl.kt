@@ -266,6 +266,22 @@ class GroupRepositoryImpl(
         return false
     }
 
+    override suspend fun removeFormerMemberVisibility(
+        conversationId: String,
+        currentUserId: String
+    ) {
+        firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .update(
+                mapOf(
+                    VISIBLE_TO_USER_IDS to FieldValue.arrayRemove(currentUserId),
+                    "$REMOVED_AT_USER_ID.$currentUserId" to FieldValue.delete()
+                )
+            )
+            .await()
+    }
+
     private suspend fun checkIfUserIsGroupOwner(conversationId: String, message: String): Group {
         val currentUserId =
             auth.currentUser?.uid ?: throw IllegalStateException("User is not authenticated")

@@ -296,7 +296,11 @@ fun HomeScreen(
                             },
                             onAccept = {
                                 selectedConversationId?.let {
-                                    chatInfoViewModel.deleteConversation(it)
+                                    if (selectedConversationIsGroup) {
+                                        chatInfoViewModel.deleteGroupConversation(it)
+                                    } else {
+                                        chatInfoViewModel.deleteConversation(it)
+                                    }
                                 }
                                 showDeleteConversationDialog = false
                                 showConversationOptionsBottomSheet = false

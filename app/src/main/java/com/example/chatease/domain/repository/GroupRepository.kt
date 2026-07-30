@@ -32,4 +32,6 @@ interface GroupRepository {
     suspend fun leaveGroup(conversationId: String, currentUserId: String)
     suspend fun leaveGroupAsOwner(conversationId: String, currentUserId: String): Boolean
 
+    suspend fun removeFormerMemberVisibility(conversationId: String, currentUserId: String)
+
 }
