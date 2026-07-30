@@ -34,7 +34,8 @@ fun ConversationOptionsBottomSheet(
     onDismiss: () -> Unit,
     onLeaveGroup: () -> Unit,
     onDeleteConversation: () -> Unit,
-    isGroup: Boolean
+    isGroup: Boolean,
+    isGroupMember : Boolean
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -45,8 +46,8 @@ fun ConversationOptionsBottomSheet(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp, horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+                .padding(vertical = 12.dp, horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.Start
         ) {
             ConversationOptionsItem(
@@ -55,7 +56,7 @@ fun ConversationOptionsBottomSheet(
                 text = R.string.delete_conversation,
                 isDestructive = true,
             )
-            if (isGroup) {
+            if (isGroup && isGroupMember) {
                 ConversationOptionsItem(
                     onClick = onLeaveGroup,
                     icon = Icons.AutoMirrored.Default.ExitToApp,
@@ -112,7 +113,8 @@ private fun ConversationOptionsBottomSheetPreview() {
                     onDismiss = {},
                     onLeaveGroup = {},
                     onDeleteConversation = {},
-                    isGroup = false,
+                    isGroup = true,
+                    isGroupMember = true,
                 )
             }
         }

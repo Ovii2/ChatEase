@@ -102,6 +102,7 @@ fun HomeScreen(
     var showDeleteConversationDialog by rememberSaveable { mutableStateOf(false) }
     var selectedConversationIsGroup by rememberSaveable { mutableStateOf(false) }
     val isOwner by groupChatInfoViewModel.isOwner.collectAsState()
+    val isGroupMember by groupChatInfoViewModel.isGroupMember.collectAsState()
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -164,6 +165,9 @@ fun HomeScreen(
                                     selectedConversationIsGroup = isGroup
                                     if (isGroup) {
                                         groupChatInfoViewModel.checkIfUserIsGroupOwner(
+                                            conversationId
+                                        )
+                                        groupChatInfoViewModel.checkIfUserIsGroupMember(
                                             conversationId
                                         )
                                     }
@@ -238,6 +242,9 @@ fun HomeScreen(
                                         groupChatInfoViewModel.checkIfUserIsGroupOwner(
                                             conversationId
                                         )
+                                        groupChatInfoViewModel.checkIfUserIsGroupMember(
+                                            conversationId
+                                        )
                                     }
                                     showConversationOptionsBottomSheet = true
                                 },
@@ -250,6 +257,7 @@ fun HomeScreen(
                             onLeaveGroup = { showLeaveGroupDialog = true },
                             onDeleteConversation = { showDeleteConversationDialog = true },
                             isGroup = selectedConversationIsGroup,
+                            isGroupMember = isGroupMember,
                         )
                     }
                     if (showLeaveGroupDialog) {
@@ -270,7 +278,7 @@ fun HomeScreen(
                                         groupChatInfoViewModel.leaveGroup(it)
                                     }
                                 }
-                                showDeleteConversationDialog = false
+                                showLeaveGroupDialog = false
                                 showConversationOptionsBottomSheet = false
                             },
                             alertDialogType = AlertDialogType.CONFIRMATION

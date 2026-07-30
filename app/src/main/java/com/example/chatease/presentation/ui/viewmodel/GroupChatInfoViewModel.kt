@@ -29,6 +29,9 @@ class GroupChatInfoViewModel @Inject constructor(
     private val _isOwner = MutableStateFlow(false)
     val isOwner = _isOwner.asStateFlow()
 
+    private val _isGroupMember = MutableStateFlow(false)
+    val isGroupMember = _isGroupMember.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -103,6 +106,17 @@ class GroupChatInfoViewModel @Inject constructor(
                 _isOwner.value = group.ownerId == currentUserId
             } catch (e: Exception) {
                 _isOwner.value = false
+            }
+        }
+    }
+
+    fun checkIfUserIsGroupMember(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                val group = groupRepository.getGroupByConversationId(conversationId)
+                _isGroupMember.value = currentUserId in group.userIds
+            } catch (e: Exception) {
+                _isGroupMember.value = false
             }
         }
     }
