@@ -24,6 +24,8 @@ class GroupRepositoryImpl(
         const val VISIBLE_TO_USER_IDS = "visibleToUserIds"
         const val REMOVED_AT_USER_ID = "removedAtByUserId"
         const val OWNER_ID = "ownerId"
+        const val CONVERSATIONS = "conversations"
+        const val PARTICIPANT_IDS = "participantIds"
     }
 
     override suspend fun createGroup(
@@ -148,6 +150,18 @@ class GroupRepositoryImpl(
         conversationId: String,
         memberIds: List<String>
     ) {
+        if (memberIds.isEmpty()) {
+            return
+        }
+
+        val groupRef = firestore
+            .collection(GROUP)
+            .document(conversationId)
+
+        val conversationRef = firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+
         val group = getGroupByConversationId(conversationId)
         val finalMemberCount = (group.userIds + memberIds).distinct().size
         require(finalMemberCount <= 50) {
@@ -159,15 +173,20 @@ class GroupRepositoryImpl(
             VISIBLE_TO_USER_IDS to FieldValue.arrayRemove(*memberIds.toTypedArray())
         )
 
+        val batch = firestore.batch()
+
         memberIds.forEach { memberId ->
             updates["$REMOVED_AT_USER_ID.$memberId"] = FieldValue.delete()
         }
 
-        firestore
-            .collection(GROUP)
-            .document(conversationId)
-            .update(updates)
-            .await()
+        batch.update(groupRef, updates)
+        batch.update(
+            conversationRef,
+            PARTICIPANT_IDS,
+            FieldValue.arrayUnion(*memberIds.toTypedArray())
+        )
+
+        batch.commit().await()
     }
 
     override fun observeGroup(conversationId: String): Flow<Group> = callbackFlow {
