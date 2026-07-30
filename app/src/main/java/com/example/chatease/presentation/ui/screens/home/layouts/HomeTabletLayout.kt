@@ -49,7 +49,8 @@ fun HomeTabletLayout(
     isBlockedByMe: Boolean,
     chatPaneUiState: ChatPaneUiState,
     onNavigateToGroupChatInfo: (String) -> Unit,
-    onLongClick: (String, Boolean) -> Unit
+    onLongClick: (String, Boolean) -> Unit,
+    onViewContactClick: (String) -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -116,6 +117,7 @@ fun HomeTabletLayout(
                     onUnblockContactClick = {},
                     isBlockedByMe = isBlockedByMe,
                     isBlockedByOtherUser = isBlockedByOtherUser,
+                    onViewContactClick = onViewContactClick,
                 )
             }
         }

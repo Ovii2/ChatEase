@@ -71,7 +71,8 @@ fun HomeScreen(
     onStartNewChat: () -> Unit,
     currentRoute: String,
     onBackClick: () -> Unit,
-    onNavigateToChatInfo: (String) -> Unit
+    onNavigateToChatInfo: (String) -> Unit,
+    onViewContactClick: (String) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -248,6 +249,7 @@ fun HomeScreen(
                                     }
                                     showConversationOptionsBottomSheet = true
                                 },
+                                onViewContactClick = onViewContactClick,
                             )
                         }
                     }

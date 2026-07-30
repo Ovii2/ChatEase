@@ -39,7 +39,8 @@ fun ExtraPane(
     onBlockContactClick: (String) -> Unit,
     onUnblockContactClick: (String) -> Unit,
     isBlockedByMe: Boolean,
-    isBlockedByOtherUser: Boolean
+    isBlockedByOtherUser: Boolean,
+    onViewContactClick: (String) -> Unit
 ) {
     var checked by rememberSaveable { mutableStateOf(false) }
     val iconSize = 26.dp
@@ -89,7 +90,7 @@ fun ExtraPane(
             }
             ExtraPaneMoreSection(
                 iconSize = iconSize,
-                onViewContactClick = {},
+                onViewContactClick = { onViewContactClick(user.uid) },
                 onShareContactClick = {},
                 onBlockContactClick = { onBlockContactClick(user.uid) },
                 onUnblockContactClick = { onUnblockContactClick(user.uid) },
@@ -128,6 +129,7 @@ private fun ExtraPanePreview() {
                     onUnblockContactClick = {},
                     isBlockedByMe = false,
                     isBlockedByOtherUser = false,
+                    onViewContactClick = {},
                 )
             }
         }

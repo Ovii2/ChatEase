@@ -119,7 +119,12 @@ fun AppNavHost(
                 },
                 currentRoute = currentRoute,
                 onBackClick = { navController.popBackStack() },
-                onNavigateToChatInfo = {}
+                onNavigateToChatInfo = { conversationId ->
+                    navController.navigate(Screens.ChatInfo.createRoute(conversationId)) {
+                        launchSingleTop = true
+                    }
+                },
+                onViewContactClick = {},
             )
         }
         composable(route = Screens.Chat.route) {
@@ -228,6 +233,11 @@ fun AppNavHost(
                         popUpTo(Screens.Home.route) {
                             inclusive = true
                         }
+                        launchSingleTop = true
+                    }
+                },
+                onViewContactClick = { userId ->
+                    navController.navigate(Screens.OtherUserProfile.createRoute(userId)) {
                         launchSingleTop = true
                     }
                 },

@@ -31,7 +31,8 @@ fun ChatInfoScreen(
     conversationId: String,
     chatInfoViewModel: ChatInfoViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onNavigateToHomeScreen: () -> Unit
+    onNavigateToHomeScreen: () -> Unit,
+    onViewContactClick: (String) -> Unit
 ) {
     val user by chatInfoViewModel.user.collectAsState()
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
@@ -68,6 +69,7 @@ fun ChatInfoScreen(
             onUnblockContactClick = { chatInfoViewModel.unblockUser(user.uid) },
             isBlockedByMe = isBlockedByMe,
             isBlockedByOtherUser = isBlockedByOtherUser,
+            onViewContactClick = onViewContactClick,
         )
         if (showDeleteDialog) {
             CommonAlertDialog(
@@ -112,6 +114,7 @@ private fun ChatInfoScreenPreview() {
                     conversationId = "1",
                     onBackClick = {},
                     onNavigateToHomeScreen = {},
+                    onViewContactClick = {},
                 )
             }
         }
