@@ -42,8 +42,10 @@ import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
+import com.example.chatease.presentation.ui.viewmodel.ChatInfoViewModel
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
+import com.example.chatease.presentation.ui.viewmodel.GroupChatInfoViewModel
 import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
 
 @OptIn(
@@ -62,12 +64,14 @@ fun HomeScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     contactsViewModel: ContactsViewModel = hiltViewModel(),
     chatViewModel: ChatViewModel = hiltViewModel(),
+    chatInfoViewModel: ChatInfoViewModel = hiltViewModel(),
+    groupChatInfoViewModel: GroupChatInfoViewModel = hiltViewModel(),
     callViewModel: CallViewModel = hiltViewModel(),
     onNavigateToLoginScreen: () -> Unit,
     onStartNewChat: () -> Unit,
     currentRoute: String,
     onBackClick: () -> Unit,
-    onNavigateToChatInfo: (String) -> Unit,
+    onNavigateToChatInfo: (String) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -97,6 +101,7 @@ fun HomeScreen(
     var showLeaveGroupDialog by rememberSaveable { mutableStateOf(false) }
     var showDeleteConversationDialog by rememberSaveable { mutableStateOf(false) }
     var selectedConversationIsGroup by rememberSaveable { mutableStateOf(false) }
+    val isOwner by groupChatInfoViewModel.isOwner.collectAsState()
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -157,6 +162,11 @@ fun HomeScreen(
                                 onLongClick = { conversationId, isGroup ->
                                     selectedConversationId = conversationId
                                     selectedConversationIsGroup = isGroup
+                                    if (isGroup) {
+                                        groupChatInfoViewModel.checkIfUserIsGroupOwner(
+                                            conversationId
+                                        )
+                                    }
                                     showConversationOptionsBottomSheet = true
                                 },
                             )
@@ -224,6 +234,11 @@ fun HomeScreen(
                                 onLongClick = { conversationId, isGroup ->
                                     selectedConversationId = conversationId
                                     selectedConversationIsGroup = isGroup
+                                    if (isGroup) {
+                                        groupChatInfoViewModel.checkIfUserIsGroupOwner(
+                                            conversationId
+                                        )
+                                    }
                                     showConversationOptionsBottomSheet = true
                                 },
                             )
@@ -247,7 +262,17 @@ fun HomeScreen(
                                 showLeaveGroupDialog = false
                                 showConversationOptionsBottomSheet = false
                             },
-                            onAccept = {},
+                            onAccept = {
+                                selectedConversationId?.let {
+                                    if (isOwner) {
+                                        groupChatInfoViewModel.leaveGroupAsOwner(it)
+                                    } else {
+                                        groupChatInfoViewModel.leaveGroup(it)
+                                    }
+                                }
+                                showDeleteConversationDialog = false
+                                showConversationOptionsBottomSheet = false
+                            },
                             alertDialogType = AlertDialogType.CONFIRMATION
                         )
                     }
@@ -261,7 +286,13 @@ fun HomeScreen(
                                 showDeleteConversationDialog = false
                                 showConversationOptionsBottomSheet = false
                             },
-                            onAccept = {},
+                            onAccept = {
+                                selectedConversationId?.let {
+                                    chatInfoViewModel.deleteConversation(it)
+                                }
+                                showDeleteConversationDialog = false
+                                showConversationOptionsBottomSheet = false
+                            },
                             alertDialogType = AlertDialogType.CONFIRMATION
                         )
                     }

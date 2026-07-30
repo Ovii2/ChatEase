@@ -26,6 +26,9 @@ class GroupChatInfoViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<GroupChatInfoUiState>(GroupChatInfoUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _isOwner = MutableStateFlow(false)
+    val isOwner = _isOwner.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -89,6 +92,17 @@ class GroupChatInfoViewModel @Inject constructor(
                 _uiState.value = GroupChatInfoUiState.Error(
                     error = e.message ?: "Failed to leave the group as owner"
                 )
+            }
+        }
+    }
+
+    fun checkIfUserIsGroupOwner(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                val group = groupRepository.getGroupByConversationId(conversationId)
+                _isOwner.value = group.ownerId == currentUserId
+            } catch (e: Exception) {
+                _isOwner.value = false
             }
         }
     }
