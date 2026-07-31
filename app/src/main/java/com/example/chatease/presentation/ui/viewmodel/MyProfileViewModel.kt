@@ -106,7 +106,10 @@ class MyProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val currentUserId = currentUserId ?: return@launch
             try {
-                _conversations.value = conversationRepository.getUserConversations(currentUserId)
+                val conversations = conversationRepository.getUserConversations(currentUserId)
+                _conversations.value = conversations.filterNot { conversation ->
+                    currentUserId in conversation.deletedFor
+                }
                 refreshStats()
             } catch (e: Exception) {
                 Log.v(

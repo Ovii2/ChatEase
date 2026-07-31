@@ -86,7 +86,6 @@ fun MyProfileTopSection(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(text = "@johndoe")
         }
     }
 }
