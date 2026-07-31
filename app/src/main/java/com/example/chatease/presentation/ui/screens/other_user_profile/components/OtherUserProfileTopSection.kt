@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,6 +68,12 @@ fun OtherUserProfileTopSection(
             statusBubbleOffsetX = (-2).dp,
             statusBubbleOffsetY = (-4).dp,
             showStatus = isConnected && !isBlocked
+        )
+        Text(
+            text = user.fullName,
+            style = MaterialTheme.typography.displaySmall,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
         if (!isConnected && !isBlocked) {
             Row(

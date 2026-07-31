@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +39,7 @@ fun OtherUserProfileActionsSection(
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
     ) {
         actions.forEach { item ->
             val onClick = when (item.label) {
@@ -47,10 +50,26 @@ fun OtherUserProfileActionsSection(
                     {}
                 }
             }
+
+            val circleColor = when (item.label) {
+                R.string.view_photo -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                R.string.block -> MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
+                R.string.report -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                else -> MaterialTheme.colorScheme.surfaceContainerHighest
+            }
+
+            val iconColor = when (item.label) {
+                R.string.view_photo -> MaterialTheme.colorScheme.primary
+                R.string.block -> MaterialTheme.colorScheme.error
+                R.string.report -> MaterialTheme.colorScheme.tertiary
+                else -> MaterialTheme.colorScheme.surfaceContainerHighest
+            }
             OtherUserProfileActionItem(
                 modifier = Modifier.weight(1f),
                 item = item,
-                onClick = onClick
+                onClick = onClick,
+                circleColor = circleColor,
+                iconColor = iconColor
             )
         }
     }
@@ -61,6 +80,8 @@ fun OtherUserProfileActionItem(
     modifier: Modifier = Modifier,
     item: QuickActionsItem,
     onClick: () -> Unit,
+    circleColor: Color,
+    iconColor: Color
 ) {
     Column(
         modifier = modifier,
@@ -69,25 +90,33 @@ fun OtherUserProfileActionItem(
     ) {
         Box(
             modifier = Modifier
-                .size(50.dp)
+                .fillMaxWidth()
+                .height(50.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    color = circleColor,
                     shape = CircleShape
                 )
                 .clickable { onClick() },
             contentAlignment = Alignment.Center
         ) {
-            item.icon?.let {
-                Icon(
-                    imageVector = item.icon,
-                    contentDescription = null
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
+            ) {
+                item.icon?.let {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = null,
+                        tint = iconColor
+                    )
+                }
+                Text(
+                    text = stringResource(item.label),
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }
-        Text(
-            text = stringResource(item.label),
-            style = MaterialTheme.typography.labelLarge
-        )
     }
 }
 
