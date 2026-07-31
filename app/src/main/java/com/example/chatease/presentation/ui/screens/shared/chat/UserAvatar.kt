@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
@@ -36,12 +37,21 @@ fun UserAvatar(
     initialsFontSize: TextUnit = 24.sp,
     statusBubbleOffsetX: Dp = 1.dp,
     statusBubbleOffsetY: Dp = (-1).dp,
-    showStatus: Boolean = true
+    showStatus: Boolean = true,
+    hasBorder: Boolean = false
 ) {
+    val border = if (hasBorder) Modifier.border(
+        width = 4.dp,
+        color = MaterialTheme.colorScheme.background,
+        shape = CircleShape
+    ) else Modifier
 
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier
+    ) {
         if (user.imageUrl == null) {
             UserEmptyAvatar(
+                modifier = Modifier.then(border),
                 user = user,
                 avatarSize = avatarSize,
                 initialsFontSize = initialsFontSize
@@ -50,7 +60,8 @@ fun UserAvatar(
             AsyncImage(
                 modifier = Modifier
                     .size(avatarSize)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .then(border),
                 contentScale = ContentScale.Crop,
                 model = user.imageUrl,
                 contentDescription = null
@@ -83,7 +94,7 @@ private fun UserAvatarPreview() {
         fullName = "Test Test",
         email = "test@email.com",
         imageUrl = null,
-        status = UserPresenceStatus.OFFLINE
+        status = UserPresenceStatus.ONLINE
     )
     ChatEaseTheme {
         Column(
@@ -92,7 +103,9 @@ private fun UserAvatarPreview() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             UserAvatar(
-                user = user
+                user = user,
+                showStatus = true,
+                hasBorder = true
             )
         }
     }

@@ -278,5 +278,7 @@
     <string name="leave">Leave</string>
     <string name="delete">Delete</string>
 
+    <string name="mutual_groups">Mutual Groups</string>
+
 
 </resources>

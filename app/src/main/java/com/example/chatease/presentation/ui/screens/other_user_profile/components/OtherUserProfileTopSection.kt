@@ -29,11 +29,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
-import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -56,20 +54,13 @@ fun OtherUserProfileTopSection(
 
 
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        UserAvatar(
-            user = user,
-            avatarSize = 140.dp,
-            statusBubbleSize = 35.dp,
-            initialsFontSize = 70.sp,
-            statusBubbleOffsetX = (-2).dp,
-            statusBubbleOffsetY = (-4).dp,
-            showStatus = isConnected && !isBlocked
-        )
         Text(
+            modifier = Modifier.padding(top = 80.dp),
             text = user.fullName,
             style = MaterialTheme.typography.displaySmall,
             maxLines = 2,

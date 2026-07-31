@@ -36,6 +36,8 @@ fun OtherUserProfileActionsSection(
     onReportClick: () -> Unit
 ) {
     val actions = OtherUserQuickActionsDataSource.actions
+    val alpha = 0.2f
+
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -52,9 +54,9 @@ fun OtherUserProfileActionsSection(
             }
 
             val circleColor = when (item.label) {
-                R.string.view_photo -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-                R.string.block -> MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
-                R.string.report -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                R.string.view_photo -> MaterialTheme.colorScheme.primary.copy(alpha = alpha)
+                R.string.block -> MaterialTheme.colorScheme.error.copy(alpha = alpha)
+                R.string.report -> MaterialTheme.colorScheme.tertiary.copy(alpha = alpha)
                 else -> MaterialTheme.colorScheme.surfaceContainerHighest
             }
 

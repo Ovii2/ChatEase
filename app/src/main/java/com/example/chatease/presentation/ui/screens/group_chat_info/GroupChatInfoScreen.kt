@@ -87,7 +87,7 @@ fun GroupChatInfoScreen(
                 CommonTopBar(
                     onBackClick = onBackClick,
                     title = R.string.group_info,
-                    transparent = true
+                    isTransparent = true
                 )
             }
         ) { paddingValues ->
