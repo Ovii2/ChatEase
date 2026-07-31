@@ -254,6 +254,9 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToMutualGroup = { conversationId ->
+                    navController.navigate(Screens.GroupChat.createRoute(conversationId))
+                },
             )
         }
         composable(route = Screens.BlockedUsers.route) {

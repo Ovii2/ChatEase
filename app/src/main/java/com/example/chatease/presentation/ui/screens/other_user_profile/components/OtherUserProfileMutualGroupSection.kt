@@ -1,11 +1,14 @@
 package com.example.chatease.presentation.ui.screens.other_user_profile.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.ElevatedCard
@@ -14,10 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
@@ -28,7 +33,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun OtherUserProfileMutualGroupSection(
     modifier: Modifier = Modifier,
-    groups: List<Group>
+    groups: List<Group>,
+    onNavigateToMutualGroup: (String) -> Unit
 ) {
     ElevatedCard(
         modifier = modifier
@@ -36,7 +42,7 @@ fun OtherUserProfileMutualGroupSection(
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
                 text = stringResource(R.string.mutual_groups),
@@ -45,7 +51,8 @@ fun OtherUserProfileMutualGroupSection(
             )
             groups.forEach { group ->
                 OtherUserProfileMutualGroupItem(
-                    group = group
+                    group = group,
+                    onNavigateToMutualGroup = onNavigateToMutualGroup
                 )
             }
         }
@@ -55,10 +62,20 @@ fun OtherUserProfileMutualGroupSection(
 @Composable
 fun OtherUserProfileMutualGroupItem(
     modifier: Modifier = Modifier,
-    group: Group
+    group: Group,
+    onNavigateToMutualGroup: (String) -> Unit
 ) {
+    val members = group.userIds.size
+
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                onNavigateToMutualGroup(group.conversationId)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -67,13 +84,21 @@ fun OtherUserProfileMutualGroupItem(
                 imageUrl = group.imageUrl,
                 imageSize = 50.dp
             )
-            Column() {
+            Column(modifier = Modifier.widthIn(max = 250.dp)) {
                 Text(
                     text = group.name,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.W600
+                    fontWeight = FontWeight.W600,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Text(text = stringResource(R.string.total_members, group.userIds.size))
+                Text(
+                    text = if (members > 1) {
+                        stringResource(R.string.total_members, group.userIds.size)
+                    } else {
+                        stringResource(R.string.one_member)
+                    }
+                )
             }
         }
         Icon(
@@ -108,7 +133,8 @@ private fun OtherUserProfileMutualGroupItemPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OtherUserProfileMutualGroupItem(
-                    group = group
+                    group = group,
+                    onNavigateToMutualGroup = {},
                 )
             }
         }
@@ -140,7 +166,8 @@ private fun OtherUserProfileMutualGroupSectionPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OtherUserProfileMutualGroupSection(
-                    groups = groups
+                    groups = groups,
+                    onNavigateToMutualGroup = {},
                 )
             }
         }

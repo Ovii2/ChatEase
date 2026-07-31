@@ -33,7 +33,9 @@ fun OtherUserProfileScreenContent(
     isBlocked: Boolean,
     onUnblockClick: (String) -> Unit,
     onBlockClick: () -> Unit,
-    groups: List<Group>
+    groups: List<Group>,
+    onNavigateToMutualGroup: (String) -> Unit,
+    mutualGroups: List<Group>
 ) {
     Column(
         modifier = modifier
@@ -89,9 +91,12 @@ fun OtherUserProfileScreenContent(
 
                         OtherUserProfileAboutSection()
 
-                        OtherUserProfileMutualGroupSection(
-                            groups = groups
-                        )
+                        if (mutualGroups.isNotEmpty()) {
+                            OtherUserProfileMutualGroupSection(
+                                groups = groups,
+                                onNavigateToMutualGroup = onNavigateToMutualGroup
+                            )
+                        }
                     }
                 }
             }

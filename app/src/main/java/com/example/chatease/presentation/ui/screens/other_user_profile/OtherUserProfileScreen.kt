@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.other_user_profile
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,31 +41,20 @@ fun OtherUserProfileScreen(
     onBackClick: () -> Unit,
     otherUserProfileViewModel: OtherUserProfileViewModel = hiltViewModel(),
     userId: String,
-    onNavigateToChatScreen: (String) -> Unit
+    onNavigateToChatScreen: (String) -> Unit,
+    onNavigateToMutualGroup: (String) -> Unit
 ) {
     val user by otherUserProfileViewModel.user.collectAsState()
     val isConnected by otherUserProfileViewModel.isUserConnected.collectAsState()
     val isBlocked by otherUserProfileViewModel.isUserBlocked.collectAsState()
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val groups = List(10) {
-        Group(
-            conversationId = it.toString(),
-            userIds = listOf("1", "2", "3"),
-            adminIds = listOf("1"),
-            visibleToUserIds = emptyList(),
-            ownerId = "1",
-            name = "Test Group",
-            imageUrl = null,
-            removedAtByUserId = mapOf(
-                "1" to System.currentTimeMillis()
-            )
-        )
-    }
+    val mutualGroups by otherUserProfileViewModel.mutualGroups.collectAsState()
 
     LaunchedEffect(userId) {
         otherUserProfileViewModel.loadUser(userId)
         otherUserProfileViewModel.checkIfUserConnected(userId)
         otherUserProfileViewModel.checkIfUserIsBlocked(userId)
+        otherUserProfileViewModel.getMutualGroups(userId)
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -110,7 +98,9 @@ fun OtherUserProfileScreen(
                 isBlocked = isBlocked,
                 onUnblockClick = { otherUserProfileViewModel.unblockUser(userId) },
                 onBlockClick = { showBottomSheet = true },
-                groups = groups
+                groups = mutualGroups,
+                onNavigateToMutualGroup = onNavigateToMutualGroup,
+                mutualGroups = mutualGroups,
             )
         }
     }
@@ -171,7 +161,9 @@ private fun OtherUserProfileScreenPreview() {
                                 "1" to System.currentTimeMillis()
                             )
                         )
-                    }
+                    },
+                    onNavigateToMutualGroup = {},
+                    mutualGroups = emptyList(),
                 )
             }
         }

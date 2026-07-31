@@ -85,39 +85,36 @@ fun OtherUserProfileActionItem(
     circleColor: Color,
     iconColor: Color
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier
+            .height(50.dp)
+            .background(
+                color = circleColor,
+                shape = CircleShape
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .background(
-                    color = circleColor,
-                    shape = CircleShape
-                )
-                .clickable { onClick() },
-            contentAlignment = Alignment.Center
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(
+                4.dp,
+                Alignment.CenterHorizontally
+            )
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
-            ) {
-                item.icon?.let {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = null,
-                        tint = iconColor
-                    )
-                }
-                Text(
-                    text = stringResource(item.label),
-                    style = MaterialTheme.typography.labelLarge
+            item.icon?.let { icon ->
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconColor
                 )
             }
+
+            Text(
+                text = stringResource(item.label),
+                style = MaterialTheme.typography.labelLarge
+            )
         }
     }
 }
@@ -137,7 +134,6 @@ private fun OtherUserProfileActionsSectionPreview() {
                     onBlockClick = {},
                     onReportClick = {}
                 )
-
             }
         }
     }

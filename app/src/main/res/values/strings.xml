@@ -279,6 +279,7 @@
     <string name="delete">Delete</string>
 
     <string name="mutual_groups">Mutual Groups</string>
+    <string name="one_member">1 member</string>
 
 
 </resources>

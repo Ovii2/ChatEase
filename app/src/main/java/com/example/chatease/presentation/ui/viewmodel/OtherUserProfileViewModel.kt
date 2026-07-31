@@ -3,9 +3,11 @@ package com.example.chatease.presentation.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.ConversationType
 import com.example.chatease.domain.repository.ConversationRepository
+import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,8 @@ import javax.inject.Inject
 class OtherUserProfileViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val userRepository: UserRepository,
-    private val conversationRepository: ConversationRepository
+    private val conversationRepository: ConversationRepository,
+    private val groupRepository: GroupRepository
 ) : ViewModel() {
 
     private val _user = MutableStateFlow(User())
@@ -29,6 +32,9 @@ class OtherUserProfileViewModel @Inject constructor(
 
     private val _isUserBlocked = MutableStateFlow(false)
     val isUserBlocked = _isUserBlocked.asStateFlow()
+
+    private val _mutualGroups = MutableStateFlow<List<Group>>(emptyList())
+    val mutualGroups = _mutualGroups.asStateFlow()
 
     fun loadUser(userId: String) {
         viewModelScope.launch {
@@ -104,6 +110,20 @@ class OtherUserProfileViewModel @Inject constructor(
                 onConversationCreated(conversationId)
             } catch (e: Exception) {
                 Log.e("OtherUserProfileViewModel", e.message ?: "Failed to start conversation")
+            }
+        }
+    }
+
+    fun getMutualGroups(otherUserId: String) {
+        viewModelScope.launch {
+            val currentUserId = auth.currentUser?.uid ?: return@launch
+            try {
+                val groups = groupRepository.getGroups(currentUserId)
+                _mutualGroups.value = groups.filter { group ->
+                    currentUserId in group.userIds && otherUserId in group.userIds
+                }
+            } catch (e: Exception) {
+                Log.e("OtherUserProfileViewModel", e.message ?: "Failed to get mutual groups")
             }
         }
     }
