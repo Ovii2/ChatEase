@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.new_chat_group.components
 
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -47,7 +48,10 @@ fun NewChatGroupScreenContent(
     onRefreshGroupNameSuggestion: () -> Unit,
     suggestedGroupName: String,
     groupNameError: Boolean,
-    onCreateGroup: () -> Unit
+    onCreateGroup: () -> Unit,
+    imageUri: Uri? = null,
+    onAddPhotoClick: () -> Unit,
+    isUploading: Boolean
 ) {
     val scrollState = rememberScrollState()
     val isScrollable = scrollState.maxValue > 0
@@ -79,6 +83,9 @@ fun NewChatGroupScreenContent(
                 onFocusChanged = onFocusChanged,
                 suggestedGroupName = suggestedGroupName,
                 groupNameError = groupNameError,
+                imageUri = imageUri,
+                onAddPhotoClick = onAddPhotoClick,
+                isUploading = isUploading,
             )
             NewChatGroupMembersList(
                 modifier = Modifier
@@ -143,6 +150,8 @@ private fun NewChatGroupScreenContentPreview() {
                     suggestedGroupName = "Test",
                     groupNameError = false,
                     onCreateGroup = {},
+                    onAddPhotoClick = {},
+                    isUploading = false,
                 )
             }
         }

@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,20 +8,26 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.example.chatease.utils.ImageUtils
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class NewChatGroupViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
     private val userRepository: UserRepository,
     private val auth: FirebaseAuth,
-    private val conversationRepository: ConversationRepository
+    private val conversationRepository: ConversationRepository,
+    private val imageUtils: ImageUtils
 ) : ViewModel() {
 
     private val _groupName = MutableStateFlow("")
@@ -35,6 +42,12 @@ class NewChatGroupViewModel @Inject constructor(
     private val _suggestedGroupName = MutableStateFlow("")
     val suggestedGroupName = _suggestedGroupName.asStateFlow()
 
+    private val _groupImageUri = MutableStateFlow<Uri?>(null)
+    val groupImageUri = _groupImageUri.asStateFlow()
+
+    private val _isUploadingImage = MutableStateFlow(false)
+    val isUploadingImage = _isUploadingImage.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -43,13 +56,19 @@ class NewChatGroupViewModel @Inject constructor(
             val participantIds = (members.value.map { it.uid } + currentUserId).distinct()
             try {
                 val conversationId = createGroupConversation(participantIds)
+                val imageUrl = groupImageUri.value?.let { imageUri ->
+                    groupRepository.uploadGroupProfileImage(
+                        conversationId = conversationId,
+                        imageUri = imageUri
+                    )
+                }
                 groupRepository.createGroup(
                     conversationId = conversationId,
                     userIds = participantIds,
                     adminIds = listOf(currentUserId),
                     name = groupName.value,
                     ownerId = currentUserId,
-                    imageUrl = null
+                    imageUrl = imageUrl
                 )
                 onGroupCreated(conversationId)
             } catch (e: Exception) {
@@ -114,6 +133,36 @@ class NewChatGroupViewModel @Inject constructor(
 
     fun acceptSuggestedGroupName(name: String) {
         onGroupNameChange(name)
+    }
+
+    fun updateGroupProfileImage(imageUri: Uri) {
+        viewModelScope.launch {
+            _isUploadingImage.value = true
+            delay(1000.milliseconds)
+            try {
+                _groupImageUri.value = validateGroupImage(imageUri)
+            } catch (e: Exception) {
+                Log.e("NewChatGroupViewModel", e.message ?: "Failed to prepare group image", e)
+            } finally {
+                _isUploadingImage.value = false
+            }
+        }
+    }
+
+    private suspend fun validateGroupImage(imageUri: Uri): Uri {
+        val compressedUri = withContext(Dispatchers.IO) {
+            imageUtils.compressImage(imageUri)
+        }
+
+        val isValidSize = withContext(Dispatchers.IO) {
+            imageUtils.isFileSizeValid(compressedUri)
+        }
+
+        require(isValidSize) {
+            "Image is too large"
+        }
+
+        return compressedUri
     }
 
     private suspend fun createGroupConversation(participantIds: List<String>): String {

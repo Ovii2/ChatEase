@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.new_chat_group.components
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -39,11 +41,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import coil3.compose.AsyncImage
 import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.theme.successGreenDark
@@ -61,7 +67,10 @@ fun NewChatGroupTopSection(
     onAcceptGroupNameSuggestion: (String) -> Unit,
     onRefreshGroupNameSuggestion: () -> Unit,
     suggestedGroupName: String,
-    groupNameError: Boolean
+    groupNameError: Boolean,
+    imageUri: Uri? = null,
+    onAddPhotoClick: () -> Unit,
+    isUploading: Boolean
 ) {
     val checkColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
     val bottomEndCornerRadius = if (isSuggestGroupNameVisible) 0.dp else 15.dp
@@ -98,21 +107,57 @@ fun NewChatGroupTopSection(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    imageVector = Icons.Outlined.CameraAlt,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-                )
+                when {
+                    isUploading -> {
+                        CircularProgressIndicator()
+                    }
+
+                    imageUri != null -> {
+                        AsyncImage(
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(CircleShape),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            model = imageUri
+                        )
+//                        Image(
+//                            modifier = Modifier
+//                                .size(120.dp)
+//                                .clip(CircleShape),
+//                            contentDescription = null,
+//                            contentScale = ContentScale.Crop,
+//                            painter = painterResource(R.drawable.person)
+//                        )
+                    }
+
+                    else -> {
+                        Icon(
+                            modifier = Modifier.size(32.dp),
+                            imageVector = Icons.Outlined.CameraAlt,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                        )
+                    }
+                }
             }
+
             Text(
+                modifier = Modifier.clickable(
+                    enabled = !isUploading,
+                    onClick = onAddPhotoClick
+                ),
                 text = stringResource(R.string.add_photo),
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary
+                color = if (isUploading) {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
             )
         }
 
-        Column() {
+        Column {
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -228,6 +273,9 @@ private fun NewChatGroupTopSectionPreview() {
                     onRefreshGroupNameSuggestion = {},
                     suggestedGroupName = "Test",
                     groupNameError = false,
+                    onAddPhotoClick = {},
+                    imageUri = "".toUri(),
+                    isUploading = true
                 )
             }
         }

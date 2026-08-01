@@ -1,5 +1,6 @@
 package com.example.chatease.data.repository
 
+import android.net.Uri
 import com.example.chatease.data.mapper.toDomain
 import com.example.chatease.data.remote.dto.GroupDto
 import com.example.chatease.domain.model.Group
@@ -7,6 +8,7 @@ import com.example.chatease.domain.repository.GroupRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -14,18 +16,21 @@ import kotlinx.coroutines.tasks.await
 
 class GroupRepositoryImpl(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val storage: FirebaseStorage
 ) : GroupRepository {
 
     companion object {
         private const val GROUP = "group"
-        const val USER_IDS = "userIds"
-        const val ADMIN_IDS = "adminIds"
-        const val VISIBLE_TO_USER_IDS = "visibleToUserIds"
-        const val REMOVED_AT_USER_ID = "removedAtByUserId"
-        const val OWNER_ID = "ownerId"
-        const val CONVERSATIONS = "conversations"
-        const val PARTICIPANT_IDS = "participantIds"
+        private const val USER_IDS = "userIds"
+        private const val ADMIN_IDS = "adminIds"
+        private const val VISIBLE_TO_USER_IDS = "visibleToUserIds"
+        private const val REMOVED_AT_USER_ID = "removedAtByUserId"
+        private const val OWNER_ID = "ownerId"
+        private const val CONVERSATIONS = "conversations"
+        private const val PARTICIPANT_IDS = "participantIds"
+        private const val GROUP_PROFILE_IMAGES = "group_profile_images"
+        private const val IMAGE_URL = "imageUrl"
     }
 
     override suspend fun createGroup(
@@ -279,6 +284,32 @@ class GroupRepositoryImpl(
                     "$REMOVED_AT_USER_ID.$currentUserId" to FieldValue.delete()
                 )
             )
+            .await()
+    }
+
+    override suspend fun uploadGroupProfileImage(
+        conversationId: String,
+        imageUri: Uri
+    ): String {
+        val imageRef = storage.reference
+            .child(GROUP_PROFILE_IMAGES)
+            .child("$conversationId.jpg")
+
+        imageRef.putFile(imageUri).await()
+
+        return imageRef.downloadUrl
+            .await()
+            .toString()
+    }
+
+    override suspend fun updateGroupProfileImage(
+        conversationId: String,
+        imageUrl: String
+    ) {
+        firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .update(IMAGE_URL, imageUrl)
             .await()
     }
 

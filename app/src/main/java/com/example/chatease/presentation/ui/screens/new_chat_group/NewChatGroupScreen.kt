@@ -1,5 +1,8 @@
 package com.example.chatease.presentation.ui.screens.new_chat_group
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,6 +46,8 @@ fun NewChatGroupScreen(
     val suggestedGroupName by newChatGroupViewModel.suggestedGroupName.collectAsState()
     var isFieldTouched by rememberSaveable { mutableStateOf(false) }
     val groupNameError = NewGroupValidator.validateNewGroupName(groupName) && isFieldTouched
+    val imageUri by newChatGroupViewModel.groupImageUri.collectAsState()
+    val isUploading by newChatGroupViewModel.isUploadingImage.collectAsState()
 
     LaunchedEffect(selectedUserIds) {
         newChatGroupViewModel.observeMembers(selectedUserIds)
@@ -50,6 +55,14 @@ fun NewChatGroupScreen(
 
     LaunchedEffect(Unit) {
         newChatGroupViewModel.suggestGroupName()
+    }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let {
+            newChatGroupViewModel.updateGroupProfileImage(it)
+        }
     }
 
     Scaffold(
@@ -89,6 +102,13 @@ fun NewChatGroupScreen(
                     )
                 }
             },
+            imageUri = imageUri,
+            onAddPhotoClick = {
+                imagePickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            },
+            isUploading = isUploading,
         )
     }
 }
@@ -129,7 +149,9 @@ private fun NewChatGroupScreenPreview() {
                     onFocusChanged = {},
                     suggestedGroupName = "Test",
                     groupNameError = false,
-                    onCreateGroup = {}
+                    onCreateGroup = {},
+                    onAddPhotoClick = {},
+                    isUploading = false,
                 )
             }
         }

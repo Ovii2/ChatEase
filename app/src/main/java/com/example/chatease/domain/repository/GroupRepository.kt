@@ -1,5 +1,6 @@
 package com.example.chatease.domain.repository
 
+import android.net.Uri
 import com.example.chatease.domain.model.Group
 import kotlinx.coroutines.flow.Flow
 
@@ -33,5 +34,9 @@ interface GroupRepository {
     suspend fun leaveGroupAsOwner(conversationId: String, currentUserId: String): Boolean
 
     suspend fun removeFormerMemberVisibility(conversationId: String, currentUserId: String)
+
+    suspend fun uploadGroupProfileImage(conversationId: String, imageUri: Uri): String
+
+    suspend fun updateGroupProfileImage(conversationId: String, imageUrl: String)
 
 }
