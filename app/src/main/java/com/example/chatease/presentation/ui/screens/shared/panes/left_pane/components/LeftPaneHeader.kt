@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.left_pane.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,12 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.example.chatease.R
 import com.example.chatease.domain.model.Category
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatSearchBar
@@ -90,22 +89,22 @@ fun LeftPaneHeader(
                             contentDescription = null
                         )
                     } else {
-//                    AsyncImage(
-//                        modifier = Modifier
-//                            .size(40.dp)
-//                            .clip(CircleShape),
-//                        contentScale = ContentScale.Crop,
-//                        model = user.imageUrl,
-//                        contentDescription = null
-//                    )
-                        Image(
+                        AsyncImage(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop,
-                            painter = painterResource(R.drawable.person),
+                            model = imageUrl,
                             contentDescription = null
                         )
+//                        Image(
+//                            modifier = Modifier
+//                                .size(40.dp)
+//                                .clip(CircleShape),
+//                            contentScale = ContentScale.Crop,
+//                            painter = painterResource(R.drawable.person),
+//                            contentDescription = null
+//                        )
                     }
                     ProfileDropdown(
                         expanded = expanded,
