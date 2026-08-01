@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,11 +14,14 @@ import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.model.ProfileStatUiModel
 import com.example.chatease.presentation.ui.state.MyProfileUiState
+import com.example.chatease.utils.ImageUtils
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +30,8 @@ class MyProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val contactsRepository: ContactsRepository,
     private val conversationRepository: ConversationRepository,
-    private val groupRepository: GroupRepository
+    private val groupRepository: GroupRepository,
+    private val imageUtils: ImageUtils
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MyProfileUiState>(MyProfileUiState.Loading)
@@ -73,10 +78,13 @@ class MyProfileViewModel @Inject constructor(
 
                 userRepository.observeUser(currentUserId)
                     .collect { user ->
+                        val currentState = _uiState.value
+                        val isUploadingImage =
+                            (currentState as? MyProfileUiState.Success)?.isUploadingImage ?: false
                         _uiState.value = MyProfileUiState.Success(
                             user = user,
                             stats = buildStats(),
-                            isUploadingImage = false
+                            isUploadingImage = isUploadingImage
                         )
                     }
             } catch (e: Exception) {
@@ -134,6 +142,52 @@ class MyProfileViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateProfileImage(imageUri: Uri) {
+        val userId = currentUserId ?: return
+
+        viewModelScope.launch {
+            val currentState = _uiState.value
+
+            if (currentState !is MyProfileUiState.Success) {
+                return@launch
+            }
+
+            _uiState.value = currentState.copy(
+                isUploadingImage = true
+            )
+
+            try {
+                val compressedUri = withContext(Dispatchers.IO) {
+                    imageUtils.compressImage(imageUri)
+                }
+                val isValidSize = withContext(Dispatchers.IO) {
+                    imageUtils.isFileSizeValid(compressedUri)
+                }
+
+                require(isValidSize) { "Image is too large" }
+
+                userRepository.uploadProfileImage(
+                    userId = userId,
+                    imageUri = compressedUri
+                )
+            } catch (e: Exception) {
+                Log.e("MyProfileViewModel", "Failed to upload profile image", e)
+            } finally {
+                val latestState = _uiState.value
+
+                if (latestState is MyProfileUiState.Success) {
+                    _uiState.value = latestState.copy(
+                        isUploadingImage = false
+                    )
+                }
+            }
+        }
+    }
+
+//    fun clearError() {
+//        _errorMessage.value = null
+//    }
 
     private fun refreshStats() {
         val currentState = _uiState.value

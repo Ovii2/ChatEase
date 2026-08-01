@@ -1,5 +1,8 @@
 package com.example.chatease.presentation.ui.screens.my_profile
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +55,14 @@ fun MyProfileScreen(
 
     val uiState by myProfileViewModel.uiState.collectAsState()
 
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let {
+            myProfileViewModel.updateProfileImage(it)
+        }
+    }
+
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 12.dp),
         topBar = {
@@ -81,6 +92,11 @@ fun MyProfileScreen(
                         onNavigateToLoginScreen()
                     },
                     onNavigateToBlockedUsers = onNavigateToPrivacyAndSecurity,
+                    onImageClick = {
+                        imagePickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
                 )
             }
         }
@@ -93,14 +109,17 @@ fun MyProfileScreenContent(
     modifier: Modifier = Modifier,
     uiState: MyProfileUiState,
     onLogoutClick: () -> Unit,
-    onNavigateToBlockedUsers: () -> Unit
+    onNavigateToBlockedUsers: () -> Unit,
+    onImageClick: () -> Unit
 ) {
     when (uiState) {
         is MyProfileUiState.Error -> {}
         MyProfileUiState.Loading -> {}
         is MyProfileUiState.Success -> {
             MyProfileTopSection(
-                user = uiState.user
+                user = uiState.user,
+                onImageClick = onImageClick,
+                isUploadingImage = uiState.isUploadingImage,
             )
             MyProfileStatsRow(
                 stats = uiState.stats

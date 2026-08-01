@@ -1,5 +1,6 @@
 package com.example.chatease.data.repository
 
+import android.net.Uri
 import com.example.chatease.data.mapper.toDomain
 import com.example.chatease.data.remote.dto.ContactDto
 import com.example.chatease.data.remote.dto.UserDto
@@ -10,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -18,7 +20,8 @@ import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val storage: FirebaseStorage
 ) : UserRepository {
 
     companion object {
@@ -28,6 +31,8 @@ class UserRepositoryImpl(
         private const val BLOCKED_USER_IDS = "blockedUserIds"
         private const val USER_IDS = "userIds"
         private const val FCM_TOKEN = "fcmToken"
+        private const val PROFILE_IMAGES = "profile_images"
+        private const val IMAGE_URL = "imageUrl"
     }
 
     override suspend fun updateUserStatus(
@@ -252,6 +257,26 @@ class UserRepositoryImpl(
                 mapOf(FCM_TOKEN to token),
                 SetOptions.merge()
             ).await()
+    }
+
+    override suspend fun uploadProfileImage(userId: String, imageUri: Uri): String {
+        val imageRef = storage.reference
+            .child(PROFILE_IMAGES)
+            .child("$userId.jpg")
+
+        imageRef.putFile(imageUri).await()
+
+        val downloadUrl = imageRef.downloadUrl
+            .await()
+            .toString()
+
+        firestore
+            .collection(USERS)
+            .document(userId)
+            .update(IMAGE_URL, downloadUrl)
+            .await()
+
+        return downloadUrl
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.chatease.domain.repository
 
+import android.net.Uri
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import kotlinx.coroutines.flow.Flow
@@ -34,5 +35,7 @@ interface UserRepository {
     fun observeIsBlockedByUser(otherUserId: String): Flow<Boolean>
 
     suspend fun saveFcmToken(token: String)
+
+    suspend fun uploadProfileImage(userId: String, imageUri: Uri): String
 
 }
