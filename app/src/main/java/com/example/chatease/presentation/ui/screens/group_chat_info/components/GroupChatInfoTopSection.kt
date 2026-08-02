@@ -2,6 +2,7 @@ package com.example.chatease.presentation.ui.screens.group_chat_info.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,7 +44,9 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun GroupChatInfoTopSection(
     modifier: Modifier = Modifier,
     group: Group,
-    members: List<User>
+    members: List<User>,
+    onUpdatePictureClick: () -> Unit,
+    isUpdating: Boolean
 ) {
     val onlineMembersCount = members.count { it.status == UserPresenceStatus.ONLINE }
 
@@ -51,7 +55,12 @@ fun GroupChatInfoTopSection(
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box {
+        Box(
+            modifier = Modifier.clickable(
+                enabled = !isUpdating,
+                onClick = onUpdatePictureClick
+            )
+        ) {
             Box(
                 modifier = Modifier
                     .border(
@@ -67,29 +76,37 @@ fun GroupChatInfoTopSection(
                     .size(180.dp),
                 contentAlignment = Alignment.Center
             ) {
-                if (group.imageUrl == null) {
-                    Icon(
-                        modifier = Modifier.size(140.dp),
-                        imageVector = Icons.Filled.Group,
-                        contentDescription = null
-                    )
-                } else {
-                    AsyncImage(
-                        modifier = Modifier
-                            .size(180.dp)
-                            .clip(CircleShape),
-                        model = group.imageUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )
-//                Image(
-//                    modifier = Modifier
-//                        .size(180.dp)
-//                        .clip(CircleShape),
-//                    painter = painterResource(R.drawable.person),
-//                    contentDescription = null,
-//                    contentScale = ContentScale.Crop
-//                )
+                when {
+                    isUpdating -> {
+                        CircularProgressIndicator()
+                    }
+
+                    group.imageUrl != null -> {
+                        AsyncImage(
+                            modifier = Modifier
+                                .size(180.dp)
+                                .clip(CircleShape),
+                            model = group.imageUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
+//                        Image(
+//                            modifier = Modifier
+//                                .size(180.dp)
+//                                .clip(CircleShape),
+//                            painter = painterResource(R.drawable.person),
+//                            contentDescription = null,
+//                            contentScale = ContentScale.Crop
+//                        )
+                    }
+
+                    else -> {
+                        Icon(
+                            modifier = Modifier.size(140.dp),
+                            imageVector = Icons.Filled.Group,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
             Surface(
@@ -169,7 +186,9 @@ private fun GroupChatInfoTopSectionPreview() {
             ) {
                 GroupChatInfoTopSection(
                     group = group,
-                    members = members
+                    members = members,
+                    onUpdatePictureClick = {},
+                    isUpdating = false,
                 )
             }
         }

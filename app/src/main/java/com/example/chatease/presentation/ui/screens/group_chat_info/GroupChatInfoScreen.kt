@@ -1,5 +1,8 @@
 package com.example.chatease.presentation.ui.screens.group_chat_info
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +46,7 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.group_chat_info.components.GroupChatInfoScreenContent
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
 import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -61,6 +66,15 @@ fun GroupChatInfoScreen(
     var isLeavingGroup by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val currentUserId = groupChatInfoViewModel.currentUserId
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let {
+            groupChatInfoViewModel.updateGroupProfileImage(conversationId, it)
+        }
+    }
+    val isUpdating by groupChatInfoViewModel.isUpdating.collectAsState()
 
 
     LaunchedEffect(conversationId) {
@@ -92,7 +106,13 @@ fun GroupChatInfoScreen(
             }
         ) { paddingValues ->
             when (val state = uiState) {
-                is GroupChatInfoUiState.Error -> {}
+                is GroupChatInfoUiState.Error -> {
+                    CommonErrorDisplay(
+                        showActionButton = true,
+                        onRetryClick = { groupChatInfoViewModel.loadGroup(conversationId) }
+                    )
+                }
+
                 GroupChatInfoUiState.Loading -> {
                     CommonCircularLoader()
                 }
@@ -106,6 +126,12 @@ fun GroupChatInfoScreen(
                             isLeavingGroup = true
                         },
                         onNavigateToMembersScreen = onNavigateToMembersScreen,
+                        onUpdatePictureClick = {
+                            imagePickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
+                        isUpdating = isUpdating,
                     )
                     if (isLeavingGroup) {
                         LeaveGroupBottomSheet(
@@ -232,6 +258,8 @@ private fun GroupChatInfoScreenPreview() {
                     members = members,
                     onLeaveGroup = { isLeavingGroup = true },
                     onNavigateToMembersScreen = {},
+                    onUpdatePictureClick = {},
+                    isUpdating = false,
                 )
                 if (isLeavingGroup) {
                     LeaveGroupBottomSheet(
