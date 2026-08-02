@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +32,8 @@ fun OtherUserProfileActionsSection(
     modifier: Modifier = Modifier,
     onViewPhotoClick: () -> Unit,
     onBlockClick: () -> Unit,
-    onReportClick: () -> Unit
+    onReportClick: () -> Unit,
+    hasProfilePhoto: Boolean
 ) {
     val actions = OtherUserQuickActionsDataSource.actions
     val alpha = 0.2f
@@ -66,12 +66,20 @@ fun OtherUserProfileActionsSection(
                 R.string.report -> MaterialTheme.colorScheme.tertiary
                 else -> MaterialTheme.colorScheme.surfaceContainerHighest
             }
+
+            val enabled = when (item.label) {
+                R.string.view_photo -> hasProfilePhoto
+                else -> true
+            }
             OtherUserProfileActionItem(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .alpha(if (enabled) 1f else 0.6f),
                 item = item,
                 onClick = onClick,
                 circleColor = circleColor,
-                iconColor = iconColor
+                iconColor = iconColor,
+                enabled = enabled,
             )
         }
     }
@@ -83,7 +91,8 @@ fun OtherUserProfileActionItem(
     item: QuickActionsItem,
     onClick: () -> Unit,
     circleColor: Color,
-    iconColor: Color
+    iconColor: Color,
+    enabled: Boolean
 ) {
     Box(
         modifier = modifier
@@ -92,7 +101,10 @@ fun OtherUserProfileActionItem(
                 color = circleColor,
                 shape = CircleShape
             )
-            .clickable(onClick = onClick),
+            .clickable(
+                enabled = enabled,
+                onClick = onClick
+            ),
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -132,7 +144,8 @@ private fun OtherUserProfileActionsSectionPreview() {
                 OtherUserProfileActionsSection(
                     onViewPhotoClick = {},
                     onBlockClick = {},
-                    onReportClick = {}
+                    onReportClick = {},
+                    hasProfilePhoto = true,
                 )
             }
         }

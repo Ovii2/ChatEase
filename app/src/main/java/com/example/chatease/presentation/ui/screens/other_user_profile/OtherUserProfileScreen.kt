@@ -29,6 +29,7 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfilePhotoDialog
 import com.example.chatease.presentation.ui.screens.other_user_profile.components.OtherUserProfileScreenContent
 import com.example.chatease.presentation.ui.screens.shared.bottom_sheet.CommonChatBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
@@ -49,6 +50,7 @@ fun OtherUserProfileScreen(
     val isBlocked by otherUserProfileViewModel.isUserBlocked.collectAsState()
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
     val mutualGroups by otherUserProfileViewModel.mutualGroups.collectAsState()
+    var isPhotoVisible by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(userId) {
         otherUserProfileViewModel.loadUser(userId)
@@ -101,6 +103,10 @@ fun OtherUserProfileScreen(
                 groups = mutualGroups,
                 onNavigateToMutualGroup = onNavigateToMutualGroup,
                 mutualGroups = mutualGroups,
+                onViewPhotoClick = {
+                    isPhotoVisible = true
+                },
+                hasProfilePhoto = user.imageUrl != null,
             )
         }
     }
@@ -115,6 +121,12 @@ fun OtherUserProfileScreen(
             title = R.string.block_user_title,
             text = R.string.block_user_message,
             actionButtonText = R.string.block,
+        )
+    }
+    if (isPhotoVisible) {
+        OtherUserProfilePhotoDialog(
+            imageUrl = user.imageUrl,
+            onDismiss = { isPhotoVisible = false }
         )
     }
 }
@@ -164,6 +176,8 @@ private fun OtherUserProfileScreenPreview() {
                     },
                     onNavigateToMutualGroup = {},
                     mutualGroups = emptyList(),
+                    onViewPhotoClick = {},
+                    hasProfilePhoto = true,
                 )
             }
         }

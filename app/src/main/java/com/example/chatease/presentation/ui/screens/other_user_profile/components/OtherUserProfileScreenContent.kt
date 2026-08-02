@@ -35,7 +35,9 @@ fun OtherUserProfileScreenContent(
     onBlockClick: () -> Unit,
     groups: List<Group>,
     onNavigateToMutualGroup: (String) -> Unit,
-    mutualGroups: List<Group>
+    mutualGroups: List<Group>,
+    onViewPhotoClick: () -> Unit,
+    hasProfilePhoto: Boolean
 ) {
     Column(
         modifier = modifier
@@ -84,9 +86,10 @@ fun OtherUserProfileScreenContent(
 
                     if (!isBlocked) {
                         OtherUserProfileActionsSection(
-                            onViewPhotoClick = {},
+                            onViewPhotoClick = onViewPhotoClick,
                             onBlockClick = onBlockClick,
-                            onReportClick = {}
+                            onReportClick = {},
+                            hasProfilePhoto = hasProfilePhoto,
                         )
 
                         OtherUserProfileAboutSection()
