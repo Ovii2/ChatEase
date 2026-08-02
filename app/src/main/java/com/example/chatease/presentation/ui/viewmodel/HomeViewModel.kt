@@ -2,11 +2,11 @@ package com.example.chatease.presentation.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatease.data.local.datasource.CategoriesDataSource
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.ConversationType
-import com.example.chatease.domain.repository.CategoryRepository
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
@@ -27,14 +27,13 @@ import javax.inject.Inject
 @HiltViewModel
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel @Inject constructor(
-    private val categoryRepository: CategoryRepository,
     private val auth: FirebaseAuth,
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository,
     private val groupRepository: GroupRepository
 ) : ViewModel() {
 
-    private val _selectedCategory = MutableStateFlow("All")
+    private val _selectedCategory = MutableStateFlow("all")
     val selectedCategory = _selectedCategory.asStateFlow()
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -50,7 +49,6 @@ class HomeViewModel @Inject constructor(
 
             try {
                 val currentUserId = getCurrentUserId() ?: return@launch
-                val categories = categoryRepository.getCategories()
                 val conversationsFlow = createConversationsFlow(currentUserId)
 
                 combine(
@@ -59,7 +57,11 @@ class HomeViewModel @Inject constructor(
                 ) { user, conversations ->
                     HomeUiState.Success(
                         user = user,
-                        categories = categories,
+                        categories = CategoriesDataSource.categories.filter { category ->
+                            category.id == "all" || conversations.any { conversation ->
+                                conversation.isGroup && conversation.categoryId == category.id
+                            }
+                        },
                         conversations = conversations,
                         unreadMessages = conversations.sumOf { conversation ->
                             conversation.unreadCount
@@ -251,6 +253,11 @@ class HomeViewModel @Inject constructor(
                 isGroup = isGroupConversation,
                 isBlockedByOtherUser = otherUser?.blockedUserIds?.contains(currentUserId) ?: false,
                 isCurrentUserGroupMember = isCurrentUserGroupMember,
+                categoryId = if (isGroupConversation) {
+                    group?.categoryId
+                } else {
+                    null
+                }
             )
         }
     }
@@ -292,7 +299,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun selectCategory(categoryName: String) {
-        _selectedCategory.value = categoryName
+    fun selectCategory(categoryId: String) {
+        _selectedCategory.value = categoryId
     }
 }

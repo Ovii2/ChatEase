@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.Icon
@@ -137,12 +138,13 @@ fun LeftPaneHeader(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun LeftPaneHeaderPreview() {
-    val categories = listOf(
-        Category(id = "all", name = "All"),
-        Category(id = "work", name = "Work"),
-        Category(id = "friends", name = "Friends"),
-        Category(id = "other", name = "Other")
-    )
+    val categories = List(10) {
+        Category(
+            id = it.toString(),
+            name = R.string.friends,
+            icon = Icons.Outlined.Group
+        )
+    }
 
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {

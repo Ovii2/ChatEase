@@ -2,9 +2,7 @@ package com.example.chatease.di
 
 import android.content.Context
 import com.example.chatease.data.local.datastore.user_preferences.UserPreferencesRepository
-import com.example.chatease.data.remote.CategoryRemoteDataSource
 import com.example.chatease.data.repository.CallRepositoryImpl
-import com.example.chatease.data.repository.CategoryRepositoryImpl
 import com.example.chatease.data.repository.ContactRequestRepositoryImpl
 import com.example.chatease.data.repository.ContactsRepositoryImpl
 import com.example.chatease.data.repository.ConversationRepositoryImpl
@@ -12,7 +10,6 @@ import com.example.chatease.data.repository.GroupRepositoryImpl
 import com.example.chatease.data.repository.UserRepositoryImpl
 import com.example.chatease.data.webrtc.WebRtcClient
 import com.example.chatease.domain.repository.CallRepository
-import com.example.chatease.domain.repository.CategoryRepository
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.example.chatease.domain.repository.ContactsRepository
 import com.example.chatease.domain.repository.ConversationRepository
@@ -43,16 +40,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance()
-
-    @Provides
-    @Singleton
-    fun provideCategoryRemoteDataSource(firestore: FirebaseFirestore): CategoryRemoteDataSource =
-        CategoryRemoteDataSource(firestore)
-
-    @Provides
-    @Singleton
-    fun provideCategoryRepository(remoteDataSource: CategoryRemoteDataSource): CategoryRepository =
-        CategoryRepositoryImpl(remoteDataSource)
 
     @Provides
     @Singleton

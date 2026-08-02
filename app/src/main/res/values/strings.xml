@@ -281,5 +281,11 @@
     <string name="mutual_groups">Mutual Groups</string>
     <string name="one_member">1 member</string>
 
+    <string name="categories">Categories</string>
+    <string name="family">Family</string>
+    <string name="friends">Friends</string>
+    <string name="others">Others</string>
+    <string name="work">Work</string>
+    <string name="gaming">Gaming</string>
 
 </resources>

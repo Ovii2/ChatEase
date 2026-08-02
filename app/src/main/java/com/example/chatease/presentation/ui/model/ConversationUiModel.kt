@@ -12,5 +12,6 @@ data class ConversationUiModel(
     val unreadCount: Int,
     val isGroup: Boolean,
     val isBlockedByOtherUser: Boolean = false,
-    val isCurrentUserGroupMember: Boolean
+    val isCurrentUserGroupMember: Boolean,
+    val categoryId: String? = null
 )

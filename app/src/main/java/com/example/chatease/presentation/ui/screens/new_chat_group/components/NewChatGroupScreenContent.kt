@@ -51,7 +51,9 @@ fun NewChatGroupScreenContent(
     onCreateGroup: () -> Unit,
     imageUri: Uri? = null,
     onAddPhotoClick: () -> Unit,
-    isUploading: Boolean
+    isUploading: Boolean,
+    selectedCategoryId: String?,
+    onCategorySelect: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val isScrollable = scrollState.maxValue > 0
@@ -71,7 +73,8 @@ fun NewChatGroupScreenContent(
             modifier = modifier
                 .widthIn(max = 600.dp)
                 .padding(paddingValues)
-                .then(if (isScrollable) Modifier.verticalScroll(scrollState) else Modifier)
+                .then(if (isScrollable) Modifier.verticalScroll(scrollState) else Modifier),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
 
         ) {
             NewChatGroupTopSection(
@@ -87,9 +90,12 @@ fun NewChatGroupScreenContent(
                 onAddPhotoClick = onAddPhotoClick,
                 isUploading = isUploading,
             )
+            NewChatGroupCategorySection(
+                selectedCategoryId = selectedCategoryId,
+                onCategorySelect = onCategorySelect
+            )
             NewChatGroupMembersList(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
                     .then(if (!isScrollable) Modifier.weight(1f) else Modifier),
                 onRemoveMember = onRemoveMember,
                 maxMembers = maxMembers,
@@ -152,6 +158,8 @@ private fun NewChatGroupScreenContentPreview() {
                     onCreateGroup = {},
                     onAddPhotoClick = {},
                     isUploading = false,
+                    selectedCategoryId = "2",
+                    onCategorySelect = {},
                 )
             }
         }

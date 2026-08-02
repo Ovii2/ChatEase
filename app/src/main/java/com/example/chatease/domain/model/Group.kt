@@ -8,5 +8,6 @@ data class Group(
     val ownerId: String = "",
     val name: String = "",
     val imageUrl: String? = null,
-    val removedAtByUserId: Map<String, Long> = emptyMap()
+    val removedAtByUserId: Map<String, Long> = emptyMap(),
+    val categoryId: String = ""
 )

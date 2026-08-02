@@ -48,6 +48,9 @@ class NewChatGroupViewModel @Inject constructor(
     private val _isUploadingImage = MutableStateFlow(false)
     val isUploadingImage = _isUploadingImage.asStateFlow()
 
+    private val _selectedCategoryId = MutableStateFlow("friends")
+    val selectedCategoryId = _selectedCategoryId.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -68,7 +71,8 @@ class NewChatGroupViewModel @Inject constructor(
                     adminIds = listOf(currentUserId),
                     name = groupName.value,
                     ownerId = currentUserId,
-                    imageUrl = imageUrl
+                    imageUrl = imageUrl,
+                    categoryId = selectedCategoryId.value,
                 )
                 onGroupCreated(conversationId)
             } catch (e: Exception) {
@@ -147,6 +151,10 @@ class NewChatGroupViewModel @Inject constructor(
                 _isUploadingImage.value = false
             }
         }
+    }
+
+    fun selectCategory(categoryId: String) {
+        _selectedCategoryId.value = categoryId
     }
 
     private suspend fun validateGroupImage(imageUri: Uri): Uri {

@@ -3,6 +3,8 @@ package com.example.chatease.presentation.ui.screens.home
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -347,11 +349,13 @@ private fun HomeScreenCompactLayoutPreview() {
         status = UserPresenceStatus.AWAY
     )
 
-    val categories = listOf(
-        Category(id = "all", name = "All"),
-        Category(id = "work", name = "Work"),
-        Category(id = "friends", name = "Friends")
-    )
+    val categories = List(10) {
+        Category(
+            id = it.toString(),
+            name = R.string.friends,
+            icon = Icons.Outlined.Group
+        )
+    }
 
     val conversation = ConversationUiModel(
         conversationId = "1",
@@ -370,7 +374,7 @@ private fun HomeScreenCompactLayoutPreview() {
                 modifier = Modifier.padding(paddingValues),
                 user = user,
                 categories = categories,
-                selectedCategory = "All",
+                selectedCategory = "all",
                 onSelectCategory = {},
                 onConversationClick = { _, _ -> },
                 onClickToSeeAll = {},

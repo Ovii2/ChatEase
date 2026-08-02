@@ -48,6 +48,7 @@ fun NewChatGroupScreen(
     val groupNameError = NewGroupValidator.validateNewGroupName(groupName) && isFieldTouched
     val imageUri by newChatGroupViewModel.groupImageUri.collectAsState()
     val isUploading by newChatGroupViewModel.isUploadingImage.collectAsState()
+    val selectedCategoryId by newChatGroupViewModel.selectedCategoryId.collectAsState()
 
     LaunchedEffect(selectedUserIds) {
         newChatGroupViewModel.observeMembers(selectedUserIds)
@@ -109,6 +110,8 @@ fun NewChatGroupScreen(
                 )
             },
             isUploading = isUploading,
+            selectedCategoryId = selectedCategoryId,
+            onCategorySelect = newChatGroupViewModel::selectCategory,
         )
     }
 }
@@ -152,6 +155,8 @@ private fun NewChatGroupScreenPreview() {
                     onCreateGroup = {},
                     onAddPhotoClick = {},
                     isUploading = false,
+                    selectedCategoryId = "2",
+                    onCategorySelect = {},
                 )
             }
         }

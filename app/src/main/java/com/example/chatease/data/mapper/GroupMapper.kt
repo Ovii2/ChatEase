@@ -12,7 +12,8 @@ fun GroupDto.toDomain(): Group {
         ownerId = ownerId,
         name = name,
         imageUrl = imageUrl,
-        removedAtByUserId = removedAtByUserId
+        removedAtByUserId = removedAtByUserId,
+        categoryId = categoryId
     )
 }
 
@@ -25,6 +26,7 @@ fun Group.toDto(): GroupDto {
         ownerId = ownerId,
         name = name,
         imageUrl = imageUrl,
-        removedAtByUserId = removedAtByUserId
+        removedAtByUserId = removedAtByUserId,
+        categoryId = categoryId
     )
 }

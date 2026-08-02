@@ -12,7 +12,8 @@ interface GroupRepository {
         adminIds: List<String>,
         name: String,
         ownerId: String,
-        imageUrl: String?
+        imageUrl: String?,
+        categoryId: String
     ): String
 
     suspend fun getGroupByConversationId(conversationId: String): Group

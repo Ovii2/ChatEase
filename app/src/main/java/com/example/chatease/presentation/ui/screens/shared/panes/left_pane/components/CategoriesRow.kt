@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Category
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonChip
@@ -16,12 +17,14 @@ fun CategoriesRow(
     selectedCategory: String,
     onSelectCategory: (String) -> Unit
 ) {
-    LazyRow(modifier = modifier.padding(4.dp)) {
+    LazyRow(
+        modifier = modifier.padding(4.dp)
+    ) {
         items(categories) { category ->
             CommonChip(
-                text = category.name,
-                selected = category.name == selectedCategory,
-                onClick = { onSelectCategory(category.name) }
+                text = stringResource(category.name),
+                selected = selectedCategory == category.id,
+                onClick = { onSelectCategory(category.id) }
             )
         }
     }

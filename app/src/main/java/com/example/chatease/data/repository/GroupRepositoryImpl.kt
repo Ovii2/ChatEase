@@ -39,7 +39,8 @@ class GroupRepositoryImpl(
         adminIds: List<String>,
         name: String,
         ownerId: String,
-        imageUrl: String?
+        imageUrl: String?,
+        categoryId: String
     ): String {
         require(userIds.size <= 50) {
             "A group can have at most 50 members"
@@ -55,7 +56,8 @@ class GroupRepositoryImpl(
             visibleToUserIds = emptyList(),
             ownerId = ownerId,
             name = name,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            categoryId = categoryId
         )
 
         groupRef.set(group).await()
