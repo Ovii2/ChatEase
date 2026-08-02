@@ -27,7 +27,7 @@ hiltAndroid = "2.60.1"
 hiltNavigationCompose = "1.4.0"
 
 # Firebase
-firebaseBom = "34.16.0"
+firebaseBom = "34.17.0"
 firebaseMessaging = "25.1.1"
 
 # Networking / Images
