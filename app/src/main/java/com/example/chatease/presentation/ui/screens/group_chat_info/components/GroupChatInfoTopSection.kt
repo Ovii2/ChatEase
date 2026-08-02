@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.outlined.CameraAlt
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,6 +37,7 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.screens.shared.loading.CustomCircularProgressIndicator
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -78,7 +78,7 @@ fun GroupChatInfoTopSection(
             ) {
                 when {
                     isUpdating -> {
-                        CircularProgressIndicator()
+                        CustomCircularProgressIndicator()
                     }
 
                     group.imageUrl != null -> {
