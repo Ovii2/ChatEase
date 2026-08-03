@@ -45,7 +45,6 @@ fun GroupChatInfoTopSection(
     modifier: Modifier = Modifier,
     group: Group,
     members: List<User>,
-    onUpdatePictureClick: () -> Unit,
     isUpdating: Boolean
 ) {
     val onlineMembersCount = members.count { it.status == UserPresenceStatus.ONLINE }
@@ -56,40 +55,34 @@ fun GroupChatInfoTopSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            modifier = Modifier.clickable(
-                enabled = !isUpdating,
-                onClick = onUpdatePictureClick
-            )
-        ) {
-            Box(
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        brush = Brush.horizontalGradient(
-                            listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.secondary
-                            )
-                        ),
-                        shape = CircleShape
-                    )
-                    .size(180.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                when {
-                    isUpdating -> {
-                        CustomCircularProgressIndicator()
-                    }
-
-                    group.imageUrl != null -> {
-                        AsyncImage(
-                            modifier = Modifier
-                                .size(180.dp)
-                                .clip(CircleShape),
-                            model = group.imageUrl,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondary
                         )
+                    ),
+                    shape = CircleShape
+                )
+                .size(180.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                isUpdating -> {
+                    CustomCircularProgressIndicator()
+                }
+
+                group.imageUrl != null -> {
+                    AsyncImage(
+                        modifier = Modifier
+                            .size(180.dp)
+                            .clip(CircleShape),
+                        model = group.imageUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
 //                        Image(
 //                            modifier = Modifier
 //                                .size(180.dp)
@@ -98,34 +91,15 @@ fun GroupChatInfoTopSection(
 //                            contentDescription = null,
 //                            contentScale = ContentScale.Crop
 //                        )
-                    }
-
-                    else -> {
-                        Icon(
-                            modifier = Modifier.size(140.dp),
-                            imageVector = Icons.Filled.Group,
-                            contentDescription = null
-                        )
-                    }
                 }
-            }
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .offset(x = (-5).dp, y = (-6).dp),
-                border = BorderStroke(
-                    width = 0.5.dp,
-                    color = MaterialTheme.colorScheme.outline
-                ),
-                shape = CircleShape,
-                shadowElevation = 4.dp
-            ) {
-                Icon(
-                    modifier = Modifier.padding(8.dp),
-                    imageVector = Icons.Outlined.CameraAlt,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
+
+                else -> {
+                    Icon(
+                        modifier = Modifier.size(140.dp),
+                        imageVector = Icons.Filled.Group,
+                        contentDescription = null
+                    )
+                }
             }
         }
         Row(
@@ -187,7 +161,6 @@ private fun GroupChatInfoTopSectionPreview() {
                 GroupChatInfoTopSection(
                     group = group,
                     members = members,
-                    onUpdatePictureClick = {},
                     isUpdating = false,
                 )
             }
