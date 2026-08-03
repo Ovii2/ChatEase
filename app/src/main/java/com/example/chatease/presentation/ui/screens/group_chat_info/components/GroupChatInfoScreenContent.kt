@@ -39,7 +39,6 @@ fun GroupChatInfoScreenContent(
     members: List<User>,
     onLeaveGroup: (String) -> Unit,
     onNavigateToMembersScreen: () -> Unit,
-    onUpdatePictureClick: () -> Unit,
     isUpdating: Boolean
 ) {
     Box(
@@ -58,7 +57,6 @@ fun GroupChatInfoScreenContent(
             GroupChatInfoTopSection(
                 group = group,
                 members = members,
-                onUpdatePictureClick = onUpdatePictureClick,
                 isUpdating = isUpdating,
             )
 
@@ -123,7 +121,6 @@ private fun GroupChatInfoScreenContentPreview() {
                     members = members,
                     onLeaveGroup = {},
                     onNavigateToMembersScreen = {},
-                    onUpdatePictureClick = {},
                     isUpdating = false,
                 )
             }

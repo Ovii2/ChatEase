@@ -39,7 +39,8 @@ fun GroupChatTopBar(
     onActionIconClick: () -> Unit = {},
     expanded: Boolean,
     onDismiss: () -> Unit,
-    onChangeGroupNameClick: () -> Unit
+    onChangeGroupNameClick: () -> Unit,
+    onChangeGroupPhotoClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -78,6 +79,10 @@ fun GroupChatTopBar(
                         text = { Text(text = stringResource(R.string.change_group_name)) },
                         onClick = onChangeGroupNameClick
                     )
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.change_group_photo)) },
+                        onClick = onChangeGroupPhotoClick
+                    )
                 }
             }
         },
@@ -102,6 +107,7 @@ private fun GroupChatTopBarPreview() {
                     expanded = true,
                     onDismiss = {},
                     onChangeGroupNameClick = {},
+                    onChangeGroupPhotoClick = {},
                 )
             }
         }
