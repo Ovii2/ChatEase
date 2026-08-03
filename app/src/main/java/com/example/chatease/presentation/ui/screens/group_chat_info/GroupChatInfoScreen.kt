@@ -50,7 +50,7 @@ import com.example.chatease.presentation.ui.screens.group_chat_info.components.G
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.group.GroupChatTopBar
 import com.example.chatease.presentation.ui.screens.shared.group.GroupNameChangeDialog
-import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
+import com.example.chatease.presentation.ui.screens.shared.loading.CustomCircularProgressIndicator
 import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.GroupChatInfoViewModel
@@ -122,6 +122,12 @@ fun GroupChatInfoScreen(
                             showGroupNameChangeDialog = true
                             showMoreActions = false
                         },
+                        onChangeGroupPhotoClick = {
+                            imagePickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                            showMoreActions = false
+                        },
                     )
                 }
             }
@@ -135,7 +141,7 @@ fun GroupChatInfoScreen(
                 }
 
                 GroupChatInfoUiState.Loading -> {
-                    CommonCircularLoader()
+                    CustomCircularProgressIndicator()
                 }
 
                 is GroupChatInfoUiState.Success -> {
@@ -151,11 +157,11 @@ fun GroupChatInfoScreen(
                             isLeavingGroup = true
                         },
                         onNavigateToMembersScreen = onNavigateToMembersScreen,
-                        onUpdatePictureClick = {
-                            imagePickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        },
+//                        onUpdatePictureClick = {
+//                            imagePickerLauncher.launch(
+//                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+//                            )
+//                        },
                         isUpdating = isUpdating,
                     )
 
@@ -299,7 +305,6 @@ private fun GroupChatInfoScreenPreview() {
                     members = members,
                     onLeaveGroup = { isLeavingGroup = true },
                     onNavigateToMembersScreen = {},
-                    onUpdatePictureClick = {},
                     isUpdating = false,
                 )
                 if (isLeavingGroup) {
