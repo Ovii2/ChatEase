@@ -75,7 +75,7 @@ fun GroupChatTopBar(
                     )
                 ) {
                     DropdownMenuItem(
-                        text = { Text(text = stringResource(R.string.change_group_photo)) },
+                        text = { Text(text = stringResource(R.string.change_group_name)) },
                         onClick = onChangeGroupPhotoClick
                     )
                 }
