@@ -1,18 +1,15 @@
-package com.example.chatease.presentation.ui.screens.shared.chat
+package com.example.chatease.presentation.ui.screens.shared.group
 
-import android.content.res.Configuration
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,18 +24,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonTopBar(
+fun GroupChatTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     @StringRes title: Int? = null,
-    isTransparent: Boolean = false,
     actionIcon: ImageVector? = null,
-    onActionIconClick: () -> Unit = {}
+    onActionIconClick: () -> Unit = {},
+    expanded: Boolean,
+    onDismiss: () -> Unit,
+    onChangeGroupPhotoClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -52,30 +53,11 @@ fun CommonTopBar(
             } ?: ""
         },
         navigationIcon = {
-            if (isTransparent) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.background,
-                            shape = CircleShape
-                        )
-                        .clickable { onBackClick() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        imageVector = Icons.Outlined.ArrowBackIosNew,
-                        contentDescription = null,
-                    )
-                }
-            } else {
-                Icon(
-                    modifier = Modifier.clickable { onBackClick() },
-                    imageVector = Icons.Outlined.ArrowBackIosNew,
-                    contentDescription = null
-                )
-            }
+            Icon(
+                modifier = Modifier.clickable { onBackClick() },
+                imageVector = Icons.Outlined.ArrowBackIosNew,
+                contentDescription = null
+            )
         },
         actions = {
             actionIcon?.let {
@@ -84,20 +66,30 @@ fun CommonTopBar(
                     imageVector = actionIcon,
                     contentDescription = null
                 )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = onDismiss,
+                    offset = DpOffset(
+                        x = (-6).dp,
+                        y = 2.dp
+                    )
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.change_group_photo)) },
+                        onClick = onChangeGroupPhotoClick
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = if (isTransparent) Color.Transparent else MaterialTheme.colorScheme.surface
+            containerColor = Color.Transparent
         )
     )
 }
 
-@Preview(
-    showBackground = true, showSystemUi = true,
-    uiMode = Configuration.UI_MODE_TYPE_NORMAL
-)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun CommonTopBarPreview() {
+private fun GroupChatTopBarPreview() {
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -105,9 +97,11 @@ private fun CommonTopBarPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CommonTopBar(
-                    isTransparent = true,
-                    onBackClick = {}
+                GroupChatTopBar(
+                    onBackClick = {},
+                    expanded = true,
+                    onDismiss = {},
+                    onChangeGroupPhotoClick = {},
                 )
             }
         }

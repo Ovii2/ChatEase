@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,8 +47,8 @@ import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.group_chat_info.components.GroupChatInfoScreenContent
-import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
+import com.example.chatease.presentation.ui.screens.shared.group.GroupChatTopBar
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
 import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -66,6 +68,7 @@ fun GroupChatInfoScreen(
     var isLeavingGroup by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val currentUserId = groupChatInfoViewModel.currentUserId
+    var showMoreActions by rememberSaveable { mutableStateOf(false) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -98,11 +101,22 @@ fun GroupChatInfoScreen(
                 .padding(vertical = 8.dp, horizontal = 12.dp),
             containerColor = Color.Transparent,
             topBar = {
-                CommonTopBar(
-                    onBackClick = onBackClick,
-                    title = R.string.group_info,
-                    isTransparent = true
-                )
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    GroupChatTopBar(
+                        onBackClick = onBackClick,
+                        title = R.string.group_info,
+                        actionIcon = Icons.Default.MoreVert,
+                        onActionIconClick = {
+                            showMoreActions = true
+                        },
+                        expanded = showMoreActions,
+                        onDismiss = { showMoreActions = false },
+                        onChangeGroupPhotoClick = {},
+                    )
+                }
             }
         ) { paddingValues ->
             when (val state = uiState) {
@@ -133,6 +147,7 @@ fun GroupChatInfoScreen(
                         },
                         isUpdating = isUpdating,
                     )
+
                     if (isLeavingGroup) {
                         LeaveGroupBottomSheet(
                             sheetState = sheetState,
@@ -150,6 +165,7 @@ fun GroupChatInfoScreen(
                             },
                         )
                     }
+
                 }
             }
         }

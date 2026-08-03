@@ -288,4 +288,6 @@
     <string name="work">Work</string>
     <string name="gaming">Gaming</string>
 
+    <string name="change_group_photo">Change group photo</string>
+
 </resources>
