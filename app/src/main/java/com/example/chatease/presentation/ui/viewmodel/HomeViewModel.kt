@@ -144,7 +144,7 @@ class HomeViewModel @Inject constructor(
             }
     }
 
-    private suspend fun createConversationUiModelsFlow(
+    private fun createConversationUiModelsFlow(
         conversations: List<Conversation>,
         currentUserId: String
     ): Flow<List<ConversationUiModel>> {
@@ -161,29 +161,36 @@ class HomeViewModel @Inject constructor(
             currentUserId = currentUserId
         )
 
-        val groupsByConversationId =
-            getGroupsByConversationId(groupConversations)
-
-        val groupMembersByConversationId =
-            getGroupMembersByConversationId(groupsByConversationId)
-
-        if (directUserFlows.isEmpty()) {
-            return flowOf(
-                mapToConversationUiModels(
-                    conversations = conversations,
-                    otherUserByConversationId = emptyMap(),
-                    currentUserId = currentUserId,
-                    groupsByConversationId = groupsByConversationId,
-                    groupMembersByConversationId = groupMembersByConversationId
-                )
-            )
+        val groupFlows = groupConversations.map { conversation ->
+            groupRepository.observeGroup(conversation.id)
         }
 
-        return combine(directUserFlows) { users ->
-            val otherUserByConversationId =
+        val groupsFlow = if (groupFlows.isEmpty()) {
+            flowOf(emptyMap())
+        } else {
+            combine(groupFlows) { groups ->
+                groups.associateBy { group ->
+                    group.conversationId
+                }
+            }
+        }
+
+        val usersFlow = if (directUserFlows.isEmpty()) {
+            flowOf(emptyMap())
+        } else {
+            combine(directUserFlows) { users ->
                 directConversations.zip(users).associate { (conversation, user) ->
                     conversation.id to user
                 }
+            }
+        }
+
+        return combine(
+            usersFlow,
+            groupsFlow
+        ) { otherUserByConversationId, groupsByConversationId ->
+            val groupMembersByConversationId =
+                getGroupMembersByConversationId(groupsByConversationId)
 
             mapToConversationUiModels(
                 conversations = conversations,
@@ -205,16 +212,6 @@ class HomeViewModel @Inject constructor(
             } ?: return@mapNotNull null
 
             userRepository.observeUser(otherUserId)
-        }
-    }
-
-    private suspend fun getGroupsByConversationId(
-        conversations: List<Conversation>
-    ): Map<String, Group> {
-        return conversations.associate { conversation ->
-            conversation.id to groupRepository.getGroupByConversationId(
-                conversation.id
-            )
         }
     }
 
