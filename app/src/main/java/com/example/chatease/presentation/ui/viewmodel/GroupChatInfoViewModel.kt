@@ -163,6 +163,18 @@ class GroupChatInfoViewModel @Inject constructor(
         }
     }
 
+    fun updateGroupName(conversationId: String, groupName: String) {
+        viewModelScope.launch {
+            try {
+                groupRepository.updateGroupName(conversationId, groupName)
+            } catch (e: Exception) {
+                _uiState.value = GroupChatInfoUiState.Error(
+                    error = e.message ?: "Failed to update group name"
+                )
+            }
+        }
+    }
+
     private suspend fun validateGroupImage(imageUri: Uri): Uri {
         val compressedUri = withContext(Dispatchers.IO) {
             imageUtils.compressImage(imageUri)
