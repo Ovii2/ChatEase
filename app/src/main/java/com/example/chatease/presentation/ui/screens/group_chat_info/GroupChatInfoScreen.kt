@@ -49,10 +49,12 @@ import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.group_chat_info.components.GroupChatInfoScreenContent
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.group.GroupChatTopBar
+import com.example.chatease.presentation.ui.screens.shared.group.GroupNameChangeDialog
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
 import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.GroupChatInfoViewModel
+import com.example.chatease.presentation.validation.NewGroupValidator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +71,8 @@ fun GroupChatInfoScreen(
     val sheetState = rememberModalBottomSheetState()
     val currentUserId = groupChatInfoViewModel.currentUserId
     var showMoreActions by rememberSaveable { mutableStateOf(false) }
+    var showGroupNameChangeDialog by rememberSaveable { mutableStateOf(false) }
+    var isFieldTouched by rememberSaveable { mutableStateOf(false) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -114,7 +118,10 @@ fun GroupChatInfoScreen(
                         },
                         expanded = showMoreActions,
                         onDismiss = { showMoreActions = false },
-                        onChangeGroupNameClick = {},
+                        onChangeGroupNameClick = {
+                            showGroupNameChangeDialog = true
+                            showMoreActions = false
+                        },
                     )
                 }
             }
@@ -132,6 +139,10 @@ fun GroupChatInfoScreen(
                 }
 
                 is GroupChatInfoUiState.Success -> {
+                    var groupName by rememberSaveable { mutableStateOf(state.group.name) }
+                    val groupNameError =
+                        NewGroupValidator.validateNewGroupName(groupName) && isFieldTouched
+
                     GroupChatInfoScreenContent(
                         paddingValues = paddingValues,
                         group = state.group,
@@ -165,7 +176,21 @@ fun GroupChatInfoScreen(
                             },
                         )
                     }
-
+                    if (showGroupNameChangeDialog) {
+                        GroupNameChangeDialog(
+                            onDismiss = { showGroupNameChangeDialog = false },
+                            onAccept = {
+                                groupChatInfoViewModel.updateGroupName(
+                                    conversationId = conversationId,
+                                    groupName = groupName
+                                )
+                                showGroupNameChangeDialog = false
+                            },
+                            groupName = groupName,
+                            onGroupNameChange = { groupName = it },
+                            isGroupNameError = groupNameError,
+                        )
+                    }
                 }
             }
         }
