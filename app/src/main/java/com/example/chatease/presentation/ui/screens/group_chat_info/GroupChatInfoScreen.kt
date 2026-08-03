@@ -114,7 +114,7 @@ fun GroupChatInfoScreen(
                         },
                         expanded = showMoreActions,
                         onDismiss = { showMoreActions = false },
-                        onChangeGroupPhotoClick = {},
+                        onChangeGroupNameClick = {},
                     )
                 }
             }
