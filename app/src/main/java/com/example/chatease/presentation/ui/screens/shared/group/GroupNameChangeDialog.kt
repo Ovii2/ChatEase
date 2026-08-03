@@ -71,7 +71,7 @@ fun GroupNameChangeDialog(
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = groupName,
-                    onValueChange = onGroupNameChange,
+                    onValueChange = { if (it.length <= maxLength) onGroupNameChange(it) },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface
