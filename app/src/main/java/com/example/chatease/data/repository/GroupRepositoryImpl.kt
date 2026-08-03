@@ -31,6 +31,7 @@ class GroupRepositoryImpl(
         private const val PARTICIPANT_IDS = "participantIds"
         private const val GROUP_PROFILE_IMAGES = "group_profile_images"
         private const val IMAGE_URL = "imageUrl"
+        private const val NAME = "name"
     }
 
     override suspend fun createGroup(
@@ -312,6 +313,19 @@ class GroupRepositoryImpl(
             .collection(GROUP)
             .document(conversationId)
             .update(IMAGE_URL, imageUrl)
+            .await()
+    }
+
+    override suspend fun updateGroupName(conversationId: String, groupName: String) {
+        val trimmedGroupName = groupName.trim()
+        if (trimmedGroupName.length !in 5..50) {
+            return
+        }
+
+        firestore
+            .collection(GROUP)
+            .document(conversationId)
+            .update(NAME, trimmedGroupName)
             .await()
     }
 

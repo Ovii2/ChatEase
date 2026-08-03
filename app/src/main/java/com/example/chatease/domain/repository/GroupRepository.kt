@@ -40,4 +40,6 @@ interface GroupRepository {
 
     suspend fun updateGroupProfileImage(conversationId: String, imageUrl: String)
 
+    suspend fun updateGroupName(conversationId: String, groupName: String)
+
 }
