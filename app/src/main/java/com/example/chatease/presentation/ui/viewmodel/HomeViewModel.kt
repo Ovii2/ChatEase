@@ -53,8 +53,12 @@ class HomeViewModel @Inject constructor(
 
                 combine(
                     userRepository.observeUser(currentUserId),
-                    conversationsFlow
-                ) { user, conversations ->
+                    conversationsFlow,
+                    selectedCategory
+                ) { user, conversations, selectedCategoryId ->
+                    val filteredConversation =
+                        filterConversations(conversations, selectedCategoryId)
+
                     HomeUiState.Success(
                         user = user,
                         categories = CategoriesDataSource.categories.filter { category ->
@@ -62,7 +66,7 @@ class HomeViewModel @Inject constructor(
                                 conversation.isGroup && conversation.categoryId == category.id
                             }
                         },
-                        conversations = conversations,
+                        conversations = filteredConversation,
                         unreadMessages = conversations.sumOf { conversation ->
                             conversation.unreadCount
                         }
@@ -74,6 +78,19 @@ class HomeViewModel @Inject constructor(
                 _uiState.value = HomeUiState.Error(
                     message = exception.message.orEmpty()
                 )
+            }
+        }
+    }
+
+    private fun filterConversations(
+        conversations: List<ConversationUiModel>,
+        selectedCategoryId: String
+    ): List<ConversationUiModel> {
+        return conversations.filter { conversation ->
+            if (selectedCategoryId == "all") {
+                return@filter true
+            } else {
+                conversation.isGroup && conversation.categoryId == selectedCategoryId
             }
         }
     }
