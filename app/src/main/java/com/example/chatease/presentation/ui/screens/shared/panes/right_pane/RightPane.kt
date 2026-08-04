@@ -47,6 +47,7 @@ import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.comp
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesActionPanel
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesList
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.NewMessagesButton
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ReplyMessagePanel
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import kotlinx.coroutines.launch
@@ -92,6 +93,7 @@ fun RightPane(
     var initialUnreadMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedMessage by remember { mutableStateOf<Message?>(null) }
     var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedReplyMessage by rememberSaveable { mutableStateOf<Message?>(null) }
 
     val typingUsers = when (chatPaneUiState) {
         is ChatPaneUiState.DirectChat -> {
@@ -120,7 +122,6 @@ fun RightPane(
     val isUserGroupMember =
         (chatPaneUiState as? ChatPaneUiState.GroupChat)?.group?.userIds?.contains(currentUserId)
             ?: true
-
 
     RightPaneEffects(
         messages = messages,
@@ -153,6 +154,7 @@ fun RightPane(
                 focusManager.clearFocus()
                 selectedReactionMessageId = null
                 selectedMessage = null
+                selectedReplyMessage = null
             }
     ) {
         Column(
@@ -195,6 +197,7 @@ fun RightPane(
                     onReactionClick(messageId, reaction)
                     selectedMessage = null
                     selectedReactionMessageId = null
+                    selectedReplyMessage = null
                 },
                 isBlockedByOtherUser = isBlockedByOtherUser,
                 chatPaneUiState = chatPaneUiState,
@@ -207,6 +210,7 @@ fun RightPane(
                 onDismissMessageActions = {
                     selectedMessage = null
                     selectedReactionMessageId = null
+                    selectedReplyMessage = null
                 },
             )
 
@@ -241,6 +245,31 @@ fun RightPane(
                 )
             }
 
+            selectedReplyMessage?.let { message ->
+                val replyUserName = when (chatPaneUiState) {
+                    is ChatPaneUiState.DirectChat -> {
+                        chatPaneUiState.user.fullName
+                    }
+
+                    is ChatPaneUiState.GroupChat -> {
+                        chatPaneUiState.members
+                            .firstOrNull { user ->
+                                user.uid == message.senderId
+                            }
+                            ?.fullName
+                            .orEmpty()
+                    }
+                }
+                ReplyMessagePanel(
+                    onDismiss = {
+                        selectedReplyMessage = null
+                    },
+                    isCurrentUser = message.senderId == currentUserId,
+                    message = message.text,
+                    replyUserName = replyUserName
+                )
+            }
+
             MessageInputBar(
                 modifier = Modifier,
                 onMicrophoneClick = {},
@@ -272,6 +301,7 @@ fun RightPane(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 isSenderCurrentUser = it.senderId == currentUserId,
                 onReplyClick = {
+                    selectedReplyMessage = selectedMessage
                     selectedMessage = null
                     selectedReactionMessageId = null
                 }
