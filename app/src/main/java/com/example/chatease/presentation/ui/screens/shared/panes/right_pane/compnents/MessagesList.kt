@@ -52,7 +52,8 @@ fun MessagesList(
     onShowUsersReactionsClick: (String) -> Unit,
     onLongClick: (Message) -> Unit,
     selectedReactionMessageId: String?,
-    onSelectedReactionMessageIdChange: (String?) -> Unit
+    onSelectedReactionMessageIdChange: (String?) -> Unit,
+    onDismissMessageActions: () -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -65,6 +66,7 @@ fun MessagesList(
             interactionSource = remember { MutableInteractionSource() }
         ) {
             onSelectedReactionMessageIdChange(null)
+            onDismissMessageActions()
             focusManager.clearFocus()
         }
     ) {
@@ -154,6 +156,7 @@ fun MessagesList(
                                     },
                                     onDismissReactions = {
                                         onSelectedReactionMessageIdChange(null)
+                                        onDismissMessageActions()
                                     },
                                     onReactionClick = { messageId, reaction ->
                                         onReactionClick(messageId, reaction)
@@ -389,6 +392,7 @@ private fun MessagesListPreview() {
                 onLongClick = {},
                 selectedReactionMessageId = "1",
                 onSelectedReactionMessageIdChange = {},
+                onDismissMessageActions = {},
             )
         }
     }

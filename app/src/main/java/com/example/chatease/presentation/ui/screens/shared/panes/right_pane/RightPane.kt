@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -41,8 +43,8 @@ import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.group_chat.components.GroupChatTopBar
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationStarterRow
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.DirectChatTopBar
-import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageActionsBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageInputBar
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesActionPanel
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesList
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.NewMessagesButton
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
@@ -141,126 +143,138 @@ fun RightPane(
         onMessagesVisible = onMessagesVisible
     )
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .imePadding()
-            .systemBarsPadding()
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) {
                 focusManager.clearFocus()
                 selectedReactionMessageId = null
-            },
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+                selectedMessage = null
+            }
     ) {
-        when (chatPaneUiState) {
-            is ChatPaneUiState.DirectChat -> {
-                DirectChatTopBar(
-                    user = chatPaneUiState.user,
-                    onBackClick = onBackClick,
-                    onNavigateToChatInfo = onNavigateToChatInfo,
-                    isBlockedByOtherUser = isBlockedByOtherUser,
-                    onStartAudioCall = onStartAudioCall,
-                )
-            }
-
-            is ChatPaneUiState.GroupChat -> {
-                GroupChatTopBar(
-                    onBackClick = onBackClick,
-                    members = chatPaneUiState.group.userIds.size,
-                    group = chatPaneUiState.group,
-                    onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
-                )
-            }
-        }
-
-        MessagesList(
+        Column(
             modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 8.dp)
-                .weight(1f),
-            messages = messages,
-            currentUserId = currentUserId,
-            listState = listState,
-            firstUnreadMessageId = if (shouldShowUnreadDivider) initialUnreadMessageId else null,
-            onReactionClick = { messageId, reaction ->
-                onReactionClick(messageId, reaction)
-            },
-            isBlockedByOtherUser = isBlockedByOtherUser,
-            chatPaneUiState = chatPaneUiState,
-            onShowUsersReactionsClick = onShowUsersReactionsClick,
-            onLongClick = {
-                selectedMessage = it
-            },
-            selectedReactionMessageId = selectedReactionMessageId,
-            onSelectedReactionMessageIdChange = { selectedReactionMessageId = it },
-        )
+                .fillMaxSize()
+                .imePadding()
+                .systemBarsPadding(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            when (chatPaneUiState) {
+                is ChatPaneUiState.DirectChat -> {
+                    DirectChatTopBar(
+                        user = chatPaneUiState.user,
+                        onBackClick = onBackClick,
+                        onNavigateToChatInfo = onNavigateToChatInfo,
+                        isBlockedByOtherUser = isBlockedByOtherUser,
+                        onStartAudioCall = onStartAudioCall,
+                    )
+                }
+
+                is ChatPaneUiState.GroupChat -> {
+                    GroupChatTopBar(
+                        onBackClick = onBackClick,
+                        members = chatPaneUiState.group.userIds.size,
+                        group = chatPaneUiState.group,
+                        onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
+                    )
+                }
+            }
+
+            MessagesList(
+                modifier = Modifier
+                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .weight(1f),
+                messages = messages,
+                currentUserId = currentUserId,
+                listState = listState,
+                firstUnreadMessageId = if (shouldShowUnreadDivider) initialUnreadMessageId else null,
+                onReactionClick = { messageId, reaction ->
+                    onReactionClick(messageId, reaction)
+                    selectedMessage = null
+                    selectedReactionMessageId = null
+                },
+                isBlockedByOtherUser = isBlockedByOtherUser,
+                chatPaneUiState = chatPaneUiState,
+                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                onLongClick = {
+                    selectedMessage = it
+                },
+                selectedReactionMessageId = selectedReactionMessageId,
+                onSelectedReactionMessageIdChange = { selectedReactionMessageId = it },
+                onDismissMessageActions = {
+                    selectedMessage = null
+                    selectedReactionMessageId = null
+                },
+            )
 
 
-        if (showNewMessagesButton) {
-            NewMessagesButton(
-                onClick = {
-                    newMessageCount = 0
+            if (showNewMessagesButton) {
+                NewMessagesButton(
+                    onClick = {
+                        newMessageCount = 0
+
+                        scope.launch {
+                            listState.animateScrollToItem(firstIndex)
+                        }
+                    },
+                    newMessages = newMessageCount
+                )
+            }
+
+            if (typingUsers.isNotEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    textAlign = TextAlign.End,
+                    text = typingText,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                )
+            }
+            if (messages.isEmpty()) {
+                ConversationStarterRow(
+                    onStarterClick = { messageText = it }
+                )
+            }
+
+            MessageInputBar(
+                modifier = Modifier,
+                onMicrophoneClick = {},
+                onSendMessageClick = {
+                    onSendMessageClick(it)
+                    messageText = ""
 
                     scope.launch {
                         listState.animateScrollToItem(firstIndex)
                     }
                 },
-                newMessages = newMessageCount
+                messageText = messageText,
+                onMessageTextChange = {
+                    messageText = it
+                    updateTypingStatus(it)
+                },
+                isPeekEnabled = isPeekEnabled,
+                onPeekClick = onPeekClick,
+                onInputFocused = {
+                    shouldShowUnreadDivider = false
+                    onMessagesVisible()
+                },
+                isBlockedByOtherUser = isBlockedByOtherUser,
+                isUserGroupMember = isUserGroupMember,
             )
         }
-
-        if (typingUsers.isNotEmpty()) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                textAlign = TextAlign.End,
-                text = typingText,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-            )
-        }
-        if (messages.isEmpty()) {
-            ConversationStarterRow(
-                onStarterClick = { messageText = it }
-            )
-        }
-
-        MessageInputBar(
-            modifier = Modifier,
-            onMicrophoneClick = {},
-            onSendMessageClick = {
-                onSendMessageClick(it)
-                messageText = ""
-
-                scope.launch {
-                    listState.animateScrollToItem(firstIndex)
-                }
-            },
-            messageText = messageText,
-            onMessageTextChange = {
-                messageText = it
-                updateTypingStatus(it)
-            },
-            isPeekEnabled = isPeekEnabled,
-            onPeekClick = onPeekClick,
-            onInputFocused = {
-                shouldShowUnreadDivider = false
-                onMessagesVisible()
-            },
-            isBlockedByOtherUser = isBlockedByOtherUser,
-            isUserGroupMember = isUserGroupMember,
-        )
         selectedMessage?.let {
-            MessageActionsBottomSheet(
-                onDismiss = { selectedMessage = null },
+            MessagesActionPanel(
+                modifier = Modifier.align(Alignment.BottomCenter),
                 isSenderCurrentUser = it.senderId == currentUserId,
                 onReplyClick = {
                     selectedMessage = null
                     selectedReactionMessageId = null
-                },
+                }
             )
         }
     }
