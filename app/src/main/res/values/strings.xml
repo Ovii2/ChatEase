@@ -291,4 +291,10 @@
     <string name="change_group_name">Change group name</string>
     <string name="change_group_photo">Change group photo</string>
 
+    <string name="reply">Reply</string>
+    <string name="copy">Copy</string>
+    <string name="edit">Edit</string>
+    <string name="unsend">Unsend</string>
+    <string name="translate">Translate</string>
+
 </resources>
