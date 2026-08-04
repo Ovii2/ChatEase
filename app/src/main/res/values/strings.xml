@@ -296,5 +296,7 @@
     <string name="edit">Edit</string>
     <string name="unsend">Unsend</string>
     <string name="translate">Translate</string>
+    <string name="replying_to">Replying to %1$s</string>
+    <string name="replying_to_yourself">Replying to yourself</string>
 
 </resources>
