@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.ContentCopy
@@ -42,6 +43,7 @@ fun MessagesActionPanel(
 ) {
     Surface(
         modifier = modifier
+            .systemBarsPadding()
             .fillMaxWidth()
             .drawBehind {
                 drawLine(
@@ -61,12 +63,7 @@ fun MessagesActionPanel(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(
-                    start = 12.dp,
-                    end = 12.dp,
-                    top = 10.dp,
-                    bottom = 24.dp
-                ),
+                .padding(12.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             MessageActionsItem(
