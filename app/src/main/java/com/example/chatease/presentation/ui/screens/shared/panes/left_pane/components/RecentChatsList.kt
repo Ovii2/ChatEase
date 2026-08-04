@@ -132,6 +132,7 @@ fun RecentChatListItem(
         Row(
             modifier = modifier
                 .fillMaxWidth()
+                .padding(horizontal = 6.dp)
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,

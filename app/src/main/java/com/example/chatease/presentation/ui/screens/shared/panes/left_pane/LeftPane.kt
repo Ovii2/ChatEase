@@ -100,7 +100,7 @@ private fun LeftPanePreview() {
         participants = listOf(user),
         lastMessage = "",
         timestamp = System.currentTimeMillis(),
-        unreadCount = 0,
+        unreadCount = 2,
         isGroup = false,
         isCurrentUserGroupMember = true
     )
