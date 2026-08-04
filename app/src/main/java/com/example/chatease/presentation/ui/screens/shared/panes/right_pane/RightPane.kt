@@ -41,6 +41,7 @@ import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.group_chat.components.GroupChatTopBar
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationStarterRow
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.DirectChatTopBar
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageActionsBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageInputBar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesList
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.NewMessagesButton
@@ -87,6 +88,7 @@ fun RightPane(
     val isUserDragging by listState.interactionSource.collectIsDraggedAsState()
     var shouldShowUnreadDivider by remember { mutableStateOf(false) }
     var initialUnreadMessageId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedMessage by remember { mutableStateOf<Message?>(null) }
 
     val typingUsers = when (chatPaneUiState) {
         is ChatPaneUiState.DirectChat -> {
@@ -186,6 +188,9 @@ fun RightPane(
             isBlockedByOtherUser = isBlockedByOtherUser,
             chatPaneUiState = chatPaneUiState,
             onShowUsersReactionsClick = onShowUsersReactionsClick,
+            onLongClick = {
+                selectedMessage = it
+            },
         )
 
 
@@ -244,6 +249,12 @@ fun RightPane(
             isBlockedByOtherUser = isBlockedByOtherUser,
             isUserGroupMember = isUserGroupMember,
         )
+        selectedMessage?.let {
+            MessageActionsBottomSheet(
+                onDismiss = { selectedMessage = null },
+                isSenderCurrentUser = it.senderId == currentUserId
+            )
+        }
     }
 }
 
@@ -267,7 +278,7 @@ private fun RightPanePreview() {
             messageId = it.toString(),
             conversationId = "1",
             senderId = senders.random(),
-            text = LoremIpsum((10..50).random()).values.first(),
+            text = LoremIpsum((10..20).random()).values.first(),
             timeStamp = System.currentTimeMillis(),
             seenBy = emptyList(),
             reactions = emptyMap(),
@@ -283,7 +294,8 @@ private fun RightPanePreview() {
         group = Group(
             conversationId = "1",
             ownerId = "1",
-            visibleToUserIds = listOf("1"),
+            userIds = listOf("1", "2"),
+            visibleToUserIds = emptyList(),
             name = "Test Group",
             imageUrl = null
         ),
@@ -295,7 +307,7 @@ private fun RightPanePreview() {
             Column(modifier = Modifier.padding(paddingValues)) {
                 RightPane(
                     messages = messages,
-                    currentUserId = "2",
+                    currentUserId = "1",
                     onBackClick = {},
                     onSendMessageClick = {},
                     firstUnreadMessageId = "1",

@@ -53,7 +53,8 @@ fun MessagesList(
     onReactionClick: (String, String) -> Unit,
     isBlockedByOtherUser: Boolean,
     chatPaneUiState: ChatPaneUiState,
-    onShowUsersReactionsClick: (String) -> Unit
+    onShowUsersReactionsClick: (String) -> Unit,
+    onLongClick: (Message) -> Unit
 ) {
     var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     val focusManager = LocalFocusManager.current
@@ -105,7 +106,10 @@ fun MessagesList(
                                 isFirstInGroup = isFirstInGroup,
                                 isMiddleInGroup = isMiddleInGroup,
                                 isLastInGroup = isLastInGroup,
-                                onLongClick = { selectedReactionMessageId = message.messageId },
+                                onLongClick = {
+                                    selectedReactionMessageId = message.messageId
+                                    onLongClick(message)
+                                },
                                 onDismissReactions = { selectedReactionMessageId = null },
                                 onReactionClick = { messageId, reaction ->
                                     onReactionClick(messageId, reaction)
@@ -146,6 +150,7 @@ fun MessagesList(
                                     isLastInGroup = isLastInGroup,
                                     onLongClick = {
                                         selectedReactionMessageId = message.messageId
+                                        onLongClick(message)
                                     },
                                     onDismissReactions = {
                                         selectedReactionMessageId = null
@@ -381,6 +386,7 @@ private fun MessagesListPreview() {
                 isBlockedByOtherUser = true,
                 chatPaneUiState = groupChatPaneUiState,
                 onShowUsersReactionsClick = {},
+                onLongClick = {},
             )
         }
     }
