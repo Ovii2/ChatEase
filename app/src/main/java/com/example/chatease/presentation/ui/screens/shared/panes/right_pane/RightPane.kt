@@ -89,6 +89,7 @@ fun RightPane(
     var shouldShowUnreadDivider by remember { mutableStateOf(false) }
     var initialUnreadMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedMessage by remember { mutableStateOf<Message?>(null) }
+    var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
 
     val typingUsers = when (chatPaneUiState) {
         is ChatPaneUiState.DirectChat -> {
@@ -150,6 +151,7 @@ fun RightPane(
                 interactionSource = remember { MutableInteractionSource() }
             ) {
                 focusManager.clearFocus()
+                selectedReactionMessageId = null
             },
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -191,6 +193,8 @@ fun RightPane(
             onLongClick = {
                 selectedMessage = it
             },
+            selectedReactionMessageId = selectedReactionMessageId,
+            onSelectedReactionMessageIdChange = { selectedReactionMessageId = it },
         )
 
 
@@ -252,7 +256,11 @@ fun RightPane(
         selectedMessage?.let {
             MessageActionsBottomSheet(
                 onDismiss = { selectedMessage = null },
-                isSenderCurrentUser = it.senderId == currentUserId
+                isSenderCurrentUser = it.senderId == currentUserId,
+                onReplyClick = {
+                    selectedMessage = null
+                    selectedReactionMessageId = null
+                },
             )
         }
     }

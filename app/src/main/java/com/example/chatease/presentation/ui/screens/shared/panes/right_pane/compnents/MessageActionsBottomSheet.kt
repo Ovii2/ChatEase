@@ -36,7 +36,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun MessageActionsBottomSheet(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
-    isSenderCurrentUser: Boolean
+    isSenderCurrentUser: Boolean,
+    onReplyClick: () -> Unit
 ) {
     ModalBottomSheet(
         sheetState = rememberModalBottomSheetState(),
@@ -56,7 +57,7 @@ fun MessageActionsBottomSheet(
             MessageActionsItem(
                 icon = Icons.AutoMirrored.Filled.Reply,
                 label = R.string.reply,
-                onClick = {}
+                onClick = onReplyClick
             )
             MessageActionsItem(
                 icon = Icons.Default.ContentCopy,
@@ -141,6 +142,7 @@ private fun MessageActionsBottomSheetPreview() {
                 MessageActionsBottomSheet(
                     onDismiss = {},
                     isSenderCurrentUser = true,
+                    onReplyClick = {},
                 )
             }
         }

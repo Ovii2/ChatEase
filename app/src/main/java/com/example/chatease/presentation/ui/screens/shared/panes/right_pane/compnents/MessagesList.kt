@@ -17,11 +17,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -54,9 +50,11 @@ fun MessagesList(
     isBlockedByOtherUser: Boolean,
     chatPaneUiState: ChatPaneUiState,
     onShowUsersReactionsClick: (String) -> Unit,
-    onLongClick: (Message) -> Unit
+    onLongClick: (Message) -> Unit,
+    selectedReactionMessageId: String?,
+    onSelectedReactionMessageIdChange: (String?) -> Unit
 ) {
-    var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
+
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val reversedMessages = messages.reversed()
@@ -66,7 +64,7 @@ fun MessagesList(
             indication = null,
             interactionSource = remember { MutableInteractionSource() }
         ) {
-            selectedReactionMessageId = null
+            onSelectedReactionMessageIdChange(null)
             focusManager.clearFocus()
         }
     ) {
@@ -107,13 +105,15 @@ fun MessagesList(
                                 isMiddleInGroup = isMiddleInGroup,
                                 isLastInGroup = isLastInGroup,
                                 onLongClick = {
-                                    selectedReactionMessageId = message.messageId
+                                    onSelectedReactionMessageIdChange(message.messageId)
                                     onLongClick(message)
                                 },
-                                onDismissReactions = { selectedReactionMessageId = null },
+                                onDismissReactions = {
+                                    onSelectedReactionMessageIdChange(null)
+                                },
                                 onReactionClick = { messageId, reaction ->
                                     onReactionClick(messageId, reaction)
-                                    selectedReactionMessageId = null
+                                    onSelectedReactionMessageIdChange(null)
                                 },
                                 onShowUsersReactionsClick = onShowUsersReactionsClick
                             )
@@ -149,15 +149,15 @@ fun MessagesList(
                                     isMiddleInGroup = isMiddleInGroup,
                                     isLastInGroup = isLastInGroup,
                                     onLongClick = {
-                                        selectedReactionMessageId = message.messageId
+                                        onSelectedReactionMessageIdChange(message.messageId)
                                         onLongClick(message)
                                     },
                                     onDismissReactions = {
-                                        selectedReactionMessageId = null
+                                        onSelectedReactionMessageIdChange(null)
                                     },
                                     onReactionClick = { messageId, reaction ->
                                         onReactionClick(messageId, reaction)
-                                        selectedReactionMessageId = null
+                                        onSelectedReactionMessageIdChange(null)
                                     },
                                     onShowUsersReactionsClick = onShowUsersReactionsClick,
                                     isUserMemberOfGroup = isUserMemberOfGroup,
@@ -387,6 +387,8 @@ private fun MessagesListPreview() {
                 chatPaneUiState = groupChatPaneUiState,
                 onShowUsersReactionsClick = {},
                 onLongClick = {},
+                selectedReactionMessageId = "1",
+                onSelectedReactionMessageIdChange = {},
             )
         }
     }
