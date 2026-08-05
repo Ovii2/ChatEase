@@ -86,7 +86,13 @@ fun GroupChatScreen(
                         chatViewModel.deleteConversationIfEmpty(conversationId)
                         onBackClick()
                     },
-                    onSendMessageClick = { chatViewModel.sendMessage(conversationId, it) },
+                    onSendMessageClick = { text, repliedMessage ->
+                        chatViewModel.sendMessage(
+                            conversationId = conversationId,
+                            text = text,
+                            repliedMessage = repliedMessage
+                        )
+                    },
                     firstUnreadMessageId = firstUnreadMessageId,
                     onMessagesVisible = { chatViewModel.markMessagesAsSeen(conversationId) },
                     onReactionClick = { messageId, reaction ->

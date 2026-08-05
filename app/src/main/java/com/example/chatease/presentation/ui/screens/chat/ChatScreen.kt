@@ -60,8 +60,12 @@ fun ChatScreen(
             chatViewModel.updateTypingStatus(conversationId, false)
             onBackClick()
         },
-        onSendMessageClick = {
-            chatViewModel.sendMessage(conversationId, it)
+        onSendMessageClick = { text, repliedMessage ->
+            chatViewModel.sendMessage(
+                conversationId = conversationId,
+                text = text,
+                repliedMessage = repliedMessage
+            )
             chatViewModel.updateTypingStatus(
                 conversationId = conversationId,
                 isTyping = false

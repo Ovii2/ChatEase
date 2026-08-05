@@ -204,11 +204,12 @@ fun HomeScreen(
                                 onNavigateToProfile = onNavigateToProfile,
                                 currentUserId = chatViewModel.currentUserId,
                                 onBackClick = onBackClick,
-                                onSendMessageClick = {
+                                onSendMessageClick = { text, repliedMessage ->
                                     selectedConversationId?.let { id ->
                                         chatViewModel.sendMessage(
-                                            id,
-                                            it
+                                            conversationId = id,
+                                            text = text,
+                                            repliedMessage = repliedMessage
                                         )
                                     }
                                 },
