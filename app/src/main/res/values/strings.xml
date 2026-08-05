@@ -298,5 +298,9 @@
     <string name="translate">Translate</string>
     <string name="replying_to">Replying to %1$s</string>
     <string name="replying_to_yourself">Replying to yourself</string>
+    <string name="you_replied_to_yourself">You replied to yourself</string>
+    <string name="other_user_replied_to_someone">%1$s replied to %2$s</string>
+    <string name="you">You</string>
+    <string name="you_lowercase">you</string>
 
 </resources>
