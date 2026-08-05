@@ -151,6 +151,8 @@ fun RightPane(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .imePadding()
+            .systemBarsPadding()
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
@@ -163,9 +165,7 @@ fun RightPane(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .imePadding()
-                .systemBarsPadding(),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             when (chatPaneUiState) {
