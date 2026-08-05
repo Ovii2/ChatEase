@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -52,7 +53,8 @@ fun ChatBubble(
     conversationType: ConversationType = ConversationType.DIRECT,
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
-    isUserMemberOfGroup: Boolean
+    isUserMemberOfGroup: Boolean,
+    isReplyMessage: Boolean = false
 ) {
     val backgroundColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
@@ -80,7 +82,6 @@ fun ChatBubble(
             bottomEnd = largeCorner
         )
     } else {
-
         if (isSentByCurrentUser) {
             RoundedCornerShape(
                 topStart = largeCorner,
@@ -97,7 +98,6 @@ fun ChatBubble(
             )
         }
     }
-
 
     val seenCheckColor = if (isSystemInDarkTheme()) successGreenDark else successGreenLight
     val reactionBadgeAlignment = if (isSentByCurrentUser) Alignment.BottomEnd else
@@ -129,7 +129,7 @@ fun ChatBubble(
                     }
                 ),
                 color = backgroundColor,
-                shape = shape
+                shape = if (isReplyMessage) RoundedCornerShape(18.dp) else shape
             ) {
                 Column(
                     modifier = Modifier
@@ -222,7 +222,7 @@ private fun ChatBubblePreview() {
         messageId = "1",
         conversationId = "2",
         senderId = "1",
-        text = "Hey! Are we still for lunch?",
+        text = LoremIpsum(5).values.first(),
         timeStamp = System.currentTimeMillis(),
         seenBy = listOf("user_1"),
         reactions = mapOf(
