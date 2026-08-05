@@ -95,7 +95,7 @@ fun GroupMembersList(
                     currentUserIsAdmin = currentUserIsAdmin
                 )
             }
-            if (members.isNotEmpty()) {
+            if (regularMembers.isNotEmpty()) {
                 Text(
                     text = stringResource(R.string.members_with_count, regularMembers.size),
                     style = MaterialTheme.typography.labelLarge,
