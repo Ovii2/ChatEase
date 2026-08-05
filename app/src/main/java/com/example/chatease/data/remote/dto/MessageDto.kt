@@ -1,5 +1,6 @@
 package com.example.chatease.data.remote.dto
 
+import com.example.chatease.domain.model.ReplyMessage
 import com.example.chatease.domain.model.enums.MessageType
 
 data class MessageDto(
@@ -10,5 +11,6 @@ data class MessageDto(
     val timeStamp: Long = 0L,
     val seenBy: List<String> = emptyList(),
     val reactions: Map<String, String> = emptyMap(),
-    val messageType: MessageType = MessageType.TEXT
+    val messageType: MessageType = MessageType.TEXT,
+    val replyMessage: ReplyMessage? = null
 )

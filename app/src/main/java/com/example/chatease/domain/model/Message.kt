@@ -10,5 +10,6 @@ data class Message(
     val timeStamp: Long = 0L,
     val seenBy: List<String> = emptyList(),
     val reactions: Map<String, String> = emptyMap(),
-    val messageType: MessageType = MessageType.TEXT
+    val messageType: MessageType = MessageType.TEXT,
+    val replyMessage: ReplyMessage? = null
 )

@@ -12,7 +12,8 @@ fun MessageDto.toDomain(): Message {
         timeStamp = timeStamp,
         seenBy = seenBy,
         reactions = reactions,
-        messageType = messageType
+        messageType = messageType,
+        replyMessage = replyMessage
     )
 }
 
@@ -25,6 +26,7 @@ fun Message.toDto(): MessageDto {
         timeStamp = timeStamp,
         seenBy = seenBy,
         reactions = reactions,
-        messageType = messageType
+        messageType = messageType,
+        replyMessage = replyMessage
     )
 }
