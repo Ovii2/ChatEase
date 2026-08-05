@@ -8,6 +8,7 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.example.chatease.presentation.ui.state.NewChatGroupUiState
 import com.example.chatease.utils.ImageUtils
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,10 +52,14 @@ class NewChatGroupViewModel @Inject constructor(
     private val _selectedCategoryId = MutableStateFlow("friends")
     val selectedCategoryId = _selectedCategoryId.asStateFlow()
 
+    private val _uiState = MutableStateFlow<NewChatGroupUiState>(NewChatGroupUiState.Idle)
+    val uiState = _uiState.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
     fun createGroup(onGroupCreated: (String) -> Unit) {
+        _uiState.value = NewChatGroupUiState.Loading
         viewModelScope.launch {
             val participantIds = (members.value.map { it.uid } + currentUserId).distinct()
             try {
@@ -75,7 +80,11 @@ class NewChatGroupViewModel @Inject constructor(
                     categoryId = selectedCategoryId.value,
                 )
                 onGroupCreated(conversationId)
+                _uiState.value = NewChatGroupUiState.Success
             } catch (e: Exception) {
+                _uiState.value = NewChatGroupUiState.Error(
+                    message = e.message ?: "Failed to create group"
+                )
                 Log.v("NewChatGroupViewModel", e.message ?: "Failed to create group", e)
             }
         }
@@ -155,6 +164,10 @@ class NewChatGroupViewModel @Inject constructor(
 
     fun selectCategory(categoryId: String) {
         _selectedCategoryId.value = categoryId
+    }
+
+    fun resetState() {
+        _uiState.value = NewChatGroupUiState.Idle
     }
 
     private suspend fun validateGroupImage(imageUri: Uri): Uri {
