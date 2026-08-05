@@ -131,25 +131,3 @@ fun GroupChatMembersScreen(
         }
     }
 }
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun GroupChatMembersScreenPreview() {
-    ChatEaseTheme {
-        Scaffold { paddingValues ->
-            Column(
-                modifier = Modifier.padding(paddingValues),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                GroupChatMembersScreen(
-                    onBackClick = {},
-                    conversationId = "1",
-                    snackbarHostState = SnackbarHostState(),
-                    onNavigateToAddMembersScreen = {},
-                    onNavigateToProfileScreen = {},
-                )
-            }
-        }
-    }
-}

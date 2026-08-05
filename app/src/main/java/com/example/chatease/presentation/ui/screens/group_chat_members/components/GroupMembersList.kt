@@ -95,11 +95,13 @@ fun GroupMembersList(
                     currentUserIsAdmin = currentUserIsAdmin
                 )
             }
-            Text(
-                text = stringResource(R.string.members_with_count, regularMembers.size),
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.W600
-            )
+            if (members.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.members_with_count, regularMembers.size),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.W600
+                )
+            }
             regularMembers.forEach { user ->
                 GroupMembersListItem(
                     user = user,
@@ -275,7 +277,7 @@ private fun GroupMembersListItemPreview() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun GroupMembersListPreview() {
-    val members = List(15) {
+    val members = List(2) {
         User(
             uid = "user_$it",
             fullName = "Test Test",
