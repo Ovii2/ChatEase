@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.Message
+import com.example.chatease.domain.model.ReplyMessage
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.repository.ConversationRepository
@@ -67,7 +68,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(conversationId: String, text: String) {
+    fun sendMessage(conversationId: String, text: String, repliedMessage: Message?) {
         viewModelScope.launch {
             try {
                 val currentUserId = auth.currentUser?.uid ?: return@launch
@@ -77,7 +78,14 @@ class ChatViewModel @Inject constructor(
                     text = text.trim(),
                     timeStamp = System.currentTimeMillis(),
                     seenBy = listOf(currentUserId),
-                    messageType = MessageType.TEXT
+                    messageType = MessageType.TEXT,
+                    replyMessage = repliedMessage?.let { message ->
+                        ReplyMessage(
+                            messageId = message.messageId,
+                            senderId = message.senderId,
+                            text = message.text
+                        )
+                    }
                 )
                 conversationRepository.sendMessage(message)
                 conversationRepository.updateTypingStatus(conversationId, currentUserId, false)
