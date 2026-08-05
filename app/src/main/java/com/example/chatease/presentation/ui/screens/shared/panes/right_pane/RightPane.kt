@@ -59,7 +59,7 @@ fun RightPane(
     messages: List<Message>,
     currentUserId: String,
     onBackClick: () -> Unit,
-    onSendMessageClick: (String) -> Unit,
+    onSendMessageClick: (String, Message?) -> Unit,
     firstUnreadMessageId: String?,
     onMessagesVisible: () -> Unit,
     onReactionClick: (String, String) -> Unit,
@@ -274,7 +274,7 @@ fun RightPane(
                 modifier = Modifier,
                 onMicrophoneClick = {},
                 onSendMessageClick = {
-                    onSendMessageClick(it)
+                    onSendMessageClick(it, selectedReplyMessage)
                     messageText = ""
 
                     scope.launch {
@@ -361,7 +361,7 @@ private fun RightPanePreview() {
                     messages = messages,
                     currentUserId = "1",
                     onBackClick = {},
-                    onSendMessageClick = {},
+                    onSendMessageClick = { _, _ -> },
                     firstUnreadMessageId = "1",
                     onMessagesVisible = {},
                     onReactionClick = { _, _ -> },
