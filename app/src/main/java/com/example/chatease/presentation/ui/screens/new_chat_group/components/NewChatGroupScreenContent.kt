@@ -108,7 +108,7 @@ fun NewChatGroupScreenContent(
                 buttonText = R.string.create_group,
                 isLoading = uiState is NewChatGroupUiState.Loading,
                 isSuccess = uiState is NewChatGroupUiState.Success,
-                enabled = members.size > 1 && !groupNameError && groupName.isNotBlank() && uiState !is NewChatGroupUiState.Loading,
+                enabled = members.size > 1 && !groupNameError && groupName.isNotBlank(),
                 onClick = onCreateGroup,
                 colors = listOf(
                     MaterialTheme.colorScheme.primary,
