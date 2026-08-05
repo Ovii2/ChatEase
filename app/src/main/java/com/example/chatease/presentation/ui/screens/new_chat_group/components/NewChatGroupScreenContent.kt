@@ -13,23 +13,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.presentation.ui.screens.shared.auth.AuthActionButton
+import com.example.chatease.presentation.ui.state.NewChatGroupUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
@@ -53,7 +52,8 @@ fun NewChatGroupScreenContent(
     onAddPhotoClick: () -> Unit,
     isUploading: Boolean,
     selectedCategoryId: String?,
-    onCategorySelect: (String) -> Unit
+    onCategorySelect: (String) -> Unit,
+    uiState: NewChatGroupUiState
 ) {
     val scrollState = rememberScrollState()
     val isScrollable = scrollState.maxValue > 0
@@ -101,22 +101,23 @@ fun NewChatGroupScreenContent(
                 maxMembers = maxMembers,
                 members = members
             )
-            Button(
+            AuthActionButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                onClick = {
-                    onCreateGroup()
-                },
-                shape = RoundedCornerShape(15.dp),
-                enabled = members.size > 1 && !groupNameError && groupName.isNotEmpty()
-            ) {
-                Text(text = stringResource(R.string.create_group))
-            }
+                buttonText = R.string.create_group,
+                isLoading = uiState is NewChatGroupUiState.Loading,
+                isSuccess = uiState is NewChatGroupUiState.Success,
+                enabled = members.size > 1 && !groupNameError && groupName.isNotBlank() && uiState !is NewChatGroupUiState.Loading,
+                onClick = onCreateGroup,
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.primary
+                )
+            )
         }
     }
 }
-
 
 @Preview(
     showBackground = true, showSystemUi = true,
@@ -124,7 +125,7 @@ fun NewChatGroupScreenContent(
 )
 @Composable
 private fun NewChatGroupScreenContentPreview() {
-    val members = List(5) {
+    val members = List(2) {
         User(
             uid = it.toString(),
             fullName = "Test Test",
@@ -160,6 +161,7 @@ private fun NewChatGroupScreenContentPreview() {
                     isUploading = false,
                     selectedCategoryId = "2",
                     onCategorySelect = {},
+                    uiState = NewChatGroupUiState.Idle,
                 )
             }
         }
