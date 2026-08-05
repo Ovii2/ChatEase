@@ -50,7 +50,11 @@ fun AuthActionButton(
             ),
         enabled = enabled && !isLoading,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.surface,
+
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
         ),
         onClick = onClick
     ) {
