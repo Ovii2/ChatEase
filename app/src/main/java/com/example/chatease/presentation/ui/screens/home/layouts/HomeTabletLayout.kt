@@ -40,7 +40,7 @@ fun HomeTabletLayout(
     onNavigateToProfile: () -> Unit,
     currentUserId: String,
     onBackClick: () -> Unit,
-    onSendMessageClick: (String) -> Unit,
+    onSendMessageClick: (String, Message?) -> Unit,
     firstUnreadMessageId: String?,
     onMessagesVisible: () -> Unit,
     onReactionClick: (String, String) -> Unit,
