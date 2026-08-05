@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -240,6 +241,8 @@ class GroupRepositoryImpl(
         val remainingMemberIds = group.userIds - currentUserId
 
         if (remainingMemberIds.isEmpty()) {
+            deleteGroupProfileImage(conversationId)
+
             firestore
                 .collection(GROUP)
                 .document(conversationId)
@@ -341,4 +344,19 @@ class GroupRepositoryImpl(
 
         return group
     }
+
+    private suspend fun deleteGroupProfileImage(conversationId: String) {
+        try {
+            storage.reference
+                .child(GROUP_PROFILE_IMAGES)
+                .child("$conversationId.jpg")
+                .delete()
+                .await()
+        } catch (e: StorageException) {
+            if (e.errorCode != StorageException.ERROR_OBJECT_NOT_FOUND) {
+                throw e
+            }
+        }
+    }
+
 }
