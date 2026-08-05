@@ -26,6 +26,7 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.new_chat_group.components.NewChatGroupScreenContent
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.state.NewChatGroupUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.NewChatGroupViewModel
 import com.example.chatease.presentation.validation.NewGroupValidator
@@ -49,6 +50,7 @@ fun NewChatGroupScreen(
     val imageUri by newChatGroupViewModel.groupImageUri.collectAsState()
     val isUploading by newChatGroupViewModel.isUploadingImage.collectAsState()
     val selectedCategoryId by newChatGroupViewModel.selectedCategoryId.collectAsState()
+    val uiState by newChatGroupViewModel.uiState.collectAsState()
 
     LaunchedEffect(selectedUserIds) {
         newChatGroupViewModel.observeMembers(selectedUserIds)
@@ -56,6 +58,7 @@ fun NewChatGroupScreen(
 
     LaunchedEffect(Unit) {
         newChatGroupViewModel.suggestGroupName()
+        newChatGroupViewModel.resetState()
     }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -112,6 +115,7 @@ fun NewChatGroupScreen(
             isUploading = isUploading,
             selectedCategoryId = selectedCategoryId,
             onCategorySelect = newChatGroupViewModel::selectCategory,
+            uiState = uiState,
         )
     }
 }
@@ -157,6 +161,7 @@ private fun NewChatGroupScreenPreview() {
                     isUploading = false,
                     selectedCategoryId = "2",
                     onCategorySelect = {},
+                    uiState = NewChatGroupUiState.Success,
                 )
             }
         }
