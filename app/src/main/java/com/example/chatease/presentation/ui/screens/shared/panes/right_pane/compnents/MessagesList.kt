@@ -22,10 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.chatease.R
 import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
@@ -55,7 +57,6 @@ fun MessagesList(
     onSelectedReactionMessageIdChange: (String?) -> Unit,
     onDismissMessageActions: () -> Unit
 ) {
-
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val reversedMessages = messages.reversed()
@@ -86,7 +87,6 @@ fun MessagesList(
                 val isMiddleInGroup = !isFirstInGroup && !isLastInGroup
                 val isSentByCurrentUser = message.senderId == currentUserId
                 val messageBottomPadding = if (message.reactions.isNotEmpty()) 18.dp else 2.dp
-
 
                 when (chatPaneUiState) {
                     is ChatPaneUiState.DirectChat -> {
@@ -164,6 +164,7 @@ fun MessagesList(
                                     },
                                     onShowUsersReactionsClick = onShowUsersReactionsClick,
                                     isUserMemberOfGroup = isUserMemberOfGroup,
+                                    members = chatPaneUiState.members,
                                 )
                             }
 
@@ -224,8 +225,20 @@ fun DirectMessageListItem(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
-    onShowUsersReactionsClick: (String) -> Unit
+    onShowUsersReactionsClick: (String) -> Unit,
 ) {
+    val otherUserFirstName = user.fullName
+        .trim()
+        .split(" ")
+        .firstOrNull()
+        .orEmpty()
+
+    val messageSenderName =
+        if (isSentByCurrentUser) stringResource(R.string.you) else otherUserFirstName
+
+    val repliedMessageSenderName =
+        if (message.replyMessage?.senderId == currentUserId) stringResource(R.string.you_lowercase) else otherUserFirstName
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.Bottom,
@@ -241,21 +254,38 @@ fun DirectMessageListItem(
             )
         }
 
-        ChatBubble(
-            message = message,
-            isSentByCurrentUser = isSentByCurrentUser,
-            currentUserId = currentUserId,
-            showReactions = message.messageId == selectedReactionMessageId,
-            isFirstInGroup = isFirstInGroup,
-            isMiddleInGroup = isMiddleInGroup,
-            isLastInGroup = isLastInGroup,
-            onLongClick = onLongClick,
-            onDismissReactions = onDismissReactions,
-            onReactionClick = onReactionClick,
-            onShowUsersReactionsClick = onShowUsersReactionsClick,
-            isBlockedByOtherUser = isBlockedByOtherUser,
-            isUserMemberOfGroup = true,
-        )
+        if (message.replyMessage != null) {
+            ReplyChatBubble(
+                message = message,
+                isSentByCurrentUser = isSentByCurrentUser,
+                currentUserId = currentUserId,
+                showReactions = message.messageId == selectedReactionMessageId,
+                onLongClick = onLongClick,
+                onDismissReactions = onDismissReactions,
+                onReactionClick = onReactionClick,
+                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                isBlockedByOtherUser = isBlockedByOtherUser,
+                isUserMemberOfGroup = true,
+                messageSenderName = messageSenderName,
+                repliedMessageSenderName = repliedMessageSenderName
+            )
+        } else {
+            ChatBubble(
+                message = message,
+                isSentByCurrentUser = isSentByCurrentUser,
+                currentUserId = currentUserId,
+                showReactions = message.messageId == selectedReactionMessageId,
+                isFirstInGroup = isFirstInGroup,
+                isMiddleInGroup = isMiddleInGroup,
+                isLastInGroup = isLastInGroup,
+                onLongClick = onLongClick,
+                onDismissReactions = onDismissReactions,
+                onReactionClick = onReactionClick,
+                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                isBlockedByOtherUser = isBlockedByOtherUser,
+                isUserMemberOfGroup = true,
+            )
+        }
     }
 }
 
@@ -274,7 +304,8 @@ fun GroupMessageListItem(
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
-    isUserMemberOfGroup: Boolean
+    isUserMemberOfGroup: Boolean,
+    members: List<User>
 ) {
     val nameParts = user.fullName
         .trim()
@@ -287,6 +318,22 @@ fun GroupMessageListItem(
         ?.firstOrNull()
 
     val displayedName = if (lastNameInitial != null) "$firstName $lastNameInitial." else firstName
+    val messageSenderName = if (isSentByCurrentUser) stringResource(R.string.you) else firstName
+
+    val repliedUser = members.firstOrNull { member ->
+        member.uid == message.replyMessage?.senderId
+    }
+
+    val repliedMessageSenderName =
+        if (message.replyMessage?.senderId == currentUserId) {
+            stringResource(R.string.you_lowercase)
+        } else {
+            repliedUser?.fullName
+                ?.trim()
+                ?.split(" ")
+                ?.firstOrNull()
+                .orEmpty()
+        }
 
     Row(
         modifier = modifier,
@@ -303,7 +350,7 @@ fun GroupMessageListItem(
         }
 
         Column {
-            if (!isSentByCurrentUser) {
+            if (!isSentByCurrentUser && message.replyMessage == null) {
                 Text(
                     modifier = Modifier.padding(start = 12.dp),
                     text = displayedName,
@@ -312,22 +359,40 @@ fun GroupMessageListItem(
                 )
             }
 
-            ChatBubble(
-                message = message,
-                isSentByCurrentUser = isSentByCurrentUser,
-                currentUserId = currentUserId,
-                showReactions = message.messageId == selectedReactionMessageId,
-                isFirstInGroup = isFirstInGroup,
-                isMiddleInGroup = isMiddleInGroup,
-                isLastInGroup = isLastInGroup,
-                onLongClick = onLongClick,
-                onDismissReactions = onDismissReactions,
-                onReactionClick = onReactionClick,
-                conversationType = ConversationType.GROUP,
-                onShowUsersReactionsClick = onShowUsersReactionsClick,
-                isBlockedByOtherUser = false,
-                isUserMemberOfGroup = isUserMemberOfGroup,
-            )
+            if (message.replyMessage != null) {
+                ReplyChatBubble(
+                    message = message,
+                    isSentByCurrentUser = isSentByCurrentUser,
+                    currentUserId = currentUserId,
+                    showReactions = message.messageId == selectedReactionMessageId,
+                    onLongClick = onLongClick,
+                    onDismissReactions = onDismissReactions,
+                    onReactionClick = onReactionClick,
+                    conversationType = ConversationType.GROUP,
+                    onShowUsersReactionsClick = onShowUsersReactionsClick,
+                    isBlockedByOtherUser = false,
+                    isUserMemberOfGroup = isUserMemberOfGroup,
+                    messageSenderName = messageSenderName,
+                    repliedMessageSenderName = repliedMessageSenderName
+                )
+            } else {
+                ChatBubble(
+                    message = message,
+                    isSentByCurrentUser = isSentByCurrentUser,
+                    currentUserId = currentUserId,
+                    showReactions = message.messageId == selectedReactionMessageId,
+                    isFirstInGroup = isFirstInGroup,
+                    isMiddleInGroup = isMiddleInGroup,
+                    isLastInGroup = isLastInGroup,
+                    onLongClick = onLongClick,
+                    onDismissReactions = onDismissReactions,
+                    onReactionClick = onReactionClick,
+                    conversationType = ConversationType.GROUP,
+                    onShowUsersReactionsClick = onShowUsersReactionsClick,
+                    isBlockedByOtherUser = false,
+                    isUserMemberOfGroup = isUserMemberOfGroup,
+                )
+            }
         }
     }
 }
