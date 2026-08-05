@@ -39,7 +39,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun MessagesActionPanel(
     modifier: Modifier = Modifier,
     isSenderCurrentUser: Boolean,
-    onReplyClick: () -> Unit
+    onReplyClick: () -> Unit,
+    onCopyClick: () -> Unit
 ) {
     Surface(
         modifier = modifier
@@ -74,7 +75,7 @@ fun MessagesActionPanel(
             MessageActionsItem(
                 icon = Icons.Default.ContentCopy,
                 label = R.string.copy,
-                onClick = {}
+                onClick = onCopyClick
             )
             if (isSenderCurrentUser) {
                 MessageActionsItem(
@@ -153,7 +154,8 @@ private fun MessagesActionPanelPreview() {
             ) {
                 MessagesActionPanel(
                     isSenderCurrentUser = true,
-                    onReplyClick = {}
+                    onReplyClick = {},
+                    onCopyClick = {},
                 )
             }
         }
