@@ -133,10 +133,11 @@ fun RightPane(
         (chatPaneUiState as? ChatPaneUiState.GroupChat)?.group?.userIds?.contains(currentUserId)
             ?: true
 
-    val filePickerLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenMultipleDocuments()
+    ) { uris ->
 
-        }
+    }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia()
