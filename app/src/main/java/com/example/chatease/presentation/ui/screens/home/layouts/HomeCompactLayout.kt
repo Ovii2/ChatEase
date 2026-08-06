@@ -20,7 +20,9 @@ fun HomeCompactLayout(
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
     onNavigateToProfile: () -> Unit,
-    onLongClick: (String, Boolean) -> Unit
+    onLongClick: (String, Boolean) -> Unit,
+    searchValue: String,
+    onSearchValueChange: (String) -> Unit
 ) {
     LeftPane(
         modifier = modifier
@@ -37,5 +39,7 @@ fun HomeCompactLayout(
         onLogoutClick = onLogoutClick,
         onNavigateToProfile = onNavigateToProfile,
         onLongClick = onLongClick,
+        searchValue = searchValue,
+        onSearchValueChange = onSearchValueChange,
     )
 }

@@ -15,14 +15,17 @@ import com.example.chatease.presentation.ui.state.HomeUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,6 +42,12 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _searchValue = MutableStateFlow("")
+    val searchValue = _searchValue.asStateFlow()
+
+    @OptIn(FlowPreview::class)
+    val debouncedSearch = searchValue.debounce(300.milliseconds)
+
     init {
         loadHomeData()
     }
@@ -54,10 +63,18 @@ class HomeViewModel @Inject constructor(
                 combine(
                     userRepository.observeUser(currentUserId),
                     conversationsFlow,
-                    selectedCategory
-                ) { user, conversations, selectedCategoryId ->
-                    val filteredConversation =
+                    selectedCategory,
+                    debouncedSearch
+                ) { user, conversations, selectedCategoryId, searchValue ->
+
+                    val filteredConversations =
                         filterConversations(conversations, selectedCategoryId)
+                            .filter { conversation ->
+                                conversation.title.contains(
+                                    other = searchValue.trim(),
+                                    ignoreCase = true
+                                )
+                            }
 
                     HomeUiState.Success(
                         user = user,
@@ -66,7 +83,7 @@ class HomeViewModel @Inject constructor(
                                 conversation.isGroup && conversation.categoryId == category.id
                             }
                         },
-                        conversations = filteredConversation,
+                        conversations = filteredConversations,
                         unreadMessages = conversations.sumOf { conversation ->
                             conversation.unreadCount
                         }
@@ -80,6 +97,14 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun onSearchValueChange(value: String) {
+        _searchValue.value = value
+    }
+
+    fun clearSearch() {
+        _searchValue.value = ""
     }
 
     private fun filterConversations(

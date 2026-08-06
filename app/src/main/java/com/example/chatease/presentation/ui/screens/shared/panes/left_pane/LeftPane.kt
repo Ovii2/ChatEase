@@ -39,7 +39,9 @@ fun LeftPane(
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
     onNavigateToProfile: () -> Unit,
-    onLongClick: (String, Boolean) -> Unit
+    onLongClick: (String, Boolean) -> Unit,
+    searchValue: String,
+    onSearchValueChange: (String) -> Unit
 ) {
     Box(
         modifier = modifier.clickable(
@@ -60,6 +62,8 @@ fun LeftPane(
                 onSelectCategory = onSelectCategory,
                 onLogoutClick = onLogoutClick,
                 onNavigateToProfile = onNavigateToProfile,
+                searchValue = searchValue,
+                onSearchValueChange = onSearchValueChange,
             )
             RecentChatsList(
                 conversations = conversations,
@@ -118,6 +122,8 @@ private fun LeftPanePreview() {
                 onLogoutClick = {},
                 onNavigateToProfile = {},
                 onLongClick = { _, _ -> },
+                searchValue = "",
+                onSearchValueChange = {},
             )
         }
     }

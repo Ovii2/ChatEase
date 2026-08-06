@@ -107,6 +107,8 @@ fun HomeScreen(
     val isOwner by groupChatInfoViewModel.isOwner.collectAsState()
     val isGroupMember by groupChatInfoViewModel.isGroupMember.collectAsState()
 
+    val searchValue by homeViewModel.searchValue.collectAsState()
+
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
         onLoadConversation = chatViewModel::loadConversation,
@@ -156,7 +158,13 @@ fun HomeScreen(
                                 state = state,
                                 selectedCategory = selectedCategory,
                                 onSelectCategory = homeViewModel::selectCategory,
-                                onConversationClick = onConversationClick,
+                                onConversationClick = { conversationId, isGroup ->
+                                    onConversationClick(
+                                        conversationId,
+                                        isGroup
+                                    )
+                                    homeViewModel.clearSearch()
+                                },
                                 focusManager = focusManager,
                                 onLogoutClick = {
                                     authViewModel.logout()
@@ -176,6 +184,8 @@ fun HomeScreen(
                                     }
                                     showConversationOptionsBottomSheet = true
                                 },
+                                searchValue = searchValue,
+                                onSearchValueChange = homeViewModel::onSearchValueChange,
                             )
                         }
 
@@ -196,6 +206,7 @@ fun HomeScreen(
                                 onSelectCategory = homeViewModel::selectCategory,
                                 onConversationClick = { conversationId, _ ->
                                     selectedConversationId = conversationId
+                                    homeViewModel.clearSearch()
                                 },
                                 onLogoutClick = {
                                     authViewModel.logout()
@@ -253,6 +264,8 @@ fun HomeScreen(
                                     showConversationOptionsBottomSheet = true
                                 },
                                 onViewContactClick = onViewContactClick,
+                                searchValue = searchValue,
+                                onSearchValueChange = homeViewModel::onSearchValueChange,
                             )
                         }
                     }
@@ -384,6 +397,8 @@ private fun HomeScreenCompactLayoutPreview() {
                 onLogoutClick = {},
                 onNavigateToProfile = {},
                 onLongClick = { _, _ -> },
+                searchValue = "",
+                onSearchValueChange = {},
             )
         }
     }

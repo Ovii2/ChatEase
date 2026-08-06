@@ -45,7 +45,9 @@ fun LeftPaneHeader(
     selectedCategory: String,
     onSelectCategory: (String) -> Unit,
     onLogoutClick: () -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    searchValue: String,
+    onSearchValueChange: (String) -> Unit
 ) {
     var expanded by rememberSaveable() { mutableStateOf(false) }
 
@@ -121,9 +123,9 @@ fun LeftPaneHeader(
             }
         }
         ChatSearchBar(
-            value = "",
-            onValueChange = {},
-            onClearSearch = {},
+            value = searchValue,
+            onValueChange = onSearchValueChange,
+            onClearSearch = { onSearchValueChange("") },
             placeholder = R.string.search_conversations
         )
         CategoriesRow(
@@ -155,6 +157,8 @@ private fun LeftPaneHeaderPreview() {
                 onSelectCategory = {},
                 onLogoutClick = {},
                 onNavigateToProfile = {},
+                searchValue = "",
+                onSearchValueChange = {},
             )
         }
     }

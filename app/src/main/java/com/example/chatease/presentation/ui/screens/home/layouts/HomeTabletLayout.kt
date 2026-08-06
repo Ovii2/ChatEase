@@ -50,7 +50,9 @@ fun HomeTabletLayout(
     chatPaneUiState: ChatPaneUiState,
     onNavigateToGroupChatInfo: (String) -> Unit,
     onLongClick: (String, Boolean) -> Unit,
-    onViewContactClick: (String) -> Unit
+    onViewContactClick: (String) -> Unit,
+    searchValue: String,
+    onSearchValueChange: (String) -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -80,7 +82,9 @@ fun HomeTabletLayout(
                     focusManager = focusManager,
                     onLogoutClick = onLogoutClick,
                     onNavigateToProfile = onNavigateToProfile,
-                    onLongClick = onLongClick
+                    onLongClick = onLongClick,
+                    searchValue = searchValue,
+                    onSearchValueChange = onSearchValueChange
                 )
             }
         },
