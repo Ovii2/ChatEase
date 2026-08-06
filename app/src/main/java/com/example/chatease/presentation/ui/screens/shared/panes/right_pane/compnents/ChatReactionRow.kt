@@ -2,7 +2,7 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.com
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,9 +51,8 @@ fun ChatReactionRow(
 
     LaunchedEffect(Unit) {
         reactions.indices.forEach { index ->
-            delay(30.milliseconds)
-
             visibleCount = index + 1
+            delay(30.milliseconds)
         }
     }
 
@@ -71,7 +70,10 @@ fun ChatReactionRow(
                 reactions.forEachIndexed { index, reaction ->
                     AnimatedVisibility(
                         visible = index < visibleCount,
-                        enter = fadeIn() + scaleIn()
+                        enter = scaleIn(
+                            initialScale = 0.85f,
+                            animationSpec = tween(durationMillis = 100)
+                        )
                     ) {
                         Text(
                             modifier = Modifier.clickable { onReactionClick(reaction) },
