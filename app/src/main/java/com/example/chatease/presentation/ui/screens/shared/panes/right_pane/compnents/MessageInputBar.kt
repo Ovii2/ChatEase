@@ -60,7 +60,8 @@ fun MessageInputBar(
     onInputFocused: () -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserGroupMember: Boolean,
-    onAddFileClick: () -> Unit
+    onAddFileClick: () -> Unit,
+    onAddImageClick: () -> Unit
 ) {
     var showAttachmentMenu by rememberSaveable { mutableStateOf(false) }
 
@@ -96,7 +97,7 @@ fun MessageInputBar(
                     AttachmentMenu(
                         onDismiss = { showAttachmentMenu = false },
                         alignment = Alignment.BottomStart,
-                        onAddImageClick = {},
+                        onAddImageClick = onAddImageClick,
                         onAddFileClick = onAddFileClick,
                     )
                 }
@@ -201,6 +202,7 @@ private fun MessageInputBarPreview() {
                     isBlockedByOtherUser = false,
                     isUserGroupMember = true,
                     onAddFileClick = {},
+                    onAddImageClick = {},
                 )
             }
         }
