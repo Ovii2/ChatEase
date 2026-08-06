@@ -3,6 +3,8 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.res.Configuration
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -129,6 +131,11 @@ fun RightPane(
     val isUserGroupMember =
         (chatPaneUiState as? ChatPaneUiState.GroupChat)?.group?.userIds?.contains(currentUserId)
             ?: true
+
+    val filePickerLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+
+        }
 
     RightPaneEffects(
         messages = messages,
@@ -301,6 +308,14 @@ fun RightPane(
                 },
                 isBlockedByOtherUser = isBlockedByOtherUser,
                 isUserGroupMember = isUserGroupMember,
+                onAddFileClick = {
+                    filePickerLauncher.launch(
+                        arrayOf(
+                            "application/pdf",
+                            "text/plain"
+                        )
+                    )
+                },
             )
         }
         AnimatedVisibility(
