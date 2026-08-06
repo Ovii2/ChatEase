@@ -3,6 +3,9 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
@@ -300,25 +303,37 @@ fun RightPane(
                 isUserGroupMember = isUserGroupMember,
             )
         }
-        selectedMessage?.let { message ->
-            MessagesActionPanel(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                isSenderCurrentUser = message.senderId == currentUserId,
-                onReplyClick = {
-                    selectedReplyMessage = selectedMessage
-                    selectedMessage = null
-                    selectedReactionMessageId = null
-                },
-                onCopyClick = {
-                    scope.launch {
-                        clipboard.setClipEntry(
-                            ClipEntry(ClipData.newPlainText("message", message.text))
-                        )
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            visible = selectedMessage != null,
+            enter = slideInVertically(
+                initialOffsetY = { fullHeight -> fullHeight }
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { fullHeight -> fullHeight }
+            ),
+            label = "Action panel"
+        ) {
+            selectedMessage?.let { message ->
+                MessagesActionPanel(
+                    modifier = Modifier,
+                    isSenderCurrentUser = message.senderId == currentUserId,
+                    onReplyClick = {
+                        selectedReplyMessage = message
+                        selectedMessage = null
+                        selectedReactionMessageId = null
+                    },
+                    onCopyClick = {
+                        scope.launch {
+                            clipboard.setClipEntry(
+                                ClipEntry(ClipData.newPlainText("message", message.text))
+                            )
+                        }
+                        selectedMessage = null
+                        selectedReactionMessageId = null
                     }
-                    selectedMessage = null
-                    selectedReactionMessageId = null
-                }
-            )
+                )
+            }
         }
     }
 }
