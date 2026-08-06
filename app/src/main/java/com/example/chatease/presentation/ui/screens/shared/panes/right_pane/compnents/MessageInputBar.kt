@@ -33,6 +33,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,6 +61,8 @@ fun MessageInputBar(
     isBlockedByOtherUser: Boolean,
     isUserGroupMember: Boolean
 ) {
+    var showAttachmentMenu by rememberSaveable { mutableStateOf(false) }
+
     if (isBlockedByOtherUser || !isUserGroupMember) {
         val message = when {
             isBlockedByOtherUser -> R.string.cannot_reply
@@ -77,73 +83,94 @@ fun MessageInputBar(
             )
         }
     } else {
-        OutlinedTextField(
+        Row(
             modifier = modifier
-                .padding(horizontal = 8.dp)
                 .fillMaxWidth()
-                .onFocusChanged { focusState ->
-                    if (focusState.isFocused) {
-                        onInputFocused()
-                    }
-                },
-            value = messageText,
-            onValueChange = onMessageTextChange,
-            placeholder = { Text(text = stringResource(R.string.type_a_message)) },
-            shape = CircleShape,
-            leadingIcon = {
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Box() {
+                if (showAttachmentMenu) {
+                    AttachmentMenu(
+                        onDismiss = { showAttachmentMenu = false },
+                        alignment = Alignment.BottomStart,
+                        onAddImageClick = {},
+                        onAddFileClick = {},
+                    )
+                }
                 Box(
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(40.dp)
+                        .clickable {
+                            showAttachmentMenu = true
+                        }
                         .clip(CircleShape)
                         .background(color = MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
+                        modifier = Modifier
+                            .size(30.dp),
                         imageVector = Icons.Outlined.Add,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.surface
                     )
                 }
-            },
-            trailingIcon = {
-                Row(
-                    modifier = Modifier.padding(end = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            onPeekClick()
-                        },
-                        imageVector = if (isPeekEnabled) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                        contentDescription = null
-                    )
-                    AnimatedContent(
-                        targetState = messageText.isNotEmpty(),
-                        transitionSpec = {
-                            fadeIn() + scaleIn() togetherWith fadeOut() + scaleOut()
-                        },
-                    ) { hasText ->
-                        if (hasText) {
-                            Icon(
-                                modifier = Modifier
-                                    .clickable { onSendMessageClick(messageText) }
-                                    .size(24.dp),
-                                imageVector = Icons.AutoMirrored.Filled.Send,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        } else {
-                            Icon(
-                                modifier = Modifier.clickable { onMicrophoneClick() },
-                                imageVector = Icons.Outlined.Mic,
-                                contentDescription = null
-                            )
+            }
+            OutlinedTextField(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
+                    .onFocusChanged { focusState ->
+                        if (focusState.isFocused) {
+                            onInputFocused()
+                        }
+                    },
+                value = messageText,
+                onValueChange = onMessageTextChange,
+                placeholder = { Text(text = stringResource(R.string.type_a_message)) },
+                shape = CircleShape,
+                trailingIcon = {
+                    Row(
+                        modifier = Modifier.padding(end = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            modifier = Modifier.clickable {
+                                onPeekClick()
+                            },
+                            imageVector = if (isPeekEnabled) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                            contentDescription = null
+                        )
+                        AnimatedContent(
+                            targetState = messageText.isNotEmpty(),
+                            transitionSpec = {
+                                fadeIn() + scaleIn() togetherWith fadeOut() + scaleOut()
+                            },
+                        ) { hasText ->
+                            if (hasText) {
+                                Icon(
+                                    modifier = Modifier
+                                        .clickable { onSendMessageClick(messageText) }
+                                        .size(24.dp),
+                                    imageVector = Icons.AutoMirrored.Filled.Send,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            } else {
+                                Icon(
+                                    modifier = Modifier.clickable { onMicrophoneClick() },
+                                    imageVector = Icons.Outlined.Mic,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     }
-                }
-            },
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
-        )
+                },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
+            )
+        }
     }
 }
 
