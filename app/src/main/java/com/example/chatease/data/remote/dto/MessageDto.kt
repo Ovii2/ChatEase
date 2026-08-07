@@ -12,5 +12,6 @@ data class MessageDto(
     val seenBy: List<String> = emptyList(),
     val reactions: Map<String, String> = emptyMap(),
     val messageType: MessageType = MessageType.TEXT,
-    val replyMessage: ReplyMessage? = null
+    val replyMessage: ReplyMessage? = null,
+    val fileAttachment: FileAttachmentDto? = null
 )

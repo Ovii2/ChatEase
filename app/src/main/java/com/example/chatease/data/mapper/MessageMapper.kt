@@ -13,7 +13,8 @@ fun MessageDto.toDomain(): Message {
         seenBy = seenBy,
         reactions = reactions,
         messageType = messageType,
-        replyMessage = replyMessage
+        replyMessage = replyMessage,
+        fileAttachment = fileAttachment?.toDomain()
     )
 }
 
@@ -27,6 +28,7 @@ fun Message.toDto(): MessageDto {
         seenBy = seenBy,
         reactions = reactions,
         messageType = messageType,
-        replyMessage = replyMessage
+        replyMessage = replyMessage,
+        fileAttachment = fileAttachment?.toDto()
     )
 }
