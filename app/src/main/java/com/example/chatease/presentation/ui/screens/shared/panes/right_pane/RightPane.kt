@@ -3,6 +3,7 @@ package com.example.chatease.presentation.ui.screens.shared.panes.right_pane
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -81,7 +82,8 @@ fun RightPane(
     onStartAudioCall: (String) -> Unit,
     chatPaneUiState: ChatPaneUiState,
     onNavigateToGroupChatInfo: (String) -> Unit,
-    onShowUsersReactionsClick: (String) -> Unit
+    onShowUsersReactionsClick: (String) -> Unit,
+    onSendFile: (Uri) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -136,7 +138,9 @@ fun RightPane(
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
     ) { uris ->
-
+        uris.forEach { uri ->
+            onSendFile(uri)
+        }
     }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -432,6 +436,7 @@ private fun RightPanePreview() {
                     chatPaneUiState = groupUiState,
                     onNavigateToGroupChatInfo = {},
                     onShowUsersReactionsClick = {},
+                    onSendFile = {},
                 )
             }
         }

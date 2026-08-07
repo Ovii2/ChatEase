@@ -24,14 +24,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
+import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.ConversationType
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.group_chat.components.SeenByRow
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonChip
@@ -225,7 +226,7 @@ fun DirectMessageListItem(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
-    onShowUsersReactionsClick: (String) -> Unit,
+    onShowUsersReactionsClick: (String) -> Unit
 ) {
     val otherUserFirstName = user.fullName
         .trim()
@@ -253,38 +254,64 @@ fun DirectMessageListItem(
                 showStatus = !isBlockedByOtherUser
             )
         }
+        when (message.messageType) {
+            MessageType.TEXT -> {
+                if (message.replyMessage != null) {
+                    ReplyChatBubble(
+                        message = message,
+                        isSentByCurrentUser = isSentByCurrentUser,
+                        currentUserId = currentUserId,
+                        showReactions = message.messageId == selectedReactionMessageId,
+                        onLongClick = onLongClick,
+                        onDismissReactions = onDismissReactions,
+                        onReactionClick = onReactionClick,
+                        onShowUsersReactionsClick = onShowUsersReactionsClick,
+                        isBlockedByOtherUser = isBlockedByOtherUser,
+                        isUserMemberOfGroup = true,
+                        messageSenderName = messageSenderName,
+                        repliedMessageSenderName = repliedMessageSenderName
+                    )
+                } else {
+                    ChatBubble(
+                        message = message,
+                        isSentByCurrentUser = isSentByCurrentUser,
+                        currentUserId = currentUserId,
+                        showReactions = message.messageId == selectedReactionMessageId,
+                        isFirstInGroup = isFirstInGroup,
+                        isMiddleInGroup = isMiddleInGroup,
+                        isLastInGroup = isLastInGroup,
+                        onLongClick = onLongClick,
+                        onDismissReactions = onDismissReactions,
+                        onReactionClick = onReactionClick,
+                        onShowUsersReactionsClick = onShowUsersReactionsClick,
+                        isBlockedByOtherUser = isBlockedByOtherUser,
+                        isUserMemberOfGroup = true,
+                    )
+                }
+            }
 
-        if (message.replyMessage != null) {
-            ReplyChatBubble(
-                message = message,
-                isSentByCurrentUser = isSentByCurrentUser,
-                currentUserId = currentUserId,
-                showReactions = message.messageId == selectedReactionMessageId,
-                onLongClick = onLongClick,
-                onDismissReactions = onDismissReactions,
-                onReactionClick = onReactionClick,
-                onShowUsersReactionsClick = onShowUsersReactionsClick,
-                isBlockedByOtherUser = isBlockedByOtherUser,
-                isUserMemberOfGroup = true,
-                messageSenderName = messageSenderName,
-                repliedMessageSenderName = repliedMessageSenderName
-            )
-        } else {
-            ChatBubble(
-                message = message,
-                isSentByCurrentUser = isSentByCurrentUser,
-                currentUserId = currentUserId,
-                showReactions = message.messageId == selectedReactionMessageId,
-                isFirstInGroup = isFirstInGroup,
-                isMiddleInGroup = isMiddleInGroup,
-                isLastInGroup = isLastInGroup,
-                onLongClick = onLongClick,
-                onDismissReactions = onDismissReactions,
-                onReactionClick = onReactionClick,
-                onShowUsersReactionsClick = onShowUsersReactionsClick,
-                isBlockedByOtherUser = isBlockedByOtherUser,
-                isUserMemberOfGroup = true,
-            )
+            MessageType.FILE -> {
+                FileChatBubble(
+                    filename = message.fileAttachment?.name ?: "",
+                    fileSize = "${message.fileAttachment?.size ?: "0 KB"}",
+                    onForwardClick = {},
+                    isSent = isSentByCurrentUser,
+                    onLongClick = onLongClick,
+                    message = message,
+                    isSentByCurrentUser = isSentByCurrentUser,
+                    showReactions = message.messageId == selectedReactionMessageId,
+                    onDismissReactions = onDismissReactions,
+                    onReactionClick = onReactionClick,
+                    onShowUsersReactionsClick = onShowUsersReactionsClick,
+                    isBlockedByOtherUser = isBlockedByOtherUser,
+                    isUserMemberOfGroup = true,
+                )
+            }
+
+            MessageType.IMAGE -> {}
+            MessageType.GIF -> {}
+            MessageType.AUDIO -> {}
+            MessageType.VIDEO -> {}
         }
     }
 }
@@ -359,40 +386,68 @@ fun GroupMessageListItem(
                 )
             }
 
-            if (message.replyMessage != null) {
-                ReplyChatBubble(
-                    message = message,
-                    isSentByCurrentUser = isSentByCurrentUser,
-                    currentUserId = currentUserId,
-                    showReactions = message.messageId == selectedReactionMessageId,
-                    onLongClick = onLongClick,
-                    onDismissReactions = onDismissReactions,
-                    onReactionClick = onReactionClick,
-                    conversationType = ConversationType.GROUP,
-                    onShowUsersReactionsClick = onShowUsersReactionsClick,
-                    isBlockedByOtherUser = false,
-                    isUserMemberOfGroup = isUserMemberOfGroup,
-                    messageSenderName = messageSenderName,
-                    repliedMessageSenderName = repliedMessageSenderName
-                )
-            } else {
-                ChatBubble(
-                    message = message,
-                    isSentByCurrentUser = isSentByCurrentUser,
-                    currentUserId = currentUserId,
-                    showReactions = message.messageId == selectedReactionMessageId,
-                    isFirstInGroup = isFirstInGroup,
-                    isMiddleInGroup = isMiddleInGroup,
-                    isLastInGroup = isLastInGroup,
-                    onLongClick = onLongClick,
-                    onDismissReactions = onDismissReactions,
-                    onReactionClick = onReactionClick,
-                    conversationType = ConversationType.GROUP,
-                    onShowUsersReactionsClick = onShowUsersReactionsClick,
-                    isBlockedByOtherUser = false,
-                    isUserMemberOfGroup = isUserMemberOfGroup,
-                )
+            when (message.messageType) {
+                MessageType.TEXT -> {
+                    if (message.replyMessage != null) {
+                        ReplyChatBubble(
+                            message = message,
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            currentUserId = currentUserId,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onLongClick = onLongClick,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            conversationType = ConversationType.GROUP,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            isBlockedByOtherUser = false,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                            messageSenderName = messageSenderName,
+                            repliedMessageSenderName = repliedMessageSenderName
+                        )
+                    } else {
+                        ChatBubble(
+                            message = message,
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            currentUserId = currentUserId,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            isFirstInGroup = isFirstInGroup,
+                            isMiddleInGroup = isMiddleInGroup,
+                            isLastInGroup = isLastInGroup,
+                            onLongClick = onLongClick,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            conversationType = ConversationType.GROUP,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            isBlockedByOtherUser = false,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                        )
+                    }
+                }
+
+                MessageType.FILE -> {
+                    FileChatBubble(
+                        filename = message.fileAttachment?.name ?: "",
+                        fileSize = "${message.fileAttachment?.size ?: "0 KB"}",
+                        onForwardClick = {},
+                        isSent = isSentByCurrentUser,
+                        onLongClick = onLongClick,
+                        message = message,
+                        isSentByCurrentUser = isSentByCurrentUser,
+                        showReactions = message.messageId == selectedReactionMessageId,
+                        onDismissReactions = onDismissReactions,
+                        onReactionClick = onReactionClick,
+                        onShowUsersReactionsClick = onShowUsersReactionsClick,
+                        isBlockedByOtherUser = false,
+                        isUserMemberOfGroup = true,
+                    )
+                }
+
+                MessageType.IMAGE -> {}
+                MessageType.GIF -> {}
+                MessageType.AUDIO -> {}
+                MessageType.VIDEO -> {}
             }
+
         }
     }
 }
@@ -400,20 +455,40 @@ fun GroupMessageListItem(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun MessagesListPreview() {
-    val messages = List(5) {
+//    val messages = List(5) {
+//        Message(
+//            messageId = it.toString(),
+//            conversationId = "1",
+//            senderId = listOf("1", "2").random(),
+//            text = LoremIpsum((5..20).random()).values.first(),
+//            timeStamp = System.currentTimeMillis(),
+//            seenBy = listOf("1", "2", "3"),
+//            reactions = mapOf(
+//                "1" to "\uD83E\uDD70",
+//                "2" to "\uD83E\uDD70"
+//            )
+//        )
+//    }
+    val messages = List(2) {
         Message(
             messageId = it.toString(),
             conversationId = "1",
-            senderId = listOf("1", "2").random(),
-            text = LoremIpsum((5..20).random()).values.first(),
+            senderId = "1",
             timeStamp = System.currentTimeMillis(),
-            seenBy = listOf("1", "2", "3"),
+            messageType = MessageType.FILE,
+            fileAttachment = FileAttachment(
+                name = "Project_document_final_version.pdf",
+                size = 4_194_304L,
+                url = "test",
+                mimeType = "application/pdf"
+            ),
             reactions = mapOf(
                 "1" to "\uD83E\uDD70",
                 "2" to "\uD83E\uDD70"
             )
         )
     }
+
 
     val user = User(
         uid = "1",
@@ -443,6 +518,10 @@ private fun MessagesListPreview() {
         }
     )
 
+    val directChatPaneUiState = ChatPaneUiState.DirectChat(
+        user = user
+    )
+
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
             MessagesList(
@@ -452,7 +531,7 @@ private fun MessagesListPreview() {
                 firstUnreadMessageId = "1",
                 onReactionClick = { _, _ -> },
                 isBlockedByOtherUser = true,
-                chatPaneUiState = groupChatPaneUiState,
+                chatPaneUiState = directChatPaneUiState,
                 onShowUsersReactionsClick = {},
                 onLongClick = {},
                 selectedReactionMessageId = "1",

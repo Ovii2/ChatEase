@@ -122,6 +122,13 @@ fun GroupChatScreen(
                     onShowUsersReactionsClick = { messageId ->
                         selectedReactionsMessageId = messageId
                     },
+                    onSendFile = { uri ->
+                        chatViewModel.sendFile(
+                            conversationId = conversationId,
+                            fileUri = uri,
+                            currentUserId = currentUserId
+                        )
+                    },
                 )
                 selectedMessage?.let { message ->
                     ReactionsDetailsBottomSheet(

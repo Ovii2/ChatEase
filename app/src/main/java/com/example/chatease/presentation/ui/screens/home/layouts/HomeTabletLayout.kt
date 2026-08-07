@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.home.layouts
 
+import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -52,7 +53,8 @@ fun HomeTabletLayout(
     onLongClick: (String, Boolean) -> Unit,
     onViewContactClick: (String) -> Unit,
     searchValue: String,
-    onSearchValueChange: (String) -> Unit
+    onSearchValueChange: (String) -> Unit,
+    onSendFile: (Uri) -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -108,6 +110,7 @@ fun HomeTabletLayout(
                     chatPaneUiState = chatPaneUiState,
                     onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
                     onShowUsersReactionsClick = {},
+                    onSendFile = onSendFile,
                 )
             }
         },
