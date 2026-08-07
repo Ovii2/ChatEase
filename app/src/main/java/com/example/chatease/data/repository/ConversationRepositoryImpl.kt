@@ -6,6 +6,7 @@ import com.example.chatease.data.remote.dto.MessageDto
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.enums.ConversationType
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.repository.ConversationRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -191,8 +192,17 @@ class ConversationRepositoryImpl(
             participantId != message.senderId
         }
 
+        val lastMessage = when (message.messageType) {
+            MessageType.TEXT -> message.text
+            MessageType.FILE -> "Sent File"
+            MessageType.IMAGE -> "Sent Image"
+            MessageType.GIF -> "Sent GIF"
+            MessageType.AUDIO -> "Sent Audio"
+            MessageType.VIDEO -> "Sent Video"
+        }
+
         val updates = mutableMapOf(
-            LAST_MESSAGE to message.text,
+            LAST_MESSAGE to lastMessage,
             TIMESTAMP to message.timeStamp,
             DELETED_FOR to FieldValue.arrayRemove(*receiverIds.toTypedArray())
         )
