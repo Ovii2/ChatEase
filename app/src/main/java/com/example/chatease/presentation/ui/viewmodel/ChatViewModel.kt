@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.example.chatease.domain.model.ReplyMessage
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.repository.ConversationRepository
+import com.example.chatease.domain.repository.FileRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +22,8 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val conversationRepository: ConversationRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val fileRepository: FileRepository
 ) : ViewModel() {
 
     private val _user = MutableStateFlow(User())
@@ -157,6 +160,29 @@ class ChatViewModel @Inject constructor(
                     "ChatViewModel",
                     e.message ?: "Failed to check if user is blocked by other user"
                 )
+            }
+        }
+    }
+
+    fun sendFile(conversationId: String, fileUri: Uri, currentUserId: String) {
+        viewModelScope.launch {
+            try {
+                val fileAttachment = fileRepository.uploadFile(
+                    conversationId = conversationId,
+                    fileUri = fileUri
+                )
+
+                val message = Message(
+                    conversationId = conversationId,
+                    senderId = currentUserId,
+                    timeStamp = System.currentTimeMillis(),
+                    messageType = MessageType.FILE,
+                    fileAttachment = fileAttachment
+                )
+
+                conversationRepository.sendMessage(message)
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to send file", e)
             }
         }
     }
