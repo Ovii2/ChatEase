@@ -33,6 +33,7 @@ fun ChatScreen(
     val isConversationDeleted by chatViewModel.isConversationDeleted.collectAsState()
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
+    val currentUserId = chatViewModel.currentUserId
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -106,5 +107,12 @@ fun ChatScreen(
         ),
         onNavigateToGroupChatInfo = {},
         onShowUsersReactionsClick = {},
+        onSendFile = { uri ->
+            chatViewModel.sendFile(
+                conversationId = conversationId,
+                fileUri = uri,
+                currentUserId = currentUserId
+            )
+        },
     )
 }
