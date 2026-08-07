@@ -18,7 +18,6 @@ import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,20 +29,54 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
+import com.example.chatease.domain.model.Message
+import com.example.chatease.presentation.ui.screens.shared.chat.MessageBubbleContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toTruncatedFileName
 
 @Composable
 fun FileChatBubble(
     modifier: Modifier = Modifier,
+    message: Message,
     filename: String,
     fileSize: String,
     onForwardClick: () -> Unit,
-    isSent: Boolean
+    isSent: Boolean,
+    isSentByCurrentUser: Boolean,
+    showReactions: Boolean,
+    onLongClick: () -> Unit,
+    onDismissReactions: () -> Unit,
+    onReactionClick: (String, String) -> Unit,
+    onShowUsersReactionsClick: (String) -> Unit,
+    isBlockedByOtherUser: Boolean,
+    isUserMemberOfGroup: Boolean
 ) {
+    val backgroundColor = if (isSentByCurrentUser) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+
+    val textColor = if (isSentByCurrentUser) {
+        MaterialTheme.colorScheme.onPrimary
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+
+    val iconTint = if (isSentByCurrentUser) {
+        MaterialTheme.colorScheme.surface
+    } else {
+        MaterialTheme.colorScheme.scrim
+    }
+
+    val fileBackgroundColor = if (isSentByCurrentUser) {
+        MaterialTheme.colorScheme.secondary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End,
@@ -59,7 +92,7 @@ fun FileChatBubble(
                     .clickable(onClick = onForwardClick)
                     .size(35.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        color = backgroundColor,
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -69,24 +102,38 @@ fun FileChatBubble(
                         scaleX = -1f,
                         scaleY = 1f
                     ),
+                    tint = iconTint,
                     imageVector = Icons.AutoMirrored.Filled.Reply,
                     contentDescription = null
                 )
             }
-            Surface(
+
+            MessageBubbleContainer(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                shape = RoundedCornerShape(10.dp)
+                message = message,
+                isSentByCurrentUser = isSentByCurrentUser,
+                showReactions = showReactions,
+                isFirstInGroup = true,
+                isMiddleInGroup = false,
+                isLastInGroup = false,
+                shapeOverride = RoundedCornerShape(10.dp),
+                onLongClick = onLongClick,
+                onDismissReactions = onDismissReactions,
+                onReactionClick = onReactionClick,
+                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                isBlockedByOtherUser = isBlockedByOtherUser,
+                isUserMemberOfGroup = isUserMemberOfGroup
             ) {
                 Row(
                     modifier = Modifier.padding(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
                         modifier = Modifier
                             .size(40.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
+                                color = fileBackgroundColor,
                                 shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
@@ -94,11 +141,11 @@ fun FileChatBubble(
                         Icon(
                             painter = painterResource(R.drawable.sharp_draft_24),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
+                            tint = iconTint
                         )
                     }
+
                     Column(
-                        modifier = Modifier,
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
@@ -107,19 +154,21 @@ fun FileChatBubble(
                             overflow = TextOverflow.Ellipsis,
                             fontWeight = FontWeight.W600
                         )
+
                         Text(
                             text = fileSize,
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = textColor,
                             fontWeight = FontWeight.W400
                         )
                     }
                 }
             }
         }
+
         if (isSent) {
             Text(
-                modifier = Modifier.padding(end = 8.dp),
+                modifier = Modifier.padding(end = 8.dp, top = 8.dp),
                 text = stringResource(R.string.sent),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.End
@@ -128,10 +177,17 @@ fun FileChatBubble(
     }
 }
 
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun FileChatBubblePreview() {
+    val message = Message(
+        messageId = "1",
+        senderId = "1",
+        reactions = mapOf(
+            "1" to "\uD83E\uDD70"
+        )
+    )
+
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -142,10 +198,19 @@ private fun FileChatBubblePreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 FileChatBubble(
+                    message = message,
                     filename = "Project_document_final_version_really_really_long_name.pdf",
                     fileSize = "4 MB",
                     onForwardClick = {},
                     isSent = true,
+                    isSentByCurrentUser = false,
+                    showReactions = true,
+                    onLongClick = {},
+                    onDismissReactions = {},
+                    onReactionClick = { _, _ -> },
+                    onShowUsersReactionsClick = {},
+                    isBlockedByOtherUser = false,
+                    isUserMemberOfGroup = true
                 )
             }
         }
