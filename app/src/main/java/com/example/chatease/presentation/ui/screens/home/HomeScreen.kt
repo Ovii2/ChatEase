@@ -111,6 +111,7 @@ fun HomeScreen(
     val isGroupMember by groupChatInfoViewModel.isGroupMember.collectAsState()
 
     val searchValue by homeViewModel.searchValue.collectAsState()
+    val currentUserId = chatViewModel.currentUserId
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -276,6 +277,15 @@ fun HomeScreen(
                                 onViewContactClick = onViewContactClick,
                                 searchValue = searchValue,
                                 onSearchValueChange = homeViewModel::onSearchValueChange,
+                                onSendFile = { uri ->
+                                    selectedConversationId?.let { conversationId ->
+                                        chatViewModel.sendFile(
+                                            conversationId = conversationId,
+                                            fileUri = uri,
+                                            currentUserId = currentUserId
+                                        )
+                                    }
+                                }
                             )
                         }
                     }
