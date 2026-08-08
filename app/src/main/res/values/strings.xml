@@ -305,5 +305,6 @@
 
     <string name="file">File</string>
     <string name="image">Image</string>
+    <string name="sent_a_type">%1$s sent a %2$s</string>
 
 </resources>
