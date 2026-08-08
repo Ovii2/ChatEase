@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -23,10 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,9 +41,7 @@ fun FileChatBubble(
     modifier: Modifier = Modifier,
     message: Message,
     filename: String,
-    fileSize: String,
     onForwardClick: () -> Unit,
-    isSent: Boolean,
     isSentByCurrentUser: Boolean,
     showReactions: Boolean,
     onLongClick: () -> Unit,
@@ -55,12 +51,6 @@ fun FileChatBubble(
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean
 ) {
-    val backgroundColor = if (isSentByCurrentUser) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.surfaceContainerHigh
-    }
-
     val textColor = if (isSentByCurrentUser) {
         MaterialTheme.colorScheme.onPrimary
     } else {
@@ -85,33 +75,20 @@ fun FileChatBubble(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Row(
-            modifier = Modifier.widthIn(max = 320.dp),
+            modifier = Modifier.widthIn(max = 300.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .clickable(onClick = onForwardClick)
-                    .size(35.dp)
-                    .background(
-                        color = backgroundColor,
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier.scale(
-                        scaleX = -1f,
-                        scaleY = 1f
-                    ),
-                    tint = iconTint,
-                    imageVector = Icons.AutoMirrored.Filled.Reply,
-                    contentDescription = null
+            if (isSentByCurrentUser) {
+                FileForwardArrow(
+                    onForwardClick = onForwardClick,
+                    isSentByCurrentUser = true,
+                    iconTint = iconTint
                 )
             }
 
             MessageBubbleContainer(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.weight(1f),
                 message = message,
                 isSentByCurrentUser = isSentByCurrentUser,
                 showReactions = showReactions,
@@ -158,7 +135,10 @@ fun FileChatBubble(
                         )
 
                         Text(
-                            text = message.fileAttachment?.size?.toFormattedFileSize() ?: "0 B",
+                            text = message.fileAttachment
+                                ?.size
+                                ?.toFormattedFileSize()
+                                ?: "0 B",
                             style = MaterialTheme.typography.labelLarge,
                             color = textColor,
                             fontWeight = FontWeight.W400
@@ -166,18 +146,59 @@ fun FileChatBubble(
                     }
                 }
             }
-        }
 
-        if (isSent) {
-            Text(
-                modifier = Modifier.padding(end = 8.dp, top = 8.dp),
-                text = stringResource(R.string.sent),
-                style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.End
+            if (!isSentByCurrentUser) {
+                FileForwardArrow(
+                    onForwardClick = onForwardClick,
+                    isSentByCurrentUser = false,
+                    iconTint = iconTint
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FileForwardArrow(
+    modifier: Modifier = Modifier,
+    onForwardClick: () -> Unit,
+    isSentByCurrentUser: Boolean,
+    iconTint: Color
+) {
+    val backgroundColor = if (isSentByCurrentUser) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+
+    Row(
+        modifier = modifier.widthIn(max = 320.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .clickable(onClick = onForwardClick)
+                .size(35.dp)
+                .background(
+                    color = backgroundColor,
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.scale(
+                    scaleX = if (isSentByCurrentUser) -1f else 1f,
+                    scaleY = 1f
+                ),
+                tint = iconTint,
+                imageVector = Icons.AutoMirrored.Filled.Reply,
+                contentDescription = null
             )
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -208,10 +229,8 @@ private fun FileChatBubblePreview() {
                 FileChatBubble(
                     message = message,
                     filename = "Project_document_final_version_really_really_long_name.pdf",
-                    fileSize = "",
                     onForwardClick = {},
-                    isSent = true,
-                    isSentByCurrentUser = false,
+                    isSentByCurrentUser = true,
                     showReactions = true,
                     onLongClick = {},
                     onDismissReactions = {},
