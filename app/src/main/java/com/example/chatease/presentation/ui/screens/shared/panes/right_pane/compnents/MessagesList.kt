@@ -293,9 +293,7 @@ fun DirectMessageListItem(
             MessageType.FILE -> {
                 FileChatBubble(
                     filename = message.fileAttachment?.name ?: "",
-                    fileSize = "${message.fileAttachment?.size ?: "0 KB"}",
                     onForwardClick = {},
-                    isSent = isSentByCurrentUser,
                     onLongClick = onLongClick,
                     message = message,
                     isSentByCurrentUser = isSentByCurrentUser,
@@ -427,9 +425,7 @@ fun GroupMessageListItem(
                 MessageType.FILE -> {
                     FileChatBubble(
                         filename = message.fileAttachment?.name ?: "",
-                        fileSize = "${message.fileAttachment?.size ?: "0 KB"}",
                         onForwardClick = {},
-                        isSent = isSentByCurrentUser,
                         onLongClick = onLongClick,
                         message = message,
                         isSentByCurrentUser = isSentByCurrentUser,
