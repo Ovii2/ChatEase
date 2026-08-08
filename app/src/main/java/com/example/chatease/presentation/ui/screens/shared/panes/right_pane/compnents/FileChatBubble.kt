@@ -32,6 +32,7 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.screens.shared.chat.MessageBubbleContainer
+import com.example.chatease.presentation.ui.screens.shared.loading.CustomCircularProgressIndicator
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toFormattedFileSize
 import com.example.chatease.utils.toTruncatedFileName
@@ -49,7 +50,9 @@ fun FileChatBubble(
     onReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
-    isUserMemberOfGroup: Boolean
+    isUserMemberOfGroup: Boolean,
+    onFileClick: (Message) -> Unit,
+    isOpening: Boolean
 ) {
     val textColor = if (isSentByCurrentUser) {
         MaterialTheme.colorScheme.onPrimary
@@ -69,90 +72,101 @@ fun FileChatBubble(
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
     }
 
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Row(
-            modifier = Modifier.widthIn(max = 300.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+    if (isOpening) {
+        Box(
+            modifier = Modifier.fillMaxSize(0.8f),
+            contentAlignment = Alignment.Center
         ) {
-            if (isSentByCurrentUser) {
-                FileForwardArrow(
-                    onForwardClick = onForwardClick,
-                    isSentByCurrentUser = true,
-                    iconTint = iconTint
-                )
-            }
-
-            MessageBubbleContainer(
-                modifier = Modifier.weight(1f),
-                message = message,
-                isSentByCurrentUser = isSentByCurrentUser,
-                showReactions = showReactions,
-                isFirstInGroup = true,
-                isMiddleInGroup = false,
-                isLastInGroup = false,
-                shapeOverride = RoundedCornerShape(10.dp),
-                onLongClick = onLongClick,
-                onDismissReactions = onDismissReactions,
-                onReactionClick = onReactionClick,
-                onShowUsersReactionsClick = onShowUsersReactionsClick,
-                isBlockedByOtherUser = isBlockedByOtherUser,
-                isUserMemberOfGroup = isUserMemberOfGroup
+            CustomCircularProgressIndicator()
+        }
+    } else {
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Row(
+                modifier = Modifier.widthIn(max = 300.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.padding(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                if (isSentByCurrentUser) {
+                    FileForwardArrow(
+                        onForwardClick = onForwardClick,
+                        isSentByCurrentUser = true,
+                        iconTint = iconTint
+                    )
+                }
+
+                MessageBubbleContainer(
+                    modifier = Modifier
+                        .weight(1f),
+                    message = message,
+                    isSentByCurrentUser = isSentByCurrentUser,
+                    showReactions = showReactions,
+                    isFirstInGroup = true,
+                    isMiddleInGroup = false,
+                    isLastInGroup = false,
+                    shapeOverride = RoundedCornerShape(10.dp),
+                    onLongClick = onLongClick,
+                    onClick = { onFileClick(message) },
+                    onDismissReactions = onDismissReactions,
+                    onReactionClick = onReactionClick,
+                    onShowUsersReactionsClick = onShowUsersReactionsClick,
+                    isBlockedByOtherUser = isBlockedByOtherUser,
+                    isUserMemberOfGroup = isUserMemberOfGroup
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = fileBackgroundColor,
-                                shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.Center
+                    Row(
+                        modifier = Modifier.padding(10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.sharp_draft_24),
-                            contentDescription = null,
-                            tint = iconTint
-                        )
-                    }
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(
+                                    color = fileBackgroundColor,
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.sharp_draft_24),
+                                contentDescription = null,
+                                tint = iconTint
+                            )
+                        }
 
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = filename.toTruncatedFileName(),
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.W600
-                        )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = filename.toTruncatedFileName(),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.W600
+                            )
 
-                        Text(
-                            text = message.fileAttachment
-                                ?.size
-                                ?.toFormattedFileSize()
-                                ?: "0 B",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = textColor,
-                            fontWeight = FontWeight.W400
-                        )
+                            Text(
+                                text = message.fileAttachment
+                                    ?.size
+                                    ?.toFormattedFileSize()
+                                    ?: "0 B",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = textColor,
+                                fontWeight = FontWeight.W400
+                            )
+                        }
                     }
                 }
-            }
 
-            if (!isSentByCurrentUser) {
-                FileForwardArrow(
-                    onForwardClick = onForwardClick,
-                    isSentByCurrentUser = false,
-                    iconTint = iconTint
-                )
+                if (!isSentByCurrentUser) {
+                    FileForwardArrow(
+                        onForwardClick = onForwardClick,
+                        isSentByCurrentUser = false,
+                        iconTint = iconTint
+                    )
+                }
             }
         }
     }
@@ -237,7 +251,9 @@ private fun FileChatBubblePreview() {
                     onReactionClick = { _, _ -> },
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
-                    isUserMemberOfGroup = true
+                    isUserMemberOfGroup = true,
+                    onFileClick = {},
+                    isOpening = true,
                 )
             }
         }
