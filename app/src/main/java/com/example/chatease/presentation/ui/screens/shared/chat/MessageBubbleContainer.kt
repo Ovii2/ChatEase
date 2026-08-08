@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -46,10 +47,15 @@ fun MessageBubbleContainer(
     isUserMemberOfGroup: Boolean,
     isReplyMessage: Boolean = false,
     shapeOverride: Shape? = null,
+    backgroundColorOverride: Color? = null,
     content: @Composable () -> Unit
 ) {
-    val backgroundColor =
-        if (isSentByCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
+    val backgroundColor = backgroundColorOverride
+        ?: if (isSentByCurrentUser) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHigh
+        }
 
     val textColor =
         if (isSentByCurrentUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
@@ -114,6 +120,8 @@ fun MessageBubbleContainer(
                 onLongClick = onLongClick
             ),
             color = backgroundColor,
+            tonalElevation = 0.dp,
+            shadowElevation = 0.dp,
             shape = shapeOverride ?: if (isReplyMessage) RoundedCornerShape(18.dp) else shape
         ) {
             content()

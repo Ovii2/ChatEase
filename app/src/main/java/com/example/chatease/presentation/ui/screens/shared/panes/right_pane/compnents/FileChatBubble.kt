@@ -68,9 +68,15 @@ fun FileChatBubble(
     }
 
     val fileBackgroundColor = if (isSentByCurrentUser) {
-        MaterialTheme.colorScheme.secondary
+        MaterialTheme.colorScheme.secondaryContainer
     } else {
-        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+
+    val boxColor = if (isSentByCurrentUser) {
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+    } else {
+        MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f)
     }
 
     val isUploadingThisFile = uploadingFileId == message.fileAttachment?.id
@@ -89,7 +95,8 @@ fun FileChatBubble(
                 FileForwardArrow(
                     onForwardClick = onForwardClick,
                     isSentByCurrentUser = true,
-                    iconTint = iconTint
+                    iconTint = iconTint,
+                    backGroundColor = fileBackgroundColor
                 )
             }
 
@@ -109,7 +116,8 @@ fun FileChatBubble(
                 onReactionClick = onReactionClick,
                 onShowUsersReactionsClick = onShowUsersReactionsClick,
                 isBlockedByOtherUser = isBlockedByOtherUser,
-                isUserMemberOfGroup = isUserMemberOfGroup
+                isUserMemberOfGroup = isUserMemberOfGroup,
+                backgroundColorOverride = fileBackgroundColor
             ) {
                 Row(
                     modifier = Modifier.padding(10.dp),
@@ -120,7 +128,7 @@ fun FileChatBubble(
                         modifier = Modifier
                             .size(40.dp)
                             .background(
-                                color = fileBackgroundColor,
+                                color = boxColor,
                                 shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
@@ -139,6 +147,7 @@ fun FileChatBubble(
                             text = filename.toTruncatedFileName(),
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
+                            color = textColor,
                             fontWeight = FontWeight.W600
                         )
 
@@ -153,6 +162,7 @@ fun FileChatBubble(
                         )
                         if (isUploadingThisFile && fileUploadProgress != null) {
                             LinearProgressIndicator(
+                                modifier = Modifier.padding(bottom = 2.dp),
                                 progress = { fileUploadProgress }
                             )
                         }
@@ -164,7 +174,8 @@ fun FileChatBubble(
                 FileForwardArrow(
                     onForwardClick = onForwardClick,
                     isSentByCurrentUser = false,
-                    iconTint = iconTint
+                    iconTint = iconTint,
+                    backGroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 )
             }
         }
@@ -176,14 +187,9 @@ fun FileForwardArrow(
     modifier: Modifier = Modifier,
     onForwardClick: () -> Unit,
     isSentByCurrentUser: Boolean,
-    iconTint: Color
+    iconTint: Color,
+    backGroundColor: Color
 ) {
-    val backgroundColor = if (isSentByCurrentUser) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.surfaceContainerHigh
-    }
-
     Row(
         modifier = modifier.widthIn(max = 320.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -194,7 +200,7 @@ fun FileForwardArrow(
                 .clickable(onClick = onForwardClick)
                 .size(35.dp)
                 .background(
-                    color = backgroundColor,
+                    color = backGroundColor,
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -253,7 +259,7 @@ private fun FileChatBubblePreview() {
                     isUserMemberOfGroup = true,
                     onFileClick = {},
                     uploadingFileId = message.fileAttachment?.id,
-                    fileUploadProgress = 1f,
+                    fileUploadProgress = 0.5f,
                 )
             }
         }
