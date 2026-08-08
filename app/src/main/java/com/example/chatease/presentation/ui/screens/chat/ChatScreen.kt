@@ -9,12 +9,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
+import com.example.chatease.utils.openFile
 
 @Composable
 fun ChatScreen(
@@ -34,6 +36,8 @@ fun ChatScreen(
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
     val currentUserId = chatViewModel.currentUserId
+    val context = LocalContext.current
+    val openingFileMessageId by chatViewModel.openingFileMessageId.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -114,5 +118,22 @@ fun ChatScreen(
                 currentUserId = currentUserId
             )
         },
+        onFileClick = { message ->
+            val fileAttachment = message.fileAttachment ?: return@RightPane
+
+            chatViewModel.openFile(
+                messageId = message.messageId,
+                fileUrl = fileAttachment.url,
+                fileName = fileAttachment.name,
+                onFileReady = { uri ->
+                    openFile(
+                        context = context,
+                        uri = uri,
+                        mimeType = fileAttachment.mimeType
+                    )
+                }
+            )
+        },
+        openingFileMessageId = openingFileMessageId,
     )
 }
