@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +54,7 @@ import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 import com.example.chatease.presentation.ui.viewmodel.GroupChatInfoViewModel
 import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
+import com.example.chatease.utils.openFile
 
 @OptIn(
     ExperimentalMaterial3WindowSizeClassApi::class,
@@ -113,6 +115,9 @@ fun HomeScreen(
 
     val searchValue by homeViewModel.searchValue.collectAsState()
     val currentUserId = chatViewModel.currentUserId
+
+    val context = LocalContext.current
+    val openingFileMessageId by chatViewModel.openingFileMessageId.collectAsState()
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -287,7 +292,25 @@ fun HomeScreen(
                                             currentUserId = currentUserId
                                         )
                                     }
-                                }
+                                },
+                                onFileClick = { message ->
+                                    val fileAttachment =
+                                        message.fileAttachment ?: return@HomeTabletLayout
+
+                                    chatViewModel.openFile(
+                                        messageId = message.messageId,
+                                        fileUrl = fileAttachment.url,
+                                        fileName = fileAttachment.name,
+                                        onFileReady = { uri ->
+                                            openFile(
+                                                context = context,
+                                                uri = uri,
+                                                mimeType = fileAttachment.mimeType
+                                            )
+                                        }
+                                    )
+                                },
+                                openingFileMessageId = openingFileMessageId,
                             )
                         }
                     }
