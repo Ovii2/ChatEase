@@ -36,7 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatease.R
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
+import com.example.chatease.domain.model.enums.toScreenName
 import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.shared.chat.UserAvatar
 import com.example.chatease.presentation.ui.screens.shared.group.GroupAvatar
@@ -49,7 +51,8 @@ fun RecentChatsList(
     conversations: List<ConversationUiModel>,
     onConversationClick: (String, Boolean) -> Unit,
     onClickToSeeAll: () -> Unit,
-    onLongClick: (String, Boolean) -> Unit
+    onLongClick: (String, Boolean) -> Unit,
+    currentUserId: String
 ) {
     val cornerShape = RoundedCornerShape(24.dp)
 
@@ -102,6 +105,7 @@ fun RecentChatsList(
                         onNavigateToChatDetails = onConversationClick,
                         cornerShape = cornerShape,
                         onLongClick = onLongClick,
+                        currentUserId = currentUserId,
                     )
                 }
             }
@@ -115,14 +119,32 @@ fun RecentChatListItem(
     conversation: ConversationUiModel,
     onNavigateToChatDetails: (String, Boolean) -> Unit,
     cornerShape: RoundedCornerShape,
-    onLongClick: (String, Boolean) -> Unit
+    onLongClick: (String, Boolean) -> Unit,
+    currentUserId: String
 ) {
     val user = conversation.participants.firstOrNull() ?: return
     val backgroundColor =
-        if (conversation.unreadCount > 0 && conversation.isCurrentUserGroupMember) MaterialTheme.colorScheme.primary.copy(
-            alpha = 0.15f
-        ) else
+        if (conversation.unreadCount > 0 && conversation.isCurrentUserGroupMember) {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+        } else {
             MaterialTheme.colorScheme.surface
+        }
+    val username =
+        if (conversation.lastMessageSenderId == currentUserId) {
+            stringResource(R.string.you)
+        } else {
+            user.fullName.substringBefore(" ")
+        }
+
+    val lastMessageText = when (conversation.lastMessageType) {
+        MessageType.TEXT -> conversation.lastMessage
+
+        else -> stringResource(
+            R.string.sent_a_type,
+            username,
+            conversation.lastMessageType.toScreenName()
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -182,7 +204,7 @@ fun RecentChatListItem(
                     )
                     Text(
                         modifier = Modifier.padding(start = 1.5.dp),
-                        text = conversation.lastMessage,
+                        text = lastMessageText,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
@@ -250,11 +272,13 @@ private fun RecentChatsListPreview() {
                         unreadCount = 1,
                         isGroup = it % 2 == 0,
                         isCurrentUserGroupMember = true,
+                        lastMessageType = MessageType.TEXT,
                     )
                 },
                 onConversationClick = { _, _ -> },
                 onClickToSeeAll = {},
                 onLongClick = { _, _ -> },
+                currentUserId = "1",
             )
         }
     }
