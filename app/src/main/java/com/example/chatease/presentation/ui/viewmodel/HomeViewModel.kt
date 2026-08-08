@@ -292,11 +292,9 @@ class HomeViewModel @Inject constructor(
                 isGroup = isGroupConversation,
                 isBlockedByOtherUser = otherUser?.blockedUserIds?.contains(currentUserId) ?: false,
                 isCurrentUserGroupMember = isCurrentUserGroupMember,
-                categoryId = if (isGroupConversation) {
-                    group?.categoryId
-                } else {
-                    null
-                }
+                categoryId = if (isGroupConversation) group?.categoryId else null,
+                lastMessageType = conversation.lastMessageType,
+                lastMessageSenderId = conversation.lastMessageSenderId
             )
         }
     }
