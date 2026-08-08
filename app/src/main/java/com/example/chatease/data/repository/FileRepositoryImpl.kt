@@ -3,11 +3,13 @@ package com.example.chatease.data.repository
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.content.FileProvider
 import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.repository.FileRepository
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
+import java.io.File
 import javax.inject.Inject
 
 class FileRepositoryImpl @Inject constructor(
@@ -70,6 +72,24 @@ class FileRepositoryImpl @Inject constructor(
             size = fileSize,
             url = downloadUrl,
             mimeType = mimeType
+        )
+    }
+
+    override suspend fun downloadFile(fileUrl: String, fileName: String): Uri {
+        val localFile = File(
+            context.cacheDir,
+            fileName
+        )
+
+        storage
+            .getReferenceFromUrl(fileUrl)
+            .getFile(localFile)
+            .await()
+
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            localFile
         )
     }
 }
