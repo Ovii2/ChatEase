@@ -8,3 +8,14 @@ enum class MessageType {
     AUDIO,
     VIDEO
 }
+
+fun MessageType.toScreenName(): String {
+    return when (this) {
+        MessageType.TEXT -> "Text"
+        MessageType.FILE -> "File"
+        MessageType.IMAGE -> "Image"
+        MessageType.GIF -> "Gif"
+        MessageType.AUDIO -> "Audio"
+        MessageType.VIDEO -> "Video"
+    }
+}
