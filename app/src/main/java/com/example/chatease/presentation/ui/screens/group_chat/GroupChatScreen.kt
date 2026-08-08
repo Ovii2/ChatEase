@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -25,6 +26,7 @@ import com.example.chatease.presentation.ui.state.GroupChatUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 import com.example.chatease.presentation.ui.viewmodel.GroupChatViewModel
+import com.example.chatease.utils.openFile
 
 @Composable
 fun GroupChatScreen(
@@ -39,6 +41,7 @@ fun GroupChatScreen(
     val isBlockedByOtherUser = false
     val uiState by groupChatViewModel.uiState.collectAsState()
     val currentUserId = chatViewModel.currentUserId
+    val context = LocalContext.current
     val isUserGroupMember =
         (uiState as? GroupChatUiState.Success)
             ?.group
@@ -64,6 +67,8 @@ fun GroupChatScreen(
     val firstUnreadMessageId = chatViewModel.firstUnreadMessageId ?: ""
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     var selectedReactionsMessageId by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val openingFileMessageId by chatViewModel.openingFileMessageId.collectAsState()
 
     when (val state = uiState) {
         is GroupChatUiState.Success -> {
@@ -129,6 +134,23 @@ fun GroupChatScreen(
                             currentUserId = currentUserId
                         )
                     },
+                    onFileClick = { message ->
+                        val fileAttachment = message.fileAttachment ?: return@RightPane
+
+                        chatViewModel.openFile(
+                            messageId = message.messageId,
+                            fileUrl = fileAttachment.url,
+                            fileName = fileAttachment.name,
+                            onFileReady = { uri ->
+                                openFile(
+                                    context = context,
+                                    uri = uri,
+                                    mimeType = fileAttachment.mimeType
+                                )
+                            }
+                        )
+                    },
+                    openingFileMessageId = openingFileMessageId,
                 )
                 selectedMessage?.let { message ->
                     ReactionsDetailsBottomSheet(

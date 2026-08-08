@@ -56,7 +56,9 @@ fun MessagesList(
     onLongClick: (Message) -> Unit,
     selectedReactionMessageId: String?,
     onSelectedReactionMessageIdChange: (String?) -> Unit,
-    onDismissMessageActions: () -> Unit
+    onDismissMessageActions: () -> Unit,
+    onFileClick: (Message) -> Unit,
+    openingFileMessageId: String?
 ) {
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
@@ -118,7 +120,9 @@ fun MessagesList(
                                     onReactionClick(messageId, reaction)
                                     onSelectedReactionMessageIdChange(null)
                                 },
-                                onShowUsersReactionsClick = onShowUsersReactionsClick
+                                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                                onFileClick = onFileClick,
+                                isOpening = message.messageId == openingFileMessageId,
                             )
                         }
                     }
@@ -166,6 +170,8 @@ fun MessagesList(
                                     onShowUsersReactionsClick = onShowUsersReactionsClick,
                                     isUserMemberOfGroup = isUserMemberOfGroup,
                                     members = chatPaneUiState.members,
+                                    onFileClick = onFileClick,
+                                    isOpening = message.messageId == openingFileMessageId,
                                 )
                             }
 
@@ -226,7 +232,9 @@ fun DirectMessageListItem(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
-    onShowUsersReactionsClick: (String) -> Unit
+    onShowUsersReactionsClick: (String) -> Unit,
+    onFileClick: (Message) -> Unit,
+    isOpening: Boolean
 ) {
     val otherUserFirstName = user.fullName
         .trim()
@@ -303,6 +311,8 @@ fun DirectMessageListItem(
                     onShowUsersReactionsClick = onShowUsersReactionsClick,
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     isUserMemberOfGroup = true,
+                    onFileClick = onFileClick,
+                    isOpening = isOpening
                 )
             }
 
@@ -330,7 +340,9 @@ fun GroupMessageListItem(
     onReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     isUserMemberOfGroup: Boolean,
-    members: List<User>
+    members: List<User>,
+    onFileClick: (Message) -> Unit,
+    isOpening: Boolean
 ) {
     val nameParts = user.fullName
         .trim()
@@ -435,6 +447,8 @@ fun GroupMessageListItem(
                         onShowUsersReactionsClick = onShowUsersReactionsClick,
                         isBlockedByOtherUser = false,
                         isUserMemberOfGroup = true,
+                        onFileClick = onFileClick,
+                        isOpening = isOpening
                     )
                 }
 
@@ -533,6 +547,8 @@ private fun MessagesListPreview() {
                 selectedReactionMessageId = "1",
                 onSelectedReactionMessageIdChange = {},
                 onDismissMessageActions = {},
+                onFileClick = {},
+                openingFileMessageId = "1",
             )
         }
     }
