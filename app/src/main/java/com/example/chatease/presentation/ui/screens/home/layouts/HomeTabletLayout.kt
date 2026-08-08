@@ -55,7 +55,10 @@ fun HomeTabletLayout(
     searchValue: String,
     onSearchValueChange: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
-    onFileClick: (Message) -> Unit
+    onFileClick: (Message) -> Unit,
+    uploadingFileId: String?,
+    fileUploadProgress: Float?,
+    pendingFileMessage: Message?
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -113,7 +116,10 @@ fun HomeTabletLayout(
                     onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
                     onShowUsersReactionsClick = {},
                     onSendFile = onSendFile,
-                    onFileClick = onFileClick
+                    onFileClick = onFileClick,
+                    uploadingFileId = uploadingFileId,
+                    fileUploadProgress = fileUploadProgress,
+                    pendingFileMessage = pendingFileMessage
                 )
             }
         },

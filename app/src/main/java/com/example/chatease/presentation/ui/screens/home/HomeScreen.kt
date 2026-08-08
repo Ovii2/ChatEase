@@ -118,6 +118,10 @@ fun HomeScreen(
 
     val context = LocalContext.current
 
+    val fileUploadProgress by chatViewModel.fileUploadProgress.collectAsState()
+    val uploadingFileId by chatViewModel.uploadingFileId.collectAsState()
+    val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
+
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
         onLoadConversation = chatViewModel::loadConversation,
@@ -308,7 +312,10 @@ fun HomeScreen(
                                             )
                                         }
                                     )
-                                }
+                                },
+                                uploadingFileId = uploadingFileId,
+                                fileUploadProgress = fileUploadProgress,
+                                pendingFileMessage = pendingFileMessage
                             )
                         }
                     }

@@ -23,7 +23,10 @@ class FileRepositoryImpl @Inject constructor(
 
     override suspend fun uploadFile(
         conversationId: String,
-        fileUri: Uri
+        fileUri: Uri,
+        fileId: String,
+        onFileReady: (FileAttachment) -> Unit,
+        onProgress: (String, Float) -> Unit
     ): FileAttachment {
         val contentResolver = context.contentResolver
 
@@ -53,14 +56,30 @@ class FileRepositoryImpl @Inject constructor(
 
         val mimeType = contentResolver.getType(fileUri).orEmpty()
 
+        onFileReady(
+            FileAttachment(
+                id = fileId,
+                name = fileName,
+                size = fileSize,
+                mimeType = mimeType
+            )
+        )
+
         val fileReference = storage.reference
             .child(CHAT_FILES)
             .child(conversationId)
-            .child("${System.currentTimeMillis()}_$fileName")
+            .child(fileId)
 
-        fileReference
-            .putFile(fileUri)
-            .await()
+
+        val uploadTask = fileReference.putFile(fileUri)
+
+        uploadTask.addOnProgressListener { snapshot ->
+            val progress = snapshot.bytesTransferred.toFloat() / snapshot.totalByteCount.toFloat()
+
+            onProgress(fileId, progress)
+        }
+
+        uploadTask.await()
 
         val downloadUrl = fileReference
             .downloadUrl
@@ -68,6 +87,7 @@ class FileRepositoryImpl @Inject constructor(
             .toString()
 
         return FileAttachment(
+            id = fileId,
             name = fileName,
             size = fileSize,
             url = downloadUrl,

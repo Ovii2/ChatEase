@@ -37,6 +37,9 @@ fun ChatScreen(
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
     val currentUserId = chatViewModel.currentUserId
     val context = LocalContext.current
+    val fileUploadProgress by chatViewModel.fileUploadProgress.collectAsState()
+    val uploadingFileId by chatViewModel.uploadingFileId.collectAsState()
+    val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -132,6 +135,9 @@ fun ChatScreen(
                     )
                 }
             )
-        }
+        },
+        uploadingFileId = uploadingFileId,
+        fileUploadProgress = fileUploadProgress,
+        pendingFileMessage = pendingFileMessage
     )
 }

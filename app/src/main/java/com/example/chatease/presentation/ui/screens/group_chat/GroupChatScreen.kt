@@ -68,6 +68,10 @@ fun GroupChatScreen(
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     var selectedReactionsMessageId by rememberSaveable { mutableStateOf<String?>(null) }
 
+    val fileUploadProgress by chatViewModel.fileUploadProgress.collectAsState()
+    val uploadingFileId by chatViewModel.uploadingFileId.collectAsState()
+    val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
+
     when (val state = uiState) {
         is GroupChatUiState.Success -> {
             val selectedMessage = state.messages.firstOrNull { message ->
@@ -147,7 +151,10 @@ fun GroupChatScreen(
                                 )
                             }
                         )
-                    }
+                    },
+                    uploadingFileId = uploadingFileId,
+                    fileUploadProgress = fileUploadProgress,
+                    pendingFileMessage = pendingFileMessage
                 )
                 selectedMessage?.let { message ->
                     ReactionsDetailsBottomSheet(

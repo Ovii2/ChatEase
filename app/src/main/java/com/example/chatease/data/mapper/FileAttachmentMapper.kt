@@ -5,6 +5,7 @@ import com.example.chatease.domain.model.FileAttachment
 
 fun FileAttachment.toDto(): FileAttachmentDto {
     return FileAttachmentDto(
+        id = id,
         name = name,
         size = size,
         url = url,
@@ -14,6 +15,7 @@ fun FileAttachment.toDto(): FileAttachmentDto {
 
 fun FileAttachmentDto.toDomain(): FileAttachment {
     return FileAttachment(
+        id = id,
         name = name,
         size = size,
         url = url,

@@ -84,7 +84,10 @@ fun RightPane(
     onNavigateToGroupChatInfo: (String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
-    onFileClick: (Message) -> Unit
+    onFileClick: (Message) -> Unit,
+    uploadingFileId: String?,
+    fileUploadProgress: Float?,
+    pendingFileMessage: Message?
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -240,7 +243,10 @@ fun RightPane(
                     selectedReactionMessageId = null
                     selectedReplyMessage = null
                 },
-                onFileClick = onFileClick
+                onFileClick = onFileClick,
+                uploadingFileId = uploadingFileId,
+                fileUploadProgress = fileUploadProgress,
+                pendingFileMessage = pendingFileMessage,
             )
 
 
@@ -440,6 +446,9 @@ private fun RightPanePreview() {
                     onShowUsersReactionsClick = {},
                     onSendFile = {},
                     onFileClick = {},
+                    uploadingFileId = "",
+                    fileUploadProgress = 1f,
+                    pendingFileMessage = null,
                 )
             }
         }

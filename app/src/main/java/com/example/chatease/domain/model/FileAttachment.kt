@@ -1,6 +1,7 @@
 package com.example.chatease.domain.model
 
 data class FileAttachment(
+    val id: String = "",
     val name: String = "",
     val size: Long = 0L,
     val url: String = "",

@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.ReplyMessage
 import com.example.chatease.domain.model.User
@@ -43,6 +44,15 @@ class ChatViewModel @Inject constructor(
 
     private val _isBlockedByOtherUser = MutableStateFlow(false)
     val isBlockedByOtherUser = _isBlockedByOtherUser.asStateFlow()
+
+    private val _fileUploadProgress = MutableStateFlow<Float?>(null)
+    val fileUploadProgress = _fileUploadProgress.asStateFlow()
+
+    private val _uploadingFileId = MutableStateFlow<String?>(null)
+    val uploadingFileId = _uploadingFileId.asStateFlow()
+
+    private val _pendingFileMessage = MutableStateFlow<Message?>(null)
+    val pendingFileMessage = _pendingFileMessage.asStateFlow()
 
     private val _openingFileMessageId = MutableStateFlow<String?>(null)
     val openingFileMessageId = _openingFileMessageId.asStateFlow()
@@ -168,11 +178,29 @@ class ChatViewModel @Inject constructor(
     }
 
     fun sendFile(conversationId: String, fileUri: Uri, currentUserId: String) {
+        val fileId = System.currentTimeMillis().toString()
         viewModelScope.launch {
+            _fileUploadProgress.value = 0f
+
             try {
+                _pendingFileMessage.value = createPendingFileMessage(
+                    conversationId = conversationId,
+                    fileUri = fileUri,
+                    fileId = fileId
+                )
                 val fileAttachment = fileRepository.uploadFile(
                     conversationId = conversationId,
-                    fileUri = fileUri
+                    fileUri = fileUri,
+                    fileId = fileId,
+                    onFileReady = { fileAttachment ->
+                        _pendingFileMessage.value = _pendingFileMessage.value?.copy(
+                            fileAttachment = fileAttachment
+                        )
+                    },
+                    onProgress = { uploadingFileId, progress ->
+                        _uploadingFileId.value = uploadingFileId
+                        _fileUploadProgress.value = progress
+                    },
                 )
 
                 val message = Message(
@@ -186,6 +214,10 @@ class ChatViewModel @Inject constructor(
                 conversationRepository.sendMessage(message)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "Failed to send file", e)
+            } finally {
+                _uploadingFileId.value = null
+                _fileUploadProgress.value = null
+                _pendingFileMessage.value = null
             }
         }
     }
@@ -206,6 +238,26 @@ class ChatViewModel @Inject constructor(
                 _openingFileMessageId.value = null
             }
         }
+    }
+
+    private fun createPendingFileMessage(
+        conversationId: String,
+        fileUri: Uri,
+        fileId: String
+    ): Message {
+        val pendingFileId = System.currentTimeMillis().toString()
+
+        return Message(
+            messageId = pendingFileId,
+            conversationId = conversationId,
+            senderId = currentUserId,
+            timeStamp = System.currentTimeMillis(),
+            messageType = MessageType.FILE,
+            fileAttachment = FileAttachment(
+                id = pendingFileId,
+                name = fileUri.lastPathSegment.orEmpty()
+            )
+        )
     }
 
     private fun observeIsBlockedByOtherUser(otherUserId: String) {

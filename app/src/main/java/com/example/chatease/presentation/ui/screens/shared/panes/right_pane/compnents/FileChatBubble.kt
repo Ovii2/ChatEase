@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,7 +51,9 @@ fun FileChatBubble(
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
-    onFileClick: (Message) -> Unit
+    onFileClick: (Message) -> Unit,
+    uploadingFileId: String?,
+    fileUploadProgress: Float?
 ) {
     val textColor = if (isSentByCurrentUser) {
         MaterialTheme.colorScheme.onPrimary
@@ -69,6 +72,8 @@ fun FileChatBubble(
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
     }
+
+    val isUploadingThisFile = uploadingFileId == message.fileAttachment?.id
 
     Column(
         modifier = modifier,
@@ -146,6 +151,11 @@ fun FileChatBubble(
                             color = textColor,
                             fontWeight = FontWeight.W400
                         )
+                        if (isUploadingThisFile && fileUploadProgress != null) {
+                            LinearProgressIndicator(
+                                progress = { fileUploadProgress }
+                            )
+                        }
                     }
                 }
             }
@@ -241,7 +251,9 @@ private fun FileChatBubblePreview() {
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
                     isUserMemberOfGroup = true,
-                    onFileClick = {}
+                    onFileClick = {},
+                    uploadingFileId = message.fileAttachment?.id,
+                    fileUploadProgress = 1f,
                 )
             }
         }

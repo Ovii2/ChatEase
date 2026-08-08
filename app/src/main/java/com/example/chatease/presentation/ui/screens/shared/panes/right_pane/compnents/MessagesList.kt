@@ -57,11 +57,17 @@ fun MessagesList(
     selectedReactionMessageId: String?,
     onSelectedReactionMessageIdChange: (String?) -> Unit,
     onDismissMessageActions: () -> Unit,
-    onFileClick: (Message) -> Unit
+    onFileClick: (Message) -> Unit,
+    uploadingFileId: String?,
+    fileUploadProgress: Float?,
+    pendingFileMessage: Message?
 ) {
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-    val reversedMessages = messages.reversed()
+    val displayedMessages = buildList {
+        pendingFileMessage?.let { add(it) }
+        addAll(messages.reversed())
+    }
 
     Box(
         modifier = modifier.clickable(
@@ -80,9 +86,9 @@ fun MessagesList(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            itemsIndexed(reversedMessages) { index, message ->
-                val previousVisibleMessage = reversedMessages.getOrNull(index + 1)
-                val nextVisibleMessage = reversedMessages.getOrNull(index - 1)
+            itemsIndexed(displayedMessages) { index, message ->
+                val previousVisibleMessage = displayedMessages.getOrNull(index + 1)
+                val nextVisibleMessage = displayedMessages.getOrNull(index - 1)
 
                 val isFirstInGroup = previousVisibleMessage?.senderId != message.senderId
                 val isLastInGroup = nextVisibleMessage?.senderId != message.senderId
@@ -120,7 +126,9 @@ fun MessagesList(
                                     onSelectedReactionMessageIdChange(null)
                                 },
                                 onShowUsersReactionsClick = onShowUsersReactionsClick,
-                                onFileClick = onFileClick
+                                onFileClick = onFileClick,
+                                uploadingFileId = uploadingFileId,
+                                fileUploadProgress = fileUploadProgress
                             )
                         }
                     }
@@ -168,7 +176,9 @@ fun MessagesList(
                                     onShowUsersReactionsClick = onShowUsersReactionsClick,
                                     isUserMemberOfGroup = isUserMemberOfGroup,
                                     members = chatPaneUiState.members,
-                                    onFileClick = onFileClick
+                                    onFileClick = onFileClick,
+                                    uploadingFileId = uploadingFileId,
+                                    fileUploadProgress = fileUploadProgress
                                 )
                             }
 
@@ -230,7 +240,9 @@ fun DirectMessageListItem(
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
-    onFileClick: (Message) -> Unit
+    onFileClick: (Message) -> Unit,
+    uploadingFileId: String?,
+    fileUploadProgress: Float?
 ) {
     val otherUserFirstName = user.fullName
         .trim()
@@ -307,7 +319,9 @@ fun DirectMessageListItem(
                     onShowUsersReactionsClick = onShowUsersReactionsClick,
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     isUserMemberOfGroup = true,
-                    onFileClick = onFileClick
+                    onFileClick = onFileClick,
+                    uploadingFileId = uploadingFileId,
+                    fileUploadProgress = fileUploadProgress
                 )
             }
 
@@ -336,7 +350,9 @@ fun GroupMessageListItem(
     onShowUsersReactionsClick: (String) -> Unit,
     isUserMemberOfGroup: Boolean,
     members: List<User>,
-    onFileClick: (Message) -> Unit
+    onFileClick: (Message) -> Unit,
+    uploadingFileId: String?,
+    fileUploadProgress: Float?
 ) {
     val nameParts = user.fullName
         .trim()
@@ -441,7 +457,9 @@ fun GroupMessageListItem(
                         onShowUsersReactionsClick = onShowUsersReactionsClick,
                         isBlockedByOtherUser = false,
                         isUserMemberOfGroup = true,
-                        onFileClick = onFileClick
+                        onFileClick = onFileClick,
+                        uploadingFileId = uploadingFileId,
+                        fileUploadProgress = fileUploadProgress
                     )
                 }
 
@@ -540,7 +558,10 @@ private fun MessagesListPreview() {
                 selectedReactionMessageId = "1",
                 onSelectedReactionMessageIdChange = {},
                 onDismissMessageActions = {},
-                onFileClick = {}
+                onFileClick = {},
+                uploadingFileId = "",
+                fileUploadProgress = 1f,
+                pendingFileMessage = null,
             )
         }
     }
