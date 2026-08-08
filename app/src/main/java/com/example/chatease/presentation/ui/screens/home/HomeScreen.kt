@@ -117,7 +117,6 @@ fun HomeScreen(
     val currentUserId = chatViewModel.currentUserId
 
     val context = LocalContext.current
-    val openingFileMessageId by chatViewModel.openingFileMessageId.collectAsState()
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -309,8 +308,7 @@ fun HomeScreen(
                                             )
                                         }
                                     )
-                                },
-                                openingFileMessageId = openingFileMessageId,
+                                }
                             )
                         }
                     }

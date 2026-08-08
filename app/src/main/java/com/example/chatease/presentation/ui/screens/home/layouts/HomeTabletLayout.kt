@@ -55,8 +55,7 @@ fun HomeTabletLayout(
     searchValue: String,
     onSearchValueChange: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
-    onFileClick: (Message) -> Unit,
-    openingFileMessageId: String?
+    onFileClick: (Message) -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -114,8 +113,7 @@ fun HomeTabletLayout(
                     onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
                     onShowUsersReactionsClick = {},
                     onSendFile = onSendFile,
-                    onFileClick = onFileClick,
-                    openingFileMessageId = openingFileMessageId,
+                    onFileClick = onFileClick
                 )
             }
         },

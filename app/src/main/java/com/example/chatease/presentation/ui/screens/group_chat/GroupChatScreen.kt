@@ -68,8 +68,6 @@ fun GroupChatScreen(
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     var selectedReactionsMessageId by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val openingFileMessageId by chatViewModel.openingFileMessageId.collectAsState()
-
     when (val state = uiState) {
         is GroupChatUiState.Success -> {
             val selectedMessage = state.messages.firstOrNull { message ->
@@ -149,8 +147,7 @@ fun GroupChatScreen(
                                 )
                             }
                         )
-                    },
-                    openingFileMessageId = openingFileMessageId,
+                    }
                 )
                 selectedMessage?.let { message ->
                     ReactionsDetailsBottomSheet(

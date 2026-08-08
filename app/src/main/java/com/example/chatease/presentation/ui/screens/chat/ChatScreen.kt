@@ -37,7 +37,6 @@ fun ChatScreen(
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
     val currentUserId = chatViewModel.currentUserId
     val context = LocalContext.current
-    val openingFileMessageId by chatViewModel.openingFileMessageId.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -133,7 +132,6 @@ fun ChatScreen(
                     )
                 }
             )
-        },
-        openingFileMessageId = openingFileMessageId,
+        }
     )
 }
