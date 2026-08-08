@@ -31,9 +31,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
+import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.screens.shared.chat.MessageBubbleContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.utils.toFormattedFileSize
 import com.example.chatease.utils.toTruncatedFileName
 
 @Composable
@@ -156,7 +158,7 @@ fun FileChatBubble(
                         )
 
                         Text(
-                            text = fileSize,
+                            text = message.fileAttachment?.size?.toFormattedFileSize() ?: "0 B",
                             style = MaterialTheme.typography.labelLarge,
                             color = textColor,
                             fontWeight = FontWeight.W400
@@ -183,6 +185,12 @@ private fun FileChatBubblePreview() {
     val message = Message(
         messageId = "1",
         senderId = "1",
+        fileAttachment = FileAttachment(
+            name = "",
+            size = 1233445L,
+            url = "",
+            mimeType = ""
+        ),
         reactions = mapOf(
             "1" to "\uD83E\uDD70"
         )
@@ -200,7 +208,7 @@ private fun FileChatBubblePreview() {
                 FileChatBubble(
                     message = message,
                     filename = "Project_document_final_version_really_really_long_name.pdf",
-                    fileSize = "4 MB",
+                    fileSize = "",
                     onForwardClick = {},
                     isSent = true,
                     isSentByCurrentUser = false,

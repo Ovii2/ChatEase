@@ -6,3 +6,14 @@ fun String.toTruncatedFileName(): String {
     }
     return this
 }
+
+fun Long.toFormattedFileSize(): String {
+    val oneKb = 1024L
+    val oneMb = oneKb * 1024
+
+    return when {
+        this < oneKb -> "$this B"
+        this < oneMb -> "%.2f KB".format(this.toDouble() / oneKb)
+        else -> "%.2f MB".format(this.toDouble() / oneMb)
+    }
+}
