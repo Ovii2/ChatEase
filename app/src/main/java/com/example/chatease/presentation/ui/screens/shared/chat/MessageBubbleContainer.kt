@@ -38,6 +38,7 @@ fun MessageBubbleContainer(
     isMiddleInGroup: Boolean,
     isLastInGroup: Boolean,
     onLongClick: () -> Unit,
+    onClick: () -> Unit = {},
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
@@ -109,7 +110,7 @@ fun MessageBubbleContainer(
     ) {
         Surface(
             modifier = Modifier.combinedClickable(
-                onClick = {},
+                onClick = onClick,
                 onLongClick = onLongClick
             ),
             color = backgroundColor,
