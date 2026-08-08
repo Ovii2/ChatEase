@@ -52,12 +52,12 @@ fun AttachmentMenu(
             shape = RoundedCornerShape(10.dp)
         ) {
             Column(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 AttachmentMenuItem(
                     icon = Icons.Outlined.Image,
-                    label = R.string.image,
+                    label = R.string.images,
                     onClick = {
                         onAddImageClick()
                         onDismiss()
@@ -65,7 +65,7 @@ fun AttachmentMenu(
                 )
                 AttachmentMenuItem(
                     icon = Icons.Outlined.AttachFile,
-                    label = R.string.file,
+                    label = R.string.files,
                     onClick = {
                         onAddFileClick()
                         onDismiss()
