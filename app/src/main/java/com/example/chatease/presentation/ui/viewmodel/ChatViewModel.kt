@@ -44,6 +44,12 @@ class ChatViewModel @Inject constructor(
     private val _isBlockedByOtherUser = MutableStateFlow(false)
     val isBlockedByOtherUser = _isBlockedByOtherUser.asStateFlow()
 
+    private val _uploadingFileUri = MutableStateFlow<Uri?>(null)
+    val uploadingFileUri = _uploadingFileUri.asStateFlow()
+
+    private val _openingFileMessageId = MutableStateFlow<String?>(null)
+    val openingFileMessageId = _openingFileMessageId.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -166,6 +172,7 @@ class ChatViewModel @Inject constructor(
 
     fun sendFile(conversationId: String, fileUri: Uri, currentUserId: String) {
         viewModelScope.launch {
+            _uploadingFileUri.value = fileUri
             try {
                 val fileAttachment = fileRepository.uploadFile(
                     conversationId = conversationId,
@@ -183,6 +190,26 @@ class ChatViewModel @Inject constructor(
                 conversationRepository.sendMessage(message)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "Failed to send file", e)
+            } finally {
+                _uploadingFileUri.value = null
+            }
+        }
+    }
+
+    fun openFile(messageId: String, fileUrl: String, fileName: String, onFileReady: (Uri) -> Unit) {
+        viewModelScope.launch {
+            _openingFileMessageId.value = messageId
+            try {
+                val uri = fileRepository.downloadFile(
+                    fileUrl = fileUrl,
+                    fileName = fileName
+                )
+
+                onFileReady(uri)
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to open file", e)
+            } finally {
+                _openingFileMessageId.value = null
             }
         }
     }
