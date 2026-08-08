@@ -13,7 +13,9 @@ fun ConversationDto.toDomain(): Conversation {
         lastMessage = lastMessage,
         timestamp = timestamp,
         unreadCounts = unreadCounts,
-        deletedFor = deletedFor
+        deletedFor = deletedFor,
+        lastMessageType = lastMessageType,
+        lastMessageSenderId = lastMessageSenderId
     )
 }
 
@@ -27,6 +29,8 @@ fun Conversation.toDto(): ConversationDto {
         lastMessage = lastMessage,
         timestamp = timestamp,
         unreadCounts = unreadCounts,
-        deletedFor = deletedFor
+        deletedFor = deletedFor,
+        lastMessageType = lastMessageType,
+        lastMessageSenderId = lastMessageSenderId
     )
 }
