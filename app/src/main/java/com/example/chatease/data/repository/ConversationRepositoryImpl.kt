@@ -6,7 +6,6 @@ import com.example.chatease.data.remote.dto.MessageDto
 import com.example.chatease.domain.model.Conversation
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.enums.ConversationType
-import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.repository.ConversationRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -36,6 +35,8 @@ class ConversationRepositoryImpl(
         private const val UNREAD_COUNTS = "unreadCounts"
         private const val TYPING_USER_IDS = "typingUserIds"
         private const val DELETED_FOR = "deletedFor"
+        private const val LAST_MESSAGE_TYPE = "lastMessageType"
+        private const val LAST_MESSAGE_SENDER_ID = "lastMessageSenderId"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -141,7 +142,7 @@ class ConversationRepositoryImpl(
                 val conversations = snapshot?.documents?.mapNotNull { document ->
                     document.toObject(ConversationDto::class.java)?.toDomain()
                 }?.filter { conversation ->
-                    conversation.lastMessage.isNotBlank() && userId !in conversation.deletedFor
+                    userId !in conversation.deletedFor
                 } ?: emptyList()
 
                 trySend(conversations)
@@ -192,17 +193,10 @@ class ConversationRepositoryImpl(
             participantId != message.senderId
         }
 
-        val lastMessage = when (message.messageType) {
-            MessageType.TEXT -> message.text
-            MessageType.FILE -> "Sent File"
-            MessageType.IMAGE -> "Sent Image"
-            MessageType.GIF -> "Sent GIF"
-            MessageType.AUDIO -> "Sent Audio"
-            MessageType.VIDEO -> "Sent Video"
-        }
-
         val updates = mutableMapOf(
-            LAST_MESSAGE to lastMessage,
+            LAST_MESSAGE to message.text,
+            LAST_MESSAGE_TYPE to message.messageType,
+            LAST_MESSAGE_SENDER_ID to message.senderId,
             TIMESTAMP to message.timeStamp,
             DELETED_FOR to FieldValue.arrayRemove(*receiverIds.toTypedArray())
         )
