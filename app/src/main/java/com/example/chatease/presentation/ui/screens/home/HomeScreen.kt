@@ -31,6 +31,7 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.AlertDialogType
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeCompactLayout
@@ -197,6 +198,7 @@ fun HomeScreen(
                                 },
                                 searchValue = searchValue,
                                 onSearchValueChange = homeViewModel::onSearchValueChange,
+                                currentUserId = currentUserId,
                             )
                         }
 
@@ -401,6 +403,10 @@ private fun HomeScreenCompactLayoutPreview() {
         unreadCount = 0,
         isGroup = false,
         isCurrentUserGroupMember = true,
+        lastMessageType = MessageType.TEXT,
+        isBlockedByOtherUser = false,
+        categoryId = "1",
+        lastMessageSenderId = "1",
     )
     ChatEaseTheme {
         Scaffold { paddingValues ->
@@ -419,6 +425,7 @@ private fun HomeScreenCompactLayoutPreview() {
                 onLongClick = { _, _ -> },
                 searchValue = "",
                 onSearchValueChange = {},
+                currentUserId = "1",
             )
         }
     }

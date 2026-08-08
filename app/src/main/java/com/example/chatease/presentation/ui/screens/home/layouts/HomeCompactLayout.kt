@@ -22,7 +22,8 @@ fun HomeCompactLayout(
     onNavigateToProfile: () -> Unit,
     onLongClick: (String, Boolean) -> Unit,
     searchValue: String,
-    onSearchValueChange: (String) -> Unit
+    onSearchValueChange: (String) -> Unit,
+    currentUserId: String
 ) {
     LeftPane(
         modifier = modifier
@@ -41,5 +42,6 @@ fun HomeCompactLayout(
         onLongClick = onLongClick,
         searchValue = searchValue,
         onSearchValueChange = onSearchValueChange,
+        currentUserId = currentUserId,
     )
 }

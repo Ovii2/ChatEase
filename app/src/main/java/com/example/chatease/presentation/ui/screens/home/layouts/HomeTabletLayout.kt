@@ -86,7 +86,8 @@ fun HomeTabletLayout(
                     onNavigateToProfile = onNavigateToProfile,
                     onLongClick = onLongClick,
                     searchValue = searchValue,
-                    onSearchValueChange = onSearchValueChange
+                    onSearchValueChange = onSearchValueChange,
+                    currentUserId = currentUserId,
                 )
             }
         },

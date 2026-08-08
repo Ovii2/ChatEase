@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.Category
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.components.LeftPaneHeader
@@ -41,7 +42,8 @@ fun LeftPane(
     onNavigateToProfile: () -> Unit,
     onLongClick: (String, Boolean) -> Unit,
     searchValue: String,
-    onSearchValueChange: (String) -> Unit
+    onSearchValueChange: (String) -> Unit,
+    currentUserId: String
 ) {
     Box(
         modifier = modifier.clickable(
@@ -70,6 +72,7 @@ fun LeftPane(
                 onConversationClick = onConversationClick,
                 onClickToSeeAll = onClickToSeeAll,
                 onLongClick = onLongClick,
+                currentUserId = currentUserId,
             )
         }
     }
@@ -106,7 +109,11 @@ private fun LeftPanePreview() {
         timestamp = System.currentTimeMillis(),
         unreadCount = 2,
         isGroup = false,
-        isCurrentUserGroupMember = true
+        isCurrentUserGroupMember = true,
+        lastMessageType = MessageType.TEXT,
+        isBlockedByOtherUser = false,
+        categoryId = "1",
+        lastMessageSenderId = "1",
     )
     ChatEaseTheme {
         Column(modifier = Modifier.systemBarsPadding()) {
@@ -124,6 +131,7 @@ private fun LeftPanePreview() {
                 onLongClick = { _, _ -> },
                 searchValue = "",
                 onSearchValueChange = {},
+                currentUserId = "1",
             )
         }
     }
