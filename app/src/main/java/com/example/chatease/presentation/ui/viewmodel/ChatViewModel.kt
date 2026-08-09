@@ -99,7 +99,9 @@ class ChatViewModel @Inject constructor(
                         ReplyMessage(
                             messageId = message.messageId,
                             senderId = message.senderId,
-                            text = message.text
+                            text = message.text,
+                            messageType = message.messageType,
+                            fileName = message.fileAttachment?.name.orEmpty()
                         )
                     }
                 )
