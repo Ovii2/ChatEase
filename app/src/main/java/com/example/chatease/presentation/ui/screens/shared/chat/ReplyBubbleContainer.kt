@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Reply
@@ -22,7 +23,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.chatease.ChatEase
 import com.example.chatease.R
 import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Message
@@ -38,6 +38,7 @@ fun ReplyBubbleContainer(
     currentUserId: String,
     messageSenderName: String,
     repliedMessageSenderName: String,
+    replyPreviewText: String? = null,
     content: @Composable () -> Unit
 ) {
     val replied = when {
@@ -56,7 +57,7 @@ fun ReplyBubbleContainer(
     }
 
     Column(
-        modifier = modifier,
+        modifier = modifier.widthIn(max = 250.dp),
         horizontalAlignment = if (isSentByCurrentUser) {
             Alignment.End
         } else {
@@ -114,7 +115,7 @@ fun ReplyBubbleContainer(
         ) {
             Text(
                 modifier = Modifier.padding(12.dp),
-                text = message.replyMessage?.text.orEmpty(),
+                text = replyPreviewText ?: message.replyMessage?.text.orEmpty(),
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
             )
         }
