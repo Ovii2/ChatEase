@@ -307,22 +307,41 @@ fun DirectMessageListItem(
             }
 
             MessageType.FILE -> {
-                FileChatBubble(
-                    filename = message.fileAttachment?.name ?: "",
-                    onForwardClick = {},
-                    onLongClick = onLongClick,
-                    message = message,
-                    isSentByCurrentUser = isSentByCurrentUser,
-                    showReactions = message.messageId == selectedReactionMessageId,
-                    onDismissReactions = onDismissReactions,
-                    onReactionClick = onReactionClick,
-                    onShowUsersReactionsClick = onShowUsersReactionsClick,
-                    isBlockedByOtherUser = isBlockedByOtherUser,
-                    isUserMemberOfGroup = true,
-                    onFileClick = onFileClick,
-                    uploadingFileId = uploadingFileId,
-                    fileUploadProgress = fileUploadProgress
-                )
+                if (message.replyMessage != null) {
+                    ReplyFileBubble(
+                        isSentByCurrentUser = isSentByCurrentUser,
+                        filename = message.replyMessage?.fileName.orEmpty(),
+                        message = message,
+                        showReactions = message.messageId == selectedReactionMessageId,
+                        onClick = {},
+                        onLongClick = onLongClick,
+                        onDismissReactions = onDismissReactions,
+                        onReactionClick = onReactionClick,
+                        onShowUsersReactionsClick = onShowUsersReactionsClick,
+                        isBlockedByOtherUser = isBlockedByOtherUser,
+                        isUserMemberOfGroup = true,
+                        currentUserId = currentUserId,
+                        messageSenderName = messageSenderName,
+                        repliedMessageSenderName = repliedMessageSenderName
+                    )
+                } else {
+                    FileChatBubble(
+                        filename = message.fileAttachment?.name ?: "",
+                        onForwardClick = {},
+                        onLongClick = onLongClick,
+                        message = message,
+                        isSentByCurrentUser = isSentByCurrentUser,
+                        showReactions = message.messageId == selectedReactionMessageId,
+                        onDismissReactions = onDismissReactions,
+                        onReactionClick = onReactionClick,
+                        onShowUsersReactionsClick = onShowUsersReactionsClick,
+                        isBlockedByOtherUser = isBlockedByOtherUser,
+                        isUserMemberOfGroup = true,
+                        onFileClick = onFileClick,
+                        uploadingFileId = uploadingFileId,
+                        fileUploadProgress = fileUploadProgress
+                    )
+                }
             }
 
             MessageType.IMAGE -> {}
@@ -445,22 +464,41 @@ fun GroupMessageListItem(
                 }
 
                 MessageType.FILE -> {
-                    FileChatBubble(
-                        filename = message.fileAttachment?.name ?: "",
-                        onForwardClick = {},
-                        onLongClick = onLongClick,
-                        message = message,
-                        isSentByCurrentUser = isSentByCurrentUser,
-                        showReactions = message.messageId == selectedReactionMessageId,
-                        onDismissReactions = onDismissReactions,
-                        onReactionClick = onReactionClick,
-                        onShowUsersReactionsClick = onShowUsersReactionsClick,
-                        isBlockedByOtherUser = false,
-                        isUserMemberOfGroup = true,
-                        onFileClick = onFileClick,
-                        uploadingFileId = uploadingFileId,
-                        fileUploadProgress = fileUploadProgress
-                    )
+                    if (message.replyMessage != null) {
+                        ReplyFileBubble(
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            filename = message.replyMessage?.fileName.orEmpty(),
+                            message = message,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onClick = {},
+                            onLongClick = onLongClick,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            isBlockedByOtherUser = false,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                            currentUserId = currentUserId,
+                            messageSenderName = messageSenderName,
+                            repliedMessageSenderName = repliedMessageSenderName
+                        )
+                    } else {
+                        FileChatBubble(
+                            filename = message.fileAttachment?.name ?: "",
+                            onForwardClick = {},
+                            onLongClick = onLongClick,
+                            message = message,
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            isBlockedByOtherUser = false,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                            onFileClick = onFileClick,
+                            uploadingFileId = uploadingFileId,
+                            fileUploadProgress = fileUploadProgress
+                        )
+                    }
                 }
 
                 MessageType.IMAGE -> {}
