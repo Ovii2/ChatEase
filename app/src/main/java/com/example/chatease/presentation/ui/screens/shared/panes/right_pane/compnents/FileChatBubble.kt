@@ -1,7 +1,10 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -34,6 +38,8 @@ import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.screens.shared.chat.MessageBubbleContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.theme.darkLavender
+import com.example.chatease.presentation.ui.theme.lightLavender
 import com.example.chatease.utils.toFormattedFileSize
 import com.example.chatease.utils.toTruncatedFileName
 
@@ -55,20 +61,9 @@ fun FileChatBubble(
     uploadingFileId: String?,
     fileUploadProgress: Float?
 ) {
-    val textColor = if (isSentByCurrentUser) {
-        MaterialTheme.colorScheme.onPrimary
-    } else {
-        MaterialTheme.colorScheme.onSurface
-    }
 
-    val iconTint = if (isSentByCurrentUser) {
-        MaterialTheme.colorScheme.surface
-    } else {
-        MaterialTheme.colorScheme.scrim
-    }
-
-    val fileBackgroundColor = if (isSentByCurrentUser) {
-        MaterialTheme.colorScheme.secondaryContainer
+    val backgroundColor = if (isSentByCurrentUser) {
+        if (isSystemInDarkTheme()) darkLavender else lightLavender
     } else {
         MaterialTheme.colorScheme.surfaceContainerHigh
     }
@@ -95,8 +90,7 @@ fun FileChatBubble(
                 FileForwardArrow(
                     onForwardClick = onForwardClick,
                     isSentByCurrentUser = true,
-                    iconTint = iconTint,
-                    backGroundColor = fileBackgroundColor
+                    backGroundColor = backgroundColor
                 )
             }
 
@@ -117,7 +111,7 @@ fun FileChatBubble(
                 onShowUsersReactionsClick = onShowUsersReactionsClick,
                 isBlockedByOtherUser = isBlockedByOtherUser,
                 isUserMemberOfGroup = isUserMemberOfGroup,
-                backgroundColorOverride = fileBackgroundColor
+                backgroundColorOverride = backgroundColor
             ) {
                 Row(
                     modifier = Modifier.padding(10.dp),
@@ -135,8 +129,7 @@ fun FileChatBubble(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.sharp_draft_24),
-                            contentDescription = null,
-                            tint = iconTint
+                            contentDescription = null
                         )
                     }
 
@@ -147,7 +140,6 @@ fun FileChatBubble(
                             text = filename.toTruncatedFileName(),
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            color = textColor,
                             fontWeight = FontWeight.W600
                         )
 
@@ -157,7 +149,6 @@ fun FileChatBubble(
                                 ?.toFormattedFileSize()
                                 ?: "0 B",
                             style = MaterialTheme.typography.labelLarge,
-                            color = textColor,
                             fontWeight = FontWeight.W400
                         )
                         if (isUploadingThisFile && fileUploadProgress != null) {
@@ -174,7 +165,6 @@ fun FileChatBubble(
                 FileForwardArrow(
                     onForwardClick = onForwardClick,
                     isSentByCurrentUser = false,
-                    iconTint = iconTint,
                     backGroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 )
             }
@@ -187,7 +177,6 @@ fun FileForwardArrow(
     modifier: Modifier = Modifier,
     onForwardClick: () -> Unit,
     isSentByCurrentUser: Boolean,
-    iconTint: Color,
     backGroundColor: Color
 ) {
     Row(
@@ -210,7 +199,6 @@ fun FileForwardArrow(
                     scaleX = if (isSentByCurrentUser) -1f else 1f,
                     scaleY = 1f
                 ),
-                tint = iconTint,
                 imageVector = Icons.AutoMirrored.Filled.Reply,
                 contentDescription = null
             )
@@ -219,7 +207,10 @@ fun FileForwardArrow(
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 private fun FileChatBubblePreview() {
     val message = Message(
@@ -246,6 +237,9 @@ private fun FileChatBubblePreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 FileChatBubble(
+                    modifier = Modifier.clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }) {},
                     message = message,
                     filename = "Project_document_final_version_really_really_long_name.pdf",
                     onForwardClick = {},
