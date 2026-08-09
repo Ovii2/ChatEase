@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.enums.ConversationType
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.presentation.ui.screens.shared.chat.ReplyBubbleContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
@@ -38,7 +39,12 @@ fun ReplyChatBubble(
         message = message,
         currentUserId = currentUserId,
         messageSenderName = messageSenderName,
-        repliedMessageSenderName = repliedMessageSenderName
+        repliedMessageSenderName = repliedMessageSenderName,
+        replyPreviewText = if (message.replyMessage?.messageType == MessageType.FILE) {
+            message.replyMessage.fileName
+        } else {
+            null
+        }
     ) {
         ChatBubble(
             message = message,
