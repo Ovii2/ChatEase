@@ -1,7 +1,5 @@
 package com.example.chatease.presentation.ui.screens.group_chat_members
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PersonAdd
@@ -16,10 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
@@ -29,7 +25,6 @@ import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
 import com.example.chatease.presentation.ui.state.GroupChatMembersUiState
-import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.GroupChatMembersViewModel
 
 @Composable

@@ -8,10 +8,12 @@ import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.ReplyMessage
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.FileDownloadState
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.repository.ConversationRepository
 import com.example.chatease.domain.repository.FileRepository
 import com.example.chatease.domain.repository.UserRepository
+import com.example.chatease.presentation.ui.state.FileDownloadUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,6 +58,9 @@ class ChatViewModel @Inject constructor(
 
     private val _openingFileMessageId = MutableStateFlow<String?>(null)
     val openingFileMessageId = _openingFileMessageId.asStateFlow()
+
+    private val _fileDownloadUiState = MutableStateFlow(FileDownloadUiState())
+    val fileDownloadUiState = _fileDownloadUiState.asStateFlow()
 
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
@@ -243,18 +248,31 @@ class ChatViewModel @Inject constructor(
     }
 
     fun downloadFile(
+        messageId: String,
         fileUrl: String,
         fileName: String,
         mimeType: String
     ) {
         viewModelScope.launch {
+            _fileDownloadUiState.value = FileDownloadUiState(
+                messageId = messageId,
+                state = FileDownloadState.DOWNLOADING
+            )
             try {
                 fileRepository.saveFileToDownloads(
                     fileUrl = fileUrl,
                     fileName = fileName,
                     mimeType = mimeType
                 )
+                _fileDownloadUiState.value = FileDownloadUiState(
+                    messageId = messageId,
+                    state = FileDownloadState.SUCCESS
+                )
             } catch (e: Exception) {
+                _fileDownloadUiState.value = FileDownloadUiState(
+                    messageId = messageId,
+                    state = FileDownloadState.FAILED
+                )
                 Log.e("ChatViewModel", "Failed to download file", e)
             }
         }
