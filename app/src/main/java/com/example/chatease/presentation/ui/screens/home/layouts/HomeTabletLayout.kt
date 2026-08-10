@@ -56,6 +56,7 @@ fun HomeTabletLayout(
     onSearchValueChange: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
     onFileClick: (Message) -> Unit,
+    onDownloadClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     pendingFileMessage: Message?
@@ -117,6 +118,7 @@ fun HomeTabletLayout(
                     onShowUsersReactionsClick = {},
                     onSendFile = onSendFile,
                     onFileClick = onFileClick,
+                    onDownloadClick = onDownloadClick,
                     uploadingFileId = uploadingFileId,
                     fileUploadProgress = fileUploadProgress,
                     pendingFileMessage = pendingFileMessage

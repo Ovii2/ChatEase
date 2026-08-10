@@ -1,6 +1,10 @@
 package com.example.chatease.presentation.ui.screens.chat
 
+import android.Manifest
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -11,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
@@ -40,6 +45,7 @@ fun ChatScreen(
     val fileUploadProgress by chatViewModel.fileUploadProgress.collectAsState()
     val uploadingFileId by chatViewModel.uploadingFileId.collectAsState()
     val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
+    var pendingDownloadMessage by rememberSaveable { mutableStateOf<Message?>(null) }
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -56,6 +62,22 @@ fun ChatScreen(
         chatViewModel.updateTypingStatus(conversationId, false)
         chatViewModel.deleteConversationIfEmpty(conversationId)
         onBackClick()
+    }
+
+    val storagePermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            val fileAttachment =
+                pendingDownloadMessage?.fileAttachment ?: return@rememberLauncherForActivityResult
+
+            chatViewModel.downloadFile(
+                fileUrl = fileAttachment.url,
+                fileName = fileAttachment.name,
+                mimeType = fileAttachment.mimeType
+            )
+            pendingDownloadMessage = null
+        }
     }
 
     RightPane(
@@ -138,6 +160,22 @@ fun ChatScreen(
         },
         uploadingFileId = uploadingFileId,
         fileUploadProgress = fileUploadProgress,
-        pendingFileMessage = pendingFileMessage
+        pendingFileMessage = pendingFileMessage,
+        onDownloadClick = { message ->
+            val fileAttachment = message.fileAttachment ?: return@RightPane
+
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                pendingDownloadMessage = message
+                storagePermissionLauncher.launch(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            } else {
+                chatViewModel.downloadFile(
+                    fileUrl = fileAttachment.url,
+                    fileName = fileAttachment.name,
+                    mimeType = fileAttachment.mimeType
+                )
+            }
+        },
     )
 }

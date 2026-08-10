@@ -1,7 +1,11 @@
 package com.example.chatease.data.repository
 
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import androidx.core.content.FileProvider
 import com.example.chatease.domain.model.FileAttachment
@@ -111,5 +115,71 @@ class FileRepositoryImpl @Inject constructor(
             "${context.packageName}.fileprovider",
             localFile
         )
+    }
+
+    override suspend fun saveFileToDownloads(
+        fileUrl: String,
+        fileName: String,
+        mimeType: String
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                put(MediaStore.Downloads.MIME_TYPE, mimeType)
+                put(
+                    MediaStore.Downloads.RELATIVE_PATH,
+                    Environment.DIRECTORY_DOWNLOADS
+                )
+                put(MediaStore.Downloads.IS_PENDING, 1)
+            }
+
+            val uri = context.contentResolver.insert(
+                MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                contentValues
+            ) ?: throw IllegalStateException("Failed to create download file")
+
+            try {
+                context.contentResolver
+                    .openOutputStream(uri)
+                    ?.use { outputStream ->
+                        storage
+                            .getReferenceFromUrl(fileUrl)
+                            .stream
+                            .await()
+                            .stream
+                            .use { inputStream ->
+                                inputStream.copyTo(outputStream)
+                            }
+                    }
+
+                contentValues.clear()
+                contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+
+                context.contentResolver.update(
+                    uri,
+                    contentValues,
+                    null,
+                    null
+                )
+            } catch (e: Exception) {
+                context.contentResolver.delete(uri, null, null)
+                throw e
+            }
+        } else {
+            val downloadsDirectory =
+                Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                )
+
+            val localFile = File(
+                downloadsDirectory,
+                fileName
+            )
+
+            storage
+                .getReferenceFromUrl(fileUrl)
+                .getFile(localFile)
+                .await()
+        }
     }
 }

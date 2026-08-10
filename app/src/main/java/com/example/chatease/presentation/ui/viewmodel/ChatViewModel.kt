@@ -242,6 +242,24 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun downloadFile(
+        fileUrl: String,
+        fileName: String,
+        mimeType: String
+    ) {
+        viewModelScope.launch {
+            try {
+                fileRepository.saveFileToDownloads(
+                    fileUrl = fileUrl,
+                    fileName = fileName,
+                    mimeType = mimeType
+                )
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to download file", e)
+            }
+        }
+    }
+
     private fun createPendingFileMessage(
         conversationId: String,
         fileUri: Uri,

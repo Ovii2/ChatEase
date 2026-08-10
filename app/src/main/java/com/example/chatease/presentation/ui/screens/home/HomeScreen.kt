@@ -315,7 +315,17 @@ fun HomeScreen(
                                 },
                                 uploadingFileId = uploadingFileId,
                                 fileUploadProgress = fileUploadProgress,
-                                pendingFileMessage = pendingFileMessage
+                                pendingFileMessage = pendingFileMessage,
+                                onDownloadClick = { message ->
+                                    val fileAttachment =
+                                        message.fileAttachment ?: return@HomeTabletLayout
+
+                                    chatViewModel.downloadFile(
+                                        fileUrl = fileAttachment.url,
+                                        fileName = fileAttachment.name,
+                                        mimeType = fileAttachment.mimeType
+                                    )
+                                }
                             )
                         }
                     }

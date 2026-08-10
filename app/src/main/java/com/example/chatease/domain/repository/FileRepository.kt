@@ -14,4 +14,10 @@ interface FileRepository {
     ): FileAttachment
 
     suspend fun downloadFile(fileUrl: String, fileName: String): Uri
+
+    suspend fun saveFileToDownloads(
+        fileUrl: String,
+        fileName: String,
+        mimeType: String
+    )
 }

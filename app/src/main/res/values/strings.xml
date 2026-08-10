@@ -306,5 +306,6 @@
     <string name="files">Files</string>
     <string name="images">Images</string>
     <string name="sent_a_type">%1$s sent a %2$s</string>
+    <string name="download">Download</string>
 
 </resources>

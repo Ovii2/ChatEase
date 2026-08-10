@@ -154,7 +154,8 @@ fun GroupChatScreen(
                     },
                     uploadingFileId = uploadingFileId,
                     fileUploadProgress = fileUploadProgress,
-                    pendingFileMessage = pendingFileMessage
+                    pendingFileMessage = pendingFileMessage,
+                    onDownloadClick = {}
                 )
                 selectedMessage?.let { message ->
                     ReactionsDetailsBottomSheet(

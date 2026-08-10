@@ -85,6 +85,7 @@ fun RightPane(
     onShowUsersReactionsClick: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
     onFileClick: (Message) -> Unit,
+    onDownloadClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     pendingFileMessage: Message?
@@ -374,7 +375,9 @@ fun RightPane(
                         }
                         selectedMessage = null
                         selectedReactionMessageId = null
-                    }
+                    },
+                    onDownloadClick = { onDownloadClick(message) },
+                    messageType = message.messageType
                 )
             }
         }
@@ -448,6 +451,7 @@ private fun RightPanePreview() {
                     onShowUsersReactionsClick = {},
                     onSendFile = {},
                     onFileClick = {},
+                    onDownloadClick = {},
                     uploadingFileId = "",
                     fileUploadProgress = 1f,
                     pendingFileMessage = null,

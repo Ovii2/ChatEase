@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Dehaze
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
+import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +42,9 @@ fun MessagesActionPanel(
     modifier: Modifier = Modifier,
     isSenderCurrentUser: Boolean,
     onReplyClick: () -> Unit,
-    onCopyClick: () -> Unit
+    onCopyClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    messageType: MessageType
 ) {
     Surface(
         modifier = modifier
@@ -65,18 +69,27 @@ fun MessagesActionPanel(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             MessageActionsItem(
                 icon = Icons.AutoMirrored.Filled.Reply,
                 label = R.string.reply,
                 onClick = onReplyClick
             )
-            MessageActionsItem(
-                icon = Icons.Default.ContentCopy,
-                label = R.string.copy,
-                onClick = onCopyClick
-            )
+            if (messageType != MessageType.TEXT) {
+                MessageActionsItem(
+                    icon = Icons.Default.Download,
+                    label = R.string.download,
+                    onClick = onDownloadClick
+                )
+            } else {
+                MessageActionsItem(
+                    icon = Icons.Default.ContentCopy,
+                    label = R.string.copy,
+                    onClick = onCopyClick
+                )
+            }
             if (isSenderCurrentUser) {
                 MessageActionsItem(
                     icon = Icons.Default.Delete,
@@ -156,6 +169,8 @@ private fun MessagesActionPanelPreview() {
                     isSenderCurrentUser = true,
                     onReplyClick = {},
                     onCopyClick = {},
+                    onDownloadClick = {},
+                    messageType = MessageType.FILE,
                 )
             }
         }
