@@ -125,6 +125,7 @@ fun AppNavHost(
                     }
                 },
                 onViewContactClick = {},
+                snackbarHostState = snackbarHostState,
             )
         }
         composable(route = Screens.Chat.route) {
@@ -155,6 +156,7 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                snackbarHostState = snackbarHostState,
             )
         }
         composable(route = Screens.NewChat.route) {
@@ -337,6 +339,7 @@ fun AppNavHost(
                         Screens.GroupChatInfo.createRoute(conversationId)
                     ) { launchSingleTop = true }
                 },
+                snackbarHostState = snackbarHostState,
             )
         }
         composable(route = Screens.GroupChatInfo.route) {
