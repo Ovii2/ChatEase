@@ -245,6 +245,9 @@ fun RightPane(
                 onShowUsersReactionsClick = onShowUsersReactionsClick,
                 onLongClick = {
                     selectedMessage = it
+                    scope.launch {
+                        snackbarHostState.currentSnackbarData?.dismiss()
+                    }
                 },
                 selectedReactionMessageId = selectedReactionMessageId,
                 onSelectedReactionMessageIdChange = { selectedReactionMessageId = it },
