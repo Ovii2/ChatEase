@@ -307,5 +307,7 @@
     <string name="images">Images</string>
     <string name="sent_a_type">%1$s sent a %2$s</string>
     <string name="download">Download</string>
+    <string name="failed_download_file">Failed to download file</string>
+    <string name="success_download_file">File downloaded</string>
 
 </resources>
