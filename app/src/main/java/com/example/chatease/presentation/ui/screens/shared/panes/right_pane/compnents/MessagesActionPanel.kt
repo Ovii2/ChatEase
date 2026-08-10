@@ -5,7 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.enums.MessageType
@@ -67,7 +70,8 @@ fun MessagesActionPanel(
     ) {
         Row(
             modifier = modifier
-                .fillMaxWidth()
+                .heightIn(max = 100.dp)
+                .fillMaxSize()
                 .padding(12.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
@@ -81,7 +85,8 @@ fun MessagesActionPanel(
                 MessageActionsItem(
                     icon = Icons.Default.Download,
                     label = R.string.download,
-                    onClick = onDownloadClick
+                    onClick = onDownloadClick,
+                    topLabelPadding = 2.dp
                 )
             } else {
                 MessageActionsItem(
@@ -117,7 +122,8 @@ fun MessageActionsItem(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     @StringRes label: Int,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    topLabelPadding: Dp = 0.dp
 ) {
     Column(
         modifier = modifier
@@ -131,7 +137,10 @@ fun MessageActionsItem(
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
-        Text(text = stringResource(label))
+        Text(
+            modifier = Modifier.padding(top = topLabelPadding),
+            text = stringResource(label)
+        )
     }
 }
 
