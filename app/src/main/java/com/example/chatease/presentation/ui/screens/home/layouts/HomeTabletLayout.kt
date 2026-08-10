@@ -3,6 +3,7 @@ package com.example.chatease.presentation.ui.screens.home.layouts
 import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
@@ -22,6 +23,7 @@ import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.Extr
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
+import com.example.chatease.presentation.ui.state.FileDownloadUiState
 import com.example.chatease.presentation.ui.state.HomeUiState
 import kotlinx.coroutines.launch
 
@@ -59,7 +61,9 @@ fun HomeTabletLayout(
     onDownloadClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
-    pendingFileMessage: Message?
+    pendingFileMessage: Message?,
+    fileDownloadUiState: FileDownloadUiState,
+    snackbarHostState: SnackbarHostState
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -121,7 +125,9 @@ fun HomeTabletLayout(
                     onDownloadClick = onDownloadClick,
                     uploadingFileId = uploadingFileId,
                     fileUploadProgress = fileUploadProgress,
-                    pendingFileMessage = pendingFileMessage
+                    pendingFileMessage = pendingFileMessage,
+                    fileDownloadUiState = fileDownloadUiState,
+                    snackbarHostState = snackbarHostState,
                 )
             }
         },

@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -48,10 +49,12 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.FileDownloadState
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.screens.group_chat.components.GroupChatTopBar
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationStarterRow
+import com.example.chatease.presentation.ui.screens.shared.loading.CustomCircularProgressIndicator
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.DirectChatTopBar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessageInputBar
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.MessagesActionPanel
@@ -59,6 +62,7 @@ import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.comp
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.NewMessagesButton
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ReplyMessagePanel
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
+import com.example.chatease.presentation.ui.state.FileDownloadUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import kotlinx.coroutines.launch
 
@@ -88,7 +92,9 @@ fun RightPane(
     onDownloadClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
-    pendingFileMessage: Message?
+    pendingFileMessage: Message?,
+    fileDownloadUiState: FileDownloadUiState,
+    snackbarHostState: SnackbarHostState
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -173,7 +179,9 @@ fun RightPane(
         onPreviousMessageCountChange = { previousMessageCount = it },
         onHasUserScrolledAfterOpenChange = { hasUserScrolledAfterOpen = it },
         onShouldShowUnreadDividerChange = { shouldShowUnreadDivider = it },
-        onMessagesVisible = onMessagesVisible
+        onMessagesVisible = onMessagesVisible,
+        fileDownloadUiState = fileDownloadUiState,
+        onDismissSnackBar = { snackbarHostState.currentSnackbarData?.dismiss() },
     )
 
     Box(
@@ -306,7 +314,14 @@ fun RightPane(
                     replyUserName = replyUserName
                 )
             }
-
+            if (fileDownloadUiState.state == FileDownloadState.DOWNLOADING) {
+                selectedMessage = null
+                CustomCircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(vertical = 4.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
             MessageInputBar(
                 modifier = Modifier,
                 onMicrophoneClick = {},
@@ -455,6 +470,11 @@ private fun RightPanePreview() {
                     uploadingFileId = "",
                     fileUploadProgress = 1f,
                     pendingFileMessage = null,
+                    fileDownloadUiState = FileDownloadUiState(
+                        messageId = "1",
+                        state = FileDownloadState.DOWNLOADING
+                    ),
+                    snackbarHostState = SnackbarHostState()
                 )
             }
         }

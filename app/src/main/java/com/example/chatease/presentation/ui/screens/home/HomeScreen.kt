@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
@@ -80,7 +81,8 @@ fun HomeScreen(
     currentRoute: String,
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
-    onViewContactClick: (String) -> Unit
+    onViewContactClick: (String) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -121,6 +123,8 @@ fun HomeScreen(
     val fileUploadProgress by chatViewModel.fileUploadProgress.collectAsState()
     val uploadingFileId by chatViewModel.uploadingFileId.collectAsState()
     val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
+
+    val fileDownloadUiState by chatViewModel.fileDownloadUiState.collectAsState()
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -321,11 +325,14 @@ fun HomeScreen(
                                         message.fileAttachment ?: return@HomeTabletLayout
 
                                     chatViewModel.downloadFile(
+                                        messageId = message.messageId,
                                         fileUrl = fileAttachment.url,
                                         fileName = fileAttachment.name,
                                         mimeType = fileAttachment.mimeType
                                     )
-                                }
+                                },
+                                fileDownloadUiState = fileDownloadUiState,
+                                snackbarHostState = snackbarHostState,
                             )
                         }
                     }

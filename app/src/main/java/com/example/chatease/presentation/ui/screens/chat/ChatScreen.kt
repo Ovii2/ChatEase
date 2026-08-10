@@ -5,6 +5,8 @@ import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -14,9 +16,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.chatease.R
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.enums.CallType
+import com.example.chatease.domain.model.enums.FileDownloadState
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
@@ -32,7 +37,8 @@ fun ChatScreen(
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
     onNavigateToHomeScreen: () -> Unit,
-    onNavigateToAudioCallScreen: (String) -> Unit
+    onNavigateToAudioCallScreen: (String) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val user by chatViewModel.user.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
@@ -46,6 +52,10 @@ fun ChatScreen(
     val uploadingFileId by chatViewModel.uploadingFileId.collectAsState()
     val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
     var pendingDownloadMessage by rememberSaveable { mutableStateOf<Message?>(null) }
+    val fileDownloadUiState by chatViewModel.fileDownloadUiState.collectAsState()
+
+    val failedDownloadFileMessage = stringResource(R.string.failed_download_file)
+    val successDownloadFileMessage = stringResource(R.string.success_download_file)
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -54,6 +64,28 @@ fun ChatScreen(
     LaunchedEffect(isConversationDeleted) {
         if (isConversationDeleted) {
             onNavigateToHomeScreen()
+        }
+    }
+
+    LaunchedEffect(fileDownloadUiState) {
+        when (fileDownloadUiState.state) {
+            FileDownloadState.SUCCESS -> {
+                snackbarHostState.showSnackbar(
+                    message = successDownloadFileMessage,
+                    actionLabel = "",
+                    duration = SnackbarDuration.Short
+                )
+            }
+
+            FileDownloadState.FAILED -> {
+                snackbarHostState.showSnackbar(
+                    message = failedDownloadFileMessage,
+                    actionLabel = "",
+                    duration = SnackbarDuration.Short
+                )
+            }
+
+            else -> Unit
         }
     }
 
@@ -68,10 +100,14 @@ fun ChatScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
+            val message =
+                pendingDownloadMessage ?: return@rememberLauncherForActivityResult
+
             val fileAttachment =
                 pendingDownloadMessage?.fileAttachment ?: return@rememberLauncherForActivityResult
 
             chatViewModel.downloadFile(
+                messageId = message.messageId,
                 fileUrl = fileAttachment.url,
                 fileName = fileAttachment.name,
                 mimeType = fileAttachment.mimeType
@@ -171,11 +207,14 @@ fun ChatScreen(
                 )
             } else {
                 chatViewModel.downloadFile(
+                    messageId = message.messageId,
                     fileUrl = fileAttachment.url,
                     fileName = fileAttachment.name,
                     mimeType = fileAttachment.mimeType
                 )
             }
         },
+        fileDownloadUiState = fileDownloadUiState,
+        snackbarHostState = snackbarHostState,
     )
 }

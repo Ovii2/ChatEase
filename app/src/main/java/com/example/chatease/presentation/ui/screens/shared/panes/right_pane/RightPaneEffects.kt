@@ -4,6 +4,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.example.chatease.domain.model.Message
+import com.example.chatease.domain.model.enums.FileDownloadState
+import com.example.chatease.presentation.ui.state.FileDownloadUiState
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -26,7 +28,9 @@ fun RightPaneEffects(
     onPreviousMessageCountChange: (Int) -> Unit,
     onHasUserScrolledAfterOpenChange: (Boolean) -> Unit,
     onShouldShowUnreadDividerChange: (Boolean) -> Unit,
-    onMessagesVisible: () -> Unit
+    onMessagesVisible: () -> Unit,
+    fileDownloadUiState: FileDownloadUiState,
+    onDismissSnackBar: () -> Unit
 ) {
     val firstIndex = 0
 
@@ -89,6 +93,12 @@ fun RightPaneEffects(
             delay(300.milliseconds)
             onShouldShowUnreadDividerChange(false)
             onMessagesVisible()
+        }
+    }
+
+    LaunchedEffect(fileDownloadUiState.state) {
+        if (fileDownloadUiState.state == FileDownloadState.DOWNLOADING) {
+            onDismissSnackBar()
         }
     }
 }
