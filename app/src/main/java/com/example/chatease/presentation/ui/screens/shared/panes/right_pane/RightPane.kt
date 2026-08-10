@@ -316,6 +316,7 @@ fun RightPane(
                     scope.launch {
                         listState.animateScrollToItem(firstIndex)
                     }
+                    selectedReplyMessage = null
                 },
                 messageText = messageText,
                 onMessageTextChange = {
