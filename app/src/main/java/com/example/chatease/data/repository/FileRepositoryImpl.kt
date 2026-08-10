@@ -12,7 +12,9 @@ import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.repository.FileRepository
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -122,64 +124,67 @@ class FileRepositoryImpl @Inject constructor(
         fileName: String,
         mimeType: String
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val contentValues = ContentValues().apply {
-                put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-                put(MediaStore.Downloads.MIME_TYPE, mimeType)
-                put(
-                    MediaStore.Downloads.RELATIVE_PATH,
-                    Environment.DIRECTORY_DOWNLOADS
+        withContext(Dispatchers.IO) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                    put(MediaStore.Downloads.MIME_TYPE, mimeType)
+                    put(
+                        MediaStore.Downloads.RELATIVE_PATH,
+                        Environment.DIRECTORY_DOWNLOADS
+                    )
+                    put(MediaStore.Downloads.IS_PENDING, 1)
+                }
+
+                val uri = context.contentResolver.insert(
+                    MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                    contentValues
+                ) ?: throw IllegalStateException("Failed to create download file")
+
+                try {
+                    context.contentResolver
+                        .openOutputStream(uri)
+                        ?.use { outputStream ->
+                            storage
+                                .getReferenceFromUrl(fileUrl)
+                                .stream
+                                .await()
+                                .stream
+                                .use { inputStream ->
+                                    inputStream.copyTo(outputStream)
+                                }
+                        }
+
+                    contentValues.clear()
+                    contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+
+                    context.contentResolver.update(
+                        uri,
+                        contentValues,
+                        null,
+                        null
+                    )
+                } catch (e: Exception) {
+                    context.contentResolver.delete(uri, null, null)
+                    throw e
+                }
+            } else {
+                val downloadsDirectory =
+                    Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS
+                    )
+
+                val localFile = File(
+                    downloadsDirectory,
+                    fileName
                 )
-                put(MediaStore.Downloads.IS_PENDING, 1)
+
+                storage
+                    .getReferenceFromUrl(fileUrl)
+                    .getFile(localFile)
+                    .await()
             }
-
-            val uri = context.contentResolver.insert(
-                MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-                contentValues
-            ) ?: throw IllegalStateException("Failed to create download file")
-
-            try {
-                context.contentResolver
-                    .openOutputStream(uri)
-                    ?.use { outputStream ->
-                        storage
-                            .getReferenceFromUrl(fileUrl)
-                            .stream
-                            .await()
-                            .stream
-                            .use { inputStream ->
-                                inputStream.copyTo(outputStream)
-                            }
-                    }
-
-                contentValues.clear()
-                contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
-
-                context.contentResolver.update(
-                    uri,
-                    contentValues,
-                    null,
-                    null
-                )
-            } catch (e: Exception) {
-                context.contentResolver.delete(uri, null, null)
-                throw e
-            }
-        } else {
-            val downloadsDirectory =
-                Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS
-                )
-
-            val localFile = File(
-                downloadsDirectory,
-                fileName
-            )
-
-            storage
-                .getReferenceFromUrl(fileUrl)
-                .getFile(localFile)
-                .await()
         }
     }
+
 }
