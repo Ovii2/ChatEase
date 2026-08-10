@@ -231,6 +231,7 @@ fun RightPane(
                     selectedReplyMessage = null
                 },
                 isBlockedByOtherUser = isBlockedByOtherUser,
+                isUserMemberOfGroup = isUserGroupMember,
                 chatPaneUiState = chatPaneUiState,
                 onShowUsersReactionsClick = onShowUsersReactionsClick,
                 onLongClick = {
