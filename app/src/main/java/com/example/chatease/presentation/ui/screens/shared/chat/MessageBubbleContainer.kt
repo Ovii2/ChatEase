@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ChatReactionRow
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ReactionBadge
@@ -155,7 +156,14 @@ fun MessageBubbleContainer(
             Popup(
                 alignment = popUpAlignment,
                 offset = IntOffset(0, -160),
-                onDismissRequest = onDismissReactions
+                onDismissRequest = onDismissReactions,
+                properties = PopupProperties(
+                    focusable = false,
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    clippingEnabled = false,
+                    usePlatformDefaultWidth = false
+                )
             ) {
                 ChatReactionRow(
                     onReactionClick = { reaction ->
