@@ -37,6 +37,7 @@ fun ReplyFileBubble(
     isUserMemberOfGroup: Boolean,
     currentUserId: String,
     messageSenderName: String,
+    onReplyPreviewClick: () -> Unit,
     repliedMessageSenderName: String
 ) {
     ReplyBubbleContainer(
@@ -46,6 +47,7 @@ fun ReplyFileBubble(
         currentUserId = currentUserId,
         messageSenderName = messageSenderName,
         repliedMessageSenderName = repliedMessageSenderName,
+        onReplyPreviewClick = onReplyPreviewClick,
         replyPreviewText = filename
     ) {
         MessageBubbleContainer(
@@ -118,6 +120,7 @@ private fun ReplyFileBubblePreview() {
                     onReactionClick = { _, _ -> },
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
+                    onReplyPreviewClick = {},
                     isUserMemberOfGroup = false,
                 )
             }

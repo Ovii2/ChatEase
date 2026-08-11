@@ -31,6 +31,7 @@ fun ReplyChatBubble(
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
     messageSenderName: String,
+    onReplyPreviewClick: () -> Unit,
     repliedMessageSenderName: String
 ) {
     ReplyBubbleContainer(
@@ -40,6 +41,7 @@ fun ReplyChatBubble(
         currentUserId = currentUserId,
         messageSenderName = messageSenderName,
         repliedMessageSenderName = repliedMessageSenderName,
+        onReplyPreviewClick = onReplyPreviewClick,
         replyPreviewText = if (message.replyMessage?.messageType == MessageType.FILE) {
             message.replyMessage.fileName
         } else {
@@ -104,6 +106,7 @@ private fun ReplyChatBubblePreview() {
                     isBlockedByOtherUser = false,
                     isUserMemberOfGroup = true,
                     messageSenderName = "Test",
+                    onReplyPreviewClick = {},
                     repliedMessageSenderName = "User",
                 )
             }

@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +42,7 @@ import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.isSameDay
 import com.example.chatease.utils.toChatDateLabel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MessagesList(
@@ -69,6 +71,7 @@ fun MessagesList(
         pendingFileMessage?.let { add(it) }
         addAll(messages.reversed())
     }
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = modifier.clickable(
@@ -130,7 +133,21 @@ fun MessagesList(
                                 onShowUsersReactionsClick = onShowUsersReactionsClick,
                                 onFileClick = onFileClick,
                                 uploadingFileId = uploadingFileId,
-                                fileUploadProgress = fileUploadProgress
+                                fileUploadProgress = fileUploadProgress,
+                                onReplyPreviewClick = {
+                                    val originalMessageId = message.replyMessage?.messageId
+                                        ?: return@DirectMessageListItem
+
+                                    val index = displayedMessages.indexOfFirst {
+                                        it.messageId == originalMessageId
+                                    }
+
+                                    if (index != -1) {
+                                        scope.launch {
+                                            listState.animateScrollToItem(index)
+                                        }
+                                    }
+                                }
                             )
                         }
                     }
@@ -181,7 +198,21 @@ fun MessagesList(
                                     members = chatPaneUiState.members,
                                     onFileClick = onFileClick,
                                     uploadingFileId = uploadingFileId,
-                                    fileUploadProgress = fileUploadProgress
+                                    fileUploadProgress = fileUploadProgress,
+                                    onReplyPreviewClick = {
+                                        val originalMessageId = message.replyMessage?.messageId
+                                            ?: return@GroupMessageListItem
+
+                                        val index = displayedMessages.indexOfFirst {
+                                            it.messageId == originalMessageId
+                                        }
+
+                                        if (index != -1) {
+                                            scope.launch {
+                                                listState.animateScrollToItem(index)
+                                            }
+                                        }
+                                    }
                                 )
                             }
 
@@ -246,7 +277,8 @@ fun DirectMessageListItem(
     onShowUsersReactionsClick: (String) -> Unit,
     onFileClick: (Message) -> Unit,
     uploadingFileId: String?,
-    fileUploadProgress: Float?
+    fileUploadProgress: Float?,
+    onReplyPreviewClick: () -> Unit
 ) {
     val otherUserFirstName = user.fullName
         .trim()
@@ -289,7 +321,8 @@ fun DirectMessageListItem(
                         isBlockedByOtherUser = isBlockedByOtherUser,
                         isUserMemberOfGroup = isUserMemberOfGroup,
                         messageSenderName = messageSenderName,
-                        repliedMessageSenderName = repliedMessageSenderName
+                        repliedMessageSenderName = repliedMessageSenderName,
+                        onReplyPreviewClick = onReplyPreviewClick
                     )
                 } else {
                     ChatBubble(
@@ -326,7 +359,8 @@ fun DirectMessageListItem(
                         isUserMemberOfGroup = true,
                         currentUserId = currentUserId,
                         messageSenderName = messageSenderName,
-                        repliedMessageSenderName = repliedMessageSenderName
+                        repliedMessageSenderName = repliedMessageSenderName,
+                        onReplyPreviewClick = onReplyPreviewClick
                     )
                 } else {
                     FileChatBubble(
@@ -376,7 +410,8 @@ fun GroupMessageListItem(
     members: List<User>,
     onFileClick: (Message) -> Unit,
     uploadingFileId: String?,
-    fileUploadProgress: Float?
+    fileUploadProgress: Float?,
+    onReplyPreviewClick: () -> Unit
 ) {
     val nameParts = user.fullName
         .trim()
@@ -446,7 +481,8 @@ fun GroupMessageListItem(
                             isBlockedByOtherUser = isBlockedByOtherUser,
                             isUserMemberOfGroup = isUserMemberOfGroup,
                             messageSenderName = messageSenderName,
-                            repliedMessageSenderName = repliedMessageSenderName
+                            repliedMessageSenderName = repliedMessageSenderName,
+                            onReplyPreviewClick = onReplyPreviewClick
                         )
                     } else {
                         ChatBubble(
@@ -484,6 +520,7 @@ fun GroupMessageListItem(
                             isUserMemberOfGroup = isUserMemberOfGroup,
                             currentUserId = currentUserId,
                             messageSenderName = messageSenderName,
+                            onReplyPreviewClick = onReplyPreviewClick,
                             repliedMessageSenderName = repliedMessageSenderName
                         )
                     } else {

@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.shared.chat
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ fun ReplyBubbleContainer(
     messageSenderName: String,
     repliedMessageSenderName: String,
     replyPreviewText: String? = null,
+    onReplyPreviewClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val replied = when {
@@ -106,10 +108,12 @@ fun ReplyBubbleContainer(
             }
         }
         Surface(
-            modifier = Modifier.offset(
-                x = if (isSentByCurrentUser) (-8).dp else 12.dp,
-                y = (10).dp
-            ),
+            modifier = Modifier
+                .offset(
+                    x = if (isSentByCurrentUser) (-8).dp else 12.dp,
+                    y = (10).dp
+                )
+                .clickable(onClick = onReplyPreviewClick),
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             shape = RoundedCornerShape(15.dp)
         ) {
@@ -162,6 +166,7 @@ private fun ReplyBubbleContainerPreview() {
                     currentUserId = "1",
                     messageSenderName = "Tester",
                     repliedMessageSenderName = "Test",
+                    onReplyPreviewClick = {},
                     content = {}
                 )
             }
