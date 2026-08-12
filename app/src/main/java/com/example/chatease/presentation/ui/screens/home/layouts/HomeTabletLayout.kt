@@ -142,6 +142,7 @@ fun HomeTabletLayout(
                     isBlockedByMe = isBlockedByMe,
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     onViewContactClick = onViewContactClick,
+                    currentUserId = currentUserId
                 )
             }
         }

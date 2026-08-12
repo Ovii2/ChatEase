@@ -40,7 +40,8 @@ fun ExtraPane(
     onUnblockContactClick: (String) -> Unit,
     isBlockedByMe: Boolean,
     isBlockedByOtherUser: Boolean,
-    onViewContactClick: (String) -> Unit
+    onViewContactClick: (String) -> Unit,
+    currentUserId: String
 ) {
     var checked by rememberSaveable { mutableStateOf(false) }
     val iconSize = 26.dp
@@ -78,7 +79,8 @@ fun ExtraPane(
             }
             if (mediaItems.isNotEmpty()) {
                 ExtraPaneMediaSection(
-                    items = mediaItems
+                    mediaItems = mediaItems,
+                    currentUserId = currentUserId
                 )
             }
             if (showProfileDetails) {
@@ -130,6 +132,7 @@ private fun ExtraPanePreview() {
                     isBlockedByMe = false,
                     isBlockedByOtherUser = false,
                     onViewContactClick = {},
+                    currentUserId = "1"
                 )
             }
         }
