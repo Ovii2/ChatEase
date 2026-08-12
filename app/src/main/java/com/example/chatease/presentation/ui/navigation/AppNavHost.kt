@@ -21,6 +21,7 @@ import com.example.chatease.presentation.ui.screens.group_chat_info.GroupChatInf
 import com.example.chatease.presentation.ui.screens.group_chat_members.GroupChatMembersScreen
 import com.example.chatease.presentation.ui.screens.home.HomeScreen
 import com.example.chatease.presentation.ui.screens.login.LoginScreen
+import com.example.chatease.presentation.ui.screens.media_and_docs.MediaAndDocsScreen
 import com.example.chatease.presentation.ui.screens.my_profile.MyProfileScreen
 import com.example.chatease.presentation.ui.screens.new_chat.NewChatScreen
 import com.example.chatease.presentation.ui.screens.new_chat_group.NewChatGroupScreen
@@ -388,6 +389,11 @@ fun AppNavHost(
             AddMembersScreen(
                 onBackClick = { navController.popBackStack() },
                 conversationId = conversationId,
+            )
+        }
+        composable(route = Screens.MediaAndDocs.route) {
+            MediaAndDocsScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
