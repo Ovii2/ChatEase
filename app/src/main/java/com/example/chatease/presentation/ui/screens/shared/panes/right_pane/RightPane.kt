@@ -110,10 +110,14 @@ fun RightPane(
     val isUserDragging by listState.interactionSource.collectIsDraggedAsState()
     var shouldShowUnreadDivider by remember { mutableStateOf(false) }
     var initialUnreadMessageId by rememberSaveable { mutableStateOf<String?>(null) }
-    var selectedMessage by remember { mutableStateOf<Message?>(null) }
+    var selectedMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedReactionMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedReplyMessage by rememberSaveable { mutableStateOf<Message?>(null) }
     val clipboard = LocalClipboard.current
+
+    val selectedMessage = messages.firstOrNull {
+        it.messageId == selectedMessageId
+    }
 
     val typingUsers = when (chatPaneUiState) {
         is ChatPaneUiState.DirectChat -> {
@@ -192,7 +196,7 @@ fun RightPane(
             ) {
                 focusManager.clearFocus()
                 selectedReactionMessageId = null
-                selectedMessage = null
+                selectedMessageId = null
                 selectedReplyMessage = null
             }
     ) {
@@ -232,7 +236,7 @@ fun RightPane(
                 firstUnreadMessageId = if (shouldShowUnreadDivider) initialUnreadMessageId else null,
                 onReactionClick = { messageId, reaction ->
                     onReactionClick(messageId, reaction)
-                    selectedMessage = null
+                    selectedMessageId = null
                     selectedReactionMessageId = null
                     selectedReplyMessage = null
                 },
@@ -241,7 +245,7 @@ fun RightPane(
                 chatPaneUiState = chatPaneUiState,
                 onShowUsersReactionsClick = onShowUsersReactionsClick,
                 onLongClick = {
-                    selectedMessage = it
+                    selectedMessageId = it.messageId
                     scope.launch {
                         snackbarHostState.currentSnackbarData?.dismiss()
                     }
@@ -249,7 +253,7 @@ fun RightPane(
                 selectedReactionMessageId = selectedReactionMessageId,
                 onSelectedReactionMessageIdChange = { selectedReactionMessageId = it },
                 onDismissMessageActions = {
-                    selectedMessage = null
+                    selectedMessageId = null
                     selectedReactionMessageId = null
                     selectedReplyMessage = null
                 },
@@ -315,7 +319,7 @@ fun RightPane(
                 )
             }
             if (fileDownloadUiState.state == FileDownloadState.DOWNLOADING) {
-                selectedMessage = null
+                selectedMessageId = null
                 CustomCircularProgressIndicator(
                     modifier = Modifier
                         .padding(vertical = 4.dp)
@@ -368,7 +372,7 @@ fun RightPane(
                 isSenderCurrentUser = message.senderId == currentUserId,
                 onReplyClick = {
                     selectedReplyMessage = message
-                    selectedMessage = null
+                    selectedMessageId = null
                     selectedReactionMessageId = null
                 },
                 onCopyClick = {
@@ -377,7 +381,7 @@ fun RightPane(
                             ClipEntry(ClipData.newPlainText("message", message.text))
                         )
                     }
-                    selectedMessage = null
+                    selectedMessageId = null
                     selectedReactionMessageId = null
                 },
                 onDownloadClick = { onDownloadClick(message) },
