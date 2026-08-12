@@ -60,7 +60,7 @@ fun GroupChatInfoDetailsSection(
                 borderWidth = borderWidth
             )
             GroupChatInfoDetailsItem(
-                title = R.string.media_links_more,
+                title = R.string.media_docs,
                 showDivider = false,
                 count = 30,
                 borderWidth = borderWidth,

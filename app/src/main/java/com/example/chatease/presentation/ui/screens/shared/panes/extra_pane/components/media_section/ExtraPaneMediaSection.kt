@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,7 +46,7 @@ fun ExtraPaneMediaSection(
 ) {
     SectionContainer(
         modifier = modifier,
-        sectionTitle = R.string.media_links_more,
+        sectionTitle = R.string.media_docs,
         content = {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
