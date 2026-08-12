@@ -43,7 +43,7 @@ fun MediaAndDocsScreen(
     Scaffold(
         topBar = {
             CommonTopBar(
-                onBackClick = {},
+                onBackClick = onBackClick,
                 title = R.string.media_docs
             )
         },
