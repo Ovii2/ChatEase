@@ -102,8 +102,8 @@ fun MediaSectionItem(
     Surface(
         modifier = modifier
             .size(
-                width = 180.dp,
-                height = 150.dp
+                width = 200.dp,
+                height = 160.dp
             ),
         shadowElevation = 3.dp,
         shape = RoundedCornerShape(10.dp),
