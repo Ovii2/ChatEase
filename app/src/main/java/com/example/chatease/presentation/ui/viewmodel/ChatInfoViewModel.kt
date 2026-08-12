@@ -40,7 +40,7 @@ class ChatInfoViewModel @Inject constructor(
 
     private var observeUserJob: Job? = null
 
-    private val currentUserId: String
+    val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
     fun loadConversation(conversationId: String) {
