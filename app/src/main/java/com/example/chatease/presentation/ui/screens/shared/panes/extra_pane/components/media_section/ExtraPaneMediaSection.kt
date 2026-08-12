@@ -99,17 +99,21 @@ fun MediaSectionItem(
     }
 
 
-    when (item.type) {
-        MediaType.FILE -> {
-            Surface(
-                modifier = modifier.widthIn(max = 250.dp),
-                shadowElevation = 3.dp,
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(
-                    width = 2.dp,
-                    color = MaterialTheme.colorScheme.surfaceContainer
-                )
-            ) {
+    Surface(
+        modifier = modifier
+            .size(
+                width = 180.dp,
+                height = 150.dp
+            ),
+        shadowElevation = 3.dp,
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(
+            width = 2.dp,
+            color = MaterialTheme.colorScheme.surfaceContainer
+        )
+    ) {
+        when (item.type) {
+            MediaType.FILE -> {
                 Column(
                     modifier = Modifier.padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -148,31 +152,28 @@ fun MediaSectionItem(
                     }
                 }
             }
+
+
+            MediaType.IMAGE -> {
+                AsyncImage(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(15.dp)),
+                    contentScale = ContentScale.Crop,
+                    model = item.thumbnailUrl,
+                    contentDescription = null
+                )
+                Image(
+                    modifier = modifier
+                        .clip(RoundedCornerShape(15.dp)),
+                    painter = painterResource(R.drawable.person),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null
+                )
+            }
+
+            MediaType.VIDEO -> {}
         }
-
-
-        MediaType.IMAGE -> {
-            AsyncImage(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(15.dp))
-                    .size(85.dp),
-                contentScale = ContentScale.Crop,
-                model = item.thumbnailUrl,
-                contentDescription = null
-            )
-//            Image(
-//                modifier = modifier
-//                    .clip(RoundedCornerShape(15.dp))
-//                    .size(85.dp),
-//                painter = painterResource(R.drawable.person),
-//                contentScale = ContentScale.Crop,
-//                contentDescription = null
-//            )
-        }
-
-        MediaType.VIDEO -> {}
     }
-
 }
 
 @Preview(
@@ -183,12 +184,12 @@ fun MediaSectionItem(
 private fun ExtraPaneMediaSectionPreview() {
     val items = List(4) {
         MediaItem(
-            id = "1",
+            id = it.toString(),
             thumbnailUrl = "",
             mediaUrl = "",
             type = MediaType.FILE,
-            fileName = "Test_file.csv",
-            fileSize = 12345L,
+            fileName = "Test_file.pdf",
+            fileSize = 12345678L,
             mimeType = "",
             senderId = "2",
             senderName = "Test Tester",
