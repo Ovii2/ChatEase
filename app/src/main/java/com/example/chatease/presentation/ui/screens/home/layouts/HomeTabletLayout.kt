@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.unit.dp
+import com.example.chatease.domain.model.MediaItem
 import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
@@ -63,7 +64,8 @@ fun HomeTabletLayout(
     fileUploadProgress: Float?,
     pendingFileMessage: Message?,
     fileDownloadUiState: FileDownloadUiState,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    mediaItems: List<MediaItem>
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -142,7 +144,8 @@ fun HomeTabletLayout(
                     isBlockedByMe = isBlockedByMe,
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     onViewContactClick = onViewContactClick,
-                    currentUserId = currentUserId
+                    currentUserId = currentUserId,
+                    mediaItems = mediaItems
                 )
             }
         }

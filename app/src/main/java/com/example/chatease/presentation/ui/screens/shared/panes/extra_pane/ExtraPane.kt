@@ -41,20 +41,12 @@ fun ExtraPane(
     isBlockedByMe: Boolean,
     isBlockedByOtherUser: Boolean,
     onViewContactClick: (String) -> Unit,
-    currentUserId: String
+    currentUserId: String,
+    mediaItems: List<MediaItem>
 ) {
     var checked by rememberSaveable { mutableStateOf(false) }
     val iconSize = 26.dp
     val showProfileDetails = !isBlockedByMe && !isBlockedByOtherUser
-
-    val mediaItems = List(2) { index ->
-        MediaItem(
-            id = index.toString(),
-            thumbnailUrl = "https://picsum.photos/200/200?random=$index",
-            mediaUrl = "https://picsum.photos/1200/1200?random=$index",
-            type = MediaType.IMAGE
-        )
-    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -120,6 +112,21 @@ private fun ExtraPanePreview() {
         status = UserPresenceStatus.ONLINE
     )
 
+    val mediaItems = List(10) {
+        MediaItem(
+            id = it.toString(),
+            thumbnailUrl = "",
+            mediaUrl = "",
+            type = MediaType.FILE,
+            fileName = "Test_file.pdf",
+            fileSize = 123456L,
+            mimeType = "",
+            senderId = "1",
+            senderName = "Tester Test",
+            timeStamp = System.currentTimeMillis()
+        )
+    }
+
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
@@ -132,7 +139,8 @@ private fun ExtraPanePreview() {
                     isBlockedByMe = false,
                     isBlockedByOtherUser = false,
                     onViewContactClick = {},
-                    currentUserId = "1"
+                    currentUserId = "1",
+                    mediaItems = mediaItems,
                 )
             }
         }

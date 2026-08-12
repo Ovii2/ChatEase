@@ -199,6 +199,7 @@ class ChatViewModel @Inject constructor(
                     conversationId = conversationId,
                     fileUri = fileUri,
                     fileId = fileId,
+                    senderId = currentUserId,
                     onFileReady = { fileAttachment ->
                         _pendingFileMessage.value = _pendingFileMessage.value?.copy(
                             fileAttachment = fileAttachment

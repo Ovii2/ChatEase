@@ -3,8 +3,10 @@ package com.example.chatease.presentation.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatease.domain.model.MediaItem
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.repository.ConversationRepository
+import com.example.chatease.domain.repository.FileRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -20,7 +22,8 @@ class ChatInfoViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository,
-    private val groupRepository: GroupRepository
+    private val groupRepository: GroupRepository,
+    private val fileRepository: FileRepository
 ) : ViewModel() {
 
     private val _user = MutableStateFlow(User())
@@ -37,6 +40,9 @@ class ChatInfoViewModel @Inject constructor(
 
     private val _isConversationDeleted = MutableStateFlow(false)
     val isConversationDeleted = _isConversationDeleted.asStateFlow()
+
+    private val _mediaItems = MutableStateFlow<List<MediaItem>>(emptyList())
+    val mediaItems = _mediaItems.asStateFlow()
 
     private var observeUserJob: Job? = null
 
@@ -104,6 +110,24 @@ class ChatInfoViewModel @Inject constructor(
             } catch (e: Exception) {
                 _isConversationDeleted.value = false
                 Log.e("ChatInfoViewModel", e.message ?: "Failed to delete group conversation")
+            }
+        }
+    }
+
+    fun loadMediaItems(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                val mediaItems = fileRepository.getMediaItems(conversationId)
+
+                _mediaItems.value = mediaItems.map { item ->
+                    val user = userRepository.getUserById(item.senderId)
+
+                    item.copy(
+                        senderName = user.fullName
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to load media items", e)
             }
         }
     }

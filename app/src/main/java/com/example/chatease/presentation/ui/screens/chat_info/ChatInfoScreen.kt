@@ -42,9 +42,11 @@ fun ChatInfoScreen(
     val isBlockedByOtherUser by chatInfoViewModel.isBlockedByOtherUser.collectAsState()
     val isConversationDeleted by chatInfoViewModel.isConversationDeleted.collectAsState()
     val currentUserId = chatInfoViewModel.currentUserId
+    val mediaItems by chatInfoViewModel.mediaItems.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatInfoViewModel.loadConversation(conversationId)
+        chatInfoViewModel.loadMediaItems(conversationId)
     }
 
     LaunchedEffect(isConversationDeleted) {
@@ -71,7 +73,8 @@ fun ChatInfoScreen(
             isBlockedByMe = isBlockedByMe,
             isBlockedByOtherUser = isBlockedByOtherUser,
             onViewContactClick = onViewContactClick,
-            currentUserId = currentUserId
+            currentUserId = currentUserId,
+            mediaItems = mediaItems,
         )
         if (showDeleteDialog) {
             CommonAlertDialog(

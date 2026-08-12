@@ -2,6 +2,7 @@ package com.example.chatease.domain.repository
 
 import android.net.Uri
 import com.example.chatease.domain.model.FileAttachment
+import com.example.chatease.domain.model.MediaItem
 
 interface FileRepository {
 
@@ -9,6 +10,7 @@ interface FileRepository {
         conversationId: String,
         fileUri: Uri,
         fileId: String,
+        senderId: String,
         onFileReady: (FileAttachment) -> Unit,
         onProgress: (String, Float) -> Unit
     ): FileAttachment
@@ -20,4 +22,6 @@ interface FileRepository {
         fileName: String,
         mimeType: String
     )
+
+    suspend fun getMediaItems(conversationId: String): List<MediaItem>
 }

@@ -9,8 +9,11 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import androidx.core.content.FileProvider
 import com.example.chatease.domain.model.FileAttachment
+import com.example.chatease.domain.model.MediaItem
+import com.example.chatease.domain.model.enums.MediaType
 import com.example.chatease.domain.repository.FileRepository
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.storageMetadata
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -31,6 +34,7 @@ class FileRepositoryImpl @Inject constructor(
         conversationId: String,
         fileUri: Uri,
         fileId: String,
+        senderId: String,
         onFileReady: (FileAttachment) -> Unit,
         onProgress: (String, Float) -> Unit
     ): FileAttachment {
@@ -74,10 +78,14 @@ class FileRepositoryImpl @Inject constructor(
         val fileReference = storage.reference
             .child(CHAT_FILES)
             .child(conversationId)
-            .child(fileId)
+            .child(fileName)
 
+        val metadataData = storageMetadata {
+            contentType = mimeType
+            setCustomMetadata("senderId", senderId)
+        }
 
-        val uploadTask = fileReference.putFile(fileUri)
+        val uploadTask = fileReference.putFile(fileUri, metadataData)
 
         uploadTask.addOnProgressListener { snapshot ->
             val progress = snapshot.bytesTransferred.toFloat() / snapshot.totalByteCount.toFloat()
@@ -184,6 +192,39 @@ class FileRepositoryImpl @Inject constructor(
                     .getFile(localFile)
                     .await()
             }
+        }
+    }
+
+    override suspend fun getMediaItems(conversationId: String): List<MediaItem> {
+        val result = storage.reference
+            .child(CHAT_FILES)
+            .child(conversationId)
+            .listAll()
+            .await()
+
+        return result.items.map { fileReference ->
+            val metadata = fileReference.metadata.await()
+            val downloadUrl = fileReference.downloadUrl.await()
+            val senderId = metadata.getCustomMetadata("senderId").orEmpty()
+
+            val mediaType = when {
+                metadata.contentType?.startsWith("image/") == true -> MediaType.IMAGE
+                metadata.contentType?.startsWith("video/") == true -> MediaType.VIDEO
+                else -> MediaType.FILE
+            }
+
+            MediaItem(
+                id = fileReference.name,
+                thumbnailUrl = "",
+                mediaUrl = downloadUrl.toString(),
+                type = mediaType,
+                fileName = fileReference.name,
+                fileSize = metadata.sizeBytes,
+                mimeType = metadata.contentType.orEmpty(),
+                senderId = senderId,
+                senderName = "",
+                timeStamp = metadata.creationTimeMillis
+            )
         }
     }
 

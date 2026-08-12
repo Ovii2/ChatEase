@@ -125,6 +125,7 @@ fun HomeScreen(
     val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
 
     val fileDownloadUiState by chatViewModel.fileDownloadUiState.collectAsState()
+    val mediaItems by chatInfoViewModel.mediaItems.collectAsState()
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -333,6 +334,7 @@ fun HomeScreen(
                                 },
                                 fileDownloadUiState = fileDownloadUiState,
                                 snackbarHostState = snackbarHostState,
+                                mediaItems = mediaItems
                             )
                         }
                     }
