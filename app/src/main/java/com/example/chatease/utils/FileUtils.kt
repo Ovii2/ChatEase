@@ -11,6 +11,13 @@ fun String.toTruncatedFileName(): String {
     return this
 }
 
+fun String.toTruncatedPreviewFileName(): String {
+    if (this.length >= 20) {
+        return this.take(10) + "..." + this.takeLast(8)
+    }
+    return this
+}
+
 fun Long.toFormattedFileSize(): String {
     val oneKb = 1024L
     val oneMb = oneKb * 1024
