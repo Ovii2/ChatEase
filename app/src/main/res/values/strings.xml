@@ -310,4 +310,6 @@
     <string name="failed_download_file">Failed to download file</string>
     <string name="success_download_file">File downloaded</string>
 
+    <string name="sent_by_with_date">Sent by %1$s • %2$s</string>
+
 </resources>
