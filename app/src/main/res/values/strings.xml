@@ -311,5 +311,8 @@
     <string name="success_download_file">File downloaded</string>
 
     <string name="sent_by_with_date">Sent by %1$s • %2$s</string>
+    
+    <string name="media">Media</string>
+    <string name="docs">Docs</string>
 
 </resources>
