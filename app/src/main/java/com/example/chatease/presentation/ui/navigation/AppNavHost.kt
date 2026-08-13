@@ -127,6 +127,11 @@ fun AppNavHost(
                 },
                 onViewContactClick = {},
                 snackbarHostState = snackbarHostState,
+                onNavigateToMediaAndDocsScreen = { conversationId ->
+                    navController.navigate(Screens.MediaAndDocs.createRoute(conversationId)) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.Chat.route) {
@@ -241,6 +246,11 @@ fun AppNavHost(
                 },
                 onViewContactClick = { userId ->
                     navController.navigate(Screens.OtherUserProfile.createRoute(userId)) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToMediaAndDocsScreen = {
+                    navController.navigate(Screens.MediaAndDocs.createRoute(conversationId)) {
                         launchSingleTop = true
                     }
                 },

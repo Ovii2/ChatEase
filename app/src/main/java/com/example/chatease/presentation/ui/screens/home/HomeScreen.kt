@@ -82,7 +82,8 @@ fun HomeScreen(
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
     onViewContactClick: (String) -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    onNavigateToMediaAndDocsScreen: (String) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -334,7 +335,12 @@ fun HomeScreen(
                                 },
                                 fileDownloadUiState = fileDownloadUiState,
                                 snackbarHostState = snackbarHostState,
-                                mediaItems = mediaItems
+                                mediaItems = mediaItems,
+                                onNavigateToMediaAndDocsScreen = {
+                                    selectedConversationId?.let { conversationId ->
+                                        onNavigateToMediaAndDocsScreen(conversationId)
+                                    }
+                                }
                             )
                         }
                     }

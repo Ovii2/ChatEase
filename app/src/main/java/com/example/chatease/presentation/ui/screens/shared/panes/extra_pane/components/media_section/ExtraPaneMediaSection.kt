@@ -42,7 +42,8 @@ import com.example.chatease.utils.toTruncatedPreviewFileName
 fun ExtraPaneMediaSection(
     modifier: Modifier = Modifier,
     mediaItems: List<MediaItem>,
-    currentUserId: String
+    currentUserId: String,
+    onNavigateToMediaAndDocsScreen: () -> Unit
 ) {
     SectionContainer(
         modifier = modifier,
@@ -62,7 +63,7 @@ fun ExtraPaneMediaSection(
             }
         },
         showActionText = true,
-        onActionTextClick = {}
+        onActionTextClick = onNavigateToMediaAndDocsScreen
     )
 }
 
@@ -203,6 +204,7 @@ private fun ExtraPaneMediaSectionPreview() {
                 ExtraPaneMediaSection(
                     mediaItems = items,
                     currentUserId = "1",
+                    onNavigateToMediaAndDocsScreen = {},
                 )
             }
         }

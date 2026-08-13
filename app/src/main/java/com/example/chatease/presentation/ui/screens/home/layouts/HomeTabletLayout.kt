@@ -65,7 +65,8 @@ fun HomeTabletLayout(
     pendingFileMessage: Message?,
     fileDownloadUiState: FileDownloadUiState,
     snackbarHostState: SnackbarHostState,
-    mediaItems: List<MediaItem>
+    mediaItems: List<MediaItem>,
+    onNavigateToMediaAndDocsScreen: () -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -145,7 +146,8 @@ fun HomeTabletLayout(
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     onViewContactClick = onViewContactClick,
                     currentUserId = currentUserId,
-                    mediaItems = mediaItems
+                    mediaItems = mediaItems,
+                    onNavigateToMediaAndDocsScreen = onNavigateToMediaAndDocsScreen
                 )
             }
         }

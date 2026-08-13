@@ -32,7 +32,8 @@ fun ChatInfoScreen(
     chatInfoViewModel: ChatInfoViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onNavigateToHomeScreen: () -> Unit,
-    onViewContactClick: (String) -> Unit
+    onViewContactClick: (String) -> Unit,
+    onNavigateToMediaAndDocsScreen: () -> Unit
 ) {
     val user by chatInfoViewModel.user.collectAsState()
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
@@ -75,6 +76,7 @@ fun ChatInfoScreen(
             onViewContactClick = onViewContactClick,
             currentUserId = currentUserId,
             mediaItems = mediaItems,
+            onNavigateToMediaAndDocsScreen = onNavigateToMediaAndDocsScreen
         )
         if (showDeleteDialog) {
             CommonAlertDialog(
@@ -120,6 +122,7 @@ private fun ChatInfoScreenPreview() {
                     onBackClick = {},
                     onNavigateToHomeScreen = {},
                     onViewContactClick = {},
+                    onNavigateToMediaAndDocsScreen = {},
                 )
             }
         }
