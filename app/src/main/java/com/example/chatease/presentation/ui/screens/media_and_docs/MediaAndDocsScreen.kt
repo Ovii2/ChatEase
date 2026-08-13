@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -66,7 +67,8 @@ fun MediaAndDocsScreen(
     var selectedDocId by rememberSaveable { mutableStateOf<String?>(null) }
 
     Scaffold(
-        modifier = modifier.padding(vertical = 12.dp),
+        modifier = modifier
+            .systemBarsPadding(),
         topBar = {
             CommonTopBar(
                 onBackClick = onBackClick,
@@ -75,7 +77,6 @@ fun MediaAndDocsScreen(
         },
         bottomBar = {
             MediaAndDocsTabRow(
-                modifier = Modifier,
                 selectedTabIndex = selectedTabIndex,
                 onMediaClick = { selectedTabIndex = 0 },
                 onDocsClick = { selectedTabIndex = 1 }
@@ -86,6 +87,9 @@ fun MediaAndDocsScreen(
         when (selectedTabIndex) {
             0 -> {
                 LazyVerticalGrid(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(8.dp),
                     columns = GridCells.Adaptive(minSize = 130.dp)
                 ) {
                     items(mediaItems) { mediaItem ->
@@ -115,7 +119,7 @@ fun MediaAndDocsScreen(
                 LazyColumn(
                     modifier = Modifier
                         .padding(paddingValues)
-                        .padding(horizontal = 8.dp, vertical = 10.dp),
+                        .padding(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(mediaItems) { mediaItem ->
