@@ -311,8 +311,15 @@
     <string name="success_download_file">File downloaded</string>
 
     <string name="sent_by_with_date">Sent by %1$s • %2$s</string>
-    
+
     <string name="media">Media</string>
     <string name="docs">Docs</string>
+
+    <string name="no_media_title">No media yet</string>
+    <string name="no_media_body">All your media will be shown here</string>
+
+    <string name="no_docs_title">No docs yet</string>
+    <string name="no_docs_body">All your docs will be shown here</string>
+
 
 </resources>
