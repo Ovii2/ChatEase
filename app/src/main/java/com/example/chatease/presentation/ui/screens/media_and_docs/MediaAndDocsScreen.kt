@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
@@ -86,49 +88,85 @@ fun MediaAndDocsScreen(
 
         when (selectedTabIndex) {
             0 -> {
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(8.dp),
-                    columns = GridCells.Adaptive(minSize = 130.dp)
-                ) {
-                    items(mediaItems) { mediaItem ->
-                        AsyncImage(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(3f / 2f)
-                                .padding(2.dp),
-                            model = mediaItem.mediaUrl,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
+                if (mediaItems.isEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.no_media_title),
+                            style = MaterialTheme.typography.headlineLarge
                         )
-                        Image(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(3f / 2f)
-                                .padding(2.dp),
-                            painter = painterResource(R.drawable.person),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
+                        Text(
+                            text = stringResource(R.string.no_media_body),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .padding(8.dp),
+                        columns = GridCells.Adaptive(minSize = 130.dp)
+                    ) {
+                        items(mediaItems) { mediaItem ->
+                            AsyncImage(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(3f / 2f)
+                                    .padding(2.dp),
+                                model = mediaItem.mediaUrl,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
+                            Image(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(3f / 2f)
+                                    .padding(2.dp),
+                                painter = painterResource(R.drawable.person),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }
             }
 
             1 -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(mediaItems) { mediaItem ->
-                        MediaDocItem(
-                            mediaItem = mediaItem,
-                            onClick = { id ->
-                                selectedDocId = id
-                            },
+                if (mediaItems.isEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.no_docs_title),
+                            style = MaterialTheme.typography.headlineLarge
                         )
+                        Text(
+                            text = stringResource(R.string.no_docs_body),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .padding(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(mediaItems) { mediaItem ->
+                            MediaDocItem(
+                                mediaItem = mediaItem,
+                                onClick = { id ->
+                                    selectedDocId = id
+                                },
+                            )
+                        }
                     }
                 }
             }
