@@ -1,6 +1,7 @@
 package com.example.chatease.presentation.ui.screens.media_and_docs
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +46,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.example.chatease.R
 import com.example.chatease.domain.model.MediaItem
+import com.example.chatease.domain.model.enums.FileDownloadState
 import com.example.chatease.domain.model.enums.MediaType
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
@@ -63,9 +66,27 @@ fun MediaAndDocsScreen(
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     val uiState by mediaAndDocsViewModel.uiState.collectAsState()
     var selectedDocId by rememberSaveable { mutableStateOf<String?>(null) }
+    val downloadState by mediaAndDocsViewModel.downloadState.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(conversationId) {
         mediaAndDocsViewModel.loadMediaItems(conversationId)
+    }
+
+    LaunchedEffect(downloadState) {
+        when (downloadState) {
+            FileDownloadState.IDLE -> {}
+            FileDownloadState.DOWNLOADING -> {}
+            FileDownloadState.SUCCESS -> {
+                Toast.makeText(
+                    context,
+                    R.string.success_download_file,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            FileDownloadState.FAILED -> {}
+        }
     }
 
     Scaffold(
@@ -198,7 +219,14 @@ fun MediaAndDocsScreen(
                     DocDetailsDialog(
                         onDismiss = { selectedDocId = null },
                         mediaItem = mediaItem,
-                        onDownloadClick = {}
+                        onDownloadClick = {
+                            mediaAndDocsViewModel.downloadDoc(
+                                fileUrl = mediaItem.mediaUrl,
+                                filename = mediaItem.fileName,
+                                mimeType = mediaItem.mimeType
+                            )
+                            selectedDocId = null
+                        }
                     )
                 }
             }
