@@ -117,17 +117,26 @@ class ChatInfoViewModel @Inject constructor(
     fun loadMediaItems(conversationId: String) {
         viewModelScope.launch {
             try {
-                val mediaItems = fileRepository.getMediaItems(conversationId)
-
-                _mediaItems.value = mediaItems.map { item ->
+                val cachedItems = fileRepository.getMediaItems(conversationId)
+                _mediaItems.value = cachedItems.map { item ->
                     val user = userRepository.getUserById(item.senderId)
 
                     item.copy(
                         senderName = user.fullName
                     )
                 }
+
+                fileRepository.refreshMediaItems(conversationId)
+                val refreshedItems = fileRepository.getMediaItems(conversationId)
+
+                _mediaItems.value = refreshedItems.map { item ->
+                    val user = userRepository.getUserById(item.senderId)
+                    item.copy(
+                        senderName = user.fullName
+                    )
+                }
             } catch (e: Exception) {
-                Log.e("ChatViewModel", "Failed to load media items", e)
+                Log.e("ChatInfoViewModel", "Failed to load media items", e)
             }
         }
     }
