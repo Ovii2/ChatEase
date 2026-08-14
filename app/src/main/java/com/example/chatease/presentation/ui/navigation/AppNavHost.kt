@@ -402,8 +402,11 @@ fun AppNavHost(
             )
         }
         composable(route = Screens.MediaAndDocs.route) {
+            val conversationId = it.arguments?.getString("conversationId") ?: return@composable
+
             MediaAndDocsScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                conversationId = conversationId
             )
         }
     }
