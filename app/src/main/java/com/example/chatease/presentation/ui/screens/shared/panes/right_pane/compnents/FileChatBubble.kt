@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -82,7 +83,8 @@ fun FileChatBubble(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Row(
-            modifier = Modifier.widthIn(max = 300.dp),
+            modifier = Modifier
+                .widthIn(max = 300.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -114,7 +116,9 @@ fun FileChatBubble(
                 backgroundColorOverride = backgroundColor
             ) {
                 Row(
-                    modifier = Modifier.padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -241,7 +245,7 @@ private fun FileChatBubblePreview() {
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }) {},
                     message = message,
-                    filename = "Project_document_final_version_really_really_long_name.pdf",
+                    filename = "short_title.pdf",
                     onForwardClick = {},
                     isSentByCurrentUser = true,
                     showReactions = true,
