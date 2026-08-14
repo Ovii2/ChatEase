@@ -8,6 +8,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import androidx.core.content.FileProvider
+import com.example.chatease.data.local.dao.MediaItemsDao
+import com.example.chatease.data.local.mapper.toDomain
+import com.example.chatease.data.local.mapper.toEntity
 import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.MediaItem
 import com.example.chatease.domain.model.enums.MediaType
@@ -23,7 +26,8 @@ import javax.inject.Inject
 
 class FileRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val storage: FirebaseStorage
+    private val storage: FirebaseStorage,
+    private val mediaItemsDao: MediaItemsDao
 ) : FileRepository {
 
     companion object {
@@ -196,13 +200,19 @@ class FileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMediaItems(conversationId: String): List<MediaItem> {
+        return mediaItemsDao
+            .getMediaItems(conversationId)
+            .map { it.toDomain() }
+    }
+
+    override suspend fun refreshMediaItems(conversationId: String) {
         val result = storage.reference
             .child(CHAT_FILES)
             .child(conversationId)
             .listAll()
             .await()
 
-        return result.items.map { fileReference ->
+        val mediaItems = result.items.map { fileReference ->
             val metadata = fileReference.metadata.await()
             val downloadUrl = fileReference.downloadUrl.await()
             val senderId = metadata.getCustomMetadata("senderId").orEmpty()
@@ -226,6 +236,14 @@ class FileRepositoryImpl @Inject constructor(
                 timeStamp = metadata.creationTimeMillis
             )
         }
+
+        mediaItemsDao.deleteMediaItems(conversationId)
+
+        mediaItemsDao.insertMediaItems(
+            mediaItems.map { item ->
+                item.toEntity(conversationId)
+            }
+        )
     }
 
 }

@@ -24,4 +24,6 @@ interface FileRepository {
     )
 
     suspend fun getMediaItems(conversationId: String): List<MediaItem>
+
+    suspend fun refreshMediaItems(conversationId: String)
 }
