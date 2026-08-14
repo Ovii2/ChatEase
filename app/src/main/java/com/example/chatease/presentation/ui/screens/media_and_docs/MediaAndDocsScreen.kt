@@ -24,6 +24,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,37 +38,30 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.example.chatease.R
 import com.example.chatease.domain.model.MediaItem
-import com.example.chatease.domain.model.enums.MediaType
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.viewmodel.MediaAndDocsViewModel
 import com.example.chatease.utils.toFormattedFileSize
 
 @Composable
 fun MediaAndDocsScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    mediaAndDocsViewModel: MediaAndDocsViewModel = hiltViewModel(),
+    conversationId: String
 ) {
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
-    val mediaItems = List(10) {
-        MediaItem(
-            id = it.toString(),
-            thumbnailUrl = "",
-            mediaUrl = "",
-            type = MediaType.FILE,
-            fileName = LoremIpsum(10).values.first() + ".pdf",
-            fileSize = 123456L,
-            mimeType = "",
-            senderId = "1",
-            senderName = "Test Test",
-            timeStamp = System.currentTimeMillis()
-        )
-    }
+    val mediaItems by mediaAndDocsViewModel.mediaItems.collectAsState()
     var selectedDocId by rememberSaveable { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(conversationId) {
+        mediaAndDocsViewModel.loadMediaItems(conversationId)
+    }
 
     Scaffold(
         modifier = modifier
@@ -240,7 +235,8 @@ private fun MediaAndDocsScreenPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MediaAndDocsScreen(
-                    onBackClick = {}
+                    onBackClick = {},
+                    conversationId = "",
                 )
             }
         }
