@@ -1,7 +1,10 @@
 package com.example.chatease.di
 
 import android.content.Context
+import androidx.room.Room
+import com.example.chatease.data.local.dao.MediaItemsDao
 import com.example.chatease.data.local.datastore.user_preferences.UserPreferencesRepository
+import com.example.chatease.data.local.db.ChatEaseDatabase
 import com.example.chatease.data.repository.CallRepositoryImpl
 import com.example.chatease.data.repository.ContactRequestRepositoryImpl
 import com.example.chatease.data.repository.ContactsRepositoryImpl
@@ -97,7 +100,26 @@ object AppModule {
     @Singleton
     fun provideFileRepository(
         @ApplicationContext context: Context,
-        storage: FirebaseStorage
-    ): FileRepository = FileRepositoryImpl(context, storage)
+        storage: FirebaseStorage,
+        mediaItemsDao: MediaItemsDao
+    ): FileRepository = FileRepositoryImpl(
+        context = context,
+        storage = storage,
+        mediaItemsDao = mediaItemsDao
+    )
+
+    @Provides
+    @Singleton
+    fun provideChatEaseDatabase(@ApplicationContext context: Context): ChatEaseDatabase {
+        return Room.databaseBuilder(
+            context = context,
+            klass = ChatEaseDatabase::class.java,
+            name = "chatease.db"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMediaItemsDao(db: ChatEaseDatabase): MediaItemsDao = db.mediaItemsDao()
 
 }
