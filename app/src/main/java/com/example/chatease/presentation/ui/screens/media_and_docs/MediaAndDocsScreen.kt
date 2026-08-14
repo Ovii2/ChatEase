@@ -1,9 +1,9 @@
 package com.example.chatease.presentation.ui.screens.media_and_docs
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -43,7 +43,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.example.chatease.R
 import com.example.chatease.domain.model.MediaItem
+import com.example.chatease.domain.model.enums.MediaType
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
+import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
+import com.example.chatease.presentation.ui.screens.shared.loading.CustomCircularProgressIndicator
+import com.example.chatease.presentation.ui.state.MediaAndDocsUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.MediaAndDocsViewModel
 import com.example.chatease.utils.toFormattedFileSize
@@ -56,7 +60,7 @@ fun MediaAndDocsScreen(
     conversationId: String
 ) {
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
-    val mediaItems by mediaAndDocsViewModel.mediaItems.collectAsState()
+    val uiState by mediaAndDocsViewModel.uiState.collectAsState()
     var selectedDocId by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(conversationId) {
@@ -81,99 +85,129 @@ fun MediaAndDocsScreen(
         }
     ) { paddingValues ->
 
-        when (selectedTabIndex) {
-            0 -> {
-                if (mediaItems.isEmpty()) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = stringResource(R.string.no_media_title),
-                            style = MaterialTheme.typography.headlineLarge
-                        )
-                        Text(
-                            text = stringResource(R.string.no_media_body),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                } else {
-                    LazyVerticalGrid(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .padding(8.dp),
-                        columns = GridCells.Adaptive(minSize = 130.dp)
-                    ) {
-                        items(mediaItems) { mediaItem ->
-                            AsyncImage(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(3f / 2f)
-                                    .padding(2.dp),
-                                model = mediaItem.mediaUrl,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop
-                            )
-                            Image(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(3f / 2f)
-                                    .padding(2.dp),
-                                painter = painterResource(R.drawable.person),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                    }
+        when (val state = uiState) {
+            MediaAndDocsUiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CustomCircularProgressIndicator()
                 }
             }
 
-            1 -> {
-                if (mediaItems.isEmpty()) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = stringResource(R.string.no_docs_title),
-                            style = MaterialTheme.typography.headlineLarge
-                        )
-                        Text(
-                            text = stringResource(R.string.no_docs_body),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+            is MediaAndDocsUiState.Success -> {
+                when (selectedTabIndex) {
+                    0 -> {
+                        val mediaItems = state.mediaItems.filter {
+                            it.type == MediaType.IMAGE || it.type == MediaType.VIDEO
+                        }
+
+                        if (mediaItems.isEmpty()) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.no_media_title),
+                                    style = MaterialTheme.typography.headlineLarge
+                                )
+                                Text(
+                                    text = stringResource(R.string.no_media_body),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        } else {
+                            LazyVerticalGrid(
+                                modifier = Modifier
+                                    .padding(paddingValues)
+                                    .padding(8.dp),
+                                columns = GridCells.Adaptive(minSize = 130.dp)
+                            ) {
+                                items(mediaItems) { mediaItem ->
+                                    AsyncImage(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .aspectRatio(3f / 2f)
+                                            .padding(2.dp),
+                                        model = mediaItem.mediaUrl,
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop
+                                    )
+//                                    Image(
+//                                        modifier = Modifier
+//                                            .fillMaxWidth()
+//                                            .aspectRatio(3f / 2f)
+//                                            .padding(2.dp),
+//                                        painter = painterResource(R.drawable.person),
+//                                        contentDescription = null,
+//                                        contentScale = ContentScale.Crop
+//                                    )
+                                }
+                            }
+                        }
                     }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .padding(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(mediaItems) { mediaItem ->
-                            MediaDocItem(
-                                mediaItem = mediaItem,
-                                onClick = { id ->
-                                    selectedDocId = id
-                                },
-                            )
+
+                    1 -> {
+                        val docItems = state.mediaItems.filter {
+                            it.type == MediaType.FILE
+                        }
+
+                        if (docItems.isEmpty()) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.no_docs_title),
+                                    style = MaterialTheme.typography.headlineLarge
+                                )
+                                Text(
+                                    text = stringResource(R.string.no_docs_body),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .padding(paddingValues)
+                                    .padding(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(docItems) { mediaItem ->
+                                    MediaDocItem(
+                                        mediaItem = mediaItem,
+                                        onClick = { id ->
+                                            selectedDocId = id
+                                        },
+                                    )
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
-        val selectedDoc = mediaItems.firstOrNull { it.id == selectedDocId }
+                val selectedDoc = state.mediaItems.firstOrNull { it.id == selectedDocId }
 
-        selectedDoc?.let { mediaItem ->
-            DocDetailsDialog(
-                onDismiss = { selectedDocId = null },
-                mediaItem = mediaItem,
-                onDownloadClick = {}
-            )
+                selectedDoc?.let { mediaItem ->
+                    DocDetailsDialog(
+                        onDismiss = { selectedDocId = null },
+                        mediaItem = mediaItem,
+                        onDownloadClick = {}
+                    )
+                }
+            }
+
+            is MediaAndDocsUiState.Error -> {
+                CommonErrorDisplay(
+                    showActionButton = true,
+                    onRetryClick = { mediaAndDocsViewModel.loadMediaItems(conversationId) }
+                )
+            }
         }
     }
 }
