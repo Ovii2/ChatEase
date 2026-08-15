@@ -85,6 +85,7 @@ fun RightPane(
     onNavigateToGroupChatInfo: (String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
+    onSendImage: (Uri) -> Unit,
     onFileClick: (Message) -> Unit,
     onDownloadClick: (Message) -> Unit,
     uploadingFileId: String?,
@@ -158,8 +159,9 @@ fun RightPane(
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris ->
-
-
+        uris.forEach { uri ->
+            onSendImage(uri)
+        }
     }
 
     RightPaneEffects(
@@ -466,7 +468,8 @@ private fun RightPanePreview() {
                         messageId = "1",
                         state = FileDownloadState.DOWNLOADING
                     ),
-                    snackbarHostState = SnackbarHostState()
+                    snackbarHostState = SnackbarHostState(),
+                    onSendImage = {}
                 )
             }
         }
