@@ -19,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -275,6 +276,39 @@ class ChatViewModel @Inject constructor(
                     state = FileDownloadState.FAILED
                 )
                 Log.e("ChatViewModel", "Failed to download file", e)
+            }
+        }
+    }
+
+    fun sendImage(
+        conversationId: String,
+        imageUri: Uri,
+        currentUserId: String
+    ) {
+        viewModelScope.launch {
+            try {
+                val fileAttachment = fileRepository.uploadFile(
+                    conversationId = conversationId,
+                    fileUri = imageUri,
+                    fileId = UUID.randomUUID().toString(),
+                    senderId = currentUserId,
+                    onFileReady = {},
+                    onProgress = { _, _ -> }
+                )
+                val message = Message(
+                    conversationId = conversationId,
+                    senderId = currentUserId,
+                    timeStamp = System.currentTimeMillis(),
+                    messageType = MessageType.IMAGE,
+                    fileAttachment = fileAttachment
+                )
+
+                conversationRepository.sendMessage(
+                    message = message
+                )
+
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to send image", e)
             }
         }
     }
