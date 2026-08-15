@@ -62,7 +62,6 @@ fun FileChatBubble(
     uploadingFileId: String?,
     fileUploadProgress: Float?
 ) {
-
     val backgroundColor = if (isSentByCurrentUser) {
         if (isSystemInDarkTheme()) darkLavender else lightLavender
     } else {
@@ -77,107 +76,85 @@ fun FileChatBubble(
 
     val isUploadingThisFile = uploadingFileId == message.fileAttachment?.id
 
-    Column(
+    MediaBubbleContainer(
         modifier = modifier,
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        isSentByCurrentUser = isSentByCurrentUser,
+        onForwardClick = onForwardClick
     ) {
-        Row(
+        MessageBubbleContainer(
             modifier = Modifier
-                .widthIn(max = 300.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .weight(1f),
+            message = message,
+            isSentByCurrentUser = isSentByCurrentUser,
+            showReactions = showReactions,
+            isFirstInGroup = true,
+            isMiddleInGroup = false,
+            isLastInGroup = false,
+            shapeOverride = RoundedCornerShape(10.dp),
+            onLongClick = onLongClick,
+            onClick = { onFileClick(message) },
+            onDismissReactions = onDismissReactions,
+            onReactionClick = onReactionClick,
+            onShowUsersReactionsClick = onShowUsersReactionsClick,
+            isBlockedByOtherUser = isBlockedByOtherUser,
+            isUserMemberOfGroup = isUserMemberOfGroup,
+            backgroundColorOverride = backgroundColor
         ) {
-            if (isSentByCurrentUser) {
-                FileForwardArrow(
-                    onForwardClick = onForwardClick,
-                    isSentByCurrentUser = true,
-                    backGroundColor = backgroundColor
-                )
-            }
-
-            MessageBubbleContainer(
+            Row(
                 modifier = Modifier
-                    .weight(1f),
-                message = message,
-                isSentByCurrentUser = isSentByCurrentUser,
-                showReactions = showReactions,
-                isFirstInGroup = true,
-                isMiddleInGroup = false,
-                isLastInGroup = false,
-                shapeOverride = RoundedCornerShape(10.dp),
-                onLongClick = onLongClick,
-                onClick = { onFileClick(message) },
-                onDismissReactions = onDismissReactions,
-                onReactionClick = onReactionClick,
-                onShowUsersReactionsClick = onShowUsersReactionsClick,
-                isBlockedByOtherUser = isBlockedByOtherUser,
-                isUserMemberOfGroup = isUserMemberOfGroup,
-                backgroundColorOverride = backgroundColor
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .size(40.dp)
+                        .background(
+                            color = boxColor,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = boxColor,
-                                shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.sharp_draft_24),
-                            contentDescription = null
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(R.drawable.sharp_draft_24),
+                        contentDescription = null
+                    )
+                }
 
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = filename.toTruncatedFileName(),
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.W600
-                        )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = filename.toTruncatedFileName(),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.W600
+                    )
 
-                        Text(
-                            text = message.fileAttachment
-                                ?.size
-                                ?.toFormattedFileSize()
-                                ?: "0 B",
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.W400
+                    Text(
+                        text = message.fileAttachment
+                            ?.size
+                            ?.toFormattedFileSize()
+                            ?: "0 B",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.W400
+                    )
+                    if (isUploadingThisFile && fileUploadProgress != null) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.padding(bottom = 2.dp),
+                            progress = { fileUploadProgress }
                         )
-                        if (isUploadingThisFile && fileUploadProgress != null) {
-                            LinearProgressIndicator(
-                                modifier = Modifier.padding(bottom = 2.dp),
-                                progress = { fileUploadProgress }
-                            )
-                        }
                     }
                 }
-            }
-
-            if (!isSentByCurrentUser) {
-                FileForwardArrow(
-                    onForwardClick = onForwardClick,
-                    isSentByCurrentUser = false,
-                    backGroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                )
             }
         }
     }
 }
 
+
 @Composable
-fun FileForwardArrow(
+fun MediaForwardArrow(
     modifier: Modifier = Modifier,
     onForwardClick: () -> Unit,
     isSentByCurrentUser: Boolean,
