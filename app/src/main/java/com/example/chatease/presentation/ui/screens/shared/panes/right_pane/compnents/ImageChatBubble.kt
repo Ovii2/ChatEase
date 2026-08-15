@@ -41,7 +41,7 @@ fun ImageChatBubble(
         onForwardClick = onForwardClick
     ) {
         MessageBubbleContainer(
-            modifier = modifier,
+            modifier = modifier.weight(1f),
             message = message,
             isSentByCurrentUser = isSentByCurrentUser,
             showReactions = showReactions,
