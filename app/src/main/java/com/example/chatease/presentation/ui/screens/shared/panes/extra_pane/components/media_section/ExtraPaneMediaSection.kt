@@ -3,7 +3,6 @@ package com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.com
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +34,7 @@ import com.example.chatease.domain.model.enums.MediaType
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.components.section_container.SectionContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.utils.toChatDateLabel
+import com.example.chatease.utils.toFileIcon
 import com.example.chatease.utils.toFormattedFileSize
 import com.example.chatease.utils.toTruncatedPreviewFileName
 
@@ -75,19 +75,6 @@ fun MediaSectionItem(
 ) {
     val context = LocalContext.current
     val formattedDate = item.timeStamp.toChatDateLabel(context)
-    val extension = item.fileName
-        .substringAfterLast(".", "")
-        .lowercase()
-
-    val extensionImage = when (extension) {
-        "pdf" -> painterResource(R.drawable.ic_pdf)
-        "docx" -> painterResource(R.drawable.ic_docx)
-        "csv" -> painterResource(R.drawable.ic_csv)
-        else -> if (isSystemInDarkTheme()) painterResource(R.drawable.ic_file_white) else painterResource(
-            R.drawable.ic_file
-        )
-    }
-
     val senderName = if (item.senderId == currentUserId) {
         stringResource(R.string.you)
     } else {
@@ -97,7 +84,6 @@ fun MediaSectionItem(
             .firstOrNull()
             .orEmpty()
     }
-
 
     Surface(
         modifier = modifier
@@ -121,7 +107,7 @@ fun MediaSectionItem(
                     Column {
                         Image(
                             modifier = Modifier.size(40.dp),
-                            painter = extensionImage,
+                            painter = item.fileName.toFileIcon(),
                             contentDescription = null
                         )
                     }
@@ -152,7 +138,6 @@ fun MediaSectionItem(
                     }
                 }
             }
-
 
             MediaType.IMAGE -> {
                 AsyncImage(

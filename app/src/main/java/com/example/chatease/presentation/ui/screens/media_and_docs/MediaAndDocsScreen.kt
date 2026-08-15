@@ -2,6 +2,7 @@ package com.example.chatease.presentation.ui.screens.media_and_docs
 
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,6 +53,7 @@ import com.example.chatease.presentation.ui.screens.shared.loading.CustomCircula
 import com.example.chatease.presentation.ui.state.MediaAndDocsUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.MediaAndDocsViewModel
+import com.example.chatease.utils.toFileIcon
 import com.example.chatease.utils.toFormattedFileSize
 
 @Composable
@@ -241,7 +241,6 @@ fun MediaAndDocsScreen(
     }
 }
 
-
 @Composable
 fun MediaDocItem(
     modifier: Modifier = Modifier,
@@ -263,9 +262,9 @@ fun MediaDocItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Icon(
+            Image(
                 modifier = Modifier.size(32.dp),
-                painter = painterResource(R.drawable.outline_docs_24),
+                painter = mediaItem.fileName.toFileIcon(),
                 contentDescription = null
             )
             Column {
