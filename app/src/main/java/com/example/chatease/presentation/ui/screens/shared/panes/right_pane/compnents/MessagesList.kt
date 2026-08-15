@@ -382,7 +382,26 @@ fun DirectMessageListItem(
                 }
             }
 
-            MessageType.IMAGE -> {}
+            MessageType.IMAGE -> {
+                if (message.replyMessage != null) {
+
+                } else {
+                    ImageChatBubble(
+                        message = message,
+                        isSentByCurrentUser = isSentByCurrentUser,
+                        showReactions = message.messageId == selectedReactionMessageId,
+                        onLongClick = onLongClick,
+                        onDismissReactions = onDismissReactions,
+                        onReactionClick = onReactionClick,
+                        onShowUsersReactionsClick = onShowUsersReactionsClick,
+                        isBlockedByOtherUser = isBlockedByOtherUser,
+                        isUserMemberOfGroup = isUserMemberOfGroup,
+                        onImageClick = {},
+                        onForwardClick = {}
+                    )
+                }
+            }
+
             MessageType.GIF -> {}
             MessageType.AUDIO -> {}
             MessageType.VIDEO -> {}
@@ -543,12 +562,30 @@ fun GroupMessageListItem(
                     }
                 }
 
-                MessageType.IMAGE -> {}
+                MessageType.IMAGE -> {
+                    if (message.replyMessage != null) {
+
+                    } else {
+                        ImageChatBubble(
+                            message = message,
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onLongClick = onLongClick,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            isBlockedByOtherUser = isBlockedByOtherUser,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                            onImageClick = {},
+                            onForwardClick = {}
+                        )
+                    }
+                }
+
                 MessageType.GIF -> {}
                 MessageType.AUDIO -> {}
                 MessageType.VIDEO -> {}
             }
-
         }
     }
 }
