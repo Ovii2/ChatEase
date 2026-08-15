@@ -45,6 +45,7 @@ import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonLinearLoader
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ImageViewerDialog
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -127,6 +128,8 @@ fun HomeScreen(
 
     val fileDownloadUiState by chatViewModel.fileDownloadUiState.collectAsState()
     val mediaItems by chatInfoViewModel.mediaItems.collectAsState()
+
+    var selectedImageUrl by rememberSaveable { mutableStateOf<String?>(null) }
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -349,6 +352,9 @@ fun HomeScreen(
                                             currentUserId = currentUserId
                                         )
                                     }
+                                },
+                                onImageClick = { message ->
+                                    selectedImageUrl = message.fileAttachment?.url
                                 }
                             )
                         }
@@ -408,6 +414,13 @@ fun HomeScreen(
                                 showConversationOptionsBottomSheet = false
                             },
                             alertDialogType = AlertDialogType.CONFIRMATION
+                        )
+                    }
+                    selectedImageUrl?.let { url ->
+                        ImageViewerDialog(
+                            onDismiss = { selectedImageUrl = null },
+                            imageUrl = url,
+                            onDownloadClick = {}
                         )
                     }
                 }

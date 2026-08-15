@@ -59,6 +59,7 @@ fun HomeTabletLayout(
     onSearchValueChange: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
     onFileClick: (Message) -> Unit,
+    onImageClick: (Message) -> Unit,
     onSendImage: (Uri) -> Unit,
     onDownloadClick: (Message) -> Unit,
     uploadingFileId: String?,
@@ -133,6 +134,7 @@ fun HomeTabletLayout(
                     pendingFileMessage = pendingFileMessage,
                     fileDownloadUiState = fileDownloadUiState,
                     snackbarHostState = snackbarHostState,
+                    onImageClick = onImageClick,
                 )
             }
         },

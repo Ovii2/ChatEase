@@ -61,6 +61,7 @@ fun MessagesList(
     onSelectedReactionMessageIdChange: (String?) -> Unit,
     onDismissMessageActions: () -> Unit,
     onFileClick: (Message) -> Unit,
+    onImageClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     pendingFileMessage: Message?
@@ -147,7 +148,8 @@ fun MessagesList(
                                             listState.animateScrollToItem(index)
                                         }
                                     }
-                                }
+                                },
+                                onImageClick = onImageClick
                             )
                         }
                     }
@@ -212,7 +214,8 @@ fun MessagesList(
                                                 listState.animateScrollToItem(index)
                                             }
                                         }
-                                    }
+                                    },
+                                    onImageClick = onImageClick
                                 )
                             }
 
@@ -276,6 +279,7 @@ fun DirectMessageListItem(
     onReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     onFileClick: (Message) -> Unit,
+    onImageClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     onReplyPreviewClick: () -> Unit
@@ -396,7 +400,7 @@ fun DirectMessageListItem(
                         onShowUsersReactionsClick = onShowUsersReactionsClick,
                         isBlockedByOtherUser = isBlockedByOtherUser,
                         isUserMemberOfGroup = isUserMemberOfGroup,
-                        onImageClick = {},
+                        onImageClick = onImageClick,
                         onForwardClick = {}
                     )
                 }
@@ -428,6 +432,7 @@ fun GroupMessageListItem(
     isBlockedByOtherUser: Boolean,
     members: List<User>,
     onFileClick: (Message) -> Unit,
+    onImageClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     onReplyPreviewClick: () -> Unit
@@ -576,7 +581,7 @@ fun GroupMessageListItem(
                             onShowUsersReactionsClick = onShowUsersReactionsClick,
                             isBlockedByOtherUser = isBlockedByOtherUser,
                             isUserMemberOfGroup = isUserMemberOfGroup,
-                            onImageClick = {},
+                            onImageClick = onImageClick,
                             onForwardClick = {}
                         )
                     }
@@ -677,6 +682,7 @@ private fun MessagesListPreview() {
                 onSelectedReactionMessageIdChange = {},
                 onDismissMessageActions = {},
                 onFileClick = {},
+                onImageClick = {},
                 uploadingFileId = "",
                 fileUploadProgress = 1f,
                 pendingFileMessage = null,

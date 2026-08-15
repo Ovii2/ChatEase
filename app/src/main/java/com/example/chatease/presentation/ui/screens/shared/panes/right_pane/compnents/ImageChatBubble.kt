@@ -32,7 +32,7 @@ fun ImageChatBubble(
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
     onImageClick: (Message) -> Unit,
-    onForwardClick: () -> Unit,
+    onForwardClick: () -> Unit
 ) {
     val imageUrl = message.fileAttachment?.url.orEmpty()
 
@@ -41,7 +41,8 @@ fun ImageChatBubble(
         onForwardClick = onForwardClick
     ) {
         MessageBubbleContainer(
-            modifier = modifier.weight(1f),
+            modifier = modifier
+                .weight(1f),
             message = message,
             isSentByCurrentUser = isSentByCurrentUser,
             showReactions = showReactions,

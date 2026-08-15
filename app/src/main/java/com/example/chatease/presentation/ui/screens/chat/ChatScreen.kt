@@ -23,6 +23,7 @@ import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.domain.model.enums.FileDownloadState
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ImageViewerDialog
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
 import com.example.chatease.presentation.ui.viewmodel.CallViewModel
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
@@ -56,6 +57,8 @@ fun ChatScreen(
 
     val failedDownloadFileMessage = stringResource(R.string.failed_download_file)
     val successDownloadFileMessage = stringResource(R.string.success_download_file)
+
+    var selectedImageUrl by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -223,5 +226,16 @@ fun ChatScreen(
                 currentUserId = currentUserId
             )
         },
+        onImageClick = { message ->
+            selectedImageUrl = message.fileAttachment?.url
+        },
     )
+
+    selectedImageUrl?.let { url ->
+        ImageViewerDialog(
+            onDismiss = { selectedImageUrl = null },
+            imageUrl = url,
+            onDownloadClick = {}
+        )
+    }
 }
