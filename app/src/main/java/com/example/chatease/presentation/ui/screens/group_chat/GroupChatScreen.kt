@@ -184,6 +184,13 @@ fun GroupChatScreen(
                     onDownloadClick = {},
                     fileDownloadUiState = fileDownloadUiState,
                     snackbarHostState = snackbarHostState,
+                    onSendImage = { uri ->
+                        chatViewModel.sendImage(
+                            conversationId = conversationId,
+                            imageUri = uri,
+                            currentUserId = currentUserId
+                        )
+                    },
                 )
                 selectedMessage?.let { message ->
                     ReactionsDetailsBottomSheet(

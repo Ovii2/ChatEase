@@ -340,6 +340,15 @@ fun HomeScreen(
                                     selectedConversationId?.let { conversationId ->
                                         onNavigateToMediaAndDocsScreen(conversationId)
                                     }
+                                },
+                                onSendImage = { uri ->
+                                    selectedConversationId?.let { conversationId ->
+                                        chatViewModel.sendImage(
+                                            conversationId = conversationId,
+                                            imageUri = uri,
+                                            currentUserId = currentUserId
+                                        )
+                                    }
                                 }
                             )
                         }
