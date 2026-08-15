@@ -147,13 +147,13 @@ fun MediaSectionItem(
                     model = item.thumbnailUrl,
                     contentDescription = null
                 )
-                Image(
-                    modifier = modifier
-                        .clip(RoundedCornerShape(15.dp)),
-                    painter = painterResource(R.drawable.person),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null
-                )
+//                Image(
+//                    modifier = modifier
+//                        .clip(RoundedCornerShape(15.dp)),
+//                    painter = painterResource(R.drawable.person),
+//                    contentScale = ContentScale.Crop,
+//                    contentDescription = null
+//                )
             }
 
             MediaType.VIDEO -> {}
