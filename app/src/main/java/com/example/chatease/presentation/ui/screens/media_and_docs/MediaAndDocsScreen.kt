@@ -202,7 +202,7 @@ fun MediaAndDocsScreen(
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 items(docItems) { mediaItem ->
-                                    MediaDocItem(
+                                    DocItem(
                                         mediaItem = mediaItem,
                                         onClick = { id ->
                                             selectedDocId = id
@@ -242,7 +242,7 @@ fun MediaAndDocsScreen(
 }
 
 @Composable
-fun MediaDocItem(
+fun DocItem(
     modifier: Modifier = Modifier,
     mediaItem: MediaItem,
     onClick: (String) -> Unit
