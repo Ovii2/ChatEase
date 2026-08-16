@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -144,7 +143,7 @@ fun MediaSectionItem(
                     modifier = Modifier
                         .clip(RoundedCornerShape(15.dp)),
                     contentScale = ContentScale.Crop,
-                    model = item.thumbnailUrl,
+                    model = item.mediaUrl,
                     contentDescription = null
                 )
 //                Image(
