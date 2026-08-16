@@ -50,6 +50,7 @@ import com.example.chatease.domain.model.enums.MediaType
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonTopBar
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CustomCircularProgressIndicator
+import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ImageViewerDialog
 import com.example.chatease.presentation.ui.state.MediaAndDocsUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.MediaAndDocsViewModel
@@ -68,6 +69,7 @@ fun MediaAndDocsScreen(
     var selectedDocId by rememberSaveable { mutableStateOf<String?>(null) }
     val downloadState by mediaAndDocsViewModel.downloadState.collectAsState()
     val context = LocalContext.current
+    var selectedImageUrl by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(conversationId) {
         mediaAndDocsViewModel.loadMediaItems(conversationId)
@@ -154,7 +156,8 @@ fun MediaAndDocsScreen(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .aspectRatio(3f / 2f)
-                                            .padding(2.dp),
+                                            .padding(2.dp)
+                                            .clickable { selectedImageUrl = mediaItem.mediaUrl },
                                         model = mediaItem.mediaUrl,
                                         contentDescription = null,
                                         contentScale = ContentScale.Crop
@@ -170,6 +173,13 @@ fun MediaAndDocsScreen(
 //                                    )
                                 }
                             }
+                        }
+                        selectedImageUrl?.let { url ->
+                            ImageViewerDialog(
+                                onDismiss = { selectedImageUrl = null },
+                                imageUrl = url,
+                                onDownloadClick = {}
+                            )
                         }
                     }
 
