@@ -307,7 +307,8 @@ fun HomeScreen(
                                 },
                                 onFileClick = { message ->
                                     val fileAttachment =
-                                        message.fileAttachments.firstOrNull() ?: return@HomeTabletLayout
+                                        message.fileAttachments.firstOrNull()
+                                            ?: return@HomeTabletLayout
 
                                     chatViewModel.openFile(
                                         messageId = message.messageId,
@@ -327,7 +328,8 @@ fun HomeScreen(
                                 pendingFileMessage = pendingFileMessage,
                                 onDownloadClick = { message ->
                                     val fileAttachment =
-                                        message.fileAttachments.firstOrNull() ?: return@HomeTabletLayout
+                                        message.fileAttachments.firstOrNull()
+                                            ?: return@HomeTabletLayout
 
                                     chatViewModel.downloadFile(
                                         messageId = message.messageId,
@@ -344,17 +346,17 @@ fun HomeScreen(
                                         onNavigateToMediaAndDocsScreen(conversationId)
                                     }
                                 },
-                                onSendImage = { uri ->
+                                onSendImages = { uris ->
                                     selectedConversationId?.let { conversationId ->
-                                        chatViewModel.sendImage(
+                                        chatViewModel.sendImages(
                                             conversationId = conversationId,
-                                            imageUri = uri,
+                                            imageUris = uris,
                                             currentUserId = currentUserId
                                         )
                                     }
                                 },
-                                onImageClick = { message ->
-                                    selectedImageUrl = message.fileAttachments.firstOrNull()?.url
+                                onImageClick = { fileAttachment ->
+                                    selectedImageUrl = fileAttachment.url
                                 }
                             )
                         }

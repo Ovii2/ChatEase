@@ -61,7 +61,7 @@ fun MessagesList(
     onSelectedReactionMessageIdChange: (String?) -> Unit,
     onDismissMessageActions: () -> Unit,
     onFileClick: (Message) -> Unit,
-    onImageClick: (Message) -> Unit,
+    onImageClick: (FileAttachment) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     pendingFileMessage: Message?
@@ -279,7 +279,7 @@ fun DirectMessageListItem(
     onReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     onFileClick: (Message) -> Unit,
-    onImageClick: (Message) -> Unit,
+    onImageClick: (FileAttachment) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     onReplyPreviewClick: () -> Unit
@@ -390,19 +390,35 @@ fun DirectMessageListItem(
                 if (message.replyMessage != null) {
 
                 } else {
-                    ImageChatBubble(
-                        message = message,
-                        isSentByCurrentUser = isSentByCurrentUser,
-                        showReactions = message.messageId == selectedReactionMessageId,
-                        onLongClick = onLongClick,
-                        onDismissReactions = onDismissReactions,
-                        onReactionClick = onReactionClick,
-                        onShowUsersReactionsClick = onShowUsersReactionsClick,
-                        isBlockedByOtherUser = isBlockedByOtherUser,
-                        isUserMemberOfGroup = isUserMemberOfGroup,
-                        onImageClick = onImageClick,
-                        onForwardClick = {}
-                    )
+                    if (message.fileAttachments.size > 1) {
+                        MultipleImageChatBubble(
+                            message = message,
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onLongClick = onLongClick,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            isBlockedByOtherUser = isBlockedByOtherUser,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                            onImageClick = onImageClick,
+                            onForwardClick = {}
+                        )
+                    } else {
+                        ImageChatBubble(
+                            message = message,
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onLongClick = onLongClick,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            isBlockedByOtherUser = isBlockedByOtherUser,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                            onImageClick = onImageClick,
+                            onForwardClick = {}
+                        )
+                    }
                 }
             }
 
@@ -432,7 +448,7 @@ fun GroupMessageListItem(
     isBlockedByOtherUser: Boolean,
     members: List<User>,
     onFileClick: (Message) -> Unit,
-    onImageClick: (Message) -> Unit,
+    onImageClick: (FileAttachment) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     onReplyPreviewClick: () -> Unit

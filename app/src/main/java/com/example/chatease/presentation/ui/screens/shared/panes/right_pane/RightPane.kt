@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
+import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Group
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.User
@@ -85,9 +86,9 @@ fun RightPane(
     onNavigateToGroupChatInfo: (String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
-    onSendImage: (Uri) -> Unit,
+    onSendImages: (List<Uri>) -> Unit,
     onFileClick: (Message) -> Unit,
-    onImageClick: (Message) -> Unit,
+    onImageClick: (FileAttachment) -> Unit,
     onDownloadClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
@@ -160,9 +161,7 @@ fun RightPane(
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris ->
-        uris.forEach { uri ->
-            onSendImage(uri)
-        }
+        onSendImages(uris)
     }
 
     RightPaneEffects(
@@ -468,7 +467,7 @@ private fun RightPanePreview() {
                         state = FileDownloadState.DOWNLOADING
                     ),
                     snackbarHostState = SnackbarHostState(),
-                    onSendImage = {},
+                    onSendImages = {},
                     onImageClick = {},
                 )
             }

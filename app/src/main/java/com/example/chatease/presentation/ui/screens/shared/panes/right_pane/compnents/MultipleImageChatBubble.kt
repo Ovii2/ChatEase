@@ -4,12 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,7 +39,7 @@ fun MultipleImageChatBubble(
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
-    onImageClick: (Message) -> Unit,
+    onImageClick: (FileAttachment) -> Unit,
     onForwardClick: () -> Unit
 ) {
 
@@ -57,7 +54,7 @@ fun MultipleImageChatBubble(
         onForwardClick = onForwardClick
     ) {
         MessageBubbleContainer(
-            modifier = Modifier
+            modifier = modifier
                 .weight(1f)
                 .background(
                     color = backgroundColor,
@@ -80,34 +77,38 @@ fun MultipleImageChatBubble(
             isUserMemberOfGroup = isUserMemberOfGroup,
             shapeOverride = RoundedCornerShape(10.dp)
         ) {
-            LazyVerticalGrid(
+            Column(
                 modifier = Modifier
                     .background(
                         color = backgroundColor,
                         shape = RoundedCornerShape(10.dp)
                     ),
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                items(message.fileAttachments) { attachment ->
-//                    Image(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .aspectRatio(1f),
-//                        painter = painterResource(R.drawable.person),
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop
-//                    )
-                    AsyncImage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f),
-                        model = attachment.url,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                message.fileAttachments
+                    .chunked(2)
+                    .forEach { rowItems ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            rowItems.forEach { attachment ->
+//                                Image(
+//                                    modifier = Modifier
+//                                        .weight(1f)
+//                                        .aspectRatio(1f),
+//                                    painter = painterResource(R.drawable.person),
+//                                    contentDescription = null,
+//                                    contentScale = ContentScale.Crop
+//                                )
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .aspectRatio(1f),
+                                    model = attachment.url,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
+                    }
             }
         }
     }
@@ -132,15 +133,15 @@ private fun MultipleImageChatBubblePreview() {
             messageType = MessageType.TEXT,
             fileName = "file.pdf"
         ),
-        fileAttachments = listOf(
+        fileAttachments = List(10) {
             FileAttachment(
-                id = "1",
+                id = it.toString(),
                 name = "file.pd",
                 size = 123456L,
                 url = "",
                 mimeType = ""
             )
-        )
+        }
     )
     ChatEaseTheme {
         Scaffold { paddingValues ->

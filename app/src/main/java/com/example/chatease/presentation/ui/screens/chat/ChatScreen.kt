@@ -220,15 +220,15 @@ fun ChatScreen(
         },
         fileDownloadUiState = fileDownloadUiState,
         snackbarHostState = snackbarHostState,
-        onSendImage = { uri ->
-            chatViewModel.sendImage(
+        onSendImages = { uris ->
+            chatViewModel.sendImages(
                 conversationId = conversationId,
-                imageUri = uri,
+                imageUris = uris,
                 currentUserId = currentUserId
             )
         },
-        onImageClick = { message ->
-            selectedImageUrl = message.fileAttachments.firstOrNull()?.url
+        onImageClick = { fileAttachment ->
+            selectedImageUrl = fileAttachment.url
         },
     )
 

@@ -31,10 +31,11 @@ fun ImageChatBubble(
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
-    onImageClick: (Message) -> Unit,
+    onImageClick: (FileAttachment) -> Unit,
     onForwardClick: () -> Unit
 ) {
-    val imageUrl = message.fileAttachments.firstOrNull()?.url.orEmpty()
+    val attachment = message.fileAttachments.firstOrNull()
+    val imageUrl = attachment?.url.orEmpty()
 
     MediaBubbleContainer(
         isSentByCurrentUser = isSentByCurrentUser,
@@ -47,7 +48,7 @@ fun ImageChatBubble(
             isSentByCurrentUser = isSentByCurrentUser,
             showReactions = showReactions,
             onLongClick = onLongClick,
-            onClick = { onImageClick(message) },
+            onClick = { attachment?.let(onImageClick) },
             onDismissReactions = onDismissReactions,
             onReactionClick = onReactionClick,
             onShowUsersReactionsClick = onShowUsersReactionsClick,

@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.unit.dp
+import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.MediaItem
 import com.example.chatease.domain.model.Message
 import com.example.chatease.presentation.ui.screens.shared.panes.extra_pane.ExtraPane
@@ -59,8 +60,8 @@ fun HomeTabletLayout(
     onSearchValueChange: (String) -> Unit,
     onSendFile: (Uri) -> Unit,
     onFileClick: (Message) -> Unit,
-    onImageClick: (Message) -> Unit,
-    onSendImage: (Uri) -> Unit,
+    onImageClick: (FileAttachment) -> Unit,
+    onSendImages: (List<Uri>) -> Unit,
     onDownloadClick: (Message) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
@@ -127,7 +128,7 @@ fun HomeTabletLayout(
                     onShowUsersReactionsClick = {},
                     onSendFile = onSendFile,
                     onFileClick = onFileClick,
-                    onSendImage = onSendImage,
+                    onSendImages = onSendImages,
                     onDownloadClick = onDownloadClick,
                     uploadingFileId = uploadingFileId,
                     fileUploadProgress = fileUploadProgress,

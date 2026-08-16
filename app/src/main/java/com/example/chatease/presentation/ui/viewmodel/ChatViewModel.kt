@@ -280,35 +280,37 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun sendImage(
+    fun sendImages(
         conversationId: String,
-        imageUri: Uri,
+        imageUris: List<Uri>,
         currentUserId: String
     ) {
+        if (imageUris.isEmpty()) return
+
         viewModelScope.launch {
             try {
-                val fileAttachment = fileRepository.uploadFile(
-                    conversationId = conversationId,
-                    fileUri = imageUri,
-                    fileId = UUID.randomUUID().toString(),
-                    senderId = currentUserId,
-                    onFileReady = {},
-                    onProgress = { _, _ -> }
-                )
+                val attachments = imageUris.map { imageUri ->
+                    fileRepository.uploadFile(
+                        conversationId = conversationId,
+                        fileUri = imageUri,
+                        fileId = UUID.randomUUID().toString(),
+                        senderId = currentUserId,
+                        onFileReady = {},
+                        onProgress = { _, _ -> }
+                    )
+                }
+
                 val message = Message(
                     conversationId = conversationId,
                     senderId = currentUserId,
                     timeStamp = System.currentTimeMillis(),
                     messageType = MessageType.IMAGE,
-                    fileAttachments = listOf(fileAttachment)
+                    fileAttachments = attachments
                 )
 
-                conversationRepository.sendMessage(
-                    message = message
-                )
-
+                conversationRepository.sendMessage(message)
             } catch (e: Exception) {
-                Log.e("ChatViewModel", "Failed to send image", e)
+                Log.e("ChatViewModel", "Failed to send images", e)
             }
         }
     }
