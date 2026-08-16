@@ -155,12 +155,14 @@ private fun ReplyBubbleContainerPreview() {
                             senderId = "1",
                             text = "Replying"
                         ),
-                        fileAttachment = FileAttachment(
-                            id = "1",
-                            name = "File",
-                            size = 12345L,
-                            url = "",
-                            mimeType = ""
+                        fileAttachments = listOf(
+                            FileAttachment(
+                                id = "1",
+                                name = "File",
+                                size = 12345L,
+                                url = "",
+                                mimeType = ""
+                            )
                         )
                     ),
                     currentUserId = "1",

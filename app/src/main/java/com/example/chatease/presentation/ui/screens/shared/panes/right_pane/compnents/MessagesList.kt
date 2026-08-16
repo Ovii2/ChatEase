@@ -351,7 +351,7 @@ fun DirectMessageListItem(
                 if (message.replyMessage != null) {
                     ReplyFileBubble(
                         isSentByCurrentUser = isSentByCurrentUser,
-                        filename = message.replyMessage?.fileName.orEmpty(),
+                        filename = message.replyMessage.fileName,
                         message = message,
                         showReactions = message.messageId == selectedReactionMessageId,
                         onClick = {},
@@ -368,7 +368,7 @@ fun DirectMessageListItem(
                     )
                 } else {
                     FileChatBubble(
-                        filename = message.fileAttachment?.name ?: "",
+                        filename = message.fileAttachments.firstOrNull()?.name ?: "",
                         onForwardClick = {},
                         onLongClick = onLongClick,
                         message = message,
@@ -532,7 +532,7 @@ fun GroupMessageListItem(
                     if (message.replyMessage != null) {
                         ReplyFileBubble(
                             isSentByCurrentUser = isSentByCurrentUser,
-                            filename = message.replyMessage?.fileName.orEmpty(),
+                            filename = message.replyMessage.fileName,
                             message = message,
                             showReactions = message.messageId == selectedReactionMessageId,
                             onClick = {},
@@ -549,7 +549,7 @@ fun GroupMessageListItem(
                         )
                     } else {
                         FileChatBubble(
-                            filename = message.fileAttachment?.name ?: "",
+                            filename = message.fileAttachments.firstOrNull()?.name ?: "",
                             onForwardClick = {},
                             onLongClick = onLongClick,
                             message = message,
@@ -619,11 +619,13 @@ private fun MessagesListPreview() {
             senderId = "1",
             timeStamp = System.currentTimeMillis(),
             messageType = MessageType.FILE,
-            fileAttachment = FileAttachment(
-                name = "Project_document_final_version.pdf",
-                size = 4_194_304L,
-                url = "test",
-                mimeType = "application/pdf"
+            fileAttachments = listOf(
+                FileAttachment(
+                    name = "Project_document_final_version.pdf",
+                    size = 4_194_304L,
+                    url = "test",
+                    mimeType = "application/pdf"
+                )
             ),
             reactions = mapOf(
                 "1" to "\uD83E\uDD70",

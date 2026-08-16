@@ -74,7 +74,7 @@ fun FileChatBubble(
         MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f)
     }
 
-    val isUploadingThisFile = uploadingFileId == message.fileAttachment?.id
+    val isUploadingThisFile = uploadingFileId == message.fileAttachments.firstOrNull()?.id
 
     MediaBubbleContainer(
         modifier = modifier,
@@ -133,7 +133,8 @@ fun FileChatBubble(
                     )
 
                     Text(
-                        text = message.fileAttachment
+                        text = message.fileAttachments
+                            .firstOrNull()
                             ?.size
                             ?.toFormattedFileSize()
                             ?: "0 B",
@@ -197,11 +198,13 @@ private fun FileChatBubblePreview() {
     val message = Message(
         messageId = "1",
         senderId = "1",
-        fileAttachment = FileAttachment(
-            name = "",
-            size = 1233445L,
-            url = "",
-            mimeType = ""
+        fileAttachments = listOf(
+            FileAttachment(
+                name = "",
+                size = 1233445L,
+                url = "",
+                mimeType = ""
+            )
         ),
         reactions = mapOf(
             "1" to "\uD83E\uDD70"
@@ -233,7 +236,7 @@ private fun FileChatBubblePreview() {
                     isBlockedByOtherUser = false,
                     isUserMemberOfGroup = true,
                     onFileClick = {},
-                    uploadingFileId = message.fileAttachment?.id,
+                    uploadingFileId = message.fileAttachments.firstOrNull()?.id,
                     fileUploadProgress = 0.5f,
                 )
             }

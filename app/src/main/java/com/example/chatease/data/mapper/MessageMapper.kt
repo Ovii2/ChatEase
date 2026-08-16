@@ -14,7 +14,7 @@ fun MessageDto.toDomain(): Message {
         reactions = reactions,
         messageType = messageType,
         replyMessage = replyMessage,
-        fileAttachment = fileAttachment?.toDomain()
+        fileAttachments = fileAttachments.map { it.toDomain() }
     )
 }
 
@@ -29,6 +29,6 @@ fun Message.toDto(): MessageDto {
         reactions = reactions,
         messageType = messageType,
         replyMessage = replyMessage,
-        fileAttachment = fileAttachment?.toDto()
+        fileAttachments = fileAttachments.map { it.toDto() }
     )
 }

@@ -165,7 +165,7 @@ fun GroupChatScreen(
                         )
                     },
                     onFileClick = { message ->
-                        val fileAttachment = message.fileAttachment ?: return@RightPane
+                        val fileAttachment = message.fileAttachments.firstOrNull() ?: return@RightPane
 
                         chatViewModel.openFile(
                             messageId = message.messageId,
@@ -194,7 +194,7 @@ fun GroupChatScreen(
                         )
                     },
                     onImageClick = { message ->
-                        selectedImageUrl = message.fileAttachment?.url
+                        selectedImageUrl = message.fileAttachments.firstOrNull()?.url
                     },
                 )
                 selectedMessage?.let { message ->

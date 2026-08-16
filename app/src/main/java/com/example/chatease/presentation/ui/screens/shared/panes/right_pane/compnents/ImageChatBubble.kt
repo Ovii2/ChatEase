@@ -34,7 +34,7 @@ fun ImageChatBubble(
     onImageClick: (Message) -> Unit,
     onForwardClick: () -> Unit
 ) {
-    val imageUrl = message.fileAttachment?.url.orEmpty()
+    val imageUrl = message.fileAttachments.firstOrNull()?.url.orEmpty()
 
     MediaBubbleContainer(
         isSentByCurrentUser = isSentByCurrentUser,
@@ -90,12 +90,14 @@ private fun ImageChatBubblePreview() {
             messageType = MessageType.TEXT,
             fileName = "file.pdf"
         ),
-        fileAttachment = FileAttachment(
-            id = "1",
-            name = "file.pd",
-            size = 123456L,
-            url = "",
-            mimeType = ""
+        fileAttachments = listOf(
+            FileAttachment(
+                id = "1",
+                name = "file.pd",
+                size = 123456L,
+                url = "",
+                mimeType = ""
+            )
         )
     )
     ChatEaseTheme {

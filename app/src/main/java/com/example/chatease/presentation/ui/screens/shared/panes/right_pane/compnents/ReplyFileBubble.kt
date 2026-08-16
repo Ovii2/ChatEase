@@ -102,12 +102,14 @@ private fun ReplyFileBubblePreview() {
                             senderId = "1",
                             text = "Replying"
                         ),
-                        fileAttachment = FileAttachment(
-                            id = "1",
-                            name = "test_chat_document_2043434340_23123123.pdf",
-                            size = 12345L,
-                            url = "",
-                            mimeType = ""
+                        fileAttachments = listOf(
+                            FileAttachment(
+                                id = "1",
+                                name = "test_chat_document_2043434340_23123123.pdf",
+                                size = 12345L,
+                                url = "",
+                                mimeType = ""
+                            )
                         )
                     ),
                     currentUserId = "1",

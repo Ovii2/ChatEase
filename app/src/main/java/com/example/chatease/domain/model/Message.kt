@@ -12,5 +12,5 @@ data class Message(
     val reactions: Map<String, String> = emptyMap(),
     val messageType: MessageType = MessageType.TEXT,
     val replyMessage: ReplyMessage? = null,
-    val fileAttachment: FileAttachment? = null
+    val fileAttachments: List<FileAttachment> = emptyList()
 )

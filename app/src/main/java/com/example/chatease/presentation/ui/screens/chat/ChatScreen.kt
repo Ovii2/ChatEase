@@ -107,7 +107,8 @@ fun ChatScreen(
                 pendingDownloadMessage ?: return@rememberLauncherForActivityResult
 
             val fileAttachment =
-                pendingDownloadMessage?.fileAttachment ?: return@rememberLauncherForActivityResult
+                pendingDownloadMessage?.fileAttachments?.firstOrNull()
+                    ?: return@rememberLauncherForActivityResult
 
             chatViewModel.downloadFile(
                 messageId = message.messageId,
@@ -182,7 +183,7 @@ fun ChatScreen(
             )
         },
         onFileClick = { message ->
-            val fileAttachment = message.fileAttachment ?: return@RightPane
+            val fileAttachment = message.fileAttachments?.firstOrNull() ?: return@RightPane
 
             chatViewModel.openFile(
                 messageId = message.messageId,
@@ -201,7 +202,7 @@ fun ChatScreen(
         fileUploadProgress = fileUploadProgress,
         pendingFileMessage = pendingFileMessage,
         onDownloadClick = { message ->
-            val fileAttachment = message.fileAttachment ?: return@RightPane
+            val fileAttachment = message.fileAttachments.firstOrNull() ?: return@RightPane
 
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 pendingDownloadMessage = message
@@ -227,7 +228,7 @@ fun ChatScreen(
             )
         },
         onImageClick = { message ->
-            selectedImageUrl = message.fileAttachment?.url
+            selectedImageUrl = message.fileAttachments.firstOrNull()?.url
         },
     )
 

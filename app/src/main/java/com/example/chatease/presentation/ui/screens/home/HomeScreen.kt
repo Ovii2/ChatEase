@@ -307,7 +307,7 @@ fun HomeScreen(
                                 },
                                 onFileClick = { message ->
                                     val fileAttachment =
-                                        message.fileAttachment ?: return@HomeTabletLayout
+                                        message.fileAttachments.firstOrNull() ?: return@HomeTabletLayout
 
                                     chatViewModel.openFile(
                                         messageId = message.messageId,
@@ -327,7 +327,7 @@ fun HomeScreen(
                                 pendingFileMessage = pendingFileMessage,
                                 onDownloadClick = { message ->
                                     val fileAttachment =
-                                        message.fileAttachment ?: return@HomeTabletLayout
+                                        message.fileAttachments.firstOrNull() ?: return@HomeTabletLayout
 
                                     chatViewModel.downloadFile(
                                         messageId = message.messageId,
@@ -354,7 +354,7 @@ fun HomeScreen(
                                     }
                                 },
                                 onImageClick = { message ->
-                                    selectedImageUrl = message.fileAttachment?.url
+                                    selectedImageUrl = message.fileAttachments.firstOrNull()?.url
                                 }
                             )
                         }

@@ -107,7 +107,7 @@ class ChatViewModel @Inject constructor(
                             senderId = message.senderId,
                             text = message.text,
                             messageType = message.messageType,
-                            fileName = message.fileAttachment?.name.orEmpty()
+                            fileName = message.fileAttachments.firstOrNull()?.name.orEmpty()
                         )
                     }
                 )
@@ -203,7 +203,7 @@ class ChatViewModel @Inject constructor(
                     senderId = currentUserId,
                     onFileReady = { fileAttachment ->
                         _pendingFileMessage.value = _pendingFileMessage.value?.copy(
-                            fileAttachment = fileAttachment
+                            fileAttachments = listOf(fileAttachment)
                         )
                     },
                     onProgress = { uploadingFileId, progress ->
@@ -217,7 +217,7 @@ class ChatViewModel @Inject constructor(
                     senderId = currentUserId,
                     timeStamp = System.currentTimeMillis(),
                     messageType = MessageType.FILE,
-                    fileAttachment = fileAttachment
+                    fileAttachments = listOf(fileAttachment)
                 )
 
                 conversationRepository.sendMessage(message)
@@ -300,7 +300,7 @@ class ChatViewModel @Inject constructor(
                     senderId = currentUserId,
                     timeStamp = System.currentTimeMillis(),
                     messageType = MessageType.IMAGE,
-                    fileAttachment = fileAttachment
+                    fileAttachments = listOf(fileAttachment)
                 )
 
                 conversationRepository.sendMessage(
@@ -318,17 +318,17 @@ class ChatViewModel @Inject constructor(
         fileUri: Uri,
         fileId: String
     ): Message {
-        val pendingFileId = System.currentTimeMillis().toString()
-
         return Message(
-            messageId = pendingFileId,
+            messageId = fileId,
             conversationId = conversationId,
             senderId = currentUserId,
             timeStamp = System.currentTimeMillis(),
             messageType = MessageType.FILE,
-            fileAttachment = FileAttachment(
-                id = pendingFileId,
-                name = fileUri.lastPathSegment.orEmpty()
+            fileAttachments = listOf(
+                FileAttachment(
+                    id = fileId,
+                    name = fileUri.lastPathSegment.orEmpty()
+                )
             )
         )
     }
