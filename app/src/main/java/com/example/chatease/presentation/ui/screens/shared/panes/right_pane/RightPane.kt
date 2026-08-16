@@ -357,10 +357,7 @@ fun RightPane(
                 isUserGroupMember = isUserGroupMember,
                 onAddFileClick = {
                     filePickerLauncher.launch(
-                        arrayOf(
-                            "application/pdf",
-                            "text/plain"
-                        )
+                        arrayOf("*/*")
                     )
                 },
                 onAddImageClick = {
