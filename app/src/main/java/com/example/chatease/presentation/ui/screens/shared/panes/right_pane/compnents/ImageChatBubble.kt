@@ -65,7 +65,8 @@ fun ImageChatBubble(
             isBlockedByOtherUser = isBlockedByOtherUser,
             isUserMemberOfGroup = isUserMemberOfGroup,
             isReplyMessage = false,
-            backgroundColorOverride = backgroundColor
+            backgroundColorOverride = backgroundColor,
+            reactionTextColorOverride = MaterialTheme.colorScheme.onSurface
         ) {
             AsyncImage(
                 modifier = Modifier.aspectRatio(2f / 3f),
@@ -73,12 +74,6 @@ fun ImageChatBubble(
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
-//            Image(
-//                modifier = Modifier.aspectRatio(2f / 3f),
-//                painter = painterResource(R.drawable.person),
-//                contentDescription = null,
-//                contentScale = ContentScale.Crop
-//            )
         }
     }
 }
@@ -93,7 +88,10 @@ private fun ImageChatBubblePreview() {
         text = LoremIpsum(20).values.first(),
         timeStamp = System.currentTimeMillis(),
         seenBy = emptyList(),
-        reactions = emptyMap(),
+        reactions = mapOf(
+            "1" to "\uD83D\uDE01",
+            "2" to "\uD83D\uDC4B"
+        ),
         messageType = MessageType.IMAGE,
         replyMessage = ReplyMessage(
             messageId = "1",
