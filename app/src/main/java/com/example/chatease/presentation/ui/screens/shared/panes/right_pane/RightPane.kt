@@ -93,6 +93,7 @@ fun RightPane(
     uploadingFileId: String?,
     fileUploadProgress: Float?,
     pendingFileMessage: Message?,
+    pendingImageMessage: Message?,
     fileDownloadUiState: FileDownloadUiState,
     snackbarHostState: SnackbarHostState
 ) {
@@ -263,6 +264,7 @@ fun RightPane(
                 uploadingFileId = uploadingFileId,
                 fileUploadProgress = fileUploadProgress,
                 pendingFileMessage = pendingFileMessage,
+                pendingImageMessage = pendingImageMessage,
                 onImageClick = onImageClick
             )
 
@@ -462,6 +464,7 @@ private fun RightPanePreview() {
                     uploadingFileId = "",
                     fileUploadProgress = 1f,
                     pendingFileMessage = null,
+                    pendingImageMessage = null,
                     fileDownloadUiState = FileDownloadUiState(
                         messageId = "1",
                         state = FileDownloadState.DOWNLOADING

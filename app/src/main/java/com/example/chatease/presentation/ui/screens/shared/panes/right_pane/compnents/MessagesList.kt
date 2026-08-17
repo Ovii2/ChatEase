@@ -64,11 +64,13 @@ fun MessagesList(
     onImageClick: (FileAttachment) -> Unit,
     uploadingFileId: String?,
     fileUploadProgress: Float?,
-    pendingFileMessage: Message?
+    pendingFileMessage: Message?,
+    pendingImageMessage: Message?
 ) {
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val displayedMessages = buildList {
+        pendingImageMessage?.let { add(it) }
         pendingFileMessage?.let { add(it) }
         addAll(messages.reversed())
     }
@@ -704,6 +706,7 @@ private fun MessagesListPreview() {
                 uploadingFileId = "",
                 fileUploadProgress = 1f,
                 pendingFileMessage = null,
+                pendingImageMessage = null
             )
         }
     }

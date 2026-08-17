@@ -59,6 +59,7 @@ fun ChatScreen(
     val successDownloadFileMessage = stringResource(R.string.success_download_file)
 
     var selectedImageUrl by rememberSaveable { mutableStateOf<String?>(null) }
+    val pendingImageMessage by chatViewModel.pendingImageMessage.collectAsState()
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -201,6 +202,7 @@ fun ChatScreen(
         uploadingFileId = uploadingFileId,
         fileUploadProgress = fileUploadProgress,
         pendingFileMessage = pendingFileMessage,
+        pendingImageMessage = pendingImageMessage,
         onDownloadClick = { message ->
             val fileAttachment = message.fileAttachments.firstOrNull() ?: return@RightPane
 

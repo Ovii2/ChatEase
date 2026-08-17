@@ -125,6 +125,7 @@ fun HomeScreen(
     val fileUploadProgress by chatViewModel.fileUploadProgress.collectAsState()
     val uploadingFileId by chatViewModel.uploadingFileId.collectAsState()
     val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
+    val pendingImageMessage by chatViewModel.pendingImageMessage.collectAsState()
 
     val fileDownloadUiState by chatViewModel.fileDownloadUiState.collectAsState()
     val mediaItems by chatInfoViewModel.mediaItems.collectAsState()
@@ -326,6 +327,7 @@ fun HomeScreen(
                                 uploadingFileId = uploadingFileId,
                                 fileUploadProgress = fileUploadProgress,
                                 pendingFileMessage = pendingFileMessage,
+                                pendingImageMessage = pendingImageMessage,
                                 onDownloadClick = { message ->
                                     val fileAttachment =
                                         message.fileAttachments.firstOrNull()

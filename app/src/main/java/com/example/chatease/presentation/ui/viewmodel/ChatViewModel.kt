@@ -63,6 +63,9 @@ class ChatViewModel @Inject constructor(
     private val _fileDownloadUiState = MutableStateFlow(FileDownloadUiState())
     val fileDownloadUiState = _fileDownloadUiState.asStateFlow()
 
+    private val _pendingImageMessage = MutableStateFlow<Message?>(null)
+    val pendingImageMessage = _pendingImageMessage.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -289,6 +292,22 @@ class ChatViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
+                val pendingAttachments = imageUris.map {
+                    FileAttachment(
+                        id = UUID.randomUUID().toString(),
+                        url = "",
+                        mimeType = "image/*"
+                    )
+                }
+                _pendingImageMessage.value = Message(
+                    messageId = UUID.randomUUID().toString(),
+                    conversationId = conversationId,
+                    senderId = currentUserId,
+                    timeStamp = System.currentTimeMillis(),
+                    messageType = MessageType.IMAGE,
+                    fileAttachments = pendingAttachments
+                )
+
                 val attachments = imageUris.map { imageUri ->
                     fileRepository.uploadFile(
                         conversationId = conversationId,
@@ -311,6 +330,8 @@ class ChatViewModel @Inject constructor(
                 conversationRepository.sendMessage(message)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "Failed to send images", e)
+            } finally {
+                _pendingImageMessage.value = null
             }
         }
     }

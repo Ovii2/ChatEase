@@ -99,6 +99,7 @@ fun GroupChatScreen(
     val fileUploadProgress by chatViewModel.fileUploadProgress.collectAsState()
     val uploadingFileId by chatViewModel.uploadingFileId.collectAsState()
     val pendingFileMessage by chatViewModel.pendingFileMessage.collectAsState()
+    val pendingImageMessage by chatViewModel.pendingImageMessage.collectAsState()
 
     when (val state = uiState) {
         is GroupChatUiState.Success -> {
@@ -184,6 +185,7 @@ fun GroupChatScreen(
                     uploadingFileId = uploadingFileId,
                     fileUploadProgress = fileUploadProgress,
                     pendingFileMessage = pendingFileMessage,
+                    pendingImageMessage = pendingImageMessage,
                     onDownloadClick = {},
                     fileDownloadUiState = fileDownloadUiState,
                     snackbarHostState = snackbarHostState,
