@@ -285,7 +285,7 @@ class ChatViewModel @Inject constructor(
         imageUris: List<Uri>,
         currentUserId: String
     ) {
-        if (imageUris.isEmpty()) return
+        if (imageUris.isEmpty() || imageUris.size > 10) return
 
         viewModelScope.launch {
             try {
