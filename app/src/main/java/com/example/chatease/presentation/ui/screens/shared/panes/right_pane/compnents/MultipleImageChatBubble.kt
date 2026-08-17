@@ -43,7 +43,6 @@ fun MultipleImageChatBubble(
     onImageClick: (FileAttachment) -> Unit,
     onForwardClick: () -> Unit
 ) {
-
     val backgroundColor = if (isSentByCurrentUser) {
         if (isSystemInDarkTheme()) darkLavender else lightLavender
     } else {
@@ -77,7 +76,8 @@ fun MultipleImageChatBubble(
             isBlockedByOtherUser = isBlockedByOtherUser,
             isUserMemberOfGroup = isUserMemberOfGroup,
             shapeOverride = RoundedCornerShape(10.dp),
-            reactionBadgeBottomPadding = 0.dp
+            reactionBadgeBottomPadding = 0.dp,
+            backgroundColorOverride = backgroundColor
         ) {
             Column(
                 modifier = Modifier

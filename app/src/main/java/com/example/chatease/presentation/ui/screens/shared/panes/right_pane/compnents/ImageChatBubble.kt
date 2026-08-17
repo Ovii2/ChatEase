@@ -1,9 +1,11 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +20,8 @@ import com.example.chatease.domain.model.ReplyMessage
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.presentation.ui.screens.shared.chat.MessageBubbleContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
+import com.example.chatease.presentation.ui.theme.darkLavender
+import com.example.chatease.presentation.ui.theme.lightLavender
 
 @Composable
 fun ImageChatBubble(
@@ -36,6 +40,12 @@ fun ImageChatBubble(
 ) {
     val attachment = message.fileAttachments.firstOrNull()
     val imageUrl = attachment?.url.orEmpty()
+    val backgroundColor = if (isSentByCurrentUser) {
+        if (isSystemInDarkTheme()) darkLavender else lightLavender
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+
 
     MediaBubbleContainer(
         isSentByCurrentUser = isSentByCurrentUser,
@@ -54,7 +64,8 @@ fun ImageChatBubble(
             onShowUsersReactionsClick = onShowUsersReactionsClick,
             isBlockedByOtherUser = isBlockedByOtherUser,
             isUserMemberOfGroup = isUserMemberOfGroup,
-            isReplyMessage = false
+            isReplyMessage = false,
+            backgroundColorOverride = backgroundColor
         ) {
             AsyncImage(
                 modifier = Modifier.aspectRatio(2f / 3f),
