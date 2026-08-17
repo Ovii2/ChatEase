@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -49,6 +50,7 @@ fun MessageBubbleContainer(
     isReplyMessage: Boolean = false,
     shapeOverride: Shape? = null,
     backgroundColorOverride: Color? = null,
+    reactionBadgeBottomPadding: Dp = 6.dp,
     content: @Composable () -> Unit
 ) {
     val backgroundColor = backgroundColorOverride
@@ -139,7 +141,7 @@ fun MessageBubbleContainer(
                     }
                     .align(reactionBadgeAlignment)
                     .offset { reactionBadgeOffset }
-                    .padding(bottom = 6.dp),
+                    .padding(bottom = reactionBadgeBottomPadding),
                 reactionCounts = message.reactions.values
                     .groupingBy { it }
                     .eachCount(),

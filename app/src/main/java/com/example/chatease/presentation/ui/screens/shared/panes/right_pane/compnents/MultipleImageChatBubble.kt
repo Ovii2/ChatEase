@@ -76,7 +76,8 @@ fun MultipleImageChatBubble(
             onShowUsersReactionsClick = onShowUsersReactionsClick,
             isBlockedByOtherUser = isBlockedByOtherUser,
             isUserMemberOfGroup = isUserMemberOfGroup,
-            shapeOverride = RoundedCornerShape(10.dp)
+            shapeOverride = RoundedCornerShape(10.dp),
+            reactionBadgeBottomPadding = 0.dp
         ) {
             Column(
                 modifier = Modifier
@@ -120,7 +121,9 @@ private fun MultipleImageChatBubblePreview() {
         text = LoremIpsum(20).values.first(),
         timeStamp = System.currentTimeMillis(),
         seenBy = emptyList(),
-        reactions = emptyMap(),
+        reactions = mapOf(
+            "1" to "\uD83D\uDE09"
+        ),
         messageType = MessageType.IMAGE,
         replyMessage = ReplyMessage(
             messageId = "1",
@@ -129,7 +132,7 @@ private fun MultipleImageChatBubblePreview() {
             messageType = MessageType.TEXT,
             fileName = "file.pdf"
         ),
-        fileAttachments = List(10) {
+        fileAttachments = List(3) {
             FileAttachment(
                 id = it.toString(),
                 name = "file.pd",
