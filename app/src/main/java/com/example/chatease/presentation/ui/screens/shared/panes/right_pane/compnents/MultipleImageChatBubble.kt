@@ -1,5 +1,6 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -77,7 +78,8 @@ fun MultipleImageChatBubble(
             isUserMemberOfGroup = isUserMemberOfGroup,
             shapeOverride = RoundedCornerShape(10.dp),
             reactionBadgeBottomPadding = 0.dp,
-            backgroundColorOverride = backgroundColor
+            backgroundColorOverride = backgroundColor,
+            reactionTextColorOverride = MaterialTheme.colorScheme.onSurface
         ) {
             Column(
                 modifier = Modifier
@@ -111,7 +113,9 @@ fun MultipleImageChatBubble(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true,
+         uiMode = Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 private fun MultipleImageChatBubblePreview() {
     val message = Message(
@@ -122,7 +126,8 @@ private fun MultipleImageChatBubblePreview() {
         timeStamp = System.currentTimeMillis(),
         seenBy = emptyList(),
         reactions = mapOf(
-            "1" to "\uD83D\uDE09"
+            "1" to "\uD83D\uDE09",
+            "2" to "\uD83D\uDE09"
         ),
         messageType = MessageType.IMAGE,
         replyMessage = ReplyMessage(

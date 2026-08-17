@@ -50,6 +50,7 @@ fun MessageBubbleContainer(
     isReplyMessage: Boolean = false,
     shapeOverride: Shape? = null,
     backgroundColorOverride: Color? = null,
+    reactionTextColorOverride: Color? = null,
     reactionBadgeBottomPadding: Dp = 6.dp,
     content: @Composable () -> Unit
 ) {
@@ -60,8 +61,12 @@ fun MessageBubbleContainer(
             MaterialTheme.colorScheme.surfaceContainerHigh
         }
 
-    val textColor =
-        if (isSentByCurrentUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val textColor = reactionTextColorOverride
+        ?: if (isSentByCurrentUser) {
+            MaterialTheme.colorScheme.onPrimary
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
 
     val largeCorner = 18.dp
     val smallCorner = 6.dp
@@ -187,7 +192,8 @@ private fun MessageBubbleContainerPreview() {
         messageId = "1",
         senderId = "1",
         reactions = mapOf(
-            "user_1" to "\uD83E\uDD70"
+            "user_1" to "\uD83E\uDD70",
+            "user_2" to "\uD83E\uDD70"
         )
     )
 
