@@ -90,18 +90,10 @@ fun MultipleImageChatBubble(
                     .forEach { rowItems ->
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             rowItems.forEach { attachment ->
-//                                Image(
-//                                    modifier = Modifier
-//                                        .weight(1f)
-//                                        .aspectRatio(1f),
-//                                    painter = painterResource(R.drawable.person),
-//                                    contentDescription = null,
-//                                    contentScale = ContentScale.Crop
-//                                )
                                 AsyncImage(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .aspectRatio(1f),
+                                        .aspectRatio(2f / 3f),
                                     model = attachment.url,
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop
