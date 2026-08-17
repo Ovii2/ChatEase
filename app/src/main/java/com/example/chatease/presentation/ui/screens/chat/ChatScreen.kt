@@ -22,6 +22,7 @@ import com.example.chatease.R
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.enums.CallType
 import com.example.chatease.domain.model.enums.FileDownloadState
+import com.example.chatease.presentation.ui.screens.shared.chat.ReactionsDetailsBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ImageViewerDialog
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
@@ -60,6 +61,14 @@ fun ChatScreen(
 
     var selectedImageUrl by rememberSaveable { mutableStateOf<String?>(null) }
     val pendingImageMessage by chatViewModel.pendingImageMessage.collectAsState()
+    var selectedReactionsMessageId by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val selectedReactionsMessage = messages.firstOrNull { message ->
+        message.messageId == selectedReactionsMessageId
+    }
+
+    val currentUser by chatViewModel.currentUser.collectAsState()
+
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
@@ -121,6 +130,7 @@ fun ChatScreen(
         }
     }
 
+
     RightPane(
         messages = messages,
         currentUserId = chatViewModel.currentUserId,
@@ -175,7 +185,9 @@ fun ChatScreen(
             user = user
         ),
         onNavigateToGroupChatInfo = {},
-        onShowUsersReactionsClick = {},
+        onShowUsersReactionsClick = { messageId ->
+            selectedReactionsMessageId = messageId
+        },
         onSendFile = { uri ->
             chatViewModel.sendFile(
                 conversationId = conversationId,
@@ -233,6 +245,15 @@ fun ChatScreen(
             selectedImageUrl = fileAttachment.url
         },
     )
+    selectedReactionsMessage?.let { message ->
+        ReactionsDetailsBottomSheet(
+            onDismissRequest = { selectedReactionsMessageId = null },
+            users = listOf(currentUser, user).filter { user ->
+                user.uid in message.reactions.keys
+            },
+            reactions = message.reactions
+        )
+    }
 
     selectedImageUrl?.let { url ->
         ImageViewerDialog(

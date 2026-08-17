@@ -66,6 +66,9 @@ class ChatViewModel @Inject constructor(
     private val _pendingImageMessage = MutableStateFlow<Message?>(null)
     val pendingImageMessage = _pendingImageMessage.asStateFlow()
 
+    private val _currentUser = MutableStateFlow(User())
+    val currentUser = _currentUser.asStateFlow()
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -79,6 +82,7 @@ class ChatViewModel @Inject constructor(
             try {
                 val conversation = conversationRepository.getConversation(conversationId)
                 val loggedInUserId = auth.currentUser?.uid ?: return@launch
+                loadCurrentUser(loggedInUserId)
                 _isConversationCreator.value = conversation.creatorId == loggedInUserId
                 val otherUserId = conversation.participantIds.first {
                     it != loggedInUserId
@@ -332,6 +336,19 @@ class ChatViewModel @Inject constructor(
                 Log.e("ChatViewModel", "Failed to send images", e)
             } finally {
                 _pendingImageMessage.value = null
+            }
+        }
+    }
+
+    fun loadCurrentUser(loggedInUserId: String) {
+        viewModelScope.launch {
+            try {
+                userRepository.observeUser(loggedInUserId)
+                    .collect { user ->
+                        _currentUser.value = user
+                    }
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to load current user", e)
             }
         }
     }
