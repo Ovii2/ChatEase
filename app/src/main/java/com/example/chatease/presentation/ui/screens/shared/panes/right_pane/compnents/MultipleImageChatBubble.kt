@@ -1,7 +1,7 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -95,7 +95,9 @@ fun MultipleImageChatBubble(
                                     modifier = Modifier
                                         .weight(1f)
                                         .aspectRatio(2f / 3f)
-                                        .clickable { onImageClick(attachment) },
+                                        .combinedClickable(
+                                            onClick = { onImageClick(attachment) },
+                                            onLongClick = { onLongClick() }),
                                     model = attachment.url,
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop
