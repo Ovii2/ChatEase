@@ -108,12 +108,7 @@ fun MessageBubbleContainer(
         }
     }
 
-    val reactionBadgeAlignment =
-        if (isSentByCurrentUser) Alignment.BottomEnd else Alignment.BottomStart
-    val reactionBadgeOffset =
-        if (isSentByCurrentUser) IntOffset(x = -10, y = 60) else IntOffset(x = 30, y = 55)
     val popUpAlignment = if (isSentByCurrentUser) Alignment.TopEnd else Alignment.TopStart
-
 
     Box(
         modifier = modifier.padding(
@@ -144,8 +139,8 @@ fun MessageBubbleContainer(
                     ) {
                         onShowUsersReactionsClick(message.messageId)
                     }
-                    .align(reactionBadgeAlignment)
-                    .offset { reactionBadgeOffset }
+                    .align(Alignment.BottomEnd)
+                    .offset { IntOffset(x = -10, y = 65) }
                     .padding(bottom = reactionBadgeBottomPadding),
                 reactionCounts = message.reactions.values
                     .groupingBy { it }
@@ -209,7 +204,7 @@ private fun MessageBubbleContainerPreview() {
                 MessageBubbleContainer(
                     message = message,
                     isSentByCurrentUser = true,
-                    showReactions = true,
+                    showReactions = false,
                     isFirstInGroup = true,
                     isMiddleInGroup = false,
                     isLastInGroup = true,
