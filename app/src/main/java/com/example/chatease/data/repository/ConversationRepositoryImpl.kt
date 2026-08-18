@@ -12,14 +12,17 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class ConversationRepositoryImpl(
-    val firestore: FirebaseFirestore,
-    val auth: FirebaseAuth
+    private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth,
+    private val storage: FirebaseStorage
 ) :
     ConversationRepository {
 
@@ -37,6 +40,7 @@ class ConversationRepositoryImpl(
         private const val DELETED_FOR = "deletedFor"
         private const val LAST_MESSAGE_TYPE = "lastMessageType"
         private const val LAST_MESSAGE_SENDER_ID = "lastMessageSenderId"
+        private const val CHAT_FILES = "chat_files"
     }
 
     override suspend fun getUserConversations(userId: String): List<Conversation> {
@@ -327,6 +331,14 @@ class ConversationRepositoryImpl(
 
     override suspend fun deleteConversation(conversationId: String) {
         val currentUserId = auth.currentUser?.uid ?: return
+        val conversation = getConversation(conversationId)
+        val updatedDeletedFor = conversation.deletedFor + currentUserId
+
+        if (updatedDeletedFor.containsAll(conversation.participantIds)) {
+            deleteChatFiles(conversationId)
+            deleteConversationWithMessages(conversationId)
+            return
+        }
 
         firestore
             .collection(CONVERSATIONS)
@@ -339,7 +351,7 @@ class ConversationRepositoryImpl(
         val messages = getMessages(conversationId)
 
         if (messages.isEmpty()) {
-            deleteConversation(conversationId)
+            deleteConversationWithMessages(conversationId)
         }
     }
 
@@ -379,6 +391,25 @@ class ConversationRepositoryImpl(
 
         batch.delete(conversationRef)
         batch.commit().await()
+    }
+
+    private suspend fun deleteChatFiles(conversationId: String) {
+        try {
+            val folderRef = storage.reference
+                .child(CHAT_FILES)
+                .child(conversationId)
+
+            val files = folderRef.listAll().await()
+
+            files.items.forEach { fileRef ->
+                fileRef.delete().await()
+            }
+
+        } catch (e: StorageException) {
+            if (e.errorCode != StorageException.ERROR_OBJECT_NOT_FOUND) {
+                throw e
+            }
+        }
     }
 
     private fun <T> mapDocuments(

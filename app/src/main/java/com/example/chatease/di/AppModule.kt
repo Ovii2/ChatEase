@@ -59,9 +59,10 @@ object AppModule {
     @Singleton
     fun provideConversationRepository(
         firestore: FirebaseFirestore,
-        auth: FirebaseAuth
+        auth: FirebaseAuth,
+        storage: FirebaseStorage
     ): ConversationRepository =
-        ConversationRepositoryImpl(firestore, auth)
+        ConversationRepositoryImpl(firestore, auth, storage)
 
     @Provides
     @Singleton
