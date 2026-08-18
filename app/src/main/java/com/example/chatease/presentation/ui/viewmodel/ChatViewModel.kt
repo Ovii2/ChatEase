@@ -153,6 +153,20 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun removeReactionFromMessage(conversationId: String, messageId: String) {
+        viewModelScope.launch {
+            try {
+                conversationRepository.removeReactionFromMessage(
+                    conversationId = conversationId,
+                    messageId = messageId,
+                    userId = currentUserId
+                )
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", e.message ?: "Failed to add remove to message")
+            }
+        }
+    }
+
     fun deleteConversationIfEmpty(conversationId: String) {
         viewModelScope.launch {
             try {
