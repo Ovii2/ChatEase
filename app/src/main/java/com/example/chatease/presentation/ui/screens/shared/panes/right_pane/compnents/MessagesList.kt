@@ -52,6 +52,7 @@ fun MessagesList(
     listState: LazyListState,
     firstUnreadMessageId: String?,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
     chatPaneUiState: ChatPaneUiState,
@@ -151,7 +152,8 @@ fun MessagesList(
                                         }
                                     }
                                 },
-                                onImageClick = onImageClick
+                                onImageClick = onImageClick,
+                                onRemoveReactionClick = onRemoveReactionClick
                             )
                         }
                     }
@@ -217,7 +219,8 @@ fun MessagesList(
                                             }
                                         }
                                     },
-                                    onImageClick = onImageClick
+                                    onImageClick = onImageClick,
+                                    onRemoveReactionClick = onRemoveReactionClick,
                                 )
                             }
 
@@ -279,6 +282,7 @@ fun DirectMessageListItem(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     onFileClick: (Message) -> Unit,
     onImageClick: (FileAttachment) -> Unit,
@@ -328,7 +332,8 @@ fun DirectMessageListItem(
                         isUserMemberOfGroup = isUserMemberOfGroup,
                         messageSenderName = messageSenderName,
                         repliedMessageSenderName = repliedMessageSenderName,
-                        onReplyPreviewClick = onReplyPreviewClick
+                        onReplyPreviewClick = onReplyPreviewClick,
+                        onRemoveReactionClick = onRemoveReactionClick
                     )
                 } else {
                     ChatBubble(
@@ -345,6 +350,7 @@ fun DirectMessageListItem(
                         onShowUsersReactionsClick = onShowUsersReactionsClick,
                         isBlockedByOtherUser = isBlockedByOtherUser,
                         isUserMemberOfGroup = true,
+                        onRemoveReactionClick = onRemoveReactionClick
                     )
                 }
             }
@@ -366,7 +372,8 @@ fun DirectMessageListItem(
                         currentUserId = currentUserId,
                         messageSenderName = messageSenderName,
                         repliedMessageSenderName = repliedMessageSenderName,
-                        onReplyPreviewClick = onReplyPreviewClick
+                        onReplyPreviewClick = onReplyPreviewClick,
+                        onRemoveReactionClick = onRemoveReactionClick
                     )
                 } else {
                     FileChatBubble(
@@ -385,6 +392,7 @@ fun DirectMessageListItem(
                         uploadingFileId = uploadingFileId,
                         fileUploadProgress = fileUploadProgress,
                         currentUserId = currentUserId,
+                        onRemoveReactionClick = onRemoveReactionClick
                     )
                 }
             }
@@ -407,6 +415,7 @@ fun DirectMessageListItem(
                             onImageClick = onImageClick,
                             onForwardClick = {},
                             currentUserId = currentUserId,
+                            onRemoveReactionClick = onRemoveReactionClick
                         )
                     } else {
                         ImageChatBubble(
@@ -422,6 +431,7 @@ fun DirectMessageListItem(
                             onImageClick = onImageClick,
                             onForwardClick = {},
                             currentUserId = currentUserId,
+                            onRemoveReactionClick = onRemoveReactionClick
                         )
                     }
                 }
@@ -448,6 +458,7 @@ fun GroupMessageListItem(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     isUserMemberOfGroup: Boolean,
     isBlockedByOtherUser: Boolean,
@@ -527,7 +538,8 @@ fun GroupMessageListItem(
                             isUserMemberOfGroup = isUserMemberOfGroup,
                             messageSenderName = messageSenderName,
                             repliedMessageSenderName = repliedMessageSenderName,
-                            onReplyPreviewClick = onReplyPreviewClick
+                            onReplyPreviewClick = onReplyPreviewClick,
+                            onRemoveReactionClick = onRemoveReactionClick
                         )
                     } else {
                         ChatBubble(
@@ -545,6 +557,7 @@ fun GroupMessageListItem(
                             onShowUsersReactionsClick = onShowUsersReactionsClick,
                             isBlockedByOtherUser = false,
                             isUserMemberOfGroup = isUserMemberOfGroup,
+                            onRemoveReactionClick = onRemoveReactionClick
                         )
                     }
                 }
@@ -566,7 +579,8 @@ fun GroupMessageListItem(
                             currentUserId = currentUserId,
                             messageSenderName = messageSenderName,
                             onReplyPreviewClick = onReplyPreviewClick,
-                            repliedMessageSenderName = repliedMessageSenderName
+                            repliedMessageSenderName = repliedMessageSenderName,
+                            onRemoveReactionClick = onRemoveReactionClick
                         )
                     } else {
                         FileChatBubble(
@@ -585,6 +599,7 @@ fun GroupMessageListItem(
                             uploadingFileId = uploadingFileId,
                             fileUploadProgress = fileUploadProgress,
                             currentUserId = currentUserId,
+                            onRemoveReactionClick = onRemoveReactionClick
                         )
                     }
                 }
@@ -606,6 +621,7 @@ fun GroupMessageListItem(
                             onImageClick = onImageClick,
                             onForwardClick = {},
                             currentUserId = currentUserId,
+                            onRemoveReactionClick = onRemoveReactionClick
                         )
                     }
                 }
@@ -698,6 +714,7 @@ private fun MessagesListPreview() {
                 listState = rememberLazyListState(),
                 firstUnreadMessageId = "1",
                 onReactionClick = { _, _ -> },
+                onRemoveReactionClick = { _, _ -> },
                 isBlockedByOtherUser = true,
                 isUserMemberOfGroup = true,
                 chatPaneUiState = directChatPaneUiState,

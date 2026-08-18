@@ -199,6 +199,12 @@ fun GroupChatScreen(
                     onImageClick = { fileAttachment ->
                         selectedImageUrl = fileAttachment.url
                     },
+                    onRemoveReactionClick = { messageId, _ ->
+                        chatViewModel.removeReactionFromMessage(
+                            conversationId = conversationId,
+                            messageId = messageId
+                        )
+                    },
                 )
                 selectedMessage?.let { message ->
                     ReactionsDetailsBottomSheet(

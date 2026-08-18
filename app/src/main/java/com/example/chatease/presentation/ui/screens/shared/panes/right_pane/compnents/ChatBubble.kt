@@ -42,6 +42,7 @@ fun ChatBubble(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     conversationType: ConversationType = ConversationType.DIRECT,
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
@@ -70,6 +71,7 @@ fun ChatBubble(
         isUserMemberOfGroup = isUserMemberOfGroup,
         isReplyMessage = isReplyMessage,
         currentUserId = currentUserId,
+        onRemoveReactionClick = onRemoveReactionClick
     ) {
         Column(
             modifier = Modifier
@@ -144,6 +146,7 @@ private fun ChatBubblePreview() {
                 onLongClick = {},
                 onDismissReactions = {},
                 onReactionClick = { _, _ -> },
+                onRemoveReactionClick = { _, _ -> },
                 isFirstInGroup = true,
                 isMiddleInGroup = true,
                 isLastInGroup = true,

@@ -359,6 +359,14 @@ fun HomeScreen(
                                 },
                                 onImageClick = { fileAttachment ->
                                     selectedImageUrl = fileAttachment.url
+                                },
+                                onRemoveReactionClick = { messageId, _ ->
+                                    selectedConversationId?.let { conversationId ->
+                                        chatViewModel.removeReactionFromMessage(
+                                            conversationId = conversationId,
+                                            messageId = messageId
+                                        )
+                                    }
                                 }
                             )
                         }

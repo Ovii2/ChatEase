@@ -75,6 +75,7 @@ fun RightPane(
     firstUnreadMessageId: String?,
     onMessagesVisible: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     onNavigateToChatInfo: () -> Unit,
     isPeekEnabled: Boolean,
     onPeekClick: () -> Unit,
@@ -265,7 +266,13 @@ fun RightPane(
                 fileUploadProgress = fileUploadProgress,
                 pendingFileMessage = pendingFileMessage,
                 pendingImageMessage = pendingImageMessage,
-                onImageClick = onImageClick
+                onImageClick = onImageClick,
+                onRemoveReactionClick = { messageId, reaction ->
+                    onRemoveReactionClick(messageId, reaction)
+                    selectedMessageId = null
+                    selectedReactionMessageId = null
+                    selectedReplyMessage = null
+                }
             )
 
 
@@ -448,6 +455,7 @@ private fun RightPanePreview() {
                     firstUnreadMessageId = "1",
                     onMessagesVisible = {},
                     onReactionClick = { _, _ -> },
+                    onRemoveReactionClick = { _, _ -> },
                     onNavigateToChatInfo = {},
                     isPeekEnabled = false,
                     onPeekClick = {},

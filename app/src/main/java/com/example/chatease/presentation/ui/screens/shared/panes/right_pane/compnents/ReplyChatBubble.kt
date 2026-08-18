@@ -26,6 +26,7 @@ fun ReplyChatBubble(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     conversationType: ConversationType = ConversationType.DIRECT,
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
@@ -63,7 +64,8 @@ fun ReplyChatBubble(
             onShowUsersReactionsClick = onShowUsersReactionsClick,
             isBlockedByOtherUser = isBlockedByOtherUser,
             isUserMemberOfGroup = isUserMemberOfGroup,
-            isReplyMessage = true
+            isReplyMessage = true,
+            onRemoveReactionClick = onRemoveReactionClick
         )
     }
 }
@@ -101,6 +103,7 @@ private fun ReplyChatBubblePreview() {
                     onLongClick = {},
                     onDismissReactions = {},
                     onReactionClick = { _, _ -> },
+                    onRemoveReactionClick = { _, _ -> },
                     conversationType = ConversationType.DIRECT,
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,

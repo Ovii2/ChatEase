@@ -38,6 +38,7 @@ fun MultipleImageChatBubble(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
@@ -82,6 +83,7 @@ fun MultipleImageChatBubble(
             backgroundColorOverride = backgroundColor,
             reactionTextColorOverride = MaterialTheme.colorScheme.onSurface,
             currentUserId = currentUserId,
+            onRemoveReactionClick = onRemoveReactionClick
         ) {
             Column(
                 modifier = Modifier
@@ -164,6 +166,7 @@ private fun MultipleImageChatBubblePreview() {
                     onLongClick = {},
                     onDismissReactions = { },
                     onReactionClick = { _, _ -> },
+                    onRemoveReactionClick = { _, _ -> },
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
                     isUserMemberOfGroup = true,

@@ -33,6 +33,7 @@ fun ReplyFileBubble(
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
     currentUserId: String,
@@ -63,6 +64,7 @@ fun ReplyFileBubble(
             isUserMemberOfGroup = isUserMemberOfGroup,
             isReplyMessage = true,
             currentUserId = currentUserId,
+            onRemoveReactionClick = onRemoveReactionClick,
         ) {
             Text(
                 modifier = Modifier
@@ -121,6 +123,7 @@ private fun ReplyFileBubblePreview() {
                     onLongClick = {},
                     onDismissReactions = {},
                     onReactionClick = { _, _ -> },
+                    onRemoveReactionClick = { _, _ -> },
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
                     onReplyPreviewClick = {},

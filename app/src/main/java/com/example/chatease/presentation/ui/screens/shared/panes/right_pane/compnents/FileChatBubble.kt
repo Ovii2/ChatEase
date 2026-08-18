@@ -55,6 +55,7 @@ fun FileChatBubble(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
@@ -101,6 +102,7 @@ fun FileChatBubble(
             isUserMemberOfGroup = isUserMemberOfGroup,
             backgroundColorOverride = backgroundColor,
             currentUserId = currentUserId,
+            onRemoveReactionClick = onRemoveReactionClick,
         ) {
             Row(
                 modifier = Modifier
@@ -234,6 +236,7 @@ private fun FileChatBubblePreview() {
                     onLongClick = {},
                     onDismissReactions = {},
                     onReactionClick = { _, _ -> },
+                    onRemoveReactionClick = { _, _ -> },
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
                     isUserMemberOfGroup = true,

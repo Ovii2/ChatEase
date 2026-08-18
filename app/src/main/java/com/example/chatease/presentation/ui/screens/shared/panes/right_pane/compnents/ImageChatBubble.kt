@@ -32,6 +32,7 @@ fun ImageChatBubble(
     onLongClick: () -> Unit,
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
@@ -69,6 +70,7 @@ fun ImageChatBubble(
             backgroundColorOverride = backgroundColor,
             reactionTextColorOverride = MaterialTheme.colorScheme.onSurface,
             currentUserId = currentUserId,
+            onRemoveReactionClick = onRemoveReactionClick,
         ) {
             AsyncImage(
                 modifier = Modifier.aspectRatio(2f / 3f),
@@ -126,6 +128,7 @@ private fun ImageChatBubblePreview() {
                     onLongClick = {},
                     onDismissReactions = { },
                     onReactionClick = { _, _ -> },
+                    onRemoveReactionClick = { _, _ -> },
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
                     isUserMemberOfGroup = true,

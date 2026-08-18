@@ -49,6 +49,7 @@ fun HomeTabletLayout(
     firstUnreadMessageId: String?,
     onMessagesVisible: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     onNavigateToChatInfo: () -> Unit,
     isBlockedByOtherUser: Boolean,
     isBlockedByMe: Boolean,
@@ -138,6 +139,7 @@ fun HomeTabletLayout(
                     fileDownloadUiState = fileDownloadUiState,
                     snackbarHostState = snackbarHostState,
                     onImageClick = onImageClick,
+                    onRemoveReactionClick = onRemoveReactionClick
                 )
             }
         },
