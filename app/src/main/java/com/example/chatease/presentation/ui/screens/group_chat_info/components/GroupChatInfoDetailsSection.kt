@@ -34,7 +34,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun GroupChatInfoDetailsSection(
     modifier: Modifier = Modifier,
     membersCount: List<User>,
-    onNavigateToMembersScreen: () -> Unit
+    onNavigateToMembersScreen: () -> Unit,
+    onNavigateToMediaAndDocsScreen: () -> Unit
 ) {
     val borderWidth = 1.dp
     Column(
@@ -60,6 +61,7 @@ fun GroupChatInfoDetailsSection(
                 borderWidth = borderWidth
             )
             GroupChatInfoDetailsItem(
+                onClick = { onNavigateToMediaAndDocsScreen() },
                 title = R.string.media_docs,
                 showDivider = false,
                 count = 30,
@@ -74,7 +76,7 @@ fun GroupChatInfoDetailsSection(
             )
         ) {
             GroupChatInfoDetailsItem(
-                modifier = Modifier.clickable { onNavigateToMembersScreen() },
+                onClick = { onNavigateToMembersScreen() },
                 title = R.string.members,
                 showDivider = false,
                 count = membersCount.size,
@@ -87,6 +89,7 @@ fun GroupChatInfoDetailsSection(
 @Composable
 fun GroupChatInfoDetailsItem(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
     @StringRes title: Int,
     @StringRes label: Int? = null,
     showDivider: Boolean = true,
@@ -95,6 +98,7 @@ fun GroupChatInfoDetailsItem(
 ) {
     Row(
         modifier = modifier
+            .clickable { onClick() }
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -165,6 +169,7 @@ private fun GroupChatInfoDetailsSectionPreview() {
                 GroupChatInfoDetailsSection(
                     membersCount = members,
                     onNavigateToMembersScreen = {},
+                    onNavigateToMediaAndDocsScreen = {},
                 )
             }
         }

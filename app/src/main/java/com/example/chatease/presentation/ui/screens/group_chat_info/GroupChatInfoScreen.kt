@@ -64,7 +64,8 @@ fun GroupChatInfoScreen(
     groupChatInfoViewModel: GroupChatInfoViewModel = hiltViewModel(),
     conversationId: String,
     onNavigateToMembersScreen: () -> Unit,
-    onNavigateHomeScreen: () -> Unit
+    onNavigateHomeScreen: () -> Unit,
+    onNavigateToMediaAndDocsScreen: () -> Unit
 ) {
     val uiState by groupChatInfoViewModel.uiState.collectAsStateWithLifecycle()
     var isLeavingGroup by rememberSaveable { mutableStateOf(false) }
@@ -157,6 +158,7 @@ fun GroupChatInfoScreen(
                             isLeavingGroup = true
                         },
                         onNavigateToMembersScreen = onNavigateToMembersScreen,
+                        onNavigateToMediaAndDocsScreen = onNavigateToMediaAndDocsScreen,
 //                        onUpdatePictureClick = {
 //                            imagePickerLauncher.launch(
 //                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -305,6 +307,7 @@ private fun GroupChatInfoScreenPreview() {
                     members = members,
                     onLeaveGroup = { isLeavingGroup = true },
                     onNavigateToMembersScreen = {},
+                    onNavigateToMediaAndDocsScreen = {},
                     isUpdating = false,
                 )
                 if (isLeavingGroup) {

@@ -372,6 +372,13 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToMediaAndDocsScreen = {
+                    navController.navigate(
+                        Screens.MediaAndDocs.createRoute(conversationId)
+                    ) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.GroupChatMembers.route) {
