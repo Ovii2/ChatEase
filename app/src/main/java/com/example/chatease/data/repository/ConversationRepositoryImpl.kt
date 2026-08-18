@@ -301,6 +301,30 @@ class ConversationRepositoryImpl(
             .await()
     }
 
+    override suspend fun removeReactionFromMessage(
+        conversationId: String,
+        messageId: String,
+        userId: String
+    ) {
+        val documentSnapshot = firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .collection(MESSAGES)
+            .document(messageId)
+            .get()
+            .await()
+
+        val message = documentSnapshot.toObject(MessageDto::class.java) ?: return
+
+        val updatedReactions = message.reactions.toMutableMap().apply {
+            remove(userId)
+        }
+
+        documentSnapshot.reference
+            .update(REACTIONS, updatedReactions)
+            .await()
+    }
+
     override suspend fun deleteConversation(conversationId: String) {
         val currentUserId = auth.currentUser?.uid ?: return
 

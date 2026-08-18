@@ -36,6 +36,12 @@ interface ConversationRepository {
         reaction: String
     )
 
+    suspend fun removeReactionFromMessage(
+        conversationId: String,
+        messageId: String,
+        userId: String
+    )
+
     suspend fun deleteConversation(conversationId: String)
 
     suspend fun deleteIfEmptyConversation(conversationId: String)
