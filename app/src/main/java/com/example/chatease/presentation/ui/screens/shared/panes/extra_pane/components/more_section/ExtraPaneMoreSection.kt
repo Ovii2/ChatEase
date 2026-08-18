@@ -44,7 +44,7 @@ fun ExtraPaneMoreSection(
                 R.string.share_contact -> !isBlockedByMe && !isBlockedByOtherUser
                 R.string.block_contact -> !isBlockedByMe
                 R.string.unblock_contact -> isBlockedByMe
-                R.string.delete_chat -> isConversationCreator
+                R.string.delete_chat -> true
                 else -> true
             }
         }
@@ -80,8 +80,11 @@ fun ExtraPaneMoreSectionItem(
     iconSize: Dp,
     onClick: () -> Unit
 ) {
-    val color =
-        if (action.isDestructive) MaterialTheme.colorScheme.error.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurface
+    val color = if (action.isDestructive) {
+        MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
 
     Row(
         modifier = modifier
