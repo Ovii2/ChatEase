@@ -11,6 +11,7 @@ import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
 import com.example.chatease.utils.ImageUtils
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -94,6 +95,8 @@ class GroupChatInfoViewModel @Inject constructor(
                     .collect { state ->
                         _uiState.value = state
                     }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = GroupChatInfoUiState.Error(
                     error = e.message ?: "Failed to load group"
@@ -104,6 +107,7 @@ class GroupChatInfoViewModel @Inject constructor(
 
     fun leaveGroup(conversationId: String) {
         viewModelScope.launch {
+            loadGroupJob?.cancel()
             try {
                 groupRepository.leaveGroup(conversationId, currentUserId)
             } catch (e: Exception) {
@@ -116,6 +120,7 @@ class GroupChatInfoViewModel @Inject constructor(
 
     fun leaveGroupAsOwner(conversationId: String) {
         viewModelScope.launch {
+            loadGroupJob?.cancel()
             try {
                 val shouldDeleteConversation =
                     groupRepository.leaveGroupAsOwner(conversationId, currentUserId)
