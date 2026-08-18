@@ -188,17 +188,11 @@ class HomeViewModel @Inject constructor(
             currentUserId = currentUserId
         )
 
-//        val groupFlows = groupConversations.map { conversation ->
-//            groupRepository.observeGroup(conversation.id)
-//        }
-
         val groupFlows = groupConversations.map { conversation ->
             groupRepository.observeGroup(conversation.id)
                 .map<Group, Group?> { it }
                 .catch { exception ->
-                    if (exception is IllegalStateException &&
-                        exception.message == "Group not found"
-                    ) {
+                    if (exception is IllegalStateException) {
                         emit(null)
                     } else {
                         throw exception

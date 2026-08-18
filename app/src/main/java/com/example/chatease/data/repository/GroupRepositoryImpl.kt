@@ -209,7 +209,7 @@ class GroupRepositoryImpl(
                     return@addSnapshotListener
                 }
                 if (snapshot == null || !snapshot.exists()) {
-                    close(IllegalStateException("Group not found"))
+                    close(IllegalStateException())
                     return@addSnapshotListener
                 }
                 val group = snapshot?.toObject(GroupDto::class.java)?.toDomain()
