@@ -19,10 +19,12 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -186,17 +188,33 @@ class HomeViewModel @Inject constructor(
             currentUserId = currentUserId
         )
 
+//        val groupFlows = groupConversations.map { conversation ->
+//            groupRepository.observeGroup(conversation.id)
+//        }
+
         val groupFlows = groupConversations.map { conversation ->
             groupRepository.observeGroup(conversation.id)
+                .map<Group, Group?> { it }
+                .catch { exception ->
+                    if (exception is IllegalStateException &&
+                        exception.message == "Group not found"
+                    ) {
+                        emit(null)
+                    } else {
+                        throw exception
+                    }
+                }
         }
 
         val groupsFlow = if (groupFlows.isEmpty()) {
             flowOf(emptyMap())
         } else {
             combine(groupFlows) { groups ->
-                groups.associateBy { group ->
-                    group.conversationId
-                }
+                groups
+                    .filterNotNull()
+                    .associateBy { group ->
+                        group.conversationId
+                    }
             }
         }
 
@@ -257,12 +275,15 @@ class HomeViewModel @Inject constructor(
         groupsByConversationId: Map<String, Group>,
         groupMembersByConversationId: Map<String, List<User>>
     ): List<ConversationUiModel> {
-        return conversations.map { conversation ->
+        return conversations.mapNotNull { conversation ->
             val isGroupConversation =
                 conversation.type == ConversationType.GROUP
 
             val otherUser = otherUserByConversationId[conversation.id]
             val group = groupsByConversationId[conversation.id]
+            if (isGroupConversation && group == null) {
+                return@mapNotNull null
+            }
             val isCurrentUserGroupMember =
                 !isGroupConversation || currentUserId in group?.userIds.orEmpty()
 
