@@ -44,6 +44,7 @@ fun MessageBubbleContainer(
     onClick: () -> Unit = {},
     onDismissReactions: () -> Unit,
     onReactionClick: (String, String) -> Unit,
+    onRemoveReactionClick: (String, String) -> Unit,
     onShowUsersReactionsClick: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
@@ -175,6 +176,9 @@ fun MessageBubbleContainer(
                             message.messageId,
                             reaction
                         )
+                    },
+                    onRemoveReactionClick = { reaction ->
+                        onRemoveReactionClick(message.messageId, reaction)
                     }
                 )
             }
@@ -213,6 +217,7 @@ private fun MessageBubbleContainerPreview() {
                     onLongClick = {},
                     onDismissReactions = {},
                     onReactionClick = { _, _ -> },
+                    onRemoveReactionClick = { _, _ -> },
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
                     isUserMemberOfGroup = true,

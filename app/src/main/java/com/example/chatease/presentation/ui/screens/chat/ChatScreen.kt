@@ -244,6 +244,12 @@ fun ChatScreen(
         onImageClick = { fileAttachment ->
             selectedImageUrl = fileAttachment.url
         },
+        onRemoveReactionClick = { messageId, _ ->
+            chatViewModel.removeReactionFromMessage(
+                conversationId = conversationId,
+                messageId = messageId
+            )
+        },
     )
     selectedReactionsMessage?.let { message ->
         ReactionsDetailsBottomSheet(

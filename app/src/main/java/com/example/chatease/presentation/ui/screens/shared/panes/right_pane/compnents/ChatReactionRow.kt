@@ -34,7 +34,8 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun ChatReactionRow(
     modifier: Modifier = Modifier,
     selectedReaction: String?,
-    onReactionClick: (String) -> Unit
+    onReactionClick: (String) -> Unit,
+    onRemoveReactionClick: (String) -> Unit
 ) {
     val reactions = listOf(
         "\uD83D\uDC4D",
@@ -94,7 +95,13 @@ fun ChatReactionRow(
                                     scaleY = 0.6f + 0.4f * itemProgress
                                     alpha = itemProgress
                                 }
-                                .clickable { onReactionClick(reaction) },
+                                .clickable {
+                                    if (isSelected) {
+                                        onRemoveReactionClick(reaction)
+                                    } else {
+                                        onReactionClick(reaction)
+                                    }
+                                },
                             text = reaction,
                             fontSize = 24.sp
                         )
@@ -122,6 +129,7 @@ private fun ChatReactionRowPreview() {
             ) {
                 ChatReactionRow(
                     onReactionClick = {},
+                    onRemoveReactionClick = {},
                     selectedReaction = "",
                 )
             }
