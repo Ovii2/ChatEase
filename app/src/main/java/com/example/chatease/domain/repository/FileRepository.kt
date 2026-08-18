@@ -3,6 +3,7 @@ package com.example.chatease.domain.repository
 import android.net.Uri
 import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.MediaItem
+import kotlinx.coroutines.flow.Flow
 
 interface FileRepository {
 
@@ -24,6 +25,8 @@ interface FileRepository {
     )
 
     suspend fun getMediaItems(conversationId: String): List<MediaItem>
+
+    fun observeMediaItems(conversationId: String): Flow<List<MediaItem>>
 
     suspend fun refreshMediaItems(conversationId: String)
 }

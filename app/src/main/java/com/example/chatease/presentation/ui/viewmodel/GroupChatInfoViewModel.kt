@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.repository.ConversationRepository
+import com.example.chatease.domain.repository.FileRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.state.GroupChatInfoUiState
@@ -29,7 +30,8 @@ class GroupChatInfoViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository,
-    private val imageUtils: ImageUtils
+    private val imageUtils: ImageUtils,
+    private val fileRepository: FileRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<GroupChatInfoUiState>(GroupChatInfoUiState.Loading)
@@ -61,18 +63,25 @@ class GroupChatInfoViewModel @Inject constructor(
                             userRepository.observeUser(userId)
                         }
 
+                        val mediaFlow = fileRepository.observeMediaItems(conversationId)
+
                         if (memberFlows.isEmpty()) {
                             flowOf(
                                 GroupChatInfoUiState.Success(
                                     group = group,
-                                    members = emptyList()
+                                    members = emptyList(),
+                                    media = emptyList()
                                 )
                             )
                         } else {
-                            combine(memberFlows) { users ->
+                            combine(
+                                combine(memberFlows) { users -> users.toList() },
+                                mediaFlow
+                            ) { members, media ->
                                 GroupChatInfoUiState.Success(
                                     group = group,
-                                    members = users.toList()
+                                    members = members,
+                                    media = media
                                 )
                             }
                         }

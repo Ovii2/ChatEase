@@ -26,7 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
+import com.example.chatease.domain.model.MediaItem
 import com.example.chatease.domain.model.User
+import com.example.chatease.domain.model.enums.MediaType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
@@ -34,6 +36,7 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 fun GroupChatInfoDetailsSection(
     modifier: Modifier = Modifier,
     membersCount: List<User>,
+    mediaAndDocsCount: List<MediaItem>,
     onNavigateToMembersScreen: () -> Unit,
     onNavigateToMediaAndDocsScreen: () -> Unit
 ) {
@@ -64,7 +67,7 @@ fun GroupChatInfoDetailsSection(
                 onClick = { onNavigateToMediaAndDocsScreen() },
                 title = R.string.media_docs,
                 showDivider = false,
-                count = 30,
+                count = mediaAndDocsCount.size,
                 borderWidth = borderWidth,
             )
         }
@@ -159,6 +162,15 @@ private fun GroupChatInfoDetailsSectionPreview() {
             blockedUserIds = emptyList()
         )
     }
+
+    val media = List(10) {
+        MediaItem(
+            id = it.toString(),
+            thumbnailUrl = "",
+            mediaUrl = "",
+            type = MediaType.FILE
+        )
+    }
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -168,6 +180,7 @@ private fun GroupChatInfoDetailsSectionPreview() {
             ) {
                 GroupChatInfoDetailsSection(
                     membersCount = members,
+                    mediaAndDocsCount = media,
                     onNavigateToMembersScreen = {},
                     onNavigateToMediaAndDocsScreen = {},
                 )

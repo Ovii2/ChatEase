@@ -154,6 +154,7 @@ fun GroupChatInfoScreen(
                         paddingValues = paddingValues,
                         group = state.group,
                         members = state.members,
+                        media = state.media,
                         onLeaveGroup = {
                             isLeavingGroup = true
                         },
@@ -305,6 +306,7 @@ private fun GroupChatInfoScreenPreview() {
                     paddingValues = PaddingValues(),
                     group = group,
                     members = members,
+                    media = listOf(),
                     onLeaveGroup = { isLeavingGroup = true },
                     onNavigateToMembersScreen = {},
                     onNavigateToMediaAndDocsScreen = {},

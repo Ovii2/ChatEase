@@ -19,6 +19,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storageMetadata
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -203,6 +205,12 @@ class FileRepositoryImpl @Inject constructor(
         return mediaItemsDao
             .getMediaItems(conversationId)
             .map { it.toDomain() }
+    }
+
+    override fun observeMediaItems(conversationId: String): Flow<List<MediaItem>> {
+        return mediaItemsDao.observeMediaItems(conversationId).map { entities ->
+            entities.map { it.toDomain() }
+        }
     }
 
     override suspend fun refreshMediaItems(conversationId: String) {

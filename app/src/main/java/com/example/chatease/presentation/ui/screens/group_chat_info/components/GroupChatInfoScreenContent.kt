@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatease.R
 import com.example.chatease.domain.model.Group
+import com.example.chatease.domain.model.MediaItem
 import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -37,6 +38,7 @@ fun GroupChatInfoScreenContent(
     paddingValues: PaddingValues,
     group: Group,
     members: List<User>,
+    media: List<MediaItem>,
     onLeaveGroup: (String) -> Unit,
     onNavigateToMembersScreen: () -> Unit,
     onNavigateToMediaAndDocsScreen: () -> Unit,
@@ -63,6 +65,7 @@ fun GroupChatInfoScreenContent(
 
             GroupChatInfoDetailsSection(
                 membersCount = members,
+                mediaAndDocsCount = media,
                 onNavigateToMembersScreen = onNavigateToMembersScreen,
                 onNavigateToMediaAndDocsScreen = onNavigateToMediaAndDocsScreen
             )
@@ -121,6 +124,7 @@ private fun GroupChatInfoScreenContentPreview() {
                     paddingValues = PaddingValues(),
                     group = group,
                     members = members,
+                    media = listOf(),
                     onLeaveGroup = {},
                     onNavigateToMembersScreen = {},
                     onNavigateToMediaAndDocsScreen = {},
