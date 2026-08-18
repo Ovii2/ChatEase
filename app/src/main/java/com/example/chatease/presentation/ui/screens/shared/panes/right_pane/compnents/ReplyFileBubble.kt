@@ -61,7 +61,8 @@ fun ReplyFileBubble(
             onShowUsersReactionsClick = onShowUsersReactionsClick,
             isBlockedByOtherUser = isBlockedByOtherUser,
             isUserMemberOfGroup = isUserMemberOfGroup,
-            isReplyMessage = true
+            isReplyMessage = true,
+            currentUserId = currentUserId,
         ) {
             Text(
                 modifier = Modifier

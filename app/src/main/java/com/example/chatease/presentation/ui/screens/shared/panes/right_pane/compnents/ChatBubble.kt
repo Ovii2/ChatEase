@@ -68,7 +68,8 @@ fun ChatBubble(
         onShowUsersReactionsClick = onShowUsersReactionsClick,
         isBlockedByOtherUser = isBlockedByOtherUser,
         isUserMemberOfGroup = isUserMemberOfGroup,
-        isReplyMessage = isReplyMessage
+        isReplyMessage = isReplyMessage,
+        currentUserId = currentUserId,
     ) {
         Column(
             modifier = Modifier

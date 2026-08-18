@@ -60,7 +60,8 @@ fun FileChatBubble(
     isUserMemberOfGroup: Boolean,
     onFileClick: (Message) -> Unit,
     uploadingFileId: String?,
-    fileUploadProgress: Float?
+    fileUploadProgress: Float?,
+    currentUserId: String
 ) {
     val backgroundColor = if (isSentByCurrentUser) {
         if (isSystemInDarkTheme()) darkLavender else lightLavender
@@ -98,7 +99,8 @@ fun FileChatBubble(
             onShowUsersReactionsClick = onShowUsersReactionsClick,
             isBlockedByOtherUser = isBlockedByOtherUser,
             isUserMemberOfGroup = isUserMemberOfGroup,
-            backgroundColorOverride = backgroundColor
+            backgroundColorOverride = backgroundColor,
+            currentUserId = currentUserId,
         ) {
             Row(
                 modifier = Modifier
@@ -238,6 +240,7 @@ private fun FileChatBubblePreview() {
                     onFileClick = {},
                     uploadingFileId = message.fileAttachments.firstOrNull()?.id,
                     fileUploadProgress = 0.5f,
+                    currentUserId = "",
                 )
             }
         }

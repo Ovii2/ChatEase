@@ -36,7 +36,8 @@ fun ImageChatBubble(
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
     onImageClick: (FileAttachment) -> Unit,
-    onForwardClick: () -> Unit
+    onForwardClick: () -> Unit,
+    currentUserId: String
 ) {
     val attachment = message.fileAttachments.firstOrNull()
     val imageUrl = attachment?.url.orEmpty()
@@ -66,7 +67,8 @@ fun ImageChatBubble(
             isUserMemberOfGroup = isUserMemberOfGroup,
             isReplyMessage = false,
             backgroundColorOverride = backgroundColor,
-            reactionTextColorOverride = MaterialTheme.colorScheme.onSurface
+            reactionTextColorOverride = MaterialTheme.colorScheme.onSurface,
+            currentUserId = currentUserId,
         ) {
             AsyncImage(
                 modifier = Modifier.aspectRatio(2f / 3f),
@@ -129,6 +131,7 @@ private fun ImageChatBubblePreview() {
                     isUserMemberOfGroup = true,
                     onImageClick = {},
                     onForwardClick = {},
+                    currentUserId = "1",
                 )
             }
         }

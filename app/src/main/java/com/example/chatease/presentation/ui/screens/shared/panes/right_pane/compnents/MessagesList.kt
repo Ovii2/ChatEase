@@ -383,7 +383,8 @@ fun DirectMessageListItem(
                         isUserMemberOfGroup = true,
                         onFileClick = onFileClick,
                         uploadingFileId = uploadingFileId,
-                        fileUploadProgress = fileUploadProgress
+                        fileUploadProgress = fileUploadProgress,
+                        currentUserId = currentUserId,
                     )
                 }
             }
@@ -404,7 +405,8 @@ fun DirectMessageListItem(
                             isBlockedByOtherUser = isBlockedByOtherUser,
                             isUserMemberOfGroup = isUserMemberOfGroup,
                             onImageClick = onImageClick,
-                            onForwardClick = {}
+                            onForwardClick = {},
+                            currentUserId = currentUserId,
                         )
                     } else {
                         ImageChatBubble(
@@ -418,7 +420,8 @@ fun DirectMessageListItem(
                             isBlockedByOtherUser = isBlockedByOtherUser,
                             isUserMemberOfGroup = isUserMemberOfGroup,
                             onImageClick = onImageClick,
-                            onForwardClick = {}
+                            onForwardClick = {},
+                            currentUserId = currentUserId,
                         )
                     }
                 }
@@ -580,7 +583,8 @@ fun GroupMessageListItem(
                             isUserMemberOfGroup = isUserMemberOfGroup,
                             onFileClick = onFileClick,
                             uploadingFileId = uploadingFileId,
-                            fileUploadProgress = fileUploadProgress
+                            fileUploadProgress = fileUploadProgress,
+                            currentUserId = currentUserId,
                         )
                     }
                 }
@@ -600,7 +604,8 @@ fun GroupMessageListItem(
                             isBlockedByOtherUser = isBlockedByOtherUser,
                             isUserMemberOfGroup = isUserMemberOfGroup,
                             onImageClick = onImageClick,
-                            onForwardClick = {}
+                            onForwardClick = {},
+                            currentUserId = currentUserId,
                         )
                     }
                 }

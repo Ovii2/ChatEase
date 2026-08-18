@@ -52,6 +52,7 @@ fun MessageBubbleContainer(
     backgroundColorOverride: Color? = null,
     reactionTextColorOverride: Color? = null,
     reactionBadgeBottomPadding: Dp = 6.dp,
+    currentUserId: String,
     content: @Composable () -> Unit
 ) {
     val backgroundColor = backgroundColorOverride
@@ -168,6 +169,7 @@ fun MessageBubbleContainer(
                 )
             ) {
                 ChatReactionRow(
+                    selectedReaction = message.reactions[currentUserId],
                     onReactionClick = { reaction ->
                         onReactionClick(
                             message.messageId,
@@ -213,7 +215,8 @@ private fun MessageBubbleContainerPreview() {
                     onReactionClick = { _, _ -> },
                     onShowUsersReactionsClick = {},
                     isBlockedByOtherUser = false,
-                    isUserMemberOfGroup = true
+                    isUserMemberOfGroup = true,
+                    currentUserId = "",
                 ) {
                     Text(
                         modifier = Modifier.padding(12.dp),

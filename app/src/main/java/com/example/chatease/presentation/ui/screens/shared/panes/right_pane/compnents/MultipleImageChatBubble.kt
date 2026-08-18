@@ -42,7 +42,8 @@ fun MultipleImageChatBubble(
     isBlockedByOtherUser: Boolean,
     isUserMemberOfGroup: Boolean,
     onImageClick: (FileAttachment) -> Unit,
-    onForwardClick: () -> Unit
+    onForwardClick: () -> Unit,
+    currentUserId: String
 ) {
     val backgroundColor = if (isSentByCurrentUser) {
         if (isSystemInDarkTheme()) darkLavender else lightLavender
@@ -79,7 +80,8 @@ fun MultipleImageChatBubble(
             shapeOverride = RoundedCornerShape(10.dp),
             reactionBadgeBottomPadding = 0.dp,
             backgroundColorOverride = backgroundColor,
-            reactionTextColorOverride = MaterialTheme.colorScheme.onSurface
+            reactionTextColorOverride = MaterialTheme.colorScheme.onSurface,
+            currentUserId = currentUserId,
         ) {
             Column(
                 modifier = Modifier
@@ -113,8 +115,9 @@ fun MultipleImageChatBubble(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true,
-         uiMode = Configuration.UI_MODE_TYPE_NORMAL
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
 private fun MultipleImageChatBubblePreview() {
@@ -166,6 +169,7 @@ private fun MultipleImageChatBubblePreview() {
                     isUserMemberOfGroup = true,
                     onImageClick = {},
                     onForwardClick = {},
+                    currentUserId = "",
                 )
             }
         }
