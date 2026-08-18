@@ -72,6 +72,7 @@ fun ChatScreen(
 
     LaunchedEffect(conversationId) {
         chatViewModel.loadConversation(conversationId)
+        chatViewModel.preLoadMediaItems(conversationId)
     }
 
     LaunchedEffect(isConversationDeleted) {

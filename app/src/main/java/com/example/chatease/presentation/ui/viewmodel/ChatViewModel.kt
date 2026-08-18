@@ -242,6 +242,7 @@ class ChatViewModel @Inject constructor(
                 )
 
                 conversationRepository.sendMessage(message)
+                preLoadMediaItems(conversationId)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "Failed to send file", e)
             } finally {
@@ -346,6 +347,7 @@ class ChatViewModel @Inject constructor(
                 )
 
                 conversationRepository.sendMessage(message)
+                preLoadMediaItems(conversationId)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "Failed to send images", e)
             } finally {
@@ -363,6 +365,16 @@ class ChatViewModel @Inject constructor(
                     }
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "Failed to load current user", e)
+            }
+        }
+    }
+
+    fun preLoadMediaItems(conversationId: String) {
+        viewModelScope.launch {
+            try {
+                fileRepository.refreshMediaItems(conversationId)
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to pre-load media items", e)
             }
         }
     }
