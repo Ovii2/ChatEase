@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +33,7 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun ChatReactionRow(
     modifier: Modifier = Modifier,
+    selectedReaction: String?,
     onReactionClick: (String) -> Unit
 ) {
     val reactions = listOf(
@@ -61,20 +64,41 @@ fun ChatReactionRow(
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 reactions.forEachIndexed { index, reaction ->
-                    Text(
+                    val isSelected = reaction == selectedReaction
+
+                    val reactionBackgroundColor = if (isSelected) {
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
+                    } else {
+                        Color.Transparent
+                    }
+                    val reactionSize = if (isSelected) 38.dp else 30.dp
+                    Box(
                         modifier = Modifier
-                            .graphicsLayer {
-                                val itemProgress = (progress.value - index).coerceIn(0f, 1f)
-                                scaleX = 0.6f + 0.4f * itemProgress
-                                scaleY = 0.6f + 0.4f * itemProgress
-                                alpha = itemProgress
-                            }
-                            .clickable { onReactionClick(reaction) },
-                        text = reaction,
-                        fontSize = 24.sp
-                    )
+                            .size(reactionSize)
+                            .background(
+                                color = reactionBackgroundColor,
+                                shape = RoundedCornerShape(15.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .graphicsLayer {
+                                    val itemProgress = (progress.value - index).coerceIn(0f, 1f)
+                                    scaleX = 0.6f + 0.4f * itemProgress
+                                    scaleY = 0.6f + 0.4f * itemProgress
+                                    alpha = itemProgress
+                                }
+                                .clickable { onReactionClick(reaction) },
+                            text = reaction,
+                            fontSize = 24.sp
+                        )
+                    }
                 }
             }
         }
@@ -97,7 +121,8 @@ private fun ChatReactionRowPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ChatReactionRow(
-                    onReactionClick = {}
+                    onReactionClick = {},
+                    selectedReaction = "",
                 )
             }
         }
