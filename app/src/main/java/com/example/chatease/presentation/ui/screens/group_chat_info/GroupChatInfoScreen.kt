@@ -74,6 +74,7 @@ fun GroupChatInfoScreen(
     var showMoreActions by rememberSaveable { mutableStateOf(false) }
     var showGroupNameChangeDialog by rememberSaveable { mutableStateOf(false) }
     var isFieldTouched by rememberSaveable { mutableStateOf(false) }
+    val isUpdating by groupChatInfoViewModel.isUpdating.collectAsState()
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -82,11 +83,15 @@ fun GroupChatInfoScreen(
             groupChatInfoViewModel.updateGroupProfileImage(conversationId, it)
         }
     }
-    val isUpdating by groupChatInfoViewModel.isUpdating.collectAsState()
-
 
     LaunchedEffect(conversationId) {
         groupChatInfoViewModel.loadGroup(conversationId)
+    }
+
+    LaunchedEffect(Unit) {
+        groupChatInfoViewModel.ownerLeaveCompleted.collect {
+            onNavigateHomeScreen()
+        }
     }
 
     Box(
@@ -160,11 +165,6 @@ fun GroupChatInfoScreen(
                         },
                         onNavigateToMembersScreen = onNavigateToMembersScreen,
                         onNavigateToMediaAndDocsScreen = onNavigateToMediaAndDocsScreen,
-//                        onUpdatePictureClick = {
-//                            imagePickerLauncher.launch(
-//                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-//                            )
-//                        },
                         isUpdating = isUpdating,
                     )
 
@@ -181,7 +181,6 @@ fun GroupChatInfoScreen(
                             onLeaveGroupAsOwner = {
                                 isLeavingGroup = false
                                 groupChatInfoViewModel.leaveGroupAsOwner(conversationId)
-                                onNavigateHomeScreen()
                             },
                         )
                     }

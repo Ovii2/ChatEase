@@ -14,7 +14,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -45,6 +47,9 @@ class GroupChatInfoViewModel @Inject constructor(
 
     private val _isUpdating = MutableStateFlow(false)
     val isUpdating = _isUpdating.asStateFlow()
+
+    private val _ownerLeaveCompleted = MutableSharedFlow<Unit>()
+    val ownerLeaveCompleted = _ownerLeaveCompleted.asSharedFlow()
 
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
@@ -117,6 +122,7 @@ class GroupChatInfoViewModel @Inject constructor(
                 if (shouldDeleteConversation) {
                     conversationRepository.deleteConversationWithMessages(conversationId)
                 }
+                _ownerLeaveCompleted.emit(Unit)
             } catch (e: Exception) {
                 _uiState.value = GroupChatInfoUiState.Error(
                     error = e.message ?: "Failed to leave the group as owner"

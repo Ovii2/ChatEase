@@ -33,6 +33,7 @@ class GroupRepositoryImpl(
         private const val GROUP_PROFILE_IMAGES = "group_profile_images"
         private const val IMAGE_URL = "imageUrl"
         private const val NAME = "name"
+        private const val CHAT_FILES = "chat_files"
     }
 
     override suspend fun createGroup(
@@ -242,6 +243,7 @@ class GroupRepositoryImpl(
 
         if (remainingMemberIds.isEmpty()) {
             deleteGroupProfileImage(conversationId)
+            deleteGroupChatFiles(conversationId)
 
             firestore
                 .collection(GROUP)
@@ -352,6 +354,25 @@ class GroupRepositoryImpl(
                 .child("$conversationId.jpg")
                 .delete()
                 .await()
+        } catch (e: StorageException) {
+            if (e.errorCode != StorageException.ERROR_OBJECT_NOT_FOUND) {
+                throw e
+            }
+        }
+    }
+
+    private suspend fun deleteGroupChatFiles(conversationId: String) {
+        try {
+            val folderRef = storage.reference
+                .child(CHAT_FILES)
+                .child(conversationId)
+
+            val files = folderRef.listAll().await()
+
+            files.items.forEach { fileRef ->
+                fileRef.delete().await()
+            }
+
         } catch (e: StorageException) {
             if (e.errorCode != StorageException.ERROR_OBJECT_NOT_FOUND) {
                 throw e
