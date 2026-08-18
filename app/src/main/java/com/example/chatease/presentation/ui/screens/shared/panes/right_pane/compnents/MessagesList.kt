@@ -608,21 +608,39 @@ fun GroupMessageListItem(
                     if (message.replyMessage != null) {
 
                     } else {
-                        ImageChatBubble(
-                            message = message,
-                            isSentByCurrentUser = isSentByCurrentUser,
-                            showReactions = message.messageId == selectedReactionMessageId,
-                            onLongClick = onLongClick,
-                            onDismissReactions = onDismissReactions,
-                            onReactionClick = onReactionClick,
-                            onShowUsersReactionsClick = onShowUsersReactionsClick,
-                            isBlockedByOtherUser = isBlockedByOtherUser,
-                            isUserMemberOfGroup = isUserMemberOfGroup,
-                            onImageClick = onImageClick,
-                            onForwardClick = {},
-                            currentUserId = currentUserId,
-                            onRemoveReactionClick = onRemoveReactionClick
-                        )
+                        if (message.fileAttachments.size > 1) {
+                            MultipleImageChatBubble(
+                                message = message,
+                                isSentByCurrentUser = isSentByCurrentUser,
+                                showReactions = message.messageId == selectedReactionMessageId,
+                                onLongClick = onLongClick,
+                                onDismissReactions = onDismissReactions,
+                                onReactionClick = onReactionClick,
+                                onRemoveReactionClick = onRemoveReactionClick,
+                                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                                isBlockedByOtherUser = isBlockedByOtherUser,
+                                isUserMemberOfGroup = isUserMemberOfGroup,
+                                onImageClick = onImageClick,
+                                onForwardClick = {},
+                                currentUserId = currentUserId
+                            )
+                        } else {
+                            ImageChatBubble(
+                                message = message,
+                                isSentByCurrentUser = isSentByCurrentUser,
+                                showReactions = message.messageId == selectedReactionMessageId,
+                                onLongClick = onLongClick,
+                                onDismissReactions = onDismissReactions,
+                                onReactionClick = onReactionClick,
+                                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                                isBlockedByOtherUser = isBlockedByOtherUser,
+                                isUserMemberOfGroup = isUserMemberOfGroup,
+                                onImageClick = onImageClick,
+                                onForwardClick = {},
+                                currentUserId = currentUserId,
+                                onRemoveReactionClick = onRemoveReactionClick
+                            )
+                        }
                     }
                 }
 
