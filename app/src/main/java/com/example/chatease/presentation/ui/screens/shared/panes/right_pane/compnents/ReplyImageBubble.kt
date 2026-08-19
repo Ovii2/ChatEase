@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +20,6 @@ import coil3.compose.AsyncImage
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.ReplyMessage
 import com.example.chatease.domain.model.enums.MessageType
-import com.example.chatease.presentation.ui.screens.shared.chat.MessageBubbleContainer
 import com.example.chatease.presentation.ui.screens.shared.chat.ReplyBubbleContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
@@ -45,11 +42,6 @@ fun ReplyImageBubble(
     onReplyPreviewClick: () -> Unit,
     repliedMessageSenderName: String
 ) {
-    val textColor = if (isSentByCurrentUser) {
-        MaterialTheme.colorScheme.surface
-    } else {
-        MaterialTheme.colorScheme.onSurface
-    }
     ReplyBubbleContainer(
         modifier = modifier,
         isSentByCurrentUser = isSentByCurrentUser,
@@ -70,29 +62,23 @@ fun ReplyImageBubble(
             )
         }
     ) {
-        MessageBubbleContainer(
+        ChatBubble(
             modifier = Modifier.offset(y = (-6).dp),
             message = message,
             isSentByCurrentUser = isSentByCurrentUser,
+            currentUserId = currentUserId,
             showReactions = showReactions,
-            onClick = onClick,
+            isFirstInGroup = true,
+            isMiddleInGroup = false,
+            isLastInGroup = false,
             onLongClick = onLongClick,
             onDismissReactions = onDismissReactions,
             onReactionClick = onReactionClick,
             onRemoveReactionClick = onRemoveReactionClick,
             onShowUsersReactionsClick = onShowUsersReactionsClick,
             isBlockedByOtherUser = isBlockedByOtherUser,
-            isUserMemberOfGroup = isUserMemberOfGroup,
-            isReplyMessage = true,
-            currentUserId = currentUserId
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(8.dp),
-                text = message.text,
-                color = textColor
-            )
-        }
+            isUserMemberOfGroup = isUserMemberOfGroup
+        )
     }
 }
 

@@ -21,7 +21,6 @@ import com.example.chatease.domain.model.FileAttachment
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.ReplyMessage
 import com.example.chatease.domain.model.enums.MessageType
-import com.example.chatease.presentation.ui.screens.shared.chat.MessageBubbleContainer
 import com.example.chatease.presentation.ui.screens.shared.chat.ReplyBubbleContainer
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
@@ -45,12 +44,6 @@ fun ReplyFileBubble(
     onReplyPreviewClick: () -> Unit,
     repliedMessageSenderName: String
 ) {
-    val textColor = if (isSentByCurrentUser) {
-        MaterialTheme.colorScheme.surface
-    } else {
-        MaterialTheme.colorScheme.onSurface
-    }
-
     ReplyBubbleContainer(
         modifier = modifier.widthIn(max = 300.dp),
         isSentByCurrentUser = isSentByCurrentUser,
@@ -77,28 +70,22 @@ fun ReplyFileBubble(
             }
         }
     ) {
-        MessageBubbleContainer(
+        ChatBubble(
             message = message,
             isSentByCurrentUser = isSentByCurrentUser,
+            currentUserId = currentUserId,
             showReactions = showReactions,
-            onClick = onClick,
+            isFirstInGroup = true,
+            isMiddleInGroup = false,
+            isLastInGroup = false,
             onLongClick = onLongClick,
             onDismissReactions = onDismissReactions,
             onReactionClick = onReactionClick,
+            onRemoveReactionClick = onRemoveReactionClick,
             onShowUsersReactionsClick = onShowUsersReactionsClick,
             isBlockedByOtherUser = isBlockedByOtherUser,
-            isUserMemberOfGroup = isUserMemberOfGroup,
-            isReplyMessage = true,
-            currentUserId = currentUserId,
-            onRemoveReactionClick = onRemoveReactionClick,
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(8.dp),
-                text = message.text,
-                color = textColor
-            )
-        }
+            isUserMemberOfGroup = isUserMemberOfGroup
+        )
     }
 }
 
