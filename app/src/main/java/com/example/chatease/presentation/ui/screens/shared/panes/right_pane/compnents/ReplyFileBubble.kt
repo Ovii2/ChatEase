@@ -45,6 +45,12 @@ fun ReplyFileBubble(
     onReplyPreviewClick: () -> Unit,
     repliedMessageSenderName: String
 ) {
+    val textColor = if (isSentByCurrentUser) {
+        MaterialTheme.colorScheme.surface
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+
     ReplyBubbleContainer(
         modifier = modifier.widthIn(max = 300.dp),
         isSentByCurrentUser = isSentByCurrentUser,
@@ -90,7 +96,7 @@ fun ReplyFileBubble(
                 modifier = Modifier
                     .padding(8.dp),
                 text = message.text,
-                color = MaterialTheme.colorScheme.surface
+                color = textColor
             )
         }
     }

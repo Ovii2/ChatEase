@@ -45,6 +45,11 @@ fun ReplyImageBubble(
     onReplyPreviewClick: () -> Unit,
     repliedMessageSenderName: String
 ) {
+    val textColor = if (isSentByCurrentUser) {
+        MaterialTheme.colorScheme.surface
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
     ReplyBubbleContainer(
         modifier = modifier,
         isSentByCurrentUser = isSentByCurrentUser,
@@ -85,7 +90,7 @@ fun ReplyImageBubble(
                 modifier = Modifier
                     .padding(8.dp),
                 text = message.text,
-                color = MaterialTheme.colorScheme.surface
+                color = textColor
             )
         }
     }
@@ -105,7 +110,7 @@ private fun ReplyImageBubblePreview() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ReplyImageBubble(
-                    isSentByCurrentUser = true,
+                    isSentByCurrentUser = false,
                     message = Message(
                         messageId = "1",
                         conversationId = "1",
