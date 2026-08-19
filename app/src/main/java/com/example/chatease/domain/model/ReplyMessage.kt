@@ -7,5 +7,6 @@ data class ReplyMessage(
     val senderId: String = "",
     val text: String = "",
     val messageType: MessageType = MessageType.TEXT,
-    val fileName: String = ""
+    val fileName: String = "",
+    val imageUrl: String? = null
 )
