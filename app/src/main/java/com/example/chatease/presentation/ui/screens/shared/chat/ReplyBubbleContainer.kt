@@ -55,7 +55,12 @@ fun ReplyBubbleContainer(
     }
 
     Column(
-        modifier = modifier.widthIn(max = 250.dp),
+        modifier = modifier
+            .widthIn(max = 250.dp)
+            .offset(
+                y = if (!isSentByCurrentUser) 10.dp else 0.dp,
+                x = if (!isSentByCurrentUser) 4.dp else 0.dp
+            ),
         horizontalAlignment = if (isSentByCurrentUser) {
             Alignment.End
         } else {
