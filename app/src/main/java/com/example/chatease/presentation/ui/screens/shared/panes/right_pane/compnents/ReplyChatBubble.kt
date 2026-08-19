@@ -1,15 +1,22 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.dp
 import com.example.chatease.domain.model.Message
 import com.example.chatease.domain.model.enums.ConversationType
 import com.example.chatease.domain.model.enums.MessageType
@@ -42,11 +49,27 @@ fun ReplyChatBubble(
         currentUserId = currentUserId,
         messageSenderName = messageSenderName,
         repliedMessageSenderName = repliedMessageSenderName,
-        onReplyPreviewClick = onReplyPreviewClick,
-        replyPreviewText = if (message.replyMessage?.messageType == MessageType.FILE) {
-            message.replyMessage.fileName
-        } else {
-            null
+        replyPreview = {
+            Surface(
+                modifier = Modifier
+                    .offset(
+                        x = if (isSentByCurrentUser) (-8).dp else 12.dp,
+                        y = 10.dp
+                    )
+                    .clickable(onClick = onReplyPreviewClick),
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                shape = RoundedCornerShape(15.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(12.dp),
+                    text = if (message.replyMessage?.messageType == MessageType.FILE) {
+                        message.replyMessage.fileName
+                    } else {
+                        message.replyMessage?.text.orEmpty()
+                    },
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
         }
     ) {
         ChatBubble(
