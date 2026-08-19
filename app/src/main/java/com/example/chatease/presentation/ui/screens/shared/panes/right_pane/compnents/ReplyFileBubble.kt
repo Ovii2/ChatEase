@@ -1,12 +1,16 @@
 package com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,8 +52,24 @@ fun ReplyFileBubble(
         currentUserId = currentUserId,
         messageSenderName = messageSenderName,
         repliedMessageSenderName = repliedMessageSenderName,
-        onReplyPreviewClick = onReplyPreviewClick,
-        replyPreviewText = filename
+        replyPreview = {
+            Surface(
+                modifier = Modifier
+                    .offset(
+                        x = if (isSentByCurrentUser) (-8).dp else 12.dp,
+                        y = (10).dp
+                    )
+                    .clickable(onClick = onReplyPreviewClick),
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                shape = RoundedCornerShape(15.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(12.dp),
+                    text = filename,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
+        }
     ) {
         MessageBubbleContainer(
             message = message,
