@@ -114,7 +114,8 @@ class ChatViewModel @Inject constructor(
                             senderId = message.senderId,
                             text = message.text,
                             messageType = message.messageType,
-                            fileName = message.fileAttachments.firstOrNull()?.name.orEmpty()
+                            fileName = message.fileAttachments.firstOrNull()?.name.orEmpty(),
+                            imageUrl = message.fileAttachments.firstOrNull()?.url
                         )
                     }
                 )
