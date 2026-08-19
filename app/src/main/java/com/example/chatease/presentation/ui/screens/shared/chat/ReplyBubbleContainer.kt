@@ -1,6 +1,5 @@
 package com.example.chatease.presentation.ui.screens.shared.chat
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,13 +8,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,8 +36,7 @@ fun ReplyBubbleContainer(
     currentUserId: String,
     messageSenderName: String,
     repliedMessageSenderName: String,
-    replyPreviewText: String? = null,
-    onReplyPreviewClick: () -> Unit,
+    replyPreview: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
     val replied = when {
@@ -107,25 +103,11 @@ fun ReplyBubbleContainer(
                 )
             }
         }
-        Surface(
-            modifier = Modifier
-                .offset(
-                    x = if (isSentByCurrentUser) (-8).dp else 12.dp,
-                    y = (10).dp
-                )
-                .clickable(onClick = onReplyPreviewClick),
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            shape = RoundedCornerShape(15.dp)
-        ) {
-            Text(
-                modifier = Modifier.padding(12.dp),
-                text = replyPreviewText ?: message.replyMessage?.text.orEmpty(),
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-            )
-        }
+        replyPreview()
         content()
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -149,7 +131,7 @@ private fun ReplyBubbleContainerPreview() {
                         timeStamp = System.currentTimeMillis(),
                         seenBy = listOf("1", "2"),
                         reactions = emptyMap(),
-                        messageType = MessageType.FILE,
+                        messageType = MessageType.IMAGE,
                         replyMessage = ReplyMessage(
                             messageId = "1",
                             senderId = "1",
@@ -168,7 +150,7 @@ private fun ReplyBubbleContainerPreview() {
                     currentUserId = "1",
                     messageSenderName = "Tester",
                     repliedMessageSenderName = "Test",
-                    onReplyPreviewClick = {},
+                    replyPreview = {},
                     content = {}
                 )
             }
