@@ -1,9 +1,14 @@
 package com.example.chatease.di
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.disk.DiskCache
+import coil3.disk.directory
 import com.example.chatease.data.notifications.NotificationHelper
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.domain.repository.UserRepository
@@ -17,7 +22,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltAndroidApp
-class ChatEase : Application(), DefaultLifecycleObserver {
+class ChatEase :
+    Application(),
+    DefaultLifecycleObserver,
+    SingletonImageLoader.Factory {
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -65,5 +73,16 @@ class ChatEase : Application(), DefaultLifecycleObserver {
                 status = UserPresenceStatus.AWAY
             )
         }
+    }
+
+    override fun newImageLoader(context: Context): ImageLoader {
+        return ImageLoader.Builder(context)
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(context.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.02)
+                    .build()
+            }
+            .build()
     }
 }
