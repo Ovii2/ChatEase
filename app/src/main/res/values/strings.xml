@@ -323,5 +323,36 @@
 
     <string name="total_images">%1$d images</string>
 
+    <string name="membership">Membership</string>
+    <string name="membership_title_prefix">Unlock your</string>
+    <string name="membership_title_highlight">best experience</string>
+    <string name="membership_label">Choose the plan that\'s right for you</string>
+
+    <string name="free_title">Free</string>
+    <string name="free_label">Good for getting started</string>
+    <string name="free_price">€0</string>
+    <string name="free_duration">Forever</string>
+    <string name="free_benefit_1">Access to basic feature</string>
+    <string name="free_benefit_2">Limited templates &amp; content</string>
+    <string name="free_benefit_3">Community support</string>
+
+    <string name="premium_title">Premium</string>
+    <string name="premium_label">Most popular choice</string>
+    <string name="premium_price">€9.99</string>
+    <string name="premium_duration">Billed Monthly</string>
+    <string name="premium_benefit_1">Unlimited access to templates</string>
+    <string name="premium_benefit_2">Advanced tools &amp; features</string>
+    <string name="premium_benefit_3">Remove ads</string>
+    <string name="premium_benefit_4">Priority support</string>
+
+    <string name="ultra_title">Ultra</string>
+    <string name="ultra_label">For power users</string>
+    <string name="ultra_price">€19.99</string>
+    <string name="ultra_duration">Billed Monthly</string>
+    <string name="ultra_benefit_1">Everything in premium</string>
+    <string name="ultra_benefit_2">Exclusive content &amp; early access</string>
+    <string name="ultra_benefit_3">1 on 1 chat preview</string>
+    <string name="ultra_benefit_4">Advanced analytics</string>
+
 
 </resources>
