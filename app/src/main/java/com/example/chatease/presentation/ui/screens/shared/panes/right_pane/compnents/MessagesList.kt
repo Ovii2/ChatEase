@@ -191,7 +191,6 @@ fun MessagesList(
                                     },
                                     onDismissReactions = {
                                         onSelectedReactionMessageIdChange(null)
-                                        onDismissMessageActions()
                                     },
                                     onReactionClick = { messageId, reaction ->
                                         onReactionClick(messageId, reaction)
