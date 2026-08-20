@@ -321,5 +321,7 @@
     <string name="no_docs_title">No docs yet</string>
     <string name="no_docs_body">All your docs will be shown here</string>
 
+    <string name="total_images">%1$d images</string>
+
 
 </resources>
