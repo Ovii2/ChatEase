@@ -53,11 +53,15 @@ fun MultipleImageChatBubble(
     }
 
     MediaBubbleContainer(
+        modifier = modifier.padding(
+            start = if (!isSentByCurrentUser) 6.dp else 0.dp,
+            top = 6.dp
+        ),
         isSentByCurrentUser = isSentByCurrentUser,
         onForwardClick = onForwardClick
     ) {
         MessageBubbleContainer(
-            modifier = modifier
+            modifier = Modifier
                 .weight(1f)
                 .background(
                     color = backgroundColor,
@@ -161,7 +165,7 @@ private fun MultipleImageChatBubblePreview() {
             ) {
                 MultipleImageChatBubble(
                     message = message,
-                    isSentByCurrentUser = true,
+                    isSentByCurrentUser = false,
                     showReactions = false,
                     onLongClick = {},
                     onDismissReactions = { },
