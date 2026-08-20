@@ -360,23 +360,43 @@ fun DirectMessageListItem(
                 }
 
                 MessageType.IMAGE -> {
-                    ReplyImageBubble(
-                        isSentByCurrentUser = isSentByCurrentUser,
-                        message = message,
-                        showReactions = message.messageId == selectedReactionMessageId,
-                        onClick = {},
-                        onLongClick = onLongClick,
-                        onDismissReactions = onDismissReactions,
-                        onReactionClick = onReactionClick,
-                        onShowUsersReactionsClick = onShowUsersReactionsClick,
-                        onRemoveReactionClick = onRemoveReactionClick,
-                        isBlockedByOtherUser = isBlockedByOtherUser,
-                        isUserMemberOfGroup = isUserMemberOfGroup,
-                        currentUserId = currentUserId,
-                        messageSenderName = messageSenderName,
-                        onReplyPreviewClick = onReplyPreviewClick,
-                        repliedMessageSenderName = repliedMessageSenderName
-                    )
+                    if (replyMessage.imageCount > 1) {
+                        ReplyMultipleImageChatBubble(
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            message = message,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onLongClick = onLongClick,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            onRemoveReactionClick = onRemoveReactionClick,
+                            isBlockedByOtherUser = isBlockedByOtherUser,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                            currentUserId = currentUserId,
+                            messageSenderName = messageSenderName,
+                            onReplyPreviewClick = onReplyPreviewClick,
+                            repliedMessageSenderName = repliedMessageSenderName,
+                            imageCount = replyMessage.imageCount
+                        )
+                    } else {
+                        ReplyImageBubble(
+                            isSentByCurrentUser = isSentByCurrentUser,
+                            message = message,
+                            showReactions = message.messageId == selectedReactionMessageId,
+                            onClick = {},
+                            onLongClick = onLongClick,
+                            onDismissReactions = onDismissReactions,
+                            onReactionClick = onReactionClick,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            onRemoveReactionClick = onRemoveReactionClick,
+                            isBlockedByOtherUser = isBlockedByOtherUser,
+                            isUserMemberOfGroup = isUserMemberOfGroup,
+                            currentUserId = currentUserId,
+                            messageSenderName = messageSenderName,
+                            onReplyPreviewClick = onReplyPreviewClick,
+                            repliedMessageSenderName = repliedMessageSenderName
+                        )
+                    }
                 }
 
                 MessageType.GIF -> {}
@@ -591,23 +611,43 @@ fun GroupMessageListItem(
                     }
 
                     MessageType.IMAGE -> {
-                        ReplyImageBubble(
-                            isSentByCurrentUser = isSentByCurrentUser,
-                            message = message,
-                            showReactions = message.messageId == selectedReactionMessageId,
-                            onClick = {},
-                            onLongClick = onLongClick,
-                            onDismissReactions = onDismissReactions,
-                            onReactionClick = onReactionClick,
-                            onShowUsersReactionsClick = onShowUsersReactionsClick,
-                            onRemoveReactionClick = onRemoveReactionClick,
-                            isBlockedByOtherUser = isBlockedByOtherUser,
-                            isUserMemberOfGroup = isUserMemberOfGroup,
-                            currentUserId = currentUserId,
-                            messageSenderName = messageSenderName,
-                            onReplyPreviewClick = onReplyPreviewClick,
-                            repliedMessageSenderName = repliedMessageSenderName
-                        )
+                        if (replyMessage.imageCount > 1) {
+                            ReplyMultipleImageChatBubble(
+                                isSentByCurrentUser = isSentByCurrentUser,
+                                message = message,
+                                showReactions = message.messageId == selectedReactionMessageId,
+                                onLongClick = onLongClick,
+                                onDismissReactions = onDismissReactions,
+                                onReactionClick = onReactionClick,
+                                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                                onRemoveReactionClick = onRemoveReactionClick,
+                                isBlockedByOtherUser = isBlockedByOtherUser,
+                                isUserMemberOfGroup = isUserMemberOfGroup,
+                                currentUserId = currentUserId,
+                                messageSenderName = messageSenderName,
+                                onReplyPreviewClick = onReplyPreviewClick,
+                                repliedMessageSenderName = repliedMessageSenderName,
+                                imageCount = replyMessage.imageCount
+                            )
+                        } else {
+                            ReplyImageBubble(
+                                isSentByCurrentUser = isSentByCurrentUser,
+                                message = message,
+                                showReactions = message.messageId == selectedReactionMessageId,
+                                onClick = {},
+                                onLongClick = onLongClick,
+                                onDismissReactions = onDismissReactions,
+                                onReactionClick = onReactionClick,
+                                onShowUsersReactionsClick = onShowUsersReactionsClick,
+                                onRemoveReactionClick = onRemoveReactionClick,
+                                isBlockedByOtherUser = isBlockedByOtherUser,
+                                isUserMemberOfGroup = isUserMemberOfGroup,
+                                currentUserId = currentUserId,
+                                messageSenderName = messageSenderName,
+                                onReplyPreviewClick = onReplyPreviewClick,
+                                repliedMessageSenderName = repliedMessageSenderName
+                            )
+                        }
                     }
 
                     MessageType.GIF -> {}
