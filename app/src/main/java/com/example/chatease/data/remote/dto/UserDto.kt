@@ -1,5 +1,6 @@
 package com.example.chatease.data.remote.dto
 
+import com.example.chatease.domain.model.enums.Membership
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 
 data class UserDto(
@@ -9,5 +10,6 @@ data class UserDto(
     val imageUrl: String? = null,
     val status: String = UserPresenceStatus.ONLINE.name,
     val blockedUserIds: List<String> = emptyList(),
-    val fcmToken: String = ""
+    val fcmToken: String = "",
+    val membership: String = Membership.FREE.name
 )
