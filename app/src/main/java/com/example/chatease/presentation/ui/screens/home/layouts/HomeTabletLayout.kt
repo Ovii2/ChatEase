@@ -71,7 +71,8 @@ fun HomeTabletLayout(
     fileDownloadUiState: FileDownloadUiState,
     snackbarHostState: SnackbarHostState,
     mediaItems: List<MediaItem>,
-    onNavigateToMediaAndDocsScreen: () -> Unit
+    onNavigateToMediaAndDocsScreen: () -> Unit,
+    onNavigateToMembershipScreen: () -> Unit,
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -96,7 +97,7 @@ fun HomeTabletLayout(
                             navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                         }
                     },
-                    onClickToSeeAll = {},
+                    onNavigateToMembershipScreen = onNavigateToMembershipScreen,
                     conversations = state.conversations,
                     focusManager = focusManager,
                     onLogoutClick = onLogoutClick,

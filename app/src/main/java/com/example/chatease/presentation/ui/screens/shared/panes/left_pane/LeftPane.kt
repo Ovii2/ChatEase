@@ -35,7 +35,7 @@ fun LeftPane(
     selectedCategory: String,
     onSelectCategory: (String) -> Unit,
     onConversationClick: (String, Boolean) -> Unit,
-    onClickToSeeAll: () -> Unit,
+    onNavigateToMembershipScreen: () -> Unit,
     conversations: List<ConversationUiModel>,
     focusManager: FocusManager,
     onLogoutClick: () -> Unit,
@@ -70,7 +70,7 @@ fun LeftPane(
             RecentChatsList(
                 conversations = conversations,
                 onConversationClick = onConversationClick,
-                onClickToSeeAll = onClickToSeeAll,
+                onNavigateToMembershipScreen = onNavigateToMembershipScreen,
                 onLongClick = onLongClick,
                 currentUserId = currentUserId,
             )
@@ -123,7 +123,7 @@ private fun LeftPanePreview() {
                 selectedCategory = "All",
                 onSelectCategory = {},
                 onConversationClick = { _, _ -> },
-                onClickToSeeAll = {},
+                onNavigateToMembershipScreen = {},
                 conversations = List(4) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},

@@ -23,7 +23,8 @@ fun HomeCompactLayout(
     onLongClick: (String, Boolean) -> Unit,
     searchValue: String,
     onSearchValueChange: (String) -> Unit,
-    currentUserId: String
+    currentUserId: String,
+    onNavigateToMembershipScreen: () -> Unit,
 ) {
     LeftPane(
         modifier = modifier
@@ -34,7 +35,7 @@ fun HomeCompactLayout(
         selectedCategory = selectedCategory,
         onSelectCategory = onSelectCategory,
         onConversationClick = onConversationClick,
-        onClickToSeeAll = {},
+        onNavigateToMembershipScreen = onNavigateToMembershipScreen,
         conversations = state.conversations,
         focusManager = focusManager,
         onLogoutClick = onLogoutClick,

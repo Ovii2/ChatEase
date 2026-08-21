@@ -84,7 +84,8 @@ fun HomeScreen(
     onNavigateToChatInfo: (String) -> Unit,
     onViewContactClick: (String) -> Unit,
     snackbarHostState: SnackbarHostState,
-    onNavigateToMediaAndDocsScreen: (String) -> Unit
+    onNavigateToMediaAndDocsScreen: (String) -> Unit,
+    onNavigateToMembershipScreen: () -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -217,6 +218,7 @@ fun HomeScreen(
                                 searchValue = searchValue,
                                 onSearchValueChange = homeViewModel::onSearchValueChange,
                                 currentUserId = currentUserId,
+                                onNavigateToMembershipScreen = onNavigateToMembershipScreen
                             )
                         }
 
@@ -367,7 +369,8 @@ fun HomeScreen(
                                             messageId = messageId
                                         )
                                     }
-                                }
+                                },
+                                onNavigateToMembershipScreen = onNavigateToMembershipScreen
                             )
                         }
                     }
@@ -504,7 +507,7 @@ private fun HomeScreenCompactLayoutPreview() {
                 selectedCategory = "all",
                 onSelectCategory = {},
                 onConversationClick = { _, _ -> },
-                onClickToSeeAll = {},
+                onNavigateToMembershipScreen = {},
                 conversations = List(3) { conversation },
                 focusManager = LocalFocusManager.current,
                 onLogoutClick = {},
