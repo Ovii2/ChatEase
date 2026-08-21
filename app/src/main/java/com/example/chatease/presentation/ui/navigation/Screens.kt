@@ -60,6 +60,8 @@ sealed class Screens(val route: String) {
     data object MediaAndDocs : Screens("media_and_docs/{conversationId}") {
         fun createRoute(conversationId: String) = "media_and_docs/${conversationId}"
     }
+
+    data object Membership : Screens("membership")
 }
 
 @StringRes
@@ -86,5 +88,6 @@ fun Screens.toScreenName(): Int {
         Screens.GroupChatMembers -> R.string.members
         Screens.AddMembers -> R.string.add_members_group
         Screens.MediaAndDocs -> R.string.media_docs
+        Screens.Membership -> R.string.membership
     }
 }
