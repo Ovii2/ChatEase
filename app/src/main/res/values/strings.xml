@@ -353,6 +353,10 @@
     <string name="ultra_benefit_2">Exclusive content &amp; early access</string>
     <string name="ultra_benefit_3">1 on 1 chat preview</string>
     <string name="ultra_benefit_4">Advanced analytics</string>
+    <string name="ultra_benefit_5">Team collaboration workspace</string>
+
+    <string name="discount_off">%1$.0f%% OFF</string>
+    <string name="recommended">Recommended</string>
 
 
 </resources>
