@@ -360,5 +360,10 @@
 
     <string name="upgrade_premium">Upgrade to Premium!</string>
 
+    <string name="cancel_any_time">Cancel anytime. No hidden fees.</string>
+    <string name="secure_payments">Secure payments</string>
+    <string name="continue_btn">Continue</string>
+    <string name="restore_purchase">Restore Purchase</string>
+
 
 </resources>
