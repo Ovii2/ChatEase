@@ -1,12 +1,18 @@
 package com.example.chatease.presentation.ui.screens.membership.components
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -18,47 +24,64 @@ import com.example.chatease.domain.model.enums.Membership
 import com.example.chatease.presentation.ui.screens.membership.components.card.MembershipScreenCard
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun MembershipScreenBody(
     modifier: Modifier = Modifier,
 ) {
-    val listState = rememberLazyListState()
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = 1)
     val density = LocalDensity.current
-
-    LaunchedEffect(Unit) {
-        with(density) {
-            listState.scrollToItem(
-                index = 1,
-                scrollOffset = (-70).dp.roundToPx()
-            )
-        }
+    val activity = LocalActivity.current
+    val widthSizeClass = activity?.let {
+        calculateWindowSizeClass(it).widthSizeClass
     }
 
-    LazyRow(
-        modifier = modifier,
-        state = listState,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
-            MembershipScreenCard(
-                modifier = Modifier,
-                membership = Membership.FREE
-            )
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val cardWidth = when (widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 280.dp
+            WindowWidthSizeClass.Medium -> 300.dp
+            else -> 320.dp
         }
-        item {
-            MembershipScreenCard(
-                modifier = Modifier,
-                membership = Membership.PREMIUM,
-                isRecommended = true,
-                isDiscounted = true,
-                discount = 25.0
-            )
+        val centerOffset = (maxWidth - cardWidth) / 2
+
+        LaunchedEffect(Unit) {
+            with(density) {
+                listState.scrollToItem(
+                    index = 1,
+                    scrollOffset = -centerOffset.roundToPx()
+                )
+            }
         }
-        item {
-            MembershipScreenCard(
-                modifier = Modifier,
-                membership = Membership.ULTRA,
-            )
+
+        LazyRow(
+            modifier = Modifier,
+            state = listState,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                MembershipScreenCard(
+                    modifier = Modifier,
+                    membership = Membership.FREE,
+                    cardWidth = cardWidth
+                )
+            }
+            item {
+                MembershipScreenCard(
+                    modifier = Modifier,
+                    membership = Membership.PREMIUM,
+                    isRecommended = true,
+                    isDiscounted = true,
+                    discount = 25.0,
+                    cardWidth = cardWidth
+                )
+            }
+            item {
+                MembershipScreenCard(
+                    modifier = Modifier,
+                    membership = Membership.ULTRA,
+                    cardWidth = cardWidth
+                )
+            }
         }
     }
 }
