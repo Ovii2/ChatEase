@@ -22,16 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun MembershipCardRecommendedBadge(modifier: Modifier = Modifier) {
+fun MembershipCardRecommendedBadge(modifier: Modifier = Modifier, offsetY: Dp) {
     Box(
         modifier = modifier
-            .offset(y = (-15).dp)
+            .offset(y = offsetY)
             .size(
                 width = 160.dp,
                 height = 35.dp
@@ -77,7 +78,9 @@ private fun MembershipCardRecommendedBadgePreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MembershipCardRecommendedBadge()
+                MembershipCardRecommendedBadge(
+                    offsetY = (-15).dp
+                )
             }
         }
     }

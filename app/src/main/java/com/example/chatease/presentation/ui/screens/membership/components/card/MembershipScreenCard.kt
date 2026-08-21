@@ -58,7 +58,8 @@ fun MembershipScreenCard(
     Box {
         if (isRecommended) {
             MembershipCardRecommendedBadge(
-                modifier = modifier.align(Alignment.TopCenter)
+                modifier = modifier.align(Alignment.TopCenter),
+                offsetY = (-20).dp,
             )
         }
         Surface(
