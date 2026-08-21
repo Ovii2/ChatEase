@@ -9,15 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
 fun MembershipScreenContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
-        MembershipScreenTopSection()
+        MembershipScreenHeader()
+        MembershipScreenBody()
     }
 }
 
