@@ -22,7 +22,7 @@ import com.example.chatease.R
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 
 @Composable
-fun MembershipScreenTopSection(modifier: Modifier = Modifier) {
+fun MembershipScreenHeader(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,7 +59,7 @@ fun MembershipScreenTopSection(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun MembershipScreenTopSectionPreview() {
+private fun MembershipScreenHeaderPreview() {
     ChatEaseTheme {
         Scaffold { paddingValues ->
             Column(
@@ -69,7 +69,7 @@ private fun MembershipScreenTopSectionPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MembershipScreenTopSection()
+                MembershipScreenHeader()
             }
         }
     }
