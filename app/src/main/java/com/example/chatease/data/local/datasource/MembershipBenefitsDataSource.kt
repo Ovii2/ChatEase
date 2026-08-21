@@ -31,6 +31,7 @@ object MembershipBenefitsDataSource {
                     MembershipBenefitItem(text = R.string.ultra_benefit_2),
                     MembershipBenefitItem(text = R.string.ultra_benefit_3),
                     MembershipBenefitItem(text = R.string.ultra_benefit_4),
+                    MembershipBenefitItem(text = R.string.ultra_benefit_5),
                 )
             }
         }
