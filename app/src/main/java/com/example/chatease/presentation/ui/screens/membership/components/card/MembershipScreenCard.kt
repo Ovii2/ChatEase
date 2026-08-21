@@ -3,14 +3,18 @@ package com.example.chatease.presentation.ui.screens.membership.components.card
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -57,8 +61,8 @@ fun MembershipScreenCard(
         }
         Surface(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .heightIn(min = 500.dp)
+                .widthIn(max = 280.dp)
+                .heightIn(min = 520.dp)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }) {
@@ -113,12 +117,15 @@ fun MembershipScreenCard(
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
-                        .padding(vertical = 16.dp),
+                        .padding(
+                            top = if (!isRecommended) 32.dp else 0.dp,
+                            bottom = 8.dp
+                        ),
                     thickness = 1.dp,
                     color = if (isRecommended) {
                         MaterialTheme.colorScheme.primaryContainer
                     } else {
-                        MaterialTheme.colorScheme.surfaceVariant
+                        MaterialTheme.colorScheme.outlineVariant
                     }
                 )
                 MembershipScreenBenefitsSection(
@@ -134,18 +141,24 @@ fun MembershipScreenCard(
 private fun MembershipScreenCardPreview() {
     ChatEaseTheme {
         Scaffold { paddingValues ->
-            Column(
+            Row(
                 modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
                     .fillMaxSize()
                     .padding(paddingValues),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                MembershipScreenCard(
+                    membership = Membership.FREE
+                )
                 MembershipScreenCard(
                     membership = Membership.PREMIUM,
                     isRecommended = true,
                     isDiscounted = true,
                     discount = 25.0
+                )
+                MembershipScreenCard(
+                    membership = Membership.ULTRA
                 )
             }
         }
