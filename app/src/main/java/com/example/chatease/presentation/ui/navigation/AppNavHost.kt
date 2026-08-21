@@ -133,6 +133,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToMembershipScreen = {
+                    navController.navigate(Screens.Membership.route) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.Chat.route) {
