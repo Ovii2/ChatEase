@@ -50,7 +50,7 @@ fun RecentChatsList(
     modifier: Modifier = Modifier,
     conversations: List<ConversationUiModel>,
     onConversationClick: (String, Boolean) -> Unit,
-    onClickToSeeAll: () -> Unit,
+    onNavigateToMembershipScreen: () -> Unit,
     onLongClick: (String, Boolean) -> Unit,
     currentUserId: String
 ) {
@@ -70,8 +70,8 @@ fun RecentChatsList(
             )
             if (conversations.isNotEmpty()) {
                 Text(
-                    modifier = Modifier.clickable { onClickToSeeAll() },
-                    text = stringResource(R.string.see_all),
+                    modifier = Modifier.clickable { onNavigateToMembershipScreen() },
+                    text = stringResource(R.string.upgrade_premium),
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -276,7 +276,7 @@ private fun RecentChatsListPreview() {
                     )
                 },
                 onConversationClick = { _, _ -> },
-                onClickToSeeAll = {},
+                onNavigateToMembershipScreen = {},
                 onLongClick = { _, _ -> },
                 currentUserId = "1",
             )
