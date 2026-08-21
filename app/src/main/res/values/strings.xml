@@ -358,5 +358,7 @@
     <string name="discount_off">%1$.0f%% OFF</string>
     <string name="recommended">Recommended</string>
 
+    <string name="upgrade_premium">Upgrade to Premium!</string>
+
 
 </resources>
