@@ -58,6 +58,7 @@ fun GroupChatScreen(
     LaunchedEffect(conversationId) {
         groupChatViewModel.loadGroupConversation(conversationId)
         chatViewModel.loadConversation(conversationId)
+        chatViewModel.preLoadMediaItems(conversationId)
     }
 
     LaunchedEffect(fileDownloadUiState) {
