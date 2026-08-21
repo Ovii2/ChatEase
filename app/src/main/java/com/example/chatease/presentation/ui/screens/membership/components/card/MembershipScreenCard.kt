@@ -65,14 +65,16 @@ fun MembershipScreenCard(
                     isSelected = !isSelected
                 },
             color = Color.Transparent,
-            shadowElevation = 1.dp,
             shape = RoundedCornerShape(10.dp),
-            border = if (isSelected) {
+            border =
                 BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.primary
+                    color = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)
+                    }
                 )
-            } else null
         ) {
             Column(
                 modifier = Modifier
