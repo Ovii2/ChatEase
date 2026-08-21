@@ -96,8 +96,10 @@ fun MembershipCardPricingSection(
             }
 
         } else {
+            val formattedPrice = if (price == 0.0) "€0" else "€%.2f".format(price)
+
             Text(
-                text = "€$price",
+                text = formattedPrice,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.W600
             )
