@@ -3,6 +3,7 @@ package com.example.chatease.presentation.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.chatease.R
 import com.example.chatease.data.remote.dto.UserDto
+import com.example.chatease.domain.model.enums.Membership
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.state.SignUpUiState
 import com.google.firebase.auth.FirebaseAuth
@@ -47,7 +48,8 @@ class SignUpViewModel @Inject constructor(
                     fullName = capitalizedFullName,
                     email = email.trim(),
                     imageUrl = null,
-                    status = UserPresenceStatus.OFFLINE.name
+                    status = UserPresenceStatus.OFFLINE.name,
+                    membership = Membership.FREE.name
                 )
 
                 firestore.collection(USERS)
