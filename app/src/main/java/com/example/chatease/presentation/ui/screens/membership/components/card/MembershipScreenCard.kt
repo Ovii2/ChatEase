@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.chatease.data.local.datasource.MembershipBenefitsDataSource
 import com.example.chatease.domain.model.enums.Membership
@@ -42,7 +43,8 @@ fun MembershipScreenCard(
     isRecommended: Boolean = false,
     isDiscounted: Boolean = false,
     membership: Membership,
-    discount: Double = 0.0
+    discount: Double = 0.0,
+    cardWidth: Dp = 280.dp
 ) {
     val backgroundTintColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
     var isSelected by rememberSaveable { mutableStateOf(false) }
@@ -61,7 +63,7 @@ fun MembershipScreenCard(
         }
         Surface(
             modifier = Modifier
-                .widthIn(max = 280.dp)
+                .widthIn(max = cardWidth)
                 .heightIn(min = 520.dp)
                 .clickable(
                     indication = null,
