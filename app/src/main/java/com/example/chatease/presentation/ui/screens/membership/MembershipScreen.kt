@@ -1,8 +1,10 @@
 package com.example.chatease.presentation.ui.screens.membership
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,7 +31,17 @@ fun MembershipScreen(
             )
         }
     ) { paddingValues ->
-        MembershipScreenContent(modifier = Modifier.padding(paddingValues))
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            MembershipScreenContent(
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
     }
 }
 
