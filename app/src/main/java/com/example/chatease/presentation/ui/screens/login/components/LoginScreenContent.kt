@@ -36,7 +36,7 @@ fun LoginScreenContent(
     showPassWordError: Boolean,
     passwordImeAction: ImeAction,
     onTogglePasswordVisibility: () -> Unit,
-    headerLogoSize: Dp = 80.dp,
+    headerLogoSize: Dp = 120.dp,
     headerTitleStyle: TextStyle = MaterialTheme.typography.displaySmall,
     @StringRes titleText: Int,
     @StringRes labelText: Int,

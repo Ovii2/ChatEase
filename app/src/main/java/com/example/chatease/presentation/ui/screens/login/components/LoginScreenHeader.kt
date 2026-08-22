@@ -25,7 +25,7 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 @Composable
 fun LoginScreenHeader(
     modifier: Modifier = Modifier,
-    logoSize: Dp = 80.dp,
+    logoSize: Dp = 120.dp,
     titleStyle: TextStyle = MaterialTheme.typography.displaySmall,
     @StringRes titleText: Int,
     @StringRes labelText: Int

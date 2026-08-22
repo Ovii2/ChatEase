@@ -253,7 +253,7 @@ fun LoginScreenCompactLayout(
             onLoginClick = onLoginClick,
             onRememberMeCheckChange = onRememberMeCheckChange,
             rememberMeChecked = rememberMeChecked,
-            loginUiState = loginUiState,
+            loginUiState = loginUiState
         )
     }
 }
@@ -303,7 +303,7 @@ fun LoginScreenExpandedLayout(
                 LoginScreenHeader(
                     titleText = R.string.app_name,
                     labelText = R.string.app_moto,
-                    logoSize = 120.dp
+                    logoSize = 160.dp
                 )
             }
             Box(
@@ -323,7 +323,7 @@ fun LoginScreenExpandedLayout(
                 Card(
                     modifier = Modifier
                         .width(500.dp)
-                        .fillMaxHeight(0.85f),
+                        .fillMaxHeight(0.95f),
                     elevation = CardDefaults.cardElevation(8.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
@@ -345,7 +345,6 @@ fun LoginScreenExpandedLayout(
                             passwordImeAction = ImeAction.Done,
                             onTogglePasswordVisibility = onTogglePasswordVisibility,
                             paddingValues = PaddingValues(),
-                            headerLogoSize = 70.dp,
                             headerTitleStyle = MaterialTheme.typography.bodyLarge,
                             titleText = R.string.welcome_back,
                             labelText = R.string.login_to_continue,
@@ -365,7 +364,7 @@ fun LoginScreenExpandedLayout(
 @Preview(showBackground = true, showSystemUi = true, name = "Compact")
 @Composable
 private fun LoginScreenCompactPreview() {
-    ChatEaseTheme() {
+    ChatEaseTheme {
         LoginScreenCompactLayout(
             focusManager = LocalFocusManager.current,
             email = "",
@@ -397,7 +396,7 @@ private fun LoginScreenExpandedPreview() {
     val background =
         if (isSystemInDarkTheme()) R.drawable.background_login_dark else R.drawable.login_screen_background
 
-    ChatEaseTheme() {
+    ChatEaseTheme {
         LoginScreenExpandedLayout(
             email = "",
             onEmailValueChange = {},
