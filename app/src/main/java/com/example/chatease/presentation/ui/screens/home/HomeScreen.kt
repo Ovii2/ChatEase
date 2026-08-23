@@ -46,6 +46,7 @@ import com.example.chatease.presentation.ui.screens.shared.loading.CommonLinearL
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ImageViewerDialog
 import com.example.chatease.presentation.ui.state.ChatPaneUiState
+import com.example.chatease.presentation.ui.state.GroupChatUiState
 import com.example.chatease.presentation.ui.state.HomeUiState
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
@@ -54,6 +55,7 @@ import com.example.chatease.presentation.ui.viewmodel.ChatInfoViewModel
 import com.example.chatease.presentation.ui.viewmodel.ChatViewModel
 import com.example.chatease.presentation.ui.viewmodel.ContactsViewModel
 import com.example.chatease.presentation.ui.viewmodel.GroupChatInfoViewModel
+import com.example.chatease.presentation.ui.viewmodel.GroupChatViewModel
 import com.example.chatease.presentation.ui.viewmodel.HomeViewModel
 import com.example.chatease.utils.openFile
 
@@ -73,6 +75,7 @@ fun HomeScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     contactsViewModel: ContactsViewModel = hiltViewModel(),
     chatViewModel: ChatViewModel = hiltViewModel(),
+    groupChatViewModel: GroupChatViewModel = hiltViewModel(),
     chatInfoViewModel: ChatInfoViewModel = hiltViewModel(),
     groupChatInfoViewModel: GroupChatInfoViewModel = hiltViewModel(),
     callViewModel: CallViewModel = hiltViewModel(),
@@ -138,6 +141,8 @@ fun HomeScreen(
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     var selectedReactionsMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     var showBlockUserBottomSheet by rememberSaveable { mutableStateOf(false) }
+
+    val groupChatUiState by groupChatViewModel.uiState.collectAsState()
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -239,8 +244,14 @@ fun HomeScreen(
                                 messages = messages,
                                 isConversationCreator = isConversationCreator,
                                 onSelectCategory = homeViewModel::selectCategory,
-                                onConversationClick = { conversationId, _ ->
+                                onConversationClick = { conversationId, isGroup ->
                                     selectedConversationId = conversationId
+                                    selectedConversationIsGroup = isGroup
+
+                                    if (isGroup) {
+                                        groupChatViewModel.loadGroupConversation(conversationId)
+                                    }
+
                                     homeViewModel.clearSearch()
                                 },
                                 onLogoutClick = {
@@ -281,9 +292,24 @@ fun HomeScreen(
                                 },
                                 isBlockedByOtherUser = isBlockedByOtherUser,
                                 isBlockedByMe = false,
-                                chatPaneUiState = ChatPaneUiState.DirectChat(
-                                    user = user
-                                ),
+                                chatPaneUiState = if (selectedConversationIsGroup) {
+                                    val groupState = groupChatUiState as? GroupChatUiState.Success
+
+                                    if (groupState != null) {
+                                        ChatPaneUiState.GroupChat(
+                                            group = groupState.group,
+                                            members = groupState.members
+                                        )
+                                    } else {
+                                        ChatPaneUiState.DirectChat(
+                                            user = user
+                                        )
+                                    }
+                                } else {
+                                    ChatPaneUiState.DirectChat(
+                                        user = user
+                                    )
+                                },
                                 onNavigateToGroupChatInfo = {},
                                 onLongClick = { conversationId, isGroup ->
                                     selectedConversationId = conversationId

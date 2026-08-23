@@ -110,6 +110,7 @@ fun HomeTabletLayout(
                     selectedCategory = selectedCategory,
                     onSelectCategory = onSelectCategory,
                     onConversationClick = { conversationId, isGroup ->
+                        isExtraPaneVisible = false
                         onConversationClick(conversationId, isGroup)
 
                         scope.launch {
@@ -142,7 +143,15 @@ fun HomeTabletLayout(
                             onMessagesVisible = onMessagesVisible,
                             onReactionClick = onReactionClick,
                             onNavigateToChatInfo = {
-                                isExtraPaneVisible = !isExtraPaneVisible
+                                when (chatPaneUiState) {
+                                    is ChatPaneUiState.GroupChat -> {
+                                        onNavigateToGroupChatInfo(chatPaneUiState.group.conversationId)
+                                    }
+
+                                    is ChatPaneUiState.DirectChat -> {
+                                        isExtraPaneVisible = !isExtraPaneVisible
+                                    }
+                                }
                             },
                             isPeekEnabled = isPeekEnabled,
                             onTogglePeek = onTogglePeek,
