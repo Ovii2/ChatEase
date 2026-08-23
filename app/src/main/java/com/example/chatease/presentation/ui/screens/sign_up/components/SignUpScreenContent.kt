@@ -1,7 +1,6 @@
 package com.example.chatease.presentation.ui.screens.sign_up.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -60,8 +60,13 @@ fun SignUpScreenContent(
     onNavigateToLoginScreen: () -> Unit,
     signUpUiState: SignUpUiState
 ) {
-    val appleLogo =
-        if (isSystemInDarkTheme()) R.drawable.ic_apple_white else R.drawable.ic_apple_black
+    val isDarkTheme = MaterialTheme.colorScheme.background.luminance() < 0.5f
+
+    val appleLogo = if (isDarkTheme) {
+        R.drawable.ic_apple_white
+    } else {
+        R.drawable.ic_apple_black
+    }
 
     Card(
         modifier = modifier,
