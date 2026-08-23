@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.Category
@@ -42,7 +41,6 @@ import com.example.chatease.presentation.ui.screens.shared.bottom_sheet.CommonCh
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonAlertDialog
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationOptionsBottomSheet
-import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
 import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonLinearLoader
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.LeftPane
@@ -79,14 +77,14 @@ fun HomeScreen(
     groupChatInfoViewModel: GroupChatInfoViewModel = hiltViewModel(),
     callViewModel: CallViewModel = hiltViewModel(),
     onNavigateToLoginScreen: () -> Unit,
-    onStartNewChat: () -> Unit,
     currentRoute: String,
     onBackClick: () -> Unit,
     onNavigateToChatInfo: (String) -> Unit,
     onViewContactClick: (String) -> Unit,
     snackbarHostState: SnackbarHostState,
     onNavigateToMediaAndDocsScreen: (String) -> Unit,
-    onNavigateToMembershipScreen: () -> Unit
+    onNavigateToMembershipScreen: () -> Unit,
+    onStartNewChat: () -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val selectedCategory by homeViewModel.selectedCategory.collectAsState()
@@ -171,12 +169,7 @@ fun HomeScreen(
                 ) {
                     focusManager.clearFocus()
                 },
-            floatingActionButton = {
-                StartChatFab(
-                    modifier = Modifier.padding(8.dp),
-                    onStartNewChat = onStartNewChat
-                )
-            }) { paddingValues ->
+        ) { paddingValues ->
             when (val state = uiState) {
                 is HomeUiState.Error -> {
                     CommonErrorDisplay(
@@ -226,7 +219,8 @@ fun HomeScreen(
                                 searchValue = searchValue,
                                 onSearchValueChange = homeViewModel::onSearchValueChange,
                                 currentUserId = currentUserId,
-                                onNavigateToMembershipScreen = onNavigateToMembershipScreen
+                                onNavigateToMembershipScreen = onNavigateToMembershipScreen,
+                                onStartNewChat = onStartNewChat,
                             )
                         }
 
@@ -402,6 +396,7 @@ fun HomeScreen(
                                 onDeleteConversationClick = { showDeleteConversationDialog = true },
                                 onBlockContactClick = { showBlockUserBottomSheet = true },
                                 onUnblockContactClick = { chatInfoViewModel.unblockUser(user.uid) },
+                                onStartNewChat = onStartNewChat,
                             )
                         }
                     }
@@ -559,6 +554,7 @@ private fun HomeScreenCompactLayoutPreview() {
                 searchValue = "",
                 onSearchValueChange = {},
                 currentUserId = "1",
+                onStartNewChat = {},
             )
         }
     }

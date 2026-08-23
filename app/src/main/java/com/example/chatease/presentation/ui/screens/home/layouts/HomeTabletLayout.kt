@@ -77,7 +77,8 @@ fun HomeTabletLayout(
     onUpdateTypingStatus: (String) -> Unit,
     onDeleteConversationClick: () -> Unit,
     onBlockContactClick: (String) -> Unit,
-    onUnblockContactClick: (String) -> Unit
+    onUnblockContactClick: (String) -> Unit,
+    onStartNewChat: () -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -110,6 +111,7 @@ fun HomeTabletLayout(
                     searchValue = searchValue,
                     onSearchValueChange = onSearchValueChange,
                     currentUserId = currentUserId,
+                    onStartNewChat = onStartNewChat,
                 )
             }
         },

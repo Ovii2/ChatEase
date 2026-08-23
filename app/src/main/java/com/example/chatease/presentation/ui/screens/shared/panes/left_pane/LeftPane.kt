@@ -6,12 +6,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
@@ -23,6 +25,7 @@ import com.example.chatease.domain.model.User
 import com.example.chatease.domain.model.enums.MessageType
 import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
+import com.example.chatease.presentation.ui.screens.shared.chat.StartChatFab
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.components.LeftPaneHeader
 import com.example.chatease.presentation.ui.screens.shared.panes.left_pane.components.RecentChatsList
 import com.example.chatease.presentation.ui.theme.ChatEaseTheme
@@ -43,15 +46,18 @@ fun LeftPane(
     onLongClick: (String, Boolean) -> Unit,
     searchValue: String,
     onSearchValueChange: (String) -> Unit,
-    currentUserId: String
+    currentUserId: String,
+    onStartNewChat: () -> Unit
 ) {
     Box(
-        modifier = modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }
-        ) {
-            focusManager.clearFocus()
-        }) {
+        modifier = modifier
+            .fillMaxSize()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                focusManager.clearFocus()
+            }) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 12.dp),
@@ -75,6 +81,12 @@ fun LeftPane(
                 currentUserId = currentUserId,
             )
         }
+        StartChatFab(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            onStartNewChat = onStartNewChat
+        )
     }
 }
 
@@ -132,6 +144,7 @@ private fun LeftPanePreview() {
                 searchValue = "",
                 onSearchValueChange = {},
                 currentUserId = "1",
+                onStartNewChat = {},
             )
         }
     }

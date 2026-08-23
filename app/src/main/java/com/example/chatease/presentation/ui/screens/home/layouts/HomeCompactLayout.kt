@@ -25,6 +25,7 @@ fun HomeCompactLayout(
     onSearchValueChange: (String) -> Unit,
     currentUserId: String,
     onNavigateToMembershipScreen: () -> Unit,
+    onStartNewChat: () -> Unit
 ) {
     LeftPane(
         modifier = modifier
@@ -44,5 +45,6 @@ fun HomeCompactLayout(
         searchValue = searchValue,
         onSearchValueChange = onSearchValueChange,
         currentUserId = currentUserId,
+        onStartNewChat = onStartNewChat
     )
 }
