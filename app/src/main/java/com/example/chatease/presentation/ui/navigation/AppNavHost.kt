@@ -126,7 +126,11 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
-                onViewContactClick = {},
+                onViewContactClick = { userId ->
+                    navController.navigate(Screens.OtherUserProfile.createRoute(userId)) {
+                        launchSingleTop = true
+                    }
+                },
                 snackbarHostState = snackbarHostState,
                 onNavigateToMediaAndDocsScreen = { conversationId ->
                     navController.navigate(Screens.MediaAndDocs.createRoute(conversationId)) {
