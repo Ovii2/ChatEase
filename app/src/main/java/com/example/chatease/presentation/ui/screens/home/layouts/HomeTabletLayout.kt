@@ -189,7 +189,7 @@ fun HomeTabletLayout(
                             shadowElevation = 6.dp
                         ) {
                             ExtraPane(
-                                user = state.user,
+                                user = (chatPaneUiState as ChatPaneUiState.DirectChat).user,
                                 onDeleteConversationClick = onDeleteConversationClick,
                                 isConversationCreator = isConversationCreator,
                                 onBlockContactClick = onBlockContactClick,
