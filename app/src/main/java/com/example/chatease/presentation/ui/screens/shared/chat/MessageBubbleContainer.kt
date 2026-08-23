@@ -142,7 +142,10 @@ fun MessageBubbleContainer(
                         onShowUsersReactionsClick(message.messageId)
                     }
                     .align(Alignment.BottomEnd)
-                    .offset { IntOffset(x = -10, y = 65) }
+                    .offset(
+                        x = (-3).dp,
+                        y = 22.dp
+                    )
                     .padding(bottom = reactionBadgeBottomPadding),
                 reactionCounts = message.reactions.values
                     .groupingBy { it }
