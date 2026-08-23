@@ -5,7 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -20,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -37,9 +41,16 @@ fun AttachmentMenu(
     onAddImageClick: () -> Unit,
     onAddFileClick: () -> Unit
 ) {
+    val density = LocalDensity.current
+
     Popup(
         alignment = alignment,
-        offset = IntOffset(0, -170),
+        offset = IntOffset(
+            x = 0,
+            y = with(density) {
+                (-60).dp.roundToPx()
+            }
+        ),
         onDismissRequest = onDismiss,
         properties = PopupProperties(
             focusable = true,
@@ -52,8 +63,11 @@ fun AttachmentMenu(
             shape = RoundedCornerShape(10.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                modifier = Modifier
+                    .height(90.dp)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.Start
             ) {
                 AttachmentMenuItem(
                     icon = Icons.Outlined.Image,
