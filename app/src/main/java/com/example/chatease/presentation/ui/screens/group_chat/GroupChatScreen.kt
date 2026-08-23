@@ -20,6 +20,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.chatease.R
 import com.example.chatease.domain.model.enums.FileDownloadState
 import com.example.chatease.presentation.ui.screens.shared.chat.ReactionsDetailsBottomSheet
+import com.example.chatease.presentation.ui.screens.shared.error.CommonErrorDisplay
 import com.example.chatease.presentation.ui.screens.shared.loading.CommonCircularLoader
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.RightPane
 import com.example.chatease.presentation.ui.screens.shared.panes.right_pane.compnents.ImageViewerDialog
@@ -227,7 +228,13 @@ fun GroupChatScreen(
             }
         }
 
-        is GroupChatUiState.Error -> {}
+        is GroupChatUiState.Error -> {
+            CommonErrorDisplay(
+                showActionButton = true,
+                onRetryClick = { groupChatViewModel.loadGroupConversation(conversationId) }
+            )
+        }
+
         GroupChatUiState.Loading -> {
             CommonCircularLoader()
         }
