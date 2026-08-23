@@ -55,6 +55,7 @@ import com.example.chatease.presentation.ui.theme.ChatEaseTheme
 import com.example.chatease.presentation.ui.viewmodel.AuthViewModel
 import com.example.chatease.presentation.validation.AuthValidator
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -90,7 +91,7 @@ fun LoginScreen(
     LaunchedEffect(loginUiState) {
         when (loginUiState) {
             is LoginUiState.Success -> {
-                delay(600)
+                delay(600.milliseconds)
                 authViewModel.resetState()
                 onNavigateToHomeScreen()
                 focusManager.clearFocus()
