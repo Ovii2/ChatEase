@@ -1,16 +1,29 @@
 package com.example.chatease.presentation.ui.screens.home.layouts
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.unit.dp
@@ -82,6 +95,7 @@ fun HomeTabletLayout(
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
+    var isExtraPaneVisible by remember { mutableStateOf(false) }
 
     NavigableListDetailPaneScaffold(
         navigator = navigator,
@@ -117,56 +131,74 @@ fun HomeTabletLayout(
         },
         detailPane = {
             AnimatedPane {
-                RightPane(
-                    messages = messages,
-                    currentUserId = currentUserId,
-                    onBackClick = onBackClick,
-                    onSendMessageClick = onSendMessageClick,
-                    firstUnreadMessageId = firstUnreadMessageId,
-                    onMessagesVisible = onMessagesVisible,
-                    onReactionClick = onReactionClick,
-                    onNavigateToChatInfo = onNavigateToChatInfo,
-                    isPeekEnabled = isPeekEnabled,
-                    onTogglePeek = onTogglePeek,
-                    typingUserIds = typingUserIds,
-                    onUpdateTypingStatus = onUpdateTypingStatus,
-                    isBlockedByOtherUser = isBlockedByOtherUser,
-                    onStartAudioCall = {},
-                    chatPaneUiState = chatPaneUiState,
-                    onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
-                    onShowUsersReactionsClick = onShowUsersReactionsClick,
-                    onSendFile = onSendFile,
-                    onFileClick = onFileClick,
-                    onSendImages = onSendImages,
-                    onDownloadClick = onDownloadClick,
-                    uploadingFileId = uploadingFileId,
-                    fileUploadProgress = fileUploadProgress,
-                    pendingFileMessage = pendingFileMessage,
-                    pendingImageMessage = pendingImageMessage,
-                    fileDownloadUiState = fileDownloadUiState,
-                    snackbarHostState = snackbarHostState,
-                    onImageClick = onImageClick,
-                    onRemoveReactionClick = onRemoveReactionClick,
-                    typingTexts = typingTexts
-                )
+                Row(modifier = Modifier.fillMaxSize()) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        RightPane(
+                            messages = messages,
+                            currentUserId = currentUserId,
+                            onBackClick = onBackClick,
+                            onSendMessageClick = onSendMessageClick,
+                            firstUnreadMessageId = firstUnreadMessageId,
+                            onMessagesVisible = onMessagesVisible,
+                            onReactionClick = onReactionClick,
+                            onNavigateToChatInfo = {
+                                isExtraPaneVisible = !isExtraPaneVisible
+                            },
+                            isPeekEnabled = isPeekEnabled,
+                            onTogglePeek = onTogglePeek,
+                            typingUserIds = typingUserIds,
+                            onUpdateTypingStatus = onUpdateTypingStatus,
+                            isBlockedByOtherUser = isBlockedByOtherUser,
+                            onStartAudioCall = {},
+                            chatPaneUiState = chatPaneUiState,
+                            onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
+                            onShowUsersReactionsClick = onShowUsersReactionsClick,
+                            onSendFile = onSendFile,
+                            onFileClick = onFileClick,
+                            onSendImages = onSendImages,
+                            onDownloadClick = onDownloadClick,
+                            uploadingFileId = uploadingFileId,
+                            fileUploadProgress = fileUploadProgress,
+                            pendingFileMessage = pendingFileMessage,
+                            pendingImageMessage = pendingImageMessage,
+                            fileDownloadUiState = fileDownloadUiState,
+                            snackbarHostState = snackbarHostState,
+                            onImageClick = onImageClick,
+                            onRemoveReactionClick = onRemoveReactionClick,
+                            typingTexts = typingTexts
+                        )
+                    }
+                    AnimatedVisibility(
+                        visible = isExtraPaneVisible,
+                        enter = slideInHorizontally(initialOffsetX = { it }),
+                        exit = slideOutHorizontally(targetOffsetX = { it }),
+                    ) {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(400.dp),
+                            shadowElevation = 6.dp
+                        ) {
+                            ExtraPane(
+                                user = state.user,
+                                onDeleteConversationClick = onDeleteConversationClick,
+                                isConversationCreator = isConversationCreator,
+                                onBlockContactClick = onBlockContactClick,
+                                onUnblockContactClick = onUnblockContactClick,
+                                isBlockedByMe = isBlockedByMe,
+                                isBlockedByOtherUser = isBlockedByOtherUser,
+                                onViewContactClick = onViewContactClick,
+                                currentUserId = currentUserId,
+                                mediaItems = mediaItems,
+                                onNavigateToMediaAndDocsScreen = onNavigateToMediaAndDocsScreen
+                            )
+                        }
+                    }
+                }
             }
-        },
-        extraPane = {
-            AnimatedPane {
-                ExtraPane(
-                    user = state.user,
-                    onDeleteConversationClick = onDeleteConversationClick,
-                    isConversationCreator = isConversationCreator,
-                    onBlockContactClick = onBlockContactClick,
-                    onUnblockContactClick = onUnblockContactClick,
-                    isBlockedByMe = isBlockedByMe,
-                    isBlockedByOtherUser = isBlockedByOtherUser,
-                    onViewContactClick = onViewContactClick,
-                    currentUserId = currentUserId,
-                    mediaItems = mediaItems,
-                    onNavigateToMediaAndDocsScreen = onNavigateToMediaAndDocsScreen
-                )
-            }
-        }
-    )
+        })
 }
+
+
+
+
