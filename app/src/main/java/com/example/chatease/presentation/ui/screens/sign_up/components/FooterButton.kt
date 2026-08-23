@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,7 @@ fun FooterButton(
             ),
         onClick = onClick,
         colors = IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+            containerColor = Color.Transparent
         )
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

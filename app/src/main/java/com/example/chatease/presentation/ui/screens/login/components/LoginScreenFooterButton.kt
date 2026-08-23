@@ -10,6 +10,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
@@ -20,7 +21,7 @@ fun LoginScreenFooterButton(
     @DrawableRes icon: Int
 ) {
     IconButton(
-        modifier = Modifier
+        modifier = modifier
             .size(70.dp)
             .border(
                 width = 0.5.dp,
@@ -29,7 +30,7 @@ fun LoginScreenFooterButton(
             ),
         onClick = onClick,
         colors = IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+            containerColor = Color.Transparent
         )
     ) {
         Image(
