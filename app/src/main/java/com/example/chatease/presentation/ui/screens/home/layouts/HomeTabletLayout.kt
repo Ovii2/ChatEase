@@ -71,7 +71,13 @@ fun HomeTabletLayout(
     onNavigateToMembershipScreen: () -> Unit,
     onTogglePeek: () -> Unit,
     isPeekEnabled: Boolean,
-    typingTexts: Map<String, String>
+    typingTexts: Map<String, String>,
+    typingUserIds: List<String>,
+    onShowUsersReactionsClick: (String) -> Unit,
+    onUpdateTypingStatus: (String) -> Unit,
+    onDeleteConversationClick: () -> Unit,
+    onBlockContactClick: (String) -> Unit,
+    onUnblockContactClick: (String) -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
@@ -120,13 +126,13 @@ fun HomeTabletLayout(
                     onNavigateToChatInfo = onNavigateToChatInfo,
                     isPeekEnabled = isPeekEnabled,
                     onTogglePeek = onTogglePeek,
-                    typingUserIds = listOf(),
-                    updateTypingStatus = { },
+                    typingUserIds = typingUserIds,
+                    onUpdateTypingStatus = onUpdateTypingStatus,
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     onStartAudioCall = {},
                     chatPaneUiState = chatPaneUiState,
                     onNavigateToGroupChatInfo = onNavigateToGroupChatInfo,
-                    onShowUsersReactionsClick = {},
+                    onShowUsersReactionsClick = onShowUsersReactionsClick,
                     onSendFile = onSendFile,
                     onFileClick = onFileClick,
                     onSendImages = onSendImages,
@@ -147,10 +153,10 @@ fun HomeTabletLayout(
             AnimatedPane {
                 ExtraPane(
                     user = state.user,
-                    onDeleteConversationClick = {},
+                    onDeleteConversationClick = onDeleteConversationClick,
                     isConversationCreator = isConversationCreator,
-                    onBlockContactClick = {},
-                    onUnblockContactClick = {},
+                    onBlockContactClick = onBlockContactClick,
+                    onUnblockContactClick = onUnblockContactClick,
                     isBlockedByMe = isBlockedByMe,
                     isBlockedByOtherUser = isBlockedByOtherUser,
                     onViewContactClick = onViewContactClick,

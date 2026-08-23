@@ -144,7 +144,7 @@ fun GroupChatScreen(
                     isPeekEnabled = isPeekEnabled,
                     onTogglePeek = { },
                     typingUserIds = typingUserIds,
-                    updateTypingStatus = { text ->
+                    onUpdateTypingStatus = { text ->
                         chatViewModel.updateTypingStatus(
                             conversationId = conversationId,
                             isTyping = text.isNotBlank()

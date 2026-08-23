@@ -170,7 +170,7 @@ fun ChatScreen(
         isPeekEnabled = isPeekEnabled,
         onTogglePeek = { isPeekEnabled = !isPeekEnabled },
         typingUserIds = typingUserIds,
-        updateTypingStatus = { text ->
+        onUpdateTypingStatus = { text ->
             chatViewModel.updateTypingStatus(
                 conversationId = conversationId,
                 isTyping = text.isNotBlank(),

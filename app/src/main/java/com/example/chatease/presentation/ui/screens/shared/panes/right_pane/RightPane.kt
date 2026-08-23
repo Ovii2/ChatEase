@@ -82,7 +82,7 @@ fun RightPane(
     isPeekEnabled: Boolean,
     onTogglePeek: () -> Unit,
     typingUserIds: List<String>,
-    updateTypingStatus: (String) -> Unit,
+    onUpdateTypingStatus: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
     onStartAudioCall: (String) -> Unit,
     chatPaneUiState: ChatPaneUiState,
@@ -385,7 +385,7 @@ fun RightPane(
                 messageText = messageText,
                 onMessageTextChange = {
                     messageText = it
-                    updateTypingStatus(it)
+                    onUpdateTypingStatus(it)
                 },
                 isPeekEnabled = isPeekEnabled,
                 onTogglePeek = onTogglePeek,
@@ -492,7 +492,7 @@ private fun RightPanePreview() {
                     isPeekEnabled = false,
                     onTogglePeek = {},
                     typingUserIds = listOf("1", "2"),
-                    updateTypingStatus = {},
+                    onUpdateTypingStatus = {},
                     isBlockedByOtherUser = false,
                     onStartAudioCall = {},
                     chatPaneUiState = groupUiState,

@@ -38,6 +38,7 @@ import com.example.chatease.domain.model.enums.UserPresenceStatus
 import com.example.chatease.presentation.ui.model.ConversationUiModel
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeCompactLayout
 import com.example.chatease.presentation.ui.screens.home.layouts.HomeTabletLayout
+import com.example.chatease.presentation.ui.screens.shared.bottom_sheet.CommonChatBottomSheet
 import com.example.chatease.presentation.ui.screens.shared.chat.ChatNavigationScaffold
 import com.example.chatease.presentation.ui.screens.shared.chat.CommonAlertDialog
 import com.example.chatease.presentation.ui.screens.shared.chat.ConversationOptionsBottomSheet
@@ -135,6 +136,10 @@ fun HomeScreen(
 
     val typingTexts by chatViewModel.typingTexts.collectAsState()
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
+
+    val typingUserIds by chatViewModel.typingUserIds.collectAsState()
+    var selectedReactionsMessageId by rememberSaveable { mutableStateOf<String?>(null) }
+    var showBlockUserBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
@@ -377,6 +382,26 @@ fun HomeScreen(
                                 onTogglePeek = { isPeekEnabled = !isPeekEnabled },
                                 isPeekEnabled = isPeekEnabled,
                                 typingTexts = typingTexts,
+                                typingUserIds = typingUserIds,
+                                onShowUsersReactionsClick = { messageId ->
+                                    selectedReactionsMessageId = messageId
+                                },
+                                onUpdateTypingStatus = { text ->
+                                    selectedConversationId?.let { conversationId ->
+                                        chatViewModel.updateTypingStatus(
+                                            conversationId = conversationId,
+                                            isTyping = text.isNotBlank()
+                                        )
+
+                                        chatViewModel.updateTypingText(
+                                            conversationId = conversationId,
+                                            text = text
+                                        )
+                                    }
+                                },
+                                onDeleteConversationClick = { showDeleteConversationDialog = true },
+                                onBlockContactClick = { showBlockUserBottomSheet = true },
+                                onUnblockContactClick = { chatInfoViewModel.unblockUser(user.uid) },
                             )
                         }
                     }
@@ -435,6 +460,18 @@ fun HomeScreen(
                                 showConversationOptionsBottomSheet = false
                             },
                             alertDialogType = AlertDialogType.CONFIRMATION
+                        )
+                    }
+                    if (showBlockUserBottomSheet) {
+                        CommonChatBottomSheet(
+                            onDismiss = { showBlockUserBottomSheet = false },
+                            onClick = {
+                                chatInfoViewModel.blockUser(user.uid)
+                                showBlockUserBottomSheet = false
+                            },
+                            title = R.string.block_user_title,
+                            text = R.string.block_user_message,
+                            actionButtonText = R.string.block,
                         )
                     }
                     selectedImageUrl?.let { url ->
