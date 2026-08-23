@@ -56,7 +56,7 @@ fun MessageInputBar(
     messageText: String,
     onMessageTextChange: (String) -> Unit,
     isPeekEnabled: Boolean,
-    onPeekClick: () -> Unit,
+    onTogglePeek: () -> Unit,
     onInputFocused: () -> Unit,
     isBlockedByOtherUser: Boolean,
     isUserGroupMember: Boolean,
@@ -140,7 +140,7 @@ fun MessageInputBar(
                     ) {
                         Icon(
                             modifier = Modifier.clickable {
-                                onPeekClick()
+                                onTogglePeek()
                             },
                             imageVector = if (isPeekEnabled) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
                             contentDescription = null
@@ -197,7 +197,7 @@ private fun MessageInputBarPreview() {
                     messageText = "",
                     onMessageTextChange = {},
                     isPeekEnabled = false,
-                    onPeekClick = {},
+                    onTogglePeek = {},
                     onInputFocused = {},
                     isBlockedByOtherUser = false,
                     isUserGroupMember = true,

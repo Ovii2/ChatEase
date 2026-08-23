@@ -9,6 +9,7 @@ data class Conversation(
     val creatorId: String = "",
     val participantIds: List<String> = emptyList(),
     val typingUserIds: List<String> = emptyList(),
+    val typingTexts: Map<String, String> = emptyMap(),
     val lastMessage: String = "",
     val timestamp: Long = 0L,
     val unreadCounts: Map<String, Int> = emptyMap(),

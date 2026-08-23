@@ -393,6 +393,18 @@ class ConversationRepositoryImpl(
         batch.commit().await()
     }
 
+    override suspend fun updateTypingText(
+        conversationId: String,
+        userId: String,
+        text: String
+    ) {
+        firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .update("typingTexts.$userId", text)
+            .await()
+    }
+
     private suspend fun deleteChatFiles(conversationId: String) {
         try {
             val folderRef = storage.reference

@@ -53,4 +53,10 @@ interface ConversationRepository {
     )
 
     suspend fun deleteConversationWithMessages(conversationId: String)
+
+    suspend fun updateTypingText(
+        conversationId: String,
+        userId: String,
+        text: String
+    )
 }

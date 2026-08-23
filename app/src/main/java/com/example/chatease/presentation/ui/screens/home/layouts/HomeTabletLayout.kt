@@ -10,11 +10,7 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.unit.dp
@@ -73,10 +69,12 @@ fun HomeTabletLayout(
     mediaItems: List<MediaItem>,
     onNavigateToMediaAndDocsScreen: () -> Unit,
     onNavigateToMembershipScreen: () -> Unit,
+    onTogglePeek: () -> Unit,
+    isPeekEnabled: Boolean,
+    typingTexts: Map<String, String>
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator()
     val scope = rememberCoroutineScope()
-    var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
 
     NavigableListDetailPaneScaffold(
         navigator = navigator,
@@ -121,7 +119,7 @@ fun HomeTabletLayout(
                     onReactionClick = onReactionClick,
                     onNavigateToChatInfo = onNavigateToChatInfo,
                     isPeekEnabled = isPeekEnabled,
-                    onPeekClick = { isPeekEnabled = !isPeekEnabled },
+                    onTogglePeek = onTogglePeek,
                     typingUserIds = listOf(),
                     updateTypingStatus = { },
                     isBlockedByOtherUser = isBlockedByOtherUser,
@@ -140,7 +138,8 @@ fun HomeTabletLayout(
                     fileDownloadUiState = fileDownloadUiState,
                     snackbarHostState = snackbarHostState,
                     onImageClick = onImageClick,
-                    onRemoveReactionClick = onRemoveReactionClick
+                    onRemoveReactionClick = onRemoveReactionClick,
+                    typingTexts = typingTexts
                 )
             }
         },

@@ -45,6 +45,7 @@ fun ChatScreen(
     val user by chatViewModel.user.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
     var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
+    val typingTexts by chatViewModel.typingTexts.collectAsState()
     val isConversationDeleted by chatViewModel.isConversationDeleted.collectAsState()
     val typingUserIds by chatViewModel.typingUserIds.collectAsState()
     val isBlockedByOtherUser by chatViewModel.isBlockedByOtherUser.collectAsState()
@@ -106,6 +107,7 @@ fun ChatScreen(
     BackHandler {
         chatViewModel.markMessagesAsSeen(conversationId)
         chatViewModel.updateTypingStatus(conversationId, false)
+        chatViewModel.clearTypingText(conversationId)
         chatViewModel.deleteConversationIfEmpty(conversationId)
         onBackClick()
     }
@@ -139,6 +141,7 @@ fun ChatScreen(
             chatViewModel.markMessagesAsSeen(conversationId)
             chatViewModel.deleteConversationIfEmpty(conversationId)
             chatViewModel.updateTypingStatus(conversationId, false)
+            chatViewModel.clearTypingText(conversationId)
             onBackClick()
         },
         onSendMessageClick = { text, repliedMessage ->
@@ -151,6 +154,8 @@ fun ChatScreen(
                 conversationId = conversationId,
                 isTyping = false
             )
+
+            chatViewModel.clearTypingText(conversationId)
         },
         firstUnreadMessageId = chatViewModel.firstUnreadMessageId,
         onMessagesVisible = { chatViewModel.markMessagesAsSeen(conversationId) },
@@ -163,12 +168,17 @@ fun ChatScreen(
         },
         onNavigateToChatInfo = { onNavigateToChatInfo(conversationId) },
         isPeekEnabled = isPeekEnabled,
-        onPeekClick = { isPeekEnabled = !isPeekEnabled },
+        onTogglePeek = { isPeekEnabled = !isPeekEnabled },
         typingUserIds = typingUserIds,
-        updateTypingStatus = {
+        updateTypingStatus = { text ->
             chatViewModel.updateTypingStatus(
                 conversationId = conversationId,
-                isTyping = it.isNotBlank(),
+                isTyping = text.isNotBlank(),
+            )
+
+            chatViewModel.updateTypingText(
+                conversationId = conversationId,
+                text = text
             )
         },
         isBlockedByOtherUser = isBlockedByOtherUser,
@@ -251,6 +261,7 @@ fun ChatScreen(
                 messageId = messageId
             )
         },
+        typingTexts = typingTexts,
     )
     selectedReactionsMessage?.let { message ->
         ReactionsDetailsBottomSheet(

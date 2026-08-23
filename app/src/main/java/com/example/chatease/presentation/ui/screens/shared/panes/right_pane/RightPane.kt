@@ -19,9 +19,11 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -78,7 +80,7 @@ fun RightPane(
     onRemoveReactionClick: (String, String) -> Unit,
     onNavigateToChatInfo: () -> Unit,
     isPeekEnabled: Boolean,
-    onPeekClick: () -> Unit,
+    onTogglePeek: () -> Unit,
     typingUserIds: List<String>,
     updateTypingStatus: (String) -> Unit,
     isBlockedByOtherUser: Boolean,
@@ -96,7 +98,8 @@ fun RightPane(
     pendingFileMessage: Message?,
     pendingImageMessage: Message?,
     fileDownloadUiState: FileDownloadUiState,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    typingTexts: Map<String, String>,
 ) {
     val focusManager = LocalFocusManager.current
     var messageText by rememberSaveable { mutableStateOf("") }
@@ -146,6 +149,16 @@ fun RightPane(
         1 -> stringResource(R.string.one_is_typing, typingNames[0])
         2 -> stringResource(R.string.two_are_typing, typingNames[0], typingNames[1])
         else -> stringResource(R.string.many_are_typing, typingUsers.size)
+    }
+
+    val peekText = when (chatPaneUiState) {
+        is ChatPaneUiState.DirectChat -> {
+            typingTexts[chatPaneUiState.user.uid].orEmpty()
+        }
+
+        is ChatPaneUiState.GroupChat -> {
+            ""
+        }
     }
 
     val isUserGroupMember =
@@ -289,7 +302,7 @@ fun RightPane(
                 )
             }
 
-            if (typingUsers.isNotEmpty()) {
+            if (!isPeekEnabled && typingUsers.isNotEmpty()) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -299,6 +312,25 @@ fun RightPane(
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
+            }
+            if (isPeekEnabled && peekText.isNotBlank()) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            horizontal = 12.dp,
+                            vertical = 8.dp
+                        ),
+                        text = peekText,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
             if (messages.isEmpty()) {
                 ConversationStarterRow(
@@ -356,7 +388,7 @@ fun RightPane(
                     updateTypingStatus(it)
                 },
                 isPeekEnabled = isPeekEnabled,
-                onPeekClick = onPeekClick,
+                onTogglePeek = onTogglePeek,
                 onInputFocused = {
                     shouldShowUnreadDivider = false
                     onMessagesVisible()
@@ -458,7 +490,7 @@ private fun RightPanePreview() {
                     onRemoveReactionClick = { _, _ -> },
                     onNavigateToChatInfo = {},
                     isPeekEnabled = false,
-                    onPeekClick = {},
+                    onTogglePeek = {},
                     typingUserIds = listOf("1", "2"),
                     updateTypingStatus = {},
                     isBlockedByOtherUser = false,
@@ -480,6 +512,7 @@ private fun RightPanePreview() {
                     snackbarHostState = SnackbarHostState(),
                     onSendImages = {},
                     onImageClick = {},
+                    typingTexts = emptyMap(),
                 )
             }
         }

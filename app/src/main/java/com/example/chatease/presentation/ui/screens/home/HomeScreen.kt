@@ -133,6 +133,9 @@ fun HomeScreen(
 
     var selectedImageUrl by rememberSaveable { mutableStateOf<String?>(null) }
 
+    val typingTexts by chatViewModel.typingTexts.collectAsState()
+    var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
+
     HomeScreenEffects(
         selectedConversationId = selectedConversationId,
         onLoadConversation = chatViewModel::loadConversation,
@@ -370,7 +373,10 @@ fun HomeScreen(
                                         )
                                     }
                                 },
-                                onNavigateToMembershipScreen = onNavigateToMembershipScreen
+                                onNavigateToMembershipScreen = onNavigateToMembershipScreen,
+                                onTogglePeek = { isPeekEnabled = !isPeekEnabled },
+                                isPeekEnabled = isPeekEnabled,
+                                typingTexts = typingTexts,
                             )
                         }
                     }

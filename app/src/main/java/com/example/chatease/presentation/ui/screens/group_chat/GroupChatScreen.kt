@@ -39,7 +39,7 @@ fun GroupChatScreen(
     onNavigateToGroupChatInfo: (String) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    var isPeekEnabled by rememberSaveable { mutableStateOf(false) }
+    val isPeekEnabled = false
     val isBlockedByOtherUser = false
     val uiState by groupChatViewModel.uiState.collectAsState()
     val currentUserId = chatViewModel.currentUserId
@@ -141,7 +141,7 @@ fun GroupChatScreen(
                     },
                     onNavigateToChatInfo = {},
                     isPeekEnabled = isPeekEnabled,
-                    onPeekClick = { isPeekEnabled = !isPeekEnabled },
+                    onTogglePeek = { },
                     typingUserIds = typingUserIds,
                     updateTypingStatus = { text ->
                         chatViewModel.updateTypingStatus(
@@ -206,6 +206,7 @@ fun GroupChatScreen(
                             messageId = messageId
                         )
                     },
+                    typingTexts = emptyMap(),
                 )
                 selectedMessage?.let { message ->
                     ReactionsDetailsBottomSheet(

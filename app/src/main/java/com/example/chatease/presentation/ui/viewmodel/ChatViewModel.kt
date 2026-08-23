@@ -16,11 +16,15 @@ import com.example.chatease.domain.repository.UserRepository
 import com.example.chatease.presentation.ui.state.FileDownloadUiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
@@ -69,6 +73,11 @@ class ChatViewModel @Inject constructor(
     private val _currentUser = MutableStateFlow(User())
     val currentUser = _currentUser.asStateFlow()
 
+    private val _typingTexts = MutableStateFlow<Map<String, String>>(emptyMap())
+    val typingTexts = _typingTexts.asStateFlow()
+
+    private var lastTypingState = false
+
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
@@ -76,6 +85,8 @@ class ChatViewModel @Inject constructor(
         get() = _messages.value.firstOrNull { message ->
             currentUserId !in message.seenBy && message.senderId != currentUserId
         }?.messageId
+
+    private var typingTextsJob: Job? = null
 
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
@@ -181,6 +192,12 @@ class ChatViewModel @Inject constructor(
     }
 
     fun updateTypingStatus(conversationId: String, isTyping: Boolean) {
+        if (lastTypingState == isTyping) {
+            return
+        }
+
+        lastTypingState = isTyping
+
         viewModelScope.launch {
             try {
                 val userId = auth.currentUser?.uid ?: return@launch
@@ -381,6 +398,42 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun updateTypingText(conversationId: String, text: String) {
+        typingTextsJob?.cancel()
+
+        typingTextsJob = viewModelScope.launch {
+            try {
+                delay(300.milliseconds)
+
+                conversationRepository.updateTypingText(
+                    conversationId = conversationId,
+                    userId = currentUserId,
+                    text = text
+                )
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to update typing text", e)
+            }
+        }
+    }
+
+    fun clearTypingText(conversationId: String) {
+        typingTextsJob?.cancel()
+
+        viewModelScope.launch {
+            try {
+                conversationRepository.updateTypingText(
+                    conversationId = conversationId,
+                    userId = currentUserId,
+                    text = ""
+                )
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Failed to clear typing text", e)
+            }
+        }
+    }
+
     private fun createPendingFileMessage(
         conversationId: String,
         fileUri: Uri,
@@ -422,6 +475,8 @@ class ChatViewModel @Inject constructor(
                     _typingUserIds.value = conversation.typingUserIds.filter { userId ->
                         userId != currentUserId
                     }
+
+                    _typingTexts.value = conversation.typingTexts
                 }
         }
     }
