@@ -59,7 +59,11 @@ fun NavigationSuiteScope.chatNavigationSuiteItems(
                             modifier = Modifier.size(24.dp),
                             painter = painterResource(item.image),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = if (isSelected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            }
                         )
                     }
                 }
