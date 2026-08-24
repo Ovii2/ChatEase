@@ -15,6 +15,10 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -35,6 +39,8 @@ fun MembershipScreenBody(
     val widthSizeClass = activity?.let {
         calculateWindowSizeClass(it).widthSizeClass
     }
+
+    var selectedMembership by rememberSaveable { mutableStateOf(Membership.PREMIUM) }
 
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val cardWidth = when (widthSizeClass) {
@@ -62,7 +68,9 @@ fun MembershipScreenBody(
                 MembershipScreenCard(
                     modifier = Modifier,
                     membership = Membership.FREE,
-                    cardWidth = cardWidth
+                    cardWidth = cardWidth,
+                    isSelected = selectedMembership == Membership.FREE,
+                    onClick = { selectedMembership = Membership.FREE },
                 )
             }
             item {
@@ -72,14 +80,18 @@ fun MembershipScreenBody(
                     isRecommended = true,
                     isDiscounted = true,
                     discount = 25.0,
-                    cardWidth = cardWidth
+                    cardWidth = cardWidth,
+                    isSelected = selectedMembership == Membership.PREMIUM,
+                    onClick = { selectedMembership = Membership.PREMIUM },
                 )
             }
             item {
                 MembershipScreenCard(
                     modifier = Modifier,
                     membership = Membership.ULTRA,
-                    cardWidth = cardWidth
+                    cardWidth = cardWidth,
+                    isSelected = selectedMembership == Membership.ULTRA,
+                    onClick = { selectedMembership = Membership.ULTRA }
                 )
             }
         }

@@ -21,11 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -44,10 +40,11 @@ fun MembershipScreenCard(
     isDiscounted: Boolean = false,
     membership: Membership,
     discount: Double = 0.0,
-    cardWidth: Dp = 280.dp
+    cardWidth: Dp = 280.dp,
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
     val backgroundTintColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-    var isSelected by rememberSaveable { mutableStateOf(false) }
 
     val benefitItems = when (membership) {
         Membership.FREE -> MembershipBenefitsDataSource.getBenefits(Membership.FREE)
@@ -68,8 +65,9 @@ fun MembershipScreenCard(
                 .heightIn(min = 520.dp)
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() }) {
-                    isSelected = !isSelected
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    onClick()
                 },
             color = Color.Transparent,
             shape = RoundedCornerShape(10.dp),
@@ -152,16 +150,22 @@ private fun MembershipScreenCardPreview() {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 MembershipScreenCard(
-                    membership = Membership.FREE
+                    membership = Membership.FREE,
+                    isSelected = false,
+                    onClick = {},
                 )
                 MembershipScreenCard(
                     membership = Membership.PREMIUM,
                     isRecommended = true,
                     isDiscounted = true,
-                    discount = 25.0
+                    discount = 25.0,
+                    isSelected = true,
+                    onClick = {},
                 )
                 MembershipScreenCard(
-                    membership = Membership.ULTRA
+                    membership = Membership.ULTRA,
+                    isSelected = false,
+                    onClick = {},
                 )
             }
         }
