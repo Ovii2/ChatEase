@@ -209,6 +209,22 @@ fun AppNavHost(
                         launchSingleTop = true
                     }
                 },
+                currentRoute = currentRoute,
+                onNavigateToHome = {
+                    navController.navigate(Screens.Home.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToCalls = {
+                    navController.navigate(Screens.Calls.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToProfile = {
+                    navController.navigate(Screens.MyProfile.route) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(route = Screens.SentRequests.route) {
