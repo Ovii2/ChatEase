@@ -56,7 +56,13 @@ app/google-services.json
 
 3. Enable Authentication, Firestore, Storage, and Cloud Functions.
 
-4. Deploy Firebase Functions:
+4. Install Firebase CLI:
+
+```bash
+npm install -g firebase-tools
+```
+
+5. Deploy Firebase Functions:
 
 ```bash
 firebase login
