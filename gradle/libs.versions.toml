@@ -6,13 +6,13 @@ ksp = "2.3.5"
 googleServices = "4.5.0"
 
 # Compose
-composeBom = "2026.06.01"
+composeBom = "2026.08.00"
 activityCompose = "1.13.0"
 material3WindowSizeClass = "1.4.0"
 materialIconsExtended = "1.7.8"
-uiTextGoogleFonts = "1.11.4"
+uiTextGoogleFonts = "1.12.0"
 composeShimmer = "1.5.0"
-foundation = "1.11.4"
+foundation = "1.12.0"
 
 # AndroidX
 coreKtx = "1.19.0"
@@ -27,8 +27,8 @@ hiltAndroid = "2.60.1"
 hiltNavigationCompose = "1.4.0"
 
 # Firebase
-firebaseBom = "34.17.0"
-firebaseMessaging = "25.1.1"
+firebaseBom = "34.18.0"
+firebaseMessaging = "25.1.2"
 
 # Room DB
 roomCompiler = "2.8.4"
@@ -51,6 +51,9 @@ streamWebrtcAndroid = "1.3.10"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
+mockitoKotlin = "6.3.0"
+kotlinxCoroutinesTest = "1.11.0"
+robolectric = "4.16.1"
 
 [libraries]
 # Compose
@@ -121,11 +124,22 @@ stream-webrtc-android = { module = "io.getstream:stream-webrtc-android", version
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
+
+# Android & Kotlin
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+# DI
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+
+# Room DB
 androidx-room = { id = "androidx.room", version.ref = "roomCompiler" }
+
+# Google
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
