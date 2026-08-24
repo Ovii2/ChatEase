@@ -70,7 +70,7 @@ firebase use <your-project-id>
 firebase deploy --only functions
 ```
 
-4. Open the project in Android Studio, sync Gradle, and run the app.
+6. Open the project in Android Studio, sync Gradle, and run the app.
 
 ## License
 
