@@ -38,10 +38,10 @@ class AuthViewModelTest {
     private val authResult: AuthResult = mock()
 
     companion object {
-        const val EMAIL = "test@email.com"
-        const val PASSWORD = "password"
-        const val USER_ID = "1"
-        const val LOGIN_FAIL_MESSAGE = "Login failed"
+        private const val EMAIL = "test@email.com"
+        private const val PASSWORD = "password"
+        private const val USER_ID = "1"
+        private const val LOGIN_FAIL_MESSAGE = "Login failed"
     }
 
     @Test
