@@ -5,21 +5,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatease.domain.model.Call
 import com.example.chatease.domain.repository.CallRepository
+import com.example.chatease.domain.repository.FcmTokenProvider
 import com.example.chatease.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val callRepository: CallRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val fcmTokenProvider: FcmTokenProvider
 ) : ViewModel() {
 
     private val _incomingCall = MutableStateFlow<Call?>(null)
@@ -40,8 +40,8 @@ class AppViewModel @Inject constructor(
     fun saveCurrentFcmToken() {
         viewModelScope.launch {
             try {
-                FirebaseMessaging.getInstance().deleteToken().await()
-                val token = FirebaseMessaging.getInstance().token.await()
+                fcmTokenProvider.deleteToken()
+                val token = fcmTokenProvider.getToken()
                 userRepository.saveFcmToken(token)
             } catch (e: Exception) {
                 Log.v("AppViewModel", e.message ?: "Failed to save FCM token")
