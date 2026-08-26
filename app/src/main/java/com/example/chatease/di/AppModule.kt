@@ -9,6 +9,7 @@ import com.example.chatease.data.repository.CallRepositoryImpl
 import com.example.chatease.data.repository.ContactRequestRepositoryImpl
 import com.example.chatease.data.repository.ContactsRepositoryImpl
 import com.example.chatease.data.repository.ConversationRepositoryImpl
+import com.example.chatease.data.repository.FcmTokenProviderImpl
 import com.example.chatease.data.repository.FileRepositoryImpl
 import com.example.chatease.data.repository.GroupRepositoryImpl
 import com.example.chatease.data.repository.UserRepositoryImpl
@@ -17,6 +18,7 @@ import com.example.chatease.domain.repository.CallRepository
 import com.example.chatease.domain.repository.ContactRequestRepository
 import com.example.chatease.domain.repository.ContactsRepository
 import com.example.chatease.domain.repository.ConversationRepository
+import com.example.chatease.domain.repository.FcmTokenProvider
 import com.example.chatease.domain.repository.FileRepository
 import com.example.chatease.domain.repository.GroupRepository
 import com.example.chatease.domain.repository.UserRepository
@@ -122,5 +124,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMediaItemsDao(db: ChatEaseDatabase): MediaItemsDao = db.mediaItemsDao()
+
+    @Provides
+    @Singleton
+    fun provideFcmTokenProvider(): FcmTokenProvider = FcmTokenProviderImpl()
 
 }
