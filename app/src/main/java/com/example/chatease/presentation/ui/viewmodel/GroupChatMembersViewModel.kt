@@ -95,7 +95,7 @@ class GroupChatMembersViewModel @Inject constructor(
                 groupRepository.promoteToAdmin(conversationId, userId)
                 loadMembers(conversationId)
             } catch (e: Exception) {
-                Log.v("AddMembersViewModel", e.message ?: "Failed to add admin")
+                Log.v("GroupChatMembersViewModel", e.message ?: "Failed to add admin")
             }
         }
     }
@@ -106,7 +106,7 @@ class GroupChatMembersViewModel @Inject constructor(
                 groupRepository.demoteFromAdmin(conversationId, userId)
                 loadMembers(conversationId)
             } catch (e: Exception) {
-                Log.v("AddMembersViewModel", e.message ?: "Failed to remove admin")
+                Log.v("GroupChatMembersViewModel", e.message ?: "Failed to remove admin")
             }
         }
     }
@@ -117,7 +117,7 @@ class GroupChatMembersViewModel @Inject constructor(
                 groupRepository.removeMember(conversationId, userId)
                 loadMembers(conversationId)
             } catch (e: Exception) {
-                Log.v("AddMembersViewModel", e.message ?: "Failed to remove member")
+                Log.v("GroupChatMembersViewModel", e.message ?: "Failed to remove member")
             }
         }
     }
