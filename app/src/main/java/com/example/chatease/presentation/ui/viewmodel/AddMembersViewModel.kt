@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -41,7 +42,9 @@ class AddMembersViewModel @Inject constructor(
     val searchValue = _searchValue.asStateFlow()
 
     @OptIn(FlowPreview::class)
-    val debouncedSearch = searchValue.debounce(300.milliseconds)
+    val debouncedSearch = searchValue
+        .drop(1)
+        .debounce(300.milliseconds)
 
     val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
