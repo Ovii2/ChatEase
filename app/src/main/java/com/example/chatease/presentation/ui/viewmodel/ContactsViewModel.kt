@@ -77,7 +77,7 @@ class ContactsViewModel @Inject constructor(
         _searchedUsers.value = emptyList()
     }
 
-    private fun searchUsers(query: String) {
+    fun searchUsers(query: String) {
         viewModelScope.launch {
             try {
                 if (query.isBlank()) {
