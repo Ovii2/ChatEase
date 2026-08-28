@@ -85,10 +85,9 @@ class ContactsViewModel @Inject constructor(
                 } else {
                     _isSearching.value = true
                     val users = userRepository.searchUsers(query)
-                    val currentUserId = auth.currentUser?.uid ?: return@launch
                     loadCooldownUserIds(
                         users = users,
-                        currentUserId = currentUserId
+                        currentUserId = currentUserId ?: return@launch
                     )
                     _searchedUsers.value = users
                     _isSearching.value = false
@@ -169,7 +168,6 @@ class ContactsViewModel @Inject constructor(
                 _pendingRequests.value = _pendingRequests.value.filterNot {
                     it.requestId == requestId
                 }
-                // TODO : remove filter later
                 getPendingRequests()
                 getContacts()
             } catch (e: Exception) {
