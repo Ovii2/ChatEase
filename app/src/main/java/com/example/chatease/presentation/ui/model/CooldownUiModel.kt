@@ -1,6 +1,6 @@
 package com.example.chatease.presentation.ui.model
 
-class CooldownUiModel(
+data class CooldownUiModel(
     val userId: String,
     val expiresAt: Long
 ) {
