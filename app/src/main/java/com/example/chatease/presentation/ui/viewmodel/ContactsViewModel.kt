@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class ContactsViewModel @Inject constructor(
@@ -52,7 +53,7 @@ class ContactsViewModel @Inject constructor(
     val contacts = _contacts.asStateFlow()
 
     @OptIn(FlowPreview::class)
-    val debouncedSearch = searchValue.debounce(300)
+    val debouncedSearch = searchValue.debounce(300.milliseconds)
 
     val currentUserId: String?
         get() = auth.currentUser?.uid
