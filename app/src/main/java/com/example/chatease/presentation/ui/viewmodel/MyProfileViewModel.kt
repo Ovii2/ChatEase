@@ -185,10 +185,6 @@ class MyProfileViewModel @Inject constructor(
         }
     }
 
-//    fun clearError() {
-//        _errorMessage.value = null
-//    }
-
     private fun refreshStats() {
         val currentState = _uiState.value
         if (currentState is MyProfileUiState.Success) {
