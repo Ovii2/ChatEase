@@ -1,3 +1,7 @@
+<img src="assets/banner/banner.png" alt="ChatEase banner" width="100%">
+
+# ChatEase
+
 # ChatEase
 
 ChatEase is an Android messaging app built with **Kotlin** and **Jetpack Compose**.
@@ -29,19 +33,19 @@ ChatEase is an Android messaging app built with **Kotlin** and **Jetpack Compose
 ## UI Preview
 
 <p>
-<img src="./assets/login_screen.png" alt="Login Screen" width="250"/>
+<img src="assets/ui_preview/login_screen.png" alt="Login Screen" width="250"/>
 &nbsp;&nbsp;&nbsp;
-<img src="./assets/home_screen.png" alt="Home Screen" width="250"/>
+<img src="assets/ui_preview/home_screen.png" alt="Home Screen" width="250"/>
 &nbsp;&nbsp;&nbsp;
-<img src="./assets/chat_screen.png" alt="Chat Screen" width="250"/>
+<img src="assets/ui_preview/chat_screen.png" alt="Chat Screen" width="250"/>
 </p>
 
 <p>
-<img src="./assets/my_profile_screen.png" alt="My Profile Screen" width="250"/>
+<img src="assets/ui_preview/my_profile_screen.png" alt="My Profile Screen" width="250"/>
 &nbsp;&nbsp;&nbsp;
-<img src="./assets/other_user_profile_screen.png" alt="Other User Profile Screen" width="250"/>
+<img src="assets/ui_preview/other_user_profile_screen.png" alt="Other User Profile Screen" width="250"/>
 &nbsp;&nbsp;&nbsp;
-<img src="./assets/membership_screen.png" alt="Membership Screen" width="250"/>
+<img src="assets/ui_preview/membership_screen.png" alt="Membership Screen" width="250"/>
 </p>
 
 ## Setup
