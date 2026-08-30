@@ -2,8 +2,6 @@
 
 # ChatEase
 
-# ChatEase
-
 ChatEase is an Android messaging app built with **Kotlin** and **Jetpack Compose**.
 
 ## Features
